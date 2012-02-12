@@ -17,13 +17,13 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-unit devReg;
+Unit devReg;
 
-interface
+Interface
 
-uses
+Uses
 {$IFDEF WIN32}
- Classes, Controls, devTabs, ColorPickerButton, devFileMonitor,
+    Classes, Controls, devTabs, ColorPickerButton, devFileMonitor,
 {$ENDIF}
 {$IFDEF LINUX}
  Classes, QControls, devTabs, ColorPickerButton, devFileMonitor,
@@ -32,71 +32,71 @@ uses
 {$IFDEF VER130}
  DsgnIntf
 {$ELSE}
- DesignEditors,
- DesignIntf
+    DesignEditors,
+    DesignIntf
 {$ENDIF};
 
-type
- TdevPageEditor = class(TComponentEditor)
-  function GetVerb(index: integer): string; override;
-  function GetVerbCount: integer; override;
-  procedure ExecuteVerb(index: integer); override;
- end;
+Type
+    TdevPageEditor = Class(TComponentEditor)
+        Function GetVerb(index: Integer): String; Override;
+        Function GetVerbCount: Integer; Override;
+        Procedure ExecuteVerb(index: Integer); Override;
+    End;
 
-procedure Register;
+Procedure Register;
 
-implementation
+Implementation
 
-procedure Register;
-begin
-  RegisterComponents('dev-c++',
-    [TdevTabs, TdevPages, TColorPickerButton, TdevFileMonitor]);
-  RegisterClasses([TdevPage]);
-  RegisterComponentEditor(TdevPages, TdevPageEditor);
-  RegisterComponentEditor(TdevPage, TdevPageEditor);
-end;
+Procedure Register;
+Begin
+    RegisterComponents('dev-c++',
+        [TdevTabs, TdevPages, TColorPickerButton, TdevFileMonitor]);
+    RegisterClasses([TdevPage]);
+    RegisterComponentEditor(TdevPages, TdevPageEditor);
+    RegisterComponentEditor(TdevPage, TdevPageEditor);
+End;
 
 
 { TdevPageEditor }
 
-procedure TdevPageEditor.ExecuteVerb(index: integer);
-var
- Pages: TdevCustomPages;
-begin
-  if Component is TdevPages then
-   Pages:= TdevPages(Component)
-  else
-   Pages:= TdevPage(Component).Pages;
+Procedure TdevPageEditor.ExecuteVerb(index: Integer);
+Var
+    Pages: TdevCustomPages;
+Begin
+    If Component Is TdevPages Then
+        Pages := TdevPages(Component)
+    Else
+        Pages := TdevPage(Component).Pages;
 
-  if index = 0 then
-   begin
-     Pages.ControlStyle:= Pages.ControlStyle +[csAcceptsControls];
-     try
-      Designer.CreateComponent(TdevPage, Pages, 0, 0, 0, 0);
-     finally
-      Pages.ControlStyle:= Pages.ControlStyle -[csAcceptsControls];
-     end;
-   end
+    If index = 0 Then
+    Begin
+        Pages.ControlStyle := Pages.ControlStyle + [csAcceptsControls];
+        Try
+            Designer.CreateComponent(TdevPage, Pages, 0, 0, 0, 0);
+        Finally
+            Pages.ControlStyle := Pages.ControlStyle - [csAcceptsControls];
+        End;
+    End;
 {$IFDEF VER130}
   else
    Designer.DeleteSelection;
 {$ENDIF}
-end;
+End;
 
-function TdevPageEditor.GetVerb(index: integer): string;
-begin
-  result:= 'New Page';
-  if index = 1 then
-   result:= 'Delete Page';
-end;
+Function TdevPageEditor.GetVerb(index: Integer): String;
+Begin
+    result := 'New Page';
+    If index = 1 Then
+        result := 'Delete Page';
+End;
 
-function TdevPageEditor.GetVerbCount: integer;
-begin
+Function TdevPageEditor.GetVerbCount: Integer;
+Begin
 {$IFDEF VER130}
   result:= 1;
 {$ELSE}
-  result:= 2;
+    result := 2;
 {$ENDIF}
-end;
+End;
 
-end.
+End.

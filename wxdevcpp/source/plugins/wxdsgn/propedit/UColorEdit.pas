@@ -22,223 +22,223 @@
 {Contact gururamnath@yahoo.com for details                           }
 { ****************************************************************** }
 
-unit UColorEdit;
+Unit UColorEdit;
 
-interface
+Interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Buttons, ExtCtrls,wxutils, JvExButtons, JvButtons,
-  XPMenu;
+Uses
+    Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+    Dialogs, StdCtrls, Buttons, ExtCtrls, wxutils, JvExButtons, JvButtons,
+    XPMenu;
 
-type
-  TColorEdit = class(TForm)
-    btnOK: TBitBtn;
-    btnCancel: TBitBtn;
-    colorDlg: TColorDialog;
-    XPMenu: TXPMenu;
-    rbDefaultColor: TRadioButton;
-    rbStandardColor: TRadioButton;
-    rbSystemColor: TRadioButton;
-    rbCustomColor: TRadioButton;
-    txtRed: TEdit;
-    Label1: TLabel;
-    Label2: TLabel;
-    txtGreen: TEdit;
-    Label3: TLabel;
-    txtBlue: TEdit;
-    btChoose: TButton;
-    cbSystemColor: TComboBox;
-    cbStandardColor: TComboBox;
-    pnlPreview: TPanel;
-    Label4: TLabel;
-    procedure btChooseClick(Sender: TObject);
-    procedure rbDefaultColorClick(Sender: TObject);
-    procedure rbStandardColorClick(Sender: TObject);
-    procedure rbSystemColorClick(Sender: TObject);
-    procedure rbCustomColorClick(Sender: TObject);
-    procedure btnOKClick(Sender: TObject);
-    procedure cbStandardColorChange(Sender: TObject);
-    procedure cbSystemColorChange(Sender: TObject);
-    procedure txtRedChange(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
-  private
+Type
+    TColorEdit = Class(TForm)
+        btnOK: TBitBtn;
+        btnCancel: TBitBtn;
+        colorDlg: TColorDialog;
+        XPMenu: TXPMenu;
+        rbDefaultColor: TRadioButton;
+        rbStandardColor: TRadioButton;
+        rbSystemColor: TRadioButton;
+        rbCustomColor: TRadioButton;
+        txtRed: TEdit;
+        Label1: TLabel;
+        Label2: TLabel;
+        txtGreen: TEdit;
+        Label3: TLabel;
+        txtBlue: TEdit;
+        btChoose: TButton;
+        cbSystemColor: TComboBox;
+        cbStandardColor: TComboBox;
+        pnlPreview: TPanel;
+        Label4: TLabel;
+        Procedure btChooseClick(Sender: TObject);
+        Procedure rbDefaultColorClick(Sender: TObject);
+        Procedure rbStandardColorClick(Sender: TObject);
+        Procedure rbSystemColorClick(Sender: TObject);
+        Procedure rbCustomColorClick(Sender: TObject);
+        Procedure btnOKClick(Sender: TObject);
+        Procedure cbStandardColorChange(Sender: TObject);
+        Procedure cbSystemColorChange(Sender: TObject);
+        Procedure txtRedChange(Sender: TObject);
+        Procedure FormCreate(Sender: TObject);
+    Private
     { Private declarations }
-  public
+    Public
     { Public declarations }
-    strColorString:String;
-    function GetColorString:String;
-    procedure SetColorString(strValue:String);
+        strColorString: String;
+        Function GetColorString: String;
+        Procedure SetColorString(strValue: String);
 
-  end;
+    End;
 
-var
-  ColorEdit: TColorEdit;
+Var
+    ColorEdit: TColorEdit;
 
-implementation
+Implementation
 
-uses
-  wxdesigner;
+Uses
+    wxdesigner;
 
 {$R *.dfm}
 
-procedure TColorEdit.btChooseClick(Sender: TObject);
-var
-ColorInt: Integer;
-begin
-    colorDlg.Color:= RGB(StrToInt(txtRed.Text),StrToInt(txtGreen.Text),StrToInt(txtBlue.Text));
-    if colorDlg.Execute = false then
+Procedure TColorEdit.btChooseClick(Sender: TObject);
+Var
+    ColorInt: Integer;
+Begin
+    colorDlg.Color := RGB(StrToInt(txtRed.Text), StrToInt(txtGreen.Text), StrToInt(txtBlue.Text));
+    If colorDlg.Execute = False Then
         exit;
     ColorInt := ColorToRGB(colorDlg.Color);
-    txtRed.Text:=IntToStr(GetRValue(ColorInt));
-    txtGreen.Text:=IntToStr(GetGValue(ColorInt));
-    txtBlue.Text:=IntToStr(GetBValue(ColorInt));
-    
-end;
+    txtRed.Text := IntToStr(GetRValue(ColorInt));
+    txtGreen.Text := IntToStr(GetGValue(ColorInt));
+    txtBlue.Text := IntToStr(GetBValue(ColorInt));
 
-procedure TColorEdit.rbDefaultColorClick(Sender: TObject);
-begin
-    cbStandardColor.enabled:=not rbDefaultColor.Checked;
-    cbSystemColor.enabled:=not rbDefaultColor.Checked;
-    btChoose.enabled:=not rbDefaultColor.Checked;
-    pnlPreview.Color:=clBtnFace;
-end;
+End;
 
-procedure TColorEdit.rbStandardColorClick(Sender: TObject);
-begin
-    cbStandardColor.enabled:=rbStandardColor.Checked;
-    cbSystemColor.enabled:=not rbStandardColor.Checked;
-    btChoose.enabled:=not rbStandardColor.Checked;
-    cbStandardColorChange(self);    
-end;
+Procedure TColorEdit.rbDefaultColorClick(Sender: TObject);
+Begin
+    cbStandardColor.enabled := Not rbDefaultColor.Checked;
+    cbSystemColor.enabled := Not rbDefaultColor.Checked;
+    btChoose.enabled := Not rbDefaultColor.Checked;
+    pnlPreview.Color := clBtnFace;
+End;
 
-procedure TColorEdit.rbSystemColorClick(Sender: TObject);
-begin
-    cbStandardColor.enabled:=not rbSystemColor.Checked;
-    cbSystemColor.enabled:=rbSystemColor.Checked;
-    btChoose.enabled:=not rbSystemColor.Checked;
+Procedure TColorEdit.rbStandardColorClick(Sender: TObject);
+Begin
+    cbStandardColor.enabled := rbStandardColor.Checked;
+    cbSystemColor.enabled := Not rbStandardColor.Checked;
+    btChoose.enabled := Not rbStandardColor.Checked;
+    cbStandardColorChange(self);
+End;
+
+Procedure TColorEdit.rbSystemColorClick(Sender: TObject);
+Begin
+    cbStandardColor.enabled := Not rbSystemColor.Checked;
+    cbSystemColor.enabled := rbSystemColor.Checked;
+    btChoose.enabled := Not rbSystemColor.Checked;
     cbSystemColorChange(self);
-end;
+End;
 
-procedure TColorEdit.rbCustomColorClick(Sender: TObject);
-begin
-    cbStandardColor.enabled:=not rbCustomColor.Checked;
-    cbSystemColor.enabled:=not rbCustomColor.Checked;
-    btChoose.enabled:=rbCustomColor.Checked;
+Procedure TColorEdit.rbCustomColorClick(Sender: TObject);
+Begin
+    cbStandardColor.enabled := Not rbCustomColor.Checked;
+    cbSystemColor.enabled := Not rbCustomColor.Checked;
+    btChoose.enabled := rbCustomColor.Checked;
     txtRedChange(self);
-end;
+End;
 
-function TColorEdit.GetColorString:String;
-begin
-    Result:=''+self.strColorString;
-end;
+Function TColorEdit.GetColorString: String;
+Begin
+    Result := '' + self.strColorString;
+End;
 
-procedure TColorEdit.SetColorString(strValue:String);
-var
-    strChoice,strClr:String;
-    ColorInt:Integer;
-begin
-    rbDefaultColor.Checked:=true;
-    strColorString:=strValue;
-    strChoice:=copy(strValue,0,4);
-    strClr:=copy(strValue,4+1,length(strValue));
-    if AnsiSameText(strChoice,'Def:') then
-    begin
-        rbDefaultColor.Checked:=true;
-        
-    end;
-    if AnsiSameText(strChoice,'STD:') then
-    begin
-        rbStandardColor.Checked:=true;
-        if cbStandardColor.Items.IndexOf(strClr) <> -1 then
-        begin
-            cbStandardColor.ItemIndex:=cbStandardColor.Items.IndexOf(strClr);
-        end;
+Procedure TColorEdit.SetColorString(strValue: String);
+Var
+    strChoice, strClr: String;
+    ColorInt: Integer;
+Begin
+    rbDefaultColor.Checked := True;
+    strColorString := strValue;
+    strChoice := copy(strValue, 0, 4);
+    strClr := copy(strValue, 4 + 1, length(strValue));
+    If AnsiSameText(strChoice, 'Def:') Then
+    Begin
+        rbDefaultColor.Checked := True;
+
+    End;
+    If AnsiSameText(strChoice, 'STD:') Then
+    Begin
+        rbStandardColor.Checked := True;
+        If cbStandardColor.Items.IndexOf(strClr) <> -1 Then
+        Begin
+            cbStandardColor.ItemIndex := cbStandardColor.Items.IndexOf(strClr);
+        End;
         cbStandardColorChange(self);
 
-    end;
+    End;
 
-    if AnsiSameText(strChoice,'SYS:') then
-    begin
-        rbSystemColor.Checked:=true;
-        if cbSystemColor.Items.IndexOf(strClr) <> -1 then
-        begin
-            cbSystemColor.ItemIndex:=cbSystemColor.Items.IndexOf(strClr);
-        end;
-        self.cbSystemColorChange(self);        
-    end;
+    If AnsiSameText(strChoice, 'SYS:') Then
+    Begin
+        rbSystemColor.Checked := True;
+        If cbSystemColor.Items.IndexOf(strClr) <> -1 Then
+        Begin
+            cbSystemColor.ItemIndex := cbSystemColor.Items.IndexOf(strClr);
+        End;
+        self.cbSystemColorChange(self);
+    End;
 
-    if AnsiSameText(strChoice,'CUS:') then
-    begin
-        rbCustomColor.Checked:=true;
-        strValue:=trim(strValue) ;
-        pnlPreview.Color:=GetColorFromString(strValue);
+    If AnsiSameText(strChoice, 'CUS:') Then
+    Begin
+        rbCustomColor.Checked := True;
+        strValue := trim(strValue);
+        pnlPreview.Color := GetColorFromString(strValue);
         ColorInt := ColorToRGB(pnlPreview.Color);
-        txtRed.Text:=IntToStr(GetRValue(ColorInt));
-        txtGreen.Text:=IntToStr(GetGValue(ColorInt));
-        txtBlue.Text:=IntToStr(GetBValue(ColorInt));
+        txtRed.Text := IntToStr(GetRValue(ColorInt));
+        txtGreen.Text := IntToStr(GetGValue(ColorInt));
+        txtBlue.Text := IntToStr(GetBValue(ColorInt));
 
-    end;
+    End;
 
 
-end;
+End;
 
-procedure TColorEdit.btnOKClick(Sender: TObject);
-begin
-    if rbDefaultColor.Checked then
-    begin
-        strColorString:='DEF:';
-    end;
+Procedure TColorEdit.btnOKClick(Sender: TObject);
+Begin
+    If rbDefaultColor.Checked Then
+    Begin
+        strColorString := 'DEF:';
+    End;
 
-    if rbStandardColor.Checked then
-    begin
-        strColorString:='STD:'+cbStandardColor.Items[cbStandardColor.itemindex];
-    end;
+    If rbStandardColor.Checked Then
+    Begin
+        strColorString := 'STD:' + cbStandardColor.Items[cbStandardColor.itemindex];
+    End;
 
-    if rbSystemColor.Checked then
-    begin
-        strColorString:='SYS:'+cbSystemColor.Items[cbSystemColor.itemindex];
-    end;
-    if rbCustomColor.Checked then
-    begin
-        strColorString:='CUS:'+txtRed.Text+','+ txtGreen.Text+','+txtBlue.Text;
-    end;
+    If rbSystemColor.Checked Then
+    Begin
+        strColorString := 'SYS:' + cbSystemColor.Items[cbSystemColor.itemindex];
+    End;
+    If rbCustomColor.Checked Then
+    Begin
+        strColorString := 'CUS:' + txtRed.Text + ',' + txtGreen.Text + ',' + txtBlue.Text;
+    End;
     close;
-    ModalResult:=mrOk;
-end;
+    ModalResult := mrOk;
+End;
 
-procedure TColorEdit.cbStandardColorChange(Sender: TObject);
-var
-    clr:TColor;
-begin
-    if cbStandardColor.ItemIndex = -1 then
+Procedure TColorEdit.cbStandardColorChange(Sender: TObject);
+Var
+    clr: TColor;
+Begin
+    If cbStandardColor.ItemIndex = -1 Then
         exit;
-    clr:=GetGeneralColorFromString(cbStandardColor.Items[cbStandardColor.ItemIndex]);
-    pnlPreview.Color:=clr;
-end;
+    clr := GetGeneralColorFromString(cbStandardColor.Items[cbStandardColor.ItemIndex]);
+    pnlPreview.Color := clr;
+End;
 
-procedure TColorEdit.cbSystemColorChange(Sender: TObject);
-var
-    clr:TColor;
-begin
-    if cbSystemColor.ItemIndex = -1 then
+Procedure TColorEdit.cbSystemColorChange(Sender: TObject);
+Var
+    clr: TColor;
+Begin
+    If cbSystemColor.ItemIndex = -1 Then
         exit;
-    clr:=GetGeneralColorFromString(cbSystemColor.Items[cbSystemColor.ItemIndex]);
-    pnlPreview.Color:=clr;
-end;
+    clr := GetGeneralColorFromString(cbSystemColor.Items[cbSystemColor.ItemIndex]);
+    pnlPreview.Color := clr;
+End;
 
-procedure TColorEdit.txtRedChange(Sender: TObject);
-var
-    clr:TColor;
-begin
-    clr:= RGB(StrToInt(txtRed.Text),StrToInt(txtGreen.Text),StrToInt(txtBlue.Text)) ;
-    pnlPreview.Color:=clr;    
-end;
+Procedure TColorEdit.txtRedChange(Sender: TObject);
+Var
+    clr: TColor;
+Begin
+    clr := RGB(StrToInt(txtRed.Text), StrToInt(txtGreen.Text), StrToInt(txtBlue.Text));
+    pnlPreview.Color := clr;
+End;
 
-procedure TColorEdit.FormCreate(Sender: TObject);
-begin
+Procedure TColorEdit.FormCreate(Sender: TObject);
+Begin
     DesktopFont := True;
-    XPMenu.Active := wx_designer.XPTheme
-end;
+    XPMenu.Active := wx_designer.XPTheme;
+End;
 
-end.
+End.

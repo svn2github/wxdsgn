@@ -1,89 +1,89 @@
-unit dmTreeView;
+Unit dmTreeView;
 
-interface
+Interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ComCtrls, XPMenu;
+Uses
+    Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+    Dialogs, StdCtrls, ComCtrls, XPMenu;
 
-type
-  TTreeEditor = class(TForm)
-    GroupBox1: TGroupBox;
-    teNewItem: TButton;
-    teNewSubItem: TButton;
-    teDelete: TButton;
-    TreeView1: TTreeView;
-    GroupBox2: TGroupBox;
-    teItemText: TEdit;
-    teImageIndex: TEdit;
-    Label1: TLabel;
-    Label2: TLabel;
-    teOK: TButton;
-    teCancel: TButton;
-    XPMenu1: TXPMenu;
-    procedure teNewItemClick(Sender: TObject);
-    procedure teNewSubItemClick(Sender: TObject);
-    procedure teDeleteClick(Sender: TObject);
-    procedure teOnClickEvent(Sender: TObject);
-    procedure teOnKeyPressEvent(Sender: TObject; var Key: Char);
-    procedure teOnCreate(Sender: TObject);
-  private
+Type
+    TTreeEditor = Class(TForm)
+        GroupBox1: TGroupBox;
+        teNewItem: TButton;
+        teNewSubItem: TButton;
+        teDelete: TButton;
+        TreeView1: TTreeView;
+        GroupBox2: TGroupBox;
+        teItemText: TEdit;
+        teImageIndex: TEdit;
+        Label1: TLabel;
+        Label2: TLabel;
+        teOK: TButton;
+        teCancel: TButton;
+        XPMenu1: TXPMenu;
+        Procedure teNewItemClick(Sender: TObject);
+        Procedure teNewSubItemClick(Sender: TObject);
+        Procedure teDeleteClick(Sender: TObject);
+        Procedure teOnClickEvent(Sender: TObject);
+        Procedure teOnKeyPressEvent(Sender: TObject; Var Key: Char);
+        Procedure teOnCreate(Sender: TObject);
+    Private
     { Private declarations }
-  public
+    Public
     { Public declarations }
-  end;
+    End;
 
-var
-  TreeEditor: TTreeEditor;
+Var
+    TreeEditor: TTreeEditor;
 
-implementation
+Implementation
 
-uses
-  wxdesigner;
-  
+Uses
+    wxdesigner;
+
 {$R *.dfm}
 
-procedure TTreeEditor.teNewItemClick(Sender: TObject);
-begin
+Procedure TTreeEditor.teNewItemClick(Sender: TObject);
+Begin
 
-if (TreeView1.Selected = nil) then
-   TreeView1.Items.Add(TreeView1.Items.GetFirstNode, teItemText.Text)
-else
-   TreeView1.Items.Add(TreeView1.Selected, teItemText.Text);
+    If (TreeView1.Selected = Nil) Then
+        TreeView1.Items.Add(TreeView1.Items.GetFirstNode, teItemText.Text)
+    Else
+        TreeView1.Items.Add(TreeView1.Selected, teItemText.Text);
 
-end;
+End;
 
-procedure TTreeEditor.teNewSubItemClick(Sender: TObject);
-begin
-  if (TreeView1.Selected = nil) then
-   TreeView1.Items.AddChild(TreeView1.Items.GetFirstNode, teItemText.Text)
-else
-   TreeView1.Items.AddChild(TreeView1.Selected, teItemText.Text);
+Procedure TTreeEditor.teNewSubItemClick(Sender: TObject);
+Begin
+    If (TreeView1.Selected = Nil) Then
+        TreeView1.Items.AddChild(TreeView1.Items.GetFirstNode, teItemText.Text)
+    Else
+        TreeView1.Items.AddChild(TreeView1.Selected, teItemText.Text);
 
-end;
+End;
 
-procedure TTreeEditor.teDeleteClick(Sender: TObject);
-begin
-if (TreeView1.Selected <> nil) then
-   TreeView1.Items.Delete(TreeView1.Selected);
-end;
+Procedure TTreeEditor.teDeleteClick(Sender: TObject);
+Begin
+    If (TreeView1.Selected <> Nil) Then
+        TreeView1.Items.Delete(TreeView1.Selected);
+End;
 
-procedure TTreeEditor.teOnClickEvent(Sender: TObject);
-begin
-    if (TreeView1.Selected <> nil) then
+Procedure TTreeEditor.teOnClickEvent(Sender: TObject);
+Begin
+    If (TreeView1.Selected <> Nil) Then
         teItemText.Text := TreeView1.Selected.Text;
-end;
+End;
 
-procedure TTreeEditor.teOnKeyPressEvent(Sender: TObject; var Key: Char);
-begin
-    if (TreeView1.Selected <> nil) then
+Procedure TTreeEditor.teOnKeyPressEvent(Sender: TObject; Var Key: Char);
+Begin
+    If (TreeView1.Selected <> Nil) Then
         teItemText.Text := TreeView1.Selected.Text;
-end;
+End;
 
-procedure TTreeEditor.teOnCreate(Sender: TObject);
-begin
-  DesktopFont := True;
-  XPMenu1.Active := wx_designer.XPTheme;
-end;
+Procedure TTreeEditor.teOnCreate(Sender: TObject);
+Begin
+    DesktopFont := True;
+    XPMenu1.Active := wx_designer.XPTheme;
+End;
 
-end.
+End.

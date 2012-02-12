@@ -24,341 +24,340 @@
 { ****************************************************************** }
 
 
-unit wxPasswordEntryDialog;
+Unit wxPasswordEntryDialog;
 
-interface
+Interface
 
-uses
-  Windows, Messages, SysUtils, Classes, wxUtils, WxNonVisibleBaseComponent;
+Uses
+    Windows, Messages, SysUtils, Classes, wxUtils, WxNonVisibleBaseComponent;
 
-type
-  TWxPasswordEntryDialog = class(TWxNonVisibleBaseComponent, IWxComponentInterface)
-  private
+Type
+    TWxPasswordEntryDialog = Class(TWxNonVisibleBaseComponent, IWxComponentInterface)
+    Private
     { Private declarations }
-    FWx_Class: string;
-    FWx_PropertyList: TStringList;
-    FWx_DialogStyle: TWxMessageDialogStyleSet;
-    FWx_EditStyle: TWxEdtGeneralStyleSet;
-    FWx_Caption: string;
-    FWx_Value: string;
-    FWx_Message: string;
-    FWx_Comments: TStrings;
+        FWx_Class: String;
+        FWx_PropertyList: TStringList;
+        FWx_DialogStyle: TWxMessageDialogStyleSet;
+        FWx_EditStyle: TWxEdtGeneralStyleSet;
+        FWx_Caption: String;
+        FWx_Value: String;
+        FWx_Message: String;
+        FWx_Comments: TStrings;
 
-    procedure AutoInitialize;
-    procedure AutoDestroy;
-    
+        Procedure AutoInitialize;
+        Procedure AutoDestroy;
+
     { Read method for property Wx_EditStyle }
-    function GetWx_EditStyle: TWxEdtGeneralStyleSet;
+        Function GetWx_EditStyle: TWxEdtGeneralStyleSet;
     { Write method for property Wx_EditStyle }
-    procedure SetWx_EditStyle(Value: TWxEdtGeneralStyleSet);
+        Procedure SetWx_EditStyle(Value: TWxEdtGeneralStyleSet);
 
-  protected
+    Protected
 
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    function GenerateControlIDs: string;
-    function GenerateEnumControlIDs: string;
-    function GenerateEventTableEntries(CurrClassName: string): string;
-    function GenerateGUIControlCreation: string;
-    function GenerateXRCControlCreation(IndentString: string): TStringList;
-    function GenerateGUIControlDeclaration: string;
-    function GenerateHeaderInclude: string;
-    function GenerateImageInclude: string;
-    function GetEventList: TStringList;
-    function GetIDName: string;
-    function GetIDValue: integer;
-    function GetParameterFromEventName(EventName: string): string;
-    function GetPropertyList: TStringList;
-    function GetTypeFromEventName(EventName: string): string;
-    function GetWxClassName: string;
-    procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
-    procedure SetIDName(IDName: string);
-    procedure SetIDValue(IDValue: integer);
-    procedure SetWxClassName(wxClassName: string);
-    function GetFGColor: string;
-    procedure SetFGColor(strValue: string);
-    function GetBGColor: string;
-    procedure SetBGColor(strValue: string);
+    Public
+        Constructor Create(AOwner: TComponent); Override;
+        Destructor Destroy; Override;
+        Function GenerateControlIDs: String;
+        Function GenerateEnumControlIDs: String;
+        Function GenerateEventTableEntries(CurrClassName: String): String;
+        Function GenerateGUIControlCreation: String;
+        Function GenerateXRCControlCreation(IndentString: String): TStringList;
+        Function GenerateGUIControlDeclaration: String;
+        Function GenerateHeaderInclude: String;
+        Function GenerateImageInclude: String;
+        Function GetEventList: TStringList;
+        Function GetIDName: String;
+        Function GetIDValue: Integer;
+        Function GetParameterFromEventName(EventName: String): String;
+        Function GetPropertyList: TStringList;
+        Function GetTypeFromEventName(EventName: String): String;
+        Function GetWxClassName: String;
+        Procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
+        Procedure SetIDName(IDName: String);
+        Procedure SetIDValue(IDValue: Integer);
+        Procedure SetWxClassName(wxClassName: String);
+        Function GetFGColor: String;
+        Procedure SetFGColor(strValue: String);
+        Function GetBGColor: String;
+        Procedure SetBGColor(strValue: String);
 
-    function GetGenericColor(strVariableName:String): string;
-    procedure SetGenericColor(strVariableName,strValue: string);
+        Function GetGenericColor(strVariableName: String): String;
+        Procedure SetGenericColor(strVariableName, strValue: String);
 
-    procedure SetProxyFGColorString(Value: string);
-    procedure SetProxyBGColorString(Value: string);
+        Procedure SetProxyFGColorString(Value: String);
+        Procedure SetProxyBGColorString(Value: String);
 
-    function GetBorderAlignment: TWxBorderAlignment;
-    procedure SetBorderAlignment(border: TWxBorderAlignment);
-    function GetBorderWidth: integer;
-    procedure SetBorderWidth(width: integer);
-    function GetStretchFactor: integer;
-    procedure SetStretchFactor(intValue: integer);
+        Function GetBorderAlignment: TWxBorderAlignment;
+        Procedure SetBorderAlignment(border: TWxBorderAlignment);
+        Function GetBorderWidth: Integer;
+        Procedure SetBorderWidth(width: Integer);
+        Function GetStretchFactor: Integer;
+        Procedure SetStretchFactor(intValue: Integer);
 
-  published
+    Published
     { Published declarations }
-    property Wx_Class: string Read FWx_Class Write FWx_Class;
-    property Wx_Message: string Read FWx_Message Write FWx_Message;
-    property Wx_Caption: string Read FWx_Caption Write FWx_Caption;
-	property Wx_Value: string Read FWx_Value Write FWx_Value;
-	
-    property Wx_DialogStyle: TWxMessageDialogStyleSet Read FWx_DialogStyle Write FWx_DialogStyle;
-    property Wx_EditStyle: TWxEdtGeneralStyleSet
-        Read GetWx_EditStyle Write SetWx_EditStyle;
+        Property Wx_Class: String Read FWx_Class Write FWx_Class;
+        Property Wx_Message: String Read FWx_Message Write FWx_Message;
+        Property Wx_Caption: String Read FWx_Caption Write FWx_Caption;
+        Property Wx_Value: String Read FWx_Value Write FWx_Value;
+
+        Property Wx_DialogStyle: TWxMessageDialogStyleSet Read FWx_DialogStyle Write FWx_DialogStyle;
+        Property Wx_EditStyle: TWxEdtGeneralStyleSet
+            Read GetWx_EditStyle Write SetWx_EditStyle;
     //Read FWx_EditStyle write FWx_EditStyle;
-    property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
+        Property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
 
-  end;
+    End;
 
-procedure Register;
+Procedure Register;
 
-implementation
+Implementation
 
-procedure Register;
-begin
-  RegisterComponents('wxWidgets', [TWxPasswordEntryDialog]);
-end;
+Procedure Register;
+Begin
+    RegisterComponents('wxWidgets', [TWxPasswordEntryDialog]);
+End;
 
-procedure TWxPasswordEntryDialog.AutoInitialize;
-begin
-  FWx_PropertyList := TStringList.Create;
-  FWx_Class    := 'wxPasswordEntryDialog';
-  Glyph.Handle := LoadBitmap(hInstance, 'TWxMessageDialog');
-  FWX_Caption := 'Enter password';
-  FWX_Value := '';
-  FWx_DialogStyle := [wxOK , wxCANCEL,wxCENTRE];
-  FWx_Comments := TStringList.Create;
+Procedure TWxPasswordEntryDialog.AutoInitialize;
+Begin
+    FWx_PropertyList := TStringList.Create;
+    FWx_Class := 'wxPasswordEntryDialog';
+    Glyph.Handle := LoadBitmap(hInstance, 'TWxMessageDialog');
+    FWX_Caption := 'Enter password';
+    FWX_Value := '';
+    FWx_DialogStyle := [wxOK, wxCANCEL, wxCENTRE];
+    FWx_Comments := TStringList.Create;
 
-end; { of AutoInitialize }
+End; { of AutoInitialize }
 
-procedure TWxPasswordEntryDialog.AutoDestroy;
-begin
-  FWx_PropertyList.Destroy;
-  FWx_Comments.Destroy;
-  Glyph.Assign(nil);
-end; { of AutoDestroy }
+Procedure TWxPasswordEntryDialog.AutoDestroy;
+Begin
+    FWx_PropertyList.Destroy;
+    FWx_Comments.Destroy;
+    Glyph.Assign(Nil);
+End; { of AutoDestroy }
 
-constructor TWxPasswordEntryDialog.Create(AOwner: TComponent);
-begin
+Constructor TWxPasswordEntryDialog.Create(AOwner: TComponent);
+Begin
   { Call the Create method of the container's parent class       }
-  inherited Create(AOwner);
+    Inherited Create(AOwner);
 
-  AutoInitialize;
+    AutoInitialize;
   { Code to perform other tasks when the component is created }
-  FWx_PropertyList.add('Wx_DialogStyle:Dialog Style');
-  FWx_PropertyList.add('wxOK:wxOK');
-  FWx_PropertyList.add('wxCENTRE:wxCENTRE');
-  FWx_PropertyList.add('wxCANCEL:wxCANCEL');
-  FWx_PropertyList.add('wxYES_NO:wxYES_NO');
-  FWx_PropertyList.add('wxYES_DEFAULT:wxYES_DEFAULT');
-  FWx_PropertyList.add('wxNO_DEFAULT:wxNO_DEFAULT');
+    FWx_PropertyList.add('Wx_DialogStyle:Dialog Style');
+    FWx_PropertyList.add('wxOK:wxOK');
+    FWx_PropertyList.add('wxCENTRE:wxCENTRE');
+    FWx_PropertyList.add('wxCANCEL:wxCANCEL');
+    FWx_PropertyList.add('wxYES_NO:wxYES_NO');
+    FWx_PropertyList.add('wxYES_DEFAULT:wxYES_DEFAULT');
+    FWx_PropertyList.add('wxNO_DEFAULT:wxNO_DEFAULT');
 
-  FWx_PropertyList.add('Wx_Message:Message');
-  FWx_PropertyList.add('Wx_Caption:Caption');
-  FWx_PropertyList.add('WX_Value:Value');
-  FWx_PropertyList.add('Name:Name');
-  FWx_PropertyList.add('Wx_Class:Base Class');
-  FWx_PropertyList.add('Wx_Comments:Comments');
+    FWx_PropertyList.add('Wx_Message:Message');
+    FWx_PropertyList.add('Wx_Caption:Caption');
+    FWx_PropertyList.add('WX_Value:Value');
+    FWx_PropertyList.add('Name:Name');
+    FWx_PropertyList.add('Wx_Class:Base Class');
+    FWx_PropertyList.add('Wx_Comments:Comments');
 
-end;
+End;
 
-destructor TWxPasswordEntryDialog.Destroy;
-begin
-  AutoDestroy;
-  inherited Destroy;
-end;
+Destructor TWxPasswordEntryDialog.Destroy;
+Begin
+    AutoDestroy;
+    Inherited Destroy;
+End;
 
-function TWxPasswordEntryDialog.GenerateControlIDs: string;
-begin
-  Result := '';
-end;
+Function TWxPasswordEntryDialog.GenerateControlIDs: String;
+Begin
+    Result := '';
+End;
 
-function TWxPasswordEntryDialog.GenerateEnumControlIDs: string;
-begin
-  Result := '';
-end;
+Function TWxPasswordEntryDialog.GenerateEnumControlIDs: String;
+Begin
+    Result := '';
+End;
 
-function TWxPasswordEntryDialog.GenerateEventTableEntries(CurrClassName: string): string;
-begin
-  Result := '';
-end;
+Function TWxPasswordEntryDialog.GenerateEventTableEntries(CurrClassName: String): String;
+Begin
+    Result := '';
+End;
 
-function TWxPasswordEntryDialog.GenerateGUIControlCreation: string;
-var
-	parentName:string;
-begin
-  Result := '';
-  parentName := GetWxWidgetParent(self, False);
-  Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s =  new %s( this,%s, %s, %s %s);',
-    [self.Name, self.wx_Class, GetCppString(self.Wx_Message), GetCppString(self.Wx_Caption),
-    GetCppString(self.Wx_Value), GetTextEntryDialogStyleString(Wx_DialogStyle,Wx_EditStyle)]);
+Function TWxPasswordEntryDialog.GenerateGUIControlCreation: String;
+Var
+	   parentName: String;
+Begin
+    Result := '';
+    parentName := GetWxWidgetParent(self, False);
+    Result := GetCommentString(self.FWx_Comments.Text) +
+        Format('%s =  new %s( this,%s, %s, %s %s);',
+        [self.Name, self.wx_Class, GetCppString(self.Wx_Message), GetCppString(self.Wx_Caption),
+        GetCppString(self.Wx_Value), GetTextEntryDialogStyleString(Wx_DialogStyle, Wx_EditStyle)]);
 
-end;
+End;
 
-function TWxPasswordEntryDialog.GenerateXRCControlCreation(IndentString: string): TStringList;
-begin
+Function TWxPasswordEntryDialog.GenerateXRCControlCreation(IndentString: String): TStringList;
+Begin
 
-  Result := TStringList.Create;
+    Result := TStringList.Create;
 
-  try
-    Result.Add(IndentString + Format('<object class="%s" name="%s">',
-      [self.Wx_Class, self.Name]));
-    Result.Add(IndentString + '</object>');
-  except
-    Result.Free;
-    raise;
-  end;
+    Try
+        Result.Add(IndentString + Format('<object class="%s" name="%s">',
+            [self.Wx_Class, self.Name]));
+        Result.Add(IndentString + '</object>');
+    Except
+        Result.Free;
+        Raise;
+    End;
 
-end;
+End;
 
-function TWxPasswordEntryDialog.GenerateGUIControlDeclaration: string;
-begin
-  Result := '';
-  Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
-end;
+Function TWxPasswordEntryDialog.GenerateGUIControlDeclaration: String;
+Begin
+    Result := '';
+    Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
+End;
 
-function TWxPasswordEntryDialog.GenerateHeaderInclude: string;
-begin
-  Result := '';
-  Result := '#include <wx/textdlg.h>';
-end;
+Function TWxPasswordEntryDialog.GenerateHeaderInclude: String;
+Begin
+    Result := '';
+    Result := '#include <wx/textdlg.h>';
+End;
 
-function TWxPasswordEntryDialog.GenerateImageInclude: string;
-begin
+Function TWxPasswordEntryDialog.GenerateImageInclude: String;
+Begin
 
-end;
+End;
 
-function TWxPasswordEntryDialog.GetEventList: TStringList;
-begin
-  Result := nil;
-end;
+Function TWxPasswordEntryDialog.GetEventList: TStringList;
+Begin
+    Result := Nil;
+End;
 
-function TWxPasswordEntryDialog.GetIDName: string;
-begin
+Function TWxPasswordEntryDialog.GetIDName: String;
+Begin
 
-end;
+End;
 
-function TWxPasswordEntryDialog.GetIDValue: integer;
-begin
-  Result := 0;
-end;
+Function TWxPasswordEntryDialog.GetIDValue: Integer;
+Begin
+    Result := 0;
+End;
 
-function TWxPasswordEntryDialog.GetParameterFromEventName(EventName: string): string;
-begin
+Function TWxPasswordEntryDialog.GetParameterFromEventName(EventName: String): String;
+Begin
 
-end;
+End;
 
-function TWxPasswordEntryDialog.GetStretchFactor: integer;
-begin
+Function TWxPasswordEntryDialog.GetStretchFactor: Integer;
+Begin
     Result := 1;
-end;
+End;
 
-function TWxPasswordEntryDialog.GetPropertyList: TStringList;
-begin
-  Result := FWx_PropertyList;
-end;
+Function TWxPasswordEntryDialog.GetPropertyList: TStringList;
+Begin
+    Result := FWx_PropertyList;
+End;
 
-function TWxPasswordEntryDialog.GetBorderAlignment: TWxBorderAlignment;
-begin
-  Result := [];
-end;
+Function TWxPasswordEntryDialog.GetBorderAlignment: TWxBorderAlignment;
+Begin
+    Result := [];
+End;
 
-procedure TWxPasswordEntryDialog.SetBorderAlignment(border: TWxBorderAlignment);
-begin
-end;
+Procedure TWxPasswordEntryDialog.SetBorderAlignment(border: TWxBorderAlignment);
+Begin
+End;
 
-function TWxPasswordEntryDialog.GetBorderWidth: integer;
-begin
-  Result := 0;
-end;
+Function TWxPasswordEntryDialog.GetBorderWidth: Integer;
+Begin
+    Result := 0;
+End;
 
-procedure TWxPasswordEntryDialog.SetBorderWidth(width: integer);
-begin
-end;
+Procedure TWxPasswordEntryDialog.SetBorderWidth(width: Integer);
+Begin
+End;
 
-function TWxPasswordEntryDialog.GetTypeFromEventName(EventName: string): string;
-begin
+Function TWxPasswordEntryDialog.GetTypeFromEventName(EventName: String): String;
+Begin
 
-end;
+End;
 
-function TWxPasswordEntryDialog.GetWxClassName: string;
-begin
-  if trim(wx_Class) = '' then
-    wx_Class := 'wxTextEntryDialog';
-  Result := wx_Class;
-end;
+Function TWxPasswordEntryDialog.GetWxClassName: String;
+Begin
+    If trim(wx_Class) = '' Then
+        wx_Class := 'wxTextEntryDialog';
+    Result := wx_Class;
+End;
 
-procedure TWxPasswordEntryDialog.SaveControlOrientation(
-  ControlOrientation: TWxControlOrientation);
-begin
+Procedure TWxPasswordEntryDialog.SaveControlOrientation(
+    ControlOrientation: TWxControlOrientation);
+Begin
 
-end;
+End;
 
-procedure TWxPasswordEntryDialog.SetIDName(IDName: string);
-begin
+Procedure TWxPasswordEntryDialog.SetIDName(IDName: String);
+Begin
 
-end;
+End;
 
-procedure TWxPasswordEntryDialog.SetIDValue(IDValue: integer);
-begin
+Procedure TWxPasswordEntryDialog.SetIDValue(IDValue: Integer);
+Begin
 
-end;
+End;
 
-procedure TWxPasswordEntryDialog.SetStretchFactor(intValue: integer);
-begin
-end;
+Procedure TWxPasswordEntryDialog.SetStretchFactor(intValue: Integer);
+Begin
+End;
 
-procedure TWxPasswordEntryDialog.SetWxClassName(wxClassName: string);
-begin
-  wx_Class := wxClassName;
-end;
+Procedure TWxPasswordEntryDialog.SetWxClassName(wxClassName: String);
+Begin
+    wx_Class := wxClassName;
+End;
 
-function TWxPasswordEntryDialog.GetGenericColor(strVariableName:String): string;
-begin
+Function TWxPasswordEntryDialog.GetGenericColor(strVariableName: String): String;
+Begin
 
-end;
-procedure TWxPasswordEntryDialog.SetGenericColor(strVariableName,strValue: string);
-begin
+End;
+Procedure TWxPasswordEntryDialog.SetGenericColor(strVariableName, strValue: String);
+Begin
 
-end;
+End;
 
 
-function TWxPasswordEntryDialog.GetFGColor: string;
-begin
+Function TWxPasswordEntryDialog.GetFGColor: String;
+Begin
 
-end;
+End;
 
-procedure TWxPasswordEntryDialog.SetFGColor(strValue: string);
-begin
-end;
+Procedure TWxPasswordEntryDialog.SetFGColor(strValue: String);
+Begin
+End;
 
-function TWxPasswordEntryDialog.GetBGColor: string;
-begin
-end;
+Function TWxPasswordEntryDialog.GetBGColor: String;
+Begin
+End;
 
-procedure TWxPasswordEntryDialog.SetBGColor(strValue: string);
-begin
-end;
+Procedure TWxPasswordEntryDialog.SetBGColor(strValue: String);
+Begin
+End;
 
-procedure TWxPasswordEntryDialog.SetProxyFGColorString(Value: string);
-begin
-end;
+Procedure TWxPasswordEntryDialog.SetProxyFGColorString(Value: String);
+Begin
+End;
 
-procedure TWxPasswordEntryDialog.SetProxyBGColorString(Value: string);
-begin
-end;
+Procedure TWxPasswordEntryDialog.SetProxyBGColorString(Value: String);
+Begin
+End;
 
 { Read method for property Wx_EditStyle }
-function TWxPasswordEntryDialog.GetWx_EditStyle: TWxEdtGeneralStyleSet;
-begin
-  Result := FWx_EditStyle;
-end;
+Function TWxPasswordEntryDialog.GetWx_EditStyle: TWxEdtGeneralStyleSet;
+Begin
+    Result := FWx_EditStyle;
+End;
 
 { Write method for property Wx_EditStyle }
-procedure TWxPasswordEntryDialog.SetWx_EditStyle(Value: TWxEdtGeneralStyleSet);
-begin
-  FWx_EditStyle := GetRefinedWxEdtGeneralStyleValue(Value);
-end;
+Procedure TWxPasswordEntryDialog.SetWx_EditStyle(Value: TWxEdtGeneralStyleSet);
+Begin
+    FWx_EditStyle := GetRefinedWxEdtGeneralStyleValue(Value);
+End;
 
-end.
-
+End.

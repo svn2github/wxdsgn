@@ -23,118 +23,118 @@
 {Contact gururamnath@yahoo.com for details                           }
 { ****************************************************************** }
 
-unit WxOpenFileDialog;
+Unit WxOpenFileDialog;
 
-interface
+Interface
 
-uses
-  Windows, Messages, SysUtils, Classes, wxUtils, WxNonVisibleBaseComponent;
+Uses
+    Windows, Messages, SysUtils, Classes, wxUtils, WxNonVisibleBaseComponent;
 
-type
-  TWxOpenFileDialog = class(TWxNonVisibleBaseComponent, IWxComponentInterface)
-  private
+Type
+    TWxOpenFileDialog = Class(TWxNonVisibleBaseComponent, IWxComponentInterface)
+    Private
     { Private declarations }
-    FWx_Class: string;
-    FWx_PropertyList: TStringList;
-    FWx_Message: string;
-    FWx_Extensions: string;
-    FWx_DefaultFile: string;
-    FWx_DefaultDir: string;
-    FWx_DialogStyle: TWxFileDialogStyleSet;
-    FWx_Comments: TStrings;
+        FWx_Class: String;
+        FWx_PropertyList: TStringList;
+        FWx_Message: String;
+        FWx_Extensions: String;
+        FWx_DefaultFile: String;
+        FWx_DefaultDir: String;
+        FWx_DialogStyle: TWxFileDialogStyleSet;
+        FWx_Comments: TStrings;
 
 
-    procedure AutoInitialize;
-    procedure AutoDestroy;
+        Procedure AutoInitialize;
+        Procedure AutoDestroy;
 
-  protected
+    Protected
 
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    function GenerateControlIDs: string;
-    function GenerateEnumControlIDs: string;
-    function GenerateEventTableEntries(CurrClassName: string): string;
-    function GenerateGUIControlCreation: string;
-    function GenerateXRCControlCreation(IndentString: string): TStringList;
-    function GenerateGUIControlDeclaration: string;
-    function GenerateHeaderInclude: string;
-    function GenerateImageInclude: string;
-    function GetEventList: TStringList;
-    function GetIDName: string;
-    function GetIDValue: integer;
-    function GetParameterFromEventName(EventName: string): string;
-    function GetPropertyList: TStringList;
-    function GetTypeFromEventName(EventName: string): string;
-    function GetWxClassName: string;
-    procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
-    procedure SetIDName(IDName: string);
-    procedure SetIDValue(IDValue: integer);
-    procedure SetWxClassName(wxClassName: string);
-    function GetFGColor: string;
-    procedure SetFGColor(strValue: string);
-    function GetBGColor: string;
-    procedure SetBGColor(strValue: string);
+    Public
+        Constructor Create(AOwner: TComponent); Override;
+        Destructor Destroy; Override;
+        Function GenerateControlIDs: String;
+        Function GenerateEnumControlIDs: String;
+        Function GenerateEventTableEntries(CurrClassName: String): String;
+        Function GenerateGUIControlCreation: String;
+        Function GenerateXRCControlCreation(IndentString: String): TStringList;
+        Function GenerateGUIControlDeclaration: String;
+        Function GenerateHeaderInclude: String;
+        Function GenerateImageInclude: String;
+        Function GetEventList: TStringList;
+        Function GetIDName: String;
+        Function GetIDValue: Integer;
+        Function GetParameterFromEventName(EventName: String): String;
+        Function GetPropertyList: TStringList;
+        Function GetTypeFromEventName(EventName: String): String;
+        Function GetWxClassName: String;
+        Procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
+        Procedure SetIDName(IDName: String);
+        Procedure SetIDValue(IDValue: Integer);
+        Procedure SetWxClassName(wxClassName: String);
+        Function GetFGColor: String;
+        Procedure SetFGColor(strValue: String);
+        Function GetBGColor: String;
+        Procedure SetBGColor(strValue: String);
 
-    function GetGenericColor(strVariableName:String): string;
-    procedure SetGenericColor(strVariableName,strValue: string);
+        Function GetGenericColor(strVariableName: String): String;
+        Procedure SetGenericColor(strVariableName, strValue: String);
 
-    procedure SetProxyFGColorString(Value: string);
-    procedure SetProxyBGColorString(Value: string);
+        Procedure SetProxyFGColorString(Value: String);
+        Procedure SetProxyBGColorString(Value: String);
 
-    function GetBorderAlignment: TWxBorderAlignment;
-    procedure SetBorderAlignment(border: TWxBorderAlignment);
-    function GetBorderWidth: integer;
-    procedure SetBorderWidth(width: integer);
-    function GetStretchFactor: integer;
-    procedure SetStretchFactor(intValue: integer);
-    
-  published
+        Function GetBorderAlignment: TWxBorderAlignment;
+        Procedure SetBorderAlignment(border: TWxBorderAlignment);
+        Function GetBorderWidth: Integer;
+        Procedure SetBorderWidth(width: Integer);
+        Function GetStretchFactor: Integer;
+        Procedure SetStretchFactor(intValue: Integer);
+
+    Published
     { Published declarations }
-    property Wx_Class: string Read FWx_Class Write FWx_Class;
-    property Wx_Message: string Read FWx_Message Write FWx_Message;
-    property Wx_Extensions: string Read FWx_Extensions Write FWx_Extensions;
-    property Wx_DefaultFile: string Read FWx_DefaultFile Write FWx_DefaultFile;
-    property Wx_DefaultDir: string Read FWx_DefaultDir Write FWx_DefaultDir;
-    property Wx_DialogStyle: TWxFileDialogStyleSet
-      Read FWx_DialogStyle Write FWx_DialogStyle;
-    property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
+        Property Wx_Class: String Read FWx_Class Write FWx_Class;
+        Property Wx_Message: String Read FWx_Message Write FWx_Message;
+        Property Wx_Extensions: String Read FWx_Extensions Write FWx_Extensions;
+        Property Wx_DefaultFile: String Read FWx_DefaultFile Write FWx_DefaultFile;
+        Property Wx_DefaultDir: String Read FWx_DefaultDir Write FWx_DefaultDir;
+        Property Wx_DialogStyle: TWxFileDialogStyleSet
+            Read FWx_DialogStyle Write FWx_DialogStyle;
+        Property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
 
-  end;
+    End;
 
-procedure Register;
+Procedure Register;
 
-implementation
+Implementation
 
-procedure Register;
-begin
-  RegisterComponents('wxWidgets', [TWxOpenFileDialog]);
-end;
+Procedure Register;
+Begin
+    RegisterComponents('wxWidgets', [TWxOpenFileDialog]);
+End;
 
 { Method to set variable and property values and create objects }
-procedure TWxOpenFileDialog.AutoInitialize;
-begin
-  FWx_PropertyList := TStringList.Create;
-  FWx_Class    := 'wxFileDialog';
-  Glyph.Handle := LoadBitmap(hInstance, 'TWXOPENFILEDIALOG');
-  self.FWx_Extensions := '*.*';
-  self.wx_Message := 'Choose a file';
-  FWx_Comments := TStringList.Create;
+Procedure TWxOpenFileDialog.AutoInitialize;
+Begin
+    FWx_PropertyList := TStringList.Create;
+    FWx_Class := 'wxFileDialog';
+    Glyph.Handle := LoadBitmap(hInstance, 'TWXOPENFILEDIALOG');
+    self.FWx_Extensions := '*.*';
+    self.wx_Message := 'Choose a file';
+    FWx_Comments := TStringList.Create;
 
-end; { of AutoInitialize }
+End; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
-procedure TWxOpenFileDialog.AutoDestroy;
-begin
-  FWx_PropertyList.Destroy;
-  FWx_Comments.Destroy;
-  Glyph.Assign(nil);
-end; { of AutoDestroy }
+Procedure TWxOpenFileDialog.AutoDestroy;
+Begin
+    FWx_PropertyList.Destroy;
+    FWx_Comments.Destroy;
+    Glyph.Assign(Nil);
+End; { of AutoDestroy }
 
-constructor TWxOpenFileDialog.Create(AOwner: TComponent);
-begin
+Constructor TWxOpenFileDialog.Create(AOwner: TComponent);
+Begin
   { Call the Create method of the container's parent class       }
-  inherited Create(AOwner);
+    Inherited Create(AOwner);
 
   { AutoInitialize sets the initial values of variables          }
   { (including subcomponent variables) and properties;           }
@@ -142,32 +142,32 @@ begin
   { Delphi object types (e.g., TFont, TTimer, TPicture)          }
   { and for any variables marked as objects.                     }
   { AutoInitialize method is generated by Component Create.      }
-  AutoInitialize;
+    AutoInitialize;
 
   { Code to perform other tasks when the component is created }
   { Code to perform other tasks when the component is created }
-  FWx_PropertyList.add('Wx_DialogStyle:File Dialog Style');
+    FWx_PropertyList.add('Wx_DialogStyle:File Dialog Style');
 
  // FWx_PropertyList.add('wxHIDE_READONLY:wxHIDE_READONLY');
-  FWx_PropertyList.add('wxMULTIPLE:wxMULTIPLE');
-  FWx_PropertyList.add('wxCHANGE_DIR:wxCHANGE_DIR');
-  FWx_PropertyList.add('wxFILE_MUST_EXIST:wxFILE_MUST_EXIST');
+    FWx_PropertyList.add('wxMULTIPLE:wxMULTIPLE');
+    FWx_PropertyList.add('wxCHANGE_DIR:wxCHANGE_DIR');
+    FWx_PropertyList.add('wxFILE_MUST_EXIST:wxFILE_MUST_EXIST');
 
-  FWx_PropertyList.add('Wx_DefaultDir:Default Dir');
-  FWx_PropertyList.add('Wx_DefaultFile:Default File');
-  FWx_PropertyList.add('Wx_Extensions:Extensions');
-  FWx_PropertyList.add('Wx_Message:Message');
-  FWx_PropertyList.add('Name:Name');
-  FWx_PropertyList.add('Wx_Class:Base Class');
-  FWx_PropertyList.add('Wx_Comments:Comments');
+    FWx_PropertyList.add('Wx_DefaultDir:Default Dir');
+    FWx_PropertyList.add('Wx_DefaultFile:Default File');
+    FWx_PropertyList.add('Wx_Extensions:Extensions');
+    FWx_PropertyList.add('Wx_Message:Message');
+    FWx_PropertyList.add('Name:Name');
+    FWx_PropertyList.add('Wx_Class:Base Class');
+    FWx_PropertyList.add('Wx_Comments:Comments');
 
-end;
+End;
 
-destructor TWxOpenFileDialog.Destroy;
-begin
+Destructor TWxOpenFileDialog.Destroy;
+Begin
   { AutoDestroy, which is generated by Component Create, frees any   }
   { objects created by AutoInitialize.                               }
-  AutoDestroy;
+    AutoDestroy;
 
   { Here, free any other dynamic objects that the component methods  }
   { created but have not yet freed.  Also perform any other clean-up }
@@ -175,190 +175,190 @@ begin
 
   { Last, free the component by calling the Destroy method of the    }
   { parent class.                                                    }
-  inherited Destroy;
-end;
+    Inherited Destroy;
+End;
 
-function TWxOpenFileDialog.GenerateControlIDs: string;
-begin
-  Result := '';
-end;
+Function TWxOpenFileDialog.GenerateControlIDs: String;
+Begin
+    Result := '';
+End;
 
-function TWxOpenFileDialog.GenerateEnumControlIDs: string;
-begin
-  Result := '';
-end;
+Function TWxOpenFileDialog.GenerateEnumControlIDs: String;
+Begin
+    Result := '';
+End;
 
-function TWxOpenFileDialog.GenerateEventTableEntries(CurrClassName: string): string;
-begin
-  Result := '';
-end;
+Function TWxOpenFileDialog.GenerateEventTableEntries(CurrClassName: String): String;
+Begin
+    Result := '';
+End;
 
-function TWxOpenFileDialog.GenerateXRCControlCreation(IndentString: string): TStringList;
-begin
+Function TWxOpenFileDialog.GenerateXRCControlCreation(IndentString: String): TStringList;
+Begin
 
-  Result := TStringList.Create;
+    Result := TStringList.Create;
 
-  try
-    Result.Add(IndentString + Format('<object class="%s" name="%s">',
-      [self.Wx_Class, self.Name]));
-    Result.Add(IndentString + '</object>');
-  except
-    Result.Free;
-    raise;
-  end;
+    Try
+        Result.Add(IndentString + Format('<object class="%s" name="%s">',
+            [self.Wx_Class, self.Name]));
+        Result.Add(IndentString + '</object>');
+    Except
+        Result.Free;
+        Raise;
+    End;
 
-end;
+End;
 
-function TWxOpenFileDialog.GenerateGUIControlCreation: string;
-var
-  strType, strStyle: string;
-begin
-  Result   := '';
-  strType  := 'wxFD_OPEN';
-  strStyle := GetFileDialogStyleString(self.Wx_DialogStyle);
+Function TWxOpenFileDialog.GenerateGUIControlCreation: String;
+Var
+    strType, strStyle: String;
+Begin
+    Result := '';
+    strType := 'wxFD_OPEN';
+    strStyle := GetFileDialogStyleString(self.Wx_DialogStyle);
 
-  Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s =  new %s(this, %s, %s, %s, %s, %s);',
-    [self.Name, self.wx_Class, GetCppString(wx_Message), GetCppString(
-    wx_DefaultDir), GetCppString(wx_DefaultFile), GetCppString(wx_Extensions), strType + strStyle]);
-end;
+    Result := GetCommentString(self.FWx_Comments.Text) +
+        Format('%s =  new %s(this, %s, %s, %s, %s, %s);',
+        [self.Name, self.wx_Class, GetCppString(wx_Message), GetCppString(
+        wx_DefaultDir), GetCppString(wx_DefaultFile), GetCppString(wx_Extensions), strType + strStyle]);
+End;
 
-function TWxOpenFileDialog.GenerateGUIControlDeclaration: string;
-begin
-  Result := '';
-  Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
-end;
+Function TWxOpenFileDialog.GenerateGUIControlDeclaration: String;
+Begin
+    Result := '';
+    Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
+End;
 
-function TWxOpenFileDialog.GenerateHeaderInclude: string;
-begin
-  Result := '';
-  Result := '#include <wx/filedlg.h>';
-end;
+Function TWxOpenFileDialog.GenerateHeaderInclude: String;
+Begin
+    Result := '';
+    Result := '#include <wx/filedlg.h>';
+End;
 
-function TWxOpenFileDialog.GenerateImageInclude: string;
-begin
+Function TWxOpenFileDialog.GenerateImageInclude: String;
+Begin
 
-end;
+End;
 
-function TWxOpenFileDialog.GetEventList: TStringList;
-begin
-  Result := nil;
-end;
+Function TWxOpenFileDialog.GetEventList: TStringList;
+Begin
+    Result := Nil;
+End;
 
-function TWxOpenFileDialog.GetIDName: string;
-begin
+Function TWxOpenFileDialog.GetIDName: String;
+Begin
 
-end;
+End;
 
-function TWxOpenFileDialog.GetIDValue: integer;
-begin
-  Result := 0;
-end;
+Function TWxOpenFileDialog.GetIDValue: Integer;
+Begin
+    Result := 0;
+End;
 
-function TWxOpenFileDialog.GetParameterFromEventName(EventName: string): string;
-begin
+Function TWxOpenFileDialog.GetParameterFromEventName(EventName: String): String;
+Begin
 
-end;
+End;
 
-function TWxOpenFileDialog.GetStretchFactor: integer;
-begin
+Function TWxOpenFileDialog.GetStretchFactor: Integer;
+Begin
     Result := 1;
-end;
+End;
 
-function TWxOpenFileDialog.GetPropertyList: TStringList;
-begin
-  Result := FWx_PropertyList;
-end;
+Function TWxOpenFileDialog.GetPropertyList: TStringList;
+Begin
+    Result := FWx_PropertyList;
+End;
 
-function TWxOpenFileDialog.GetBorderAlignment: TWxBorderAlignment;
-begin
-  Result := [];
-end;
+Function TWxOpenFileDialog.GetBorderAlignment: TWxBorderAlignment;
+Begin
+    Result := [];
+End;
 
-procedure TWxOpenFileDialog.SetBorderAlignment(border: TWxBorderAlignment);
-begin
-end;
+Procedure TWxOpenFileDialog.SetBorderAlignment(border: TWxBorderAlignment);
+Begin
+End;
 
-function TWxOpenFileDialog.GetBorderWidth: integer;
-begin
-  Result := 0;
-end;
+Function TWxOpenFileDialog.GetBorderWidth: Integer;
+Begin
+    Result := 0;
+End;
 
-procedure TWxOpenFileDialog.SetBorderWidth(width: integer);
-begin
-end;
+Procedure TWxOpenFileDialog.SetBorderWidth(width: Integer);
+Begin
+End;
 
-function TWxOpenFileDialog.GetTypeFromEventName(EventName: string): string;
-begin
+Function TWxOpenFileDialog.GetTypeFromEventName(EventName: String): String;
+Begin
 
-end;
+End;
 
-function TWxOpenFileDialog.GetWxClassName: string;
-begin
-  if trim(wx_Class) = '' then
-    wx_Class := 'wxFileDialog';
-  Result := wx_Class;
-end;
+Function TWxOpenFileDialog.GetWxClassName: String;
+Begin
+    If trim(wx_Class) = '' Then
+        wx_Class := 'wxFileDialog';
+    Result := wx_Class;
+End;
 
-procedure TWxOpenFileDialog.SaveControlOrientation(
-  ControlOrientation: TWxControlOrientation);
-begin
+Procedure TWxOpenFileDialog.SaveControlOrientation(
+    ControlOrientation: TWxControlOrientation);
+Begin
 
-end;
+End;
 
-procedure TWxOpenFileDialog.SetIDName(IDName: string);
-begin
+Procedure TWxOpenFileDialog.SetIDName(IDName: String);
+Begin
 
-end;
+End;
 
-procedure TWxOpenFileDialog.SetIDValue(IDValue: integer);
-begin
+Procedure TWxOpenFileDialog.SetIDValue(IDValue: Integer);
+Begin
 
-end;
+End;
 
-procedure TWxOpenFileDialog.SetStretchFactor(intValue: integer);
-begin
-end;
+Procedure TWxOpenFileDialog.SetStretchFactor(intValue: Integer);
+Begin
+End;
 
-procedure TWxOpenFileDialog.SetWxClassName(wxClassName: string);
-begin
-  wx_Class := wxClassName;
-end;
+Procedure TWxOpenFileDialog.SetWxClassName(wxClassName: String);
+Begin
+    wx_Class := wxClassName;
+End;
 
-function TWxOpenFileDialog.GetGenericColor(strVariableName:String): string;
-begin
+Function TWxOpenFileDialog.GetGenericColor(strVariableName: String): String;
+Begin
 
-end;
-procedure TWxOpenFileDialog.SetGenericColor(strVariableName,strValue: string);
-begin
+End;
+Procedure TWxOpenFileDialog.SetGenericColor(strVariableName, strValue: String);
+Begin
 
-end;
+End;
 
 
-function TWxOpenFileDialog.GetFGColor: string;
-begin
+Function TWxOpenFileDialog.GetFGColor: String;
+Begin
 
-end;
+End;
 
-procedure TWxOpenFileDialog.SetFGColor(strValue: string);
-begin
-end;
+Procedure TWxOpenFileDialog.SetFGColor(strValue: String);
+Begin
+End;
 
-function TWxOpenFileDialog.GetBGColor: string;
-begin
-end;
+Function TWxOpenFileDialog.GetBGColor: String;
+Begin
+End;
 
-procedure TWxOpenFileDialog.SetBGColor(strValue: string);
-begin
-end;
+Procedure TWxOpenFileDialog.SetBGColor(strValue: String);
+Begin
+End;
 
-procedure TWxOpenFileDialog.SetProxyFGColorString(Value: string);
-begin
-end;
+Procedure TWxOpenFileDialog.SetProxyFGColorString(Value: String);
+Begin
+End;
 
-procedure TWxOpenFileDialog.SetProxyBGColorString(Value: string);
-begin
-end;
+Procedure TWxOpenFileDialog.SetProxyBGColorString(Value: String);
+Begin
+End;
 
-end.
+End.
  

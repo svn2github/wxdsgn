@@ -27,11 +27,11 @@
           - it works like a string list.
 *)
 
-unit MultiLangSupport;
+Unit MultiLangSupport;
 
-interface
+Interface
 
-uses
+Uses
 {$IFDEF WIN32}
     Windows, Dialogs, SysUtils, Classes, oysUtils;
 {$ENDIF}
@@ -41,41 +41,41 @@ uses
 
 {$I LangIDs.inc}
 
-type
-    TdevMultiLangSupport = class(TObject)
-    private
+Type
+    TdevMultiLangSupport = Class(TObject)
+    Private
         fLangList: ToysStringList;
-        fLangFile: string;
-        fCurLang: string;
+        fLangFile: String;
+        fCurLang: String;
         fStrings: TStringList;
         fDefaultLang: TStringList;
-        fSelect: boolean;
-        function GetString(ID: integer): string;
-        function GetLangName: string;
-        constructor Create;
-    public
-        destructor Destroy; override;
-        class function Lang: TdevMultiLangSupport;
+        fSelect: Boolean;
+        Function GetString(ID: Integer): String;
+        Function GetLangName: String;
+        Constructor Create;
+    Public
+        Destructor Destroy; Override;
+        Class Function Lang: TdevMultiLangSupport;
 
-        procedure CheckLanguageFiles;
-        procedure SelectLanguage;
+        Procedure CheckLanguageFiles;
+        Procedure SelectLanguage;
 
-        function Open(const FileName: string): boolean;
-        procedure SetLang(const Lang: string);
+        Function Open(Const FileName: String): Boolean;
+        Procedure SetLang(Const Lang: String);
 
-        function FileFromDescription(Desc: string): string;
+        Function FileFromDescription(Desc: String): String;
 
-        property Strings[index: integer]: string read GetString;
-            default;//write SetString;
-        property CurrentLanguage: string read GetLangName;
-        property Langs: ToysStringList read fLangList write fLangList;
-    end;
+        Property Strings[index: Integer]: String Read GetString;
+            Default;//write SetString;
+        Property CurrentLanguage: String Read GetLangName;
+        Property Langs: ToysStringList Read fLangList Write fLangList;
+    End;
 
-function Lang: TdevMultiLangSupport;
+Function Lang: TdevMultiLangSupport;
 
-implementation
+Implementation
 
-uses
+Uses
 {$IFDEF WIN32}
     LangFrm, Forms, utils, version, Controls, devcfg;
 {$ENDIF}
@@ -83,231 +83,231 @@ uses
   LangFrm, QForms, utils, version, QControls, devcfg;
 {$ENDIF}
 
-var
-    fLang: TdevMultiLangSupport = nil;
-    fExternal: boolean = true;
+Var
+    fLang: TdevMultiLangSupport = Nil;
+    fExternal: Boolean = True;
 
-function Lang: TdevMultiLangSupport;
-begin
-    if not assigned(fLang) then
-    begin
-        fExternal := false;
-        try
+Function Lang: TdevMultiLangSupport;
+Begin
+    If Not assigned(fLang) Then
+    Begin
+        fExternal := False;
+        Try
             fLang := TdevMultiLangSupport.Create;
-        finally
-            fExternal := true;
-        end;
-    end;
+        Finally
+            fExternal := True;
+        End;
+    End;
     result := fLang;
-end;
+End;
 
-class function TdevMultiLangSupport.Lang: TdevMultiLangSupport;
-begin
+Class Function TdevMultiLangSupport.Lang: TdevMultiLangSupport;
+Begin
     result := MultiLangSupport.Lang;
-end;
+End;
 
-constructor TdevMultiLangSupport.Create;
-var
+Constructor TdevMultiLangSupport.Create;
+Var
     ms: TMemoryStream;
-begin
-    if assigned(fLang) then
-        raise Exception.Create('Language Support loaded');
-    if fExternal then
-        raise Exception.Create('Language Support Externally Created');
+Begin
+    If assigned(fLang) Then
+        Raise Exception.Create('Language Support loaded');
+    If fExternal Then
+        Raise Exception.Create('Language Support Externally Created');
 
     fLangList := ToysStringList.Create;
     fStrings := TStringList.Create;
     fDefaultLang := TStringList.Create;
     ms := TMemoryStream.Create;
-    try
+    Try
         LoadFilefromResource(DEFAULT_LANG_FILE, ms);
         fStrings.LoadFromStream(ms);
         ms.Seek(0, soFromBeginning);
         fDefaultLang.LoadFromStream(ms);
-    finally
+    Finally
         ms.free;
-    end;
+    End;
 
     CheckLanguageFiles;
-end;
+End;
 
-destructor TdevMultiLangSupport.Destroy;
-begin
+Destructor TdevMultiLangSupport.Destroy;
+Begin
     fLangList.Free;
     fStrings.Free;
     fDefaultLang.Free;
-    fLang := nil;
-    inherited;
-end;
+    fLang := Nil;
+    Inherited;
+End;
 
-function TdevMultiLangSupport.Open(const Filename: string): boolean;
-var
+Function TdevMultiLangSupport.Open(Const Filename: String): Boolean;
+Var
     s,
-    aFile: string;
+    aFile: String;
     ver: Integer;
     NewStrs: TStringList;
-begin
-    result := false;
+Begin
+    result := False;
     aFile := ValidateFile(FileName, devDirs.Lang);
-    if aFile = '' then
-    begin
-        if fSelect then
+    If aFile = '' Then
+    Begin
+        If fSelect Then
             MessageDlg('Could not open language file ' + filename,
                 mtError, [mbOK], 0);
         exit;
-    end;
+    End;
 
-    try // handle overall errors
+    Try // handle overall errors
         NewStrs := TStringList.Create;
 
-        try // handle newstr freeing
+        Try // handle newstr freeing
             NewStrs.LoadFromFile(aFile);
             s := NewStrs.Values['Ver'];
 
-            try // handle invalid ver entry
+            Try // handle invalid ver entry
                 ver := strtointdef(s, -1);
-            except
-                if MessageDlg('The selected language file has an invalid, or is missing a version entry.'#13#10
+            Except
+                If MessageDlg('The selected language file has an invalid, or is missing a version entry.'#13#10
                     + 'You may not have all the required strings for your current Dev-C++ interface.'#13#10
                     + 'Please check the Dev-C++ Update or Bloadshed.net for new language files, Continue Opening?',
-                    mtWarning, [mbYes, mbNo], 0) = mrNo then
-                    Exit else ver := 1;
-            end; // end invalid ver test
+                    mtWarning, [mbYes, mbNo], 0) = mrNo Then
+                    Exit Else ver := 1;
+            End; // end invalid ver test
 
             fLangFile := aFile;
             fStrings.Clear;
             fStrings.AddStrings(NewStrs);
-        finally
+        Finally
             NewStrs.Free;
-        end; // need for NewStrs object
+        End; // need for NewStrs object
 
-        if ver >= 1 then
-            result := true;
+        If ver >= 1 Then
+            result := True;
 
         fCurLang := fStrings.Values['Lang'];
-        if fCurLang = '' then
+        If fCurLang = '' Then
             fCurLang := ChangeFileExt(ExtractFileName(aFile), '');
         devData.Language := ExtractFileName(aFile);
-    except
-        result := false;
-    end;
-end;
+    Except
+        result := False;
+    End;
+End;
 
-procedure TdevMultiLangSupport.CheckLanguageFiles;
-var
-    idx: integer;
-    s: string;
+Procedure TdevMultiLangSupport.CheckLanguageFiles;
+Var
+    idx: Integer;
+    s: String;
     tmp: TStringList;
-begin
+Begin
     fLangList.Clear;
-    if devDirs.Lang = '' then
+    If devDirs.Lang = '' Then
         exit;
 
     FilesFromWildcard(devDirs.Lang, '*.lng',
         TStringList(fLangList), False, False, True);
     fLangList.Sort;
-    if fLangList.Count > 0 then
-    begin
+    If fLangList.Count > 0 Then
+    Begin
         tmp := TStringList.Create;
-        try
-            for idx := 0 to pred(fLangList.Count) do
-            begin
+        Try
+            For idx := 0 To pred(fLangList.Count) Do
+            Begin
                 tmp.Clear;
                 tmp.LoadFromFile(fLangList[idx]);
                 s := tmp.Values['Lang'];
-                if (Lowercase(ExtractFileName(fLangList[idx])) = LowerCase(
-                    DEFAULT_LANG_FILE)) and
-                    (devData.Language = '') then
+                If (Lowercase(ExtractFileName(fLangList[idx])) = LowerCase(
+                    DEFAULT_LANG_FILE)) And
+                    (devData.Language = '') Then
                     fCurLang := s;
-                if s = '' then
+                If s = '' Then
                     fLangList[idx] :=
                         format('%s=%s', [fLangList[idx],
                         ChangeFileExt(ExtractFileName(fLangList[idx]), '')])
-                else
+                Else
                     fLangList[idx] := format('%s=%s', [fLangList[idx], s]);
-            end;
-        finally
+            End;
+        Finally
             tmp.Free;
-        end;
-    end;
-    if fCurLang = '' then
+        End;
+    End;
+    If fCurLang = '' Then
         fCurLang := devData.Language;
-end;
+End;
 
-function TdevMultiLangSupport.GetString(ID: integer): string;
-begin
+Function TdevMultiLangSupport.GetString(ID: Integer): String;
+Begin
     result := fStrings.Values[inttostr(ID)];
-    if Result = '' then
+    If Result = '' Then
         Result := fDefaultLang.Values[inttostr(ID)];
-    if result = '' then
+    If result = '' Then
         result := format('<ERR: %d>', [ID]);
     //else result := StringReplace(result, '<CR>', #13#10, [rfReplaceAll]);
     result := StringReplace(result, '<CR>', #13#10, [rfReplaceAll]);
-end;
+End;
 
-function TdevMultiLangSupport.GetLangName: string;
-begin
+Function TdevMultiLangSupport.GetLangName: String;
+Begin
     result := fCurLang;
-end;
+End;
 
-procedure TdevMultiLangSupport.SelectLanguage;
-begin
-    fSelect := TRUE;
-    if fLangList.Count > 0 then
-        with TLangForm.Create(Application.Mainform) do
-            try
+Procedure TdevMultiLangSupport.SelectLanguage;
+Begin
+    fSelect := True;
+    If fLangList.Count > 0 Then
+        With TLangForm.Create(Application.Mainform) Do
+            Try
                 UpdateList(fLangList);
-                if ShowModal = mrOK then
-                    if Selected > -1 then
-                    begin
+                If ShowModal = mrOK Then
+                    If Selected > -1 Then
+                    Begin
                         Open(fLangList.Names[Selected]);
                         devData.Language := FileFromDescription(fLangList.Names[Selected]);
-                    end
-                    else
+                    End
+                    Else
                         Open(DEFAULT_LANG_FILE);
-            finally
+            Finally
                 Free;
-                fSelect := FALSE;
-            end
-    else
-    begin
+                fSelect := False;
+            End
+    Else
+    Begin
         Open(DEFAULT_LANG_FILE);
-        fSelect := FALSE;
-    end;
-end;
+        fSelect := False;
+    End;
+End;
 
-procedure TdevMultiLangSupport.SetLang(const Lang: string);
-var
-    idx: integer;
-begin
-    if Lang = fCurLang then
+Procedure TdevMultiLangSupport.SetLang(Const Lang: String);
+Var
+    idx: Integer;
+Begin
+    If Lang = fCurLang Then
         exit;
-    for idx := 0 to fLangList.Count - 1 do
-        if AnsiSameText(ExtractFileName(fLangList.Names[idx]), Lang) then
-        begin
+    For idx := 0 To fLangList.Count - 1 Do
+        If AnsiSameText(ExtractFileName(fLangList.Names[idx]), Lang) Then
+        Begin
             Open(fLangList.Names[idx]);
             break;
-        end;
-end;
+        End;
+End;
 
-function TdevMultiLangSupport.FileFromDescription(Desc: string): string;
-var
-    idx: integer;
-begin
+Function TdevMultiLangSupport.FileFromDescription(Desc: String): String;
+Var
+    idx: Integer;
+Begin
     // returns the filename of the lang file described as Desc
     // for example with Desc="English (Original)", returns "English.lng"
     Result := Desc;
-    for idx := 0 to fLangList.Count - 1 do
-        if CompareText(fLangList.Values[idx], Desc) = 0 then
-        begin
+    For idx := 0 To fLangList.Count - 1 Do
+        If CompareText(fLangList.Values[idx], Desc) = 0 Then
+        Begin
             Result := ExtractFilename(fLangList.Names[idx]);
             Break;
-        end;
-end;
+        End;
+End;
 
-initialization
+Initialization
 
-finalization
+Finalization
     fLang.Free;
 
-end.
+End.

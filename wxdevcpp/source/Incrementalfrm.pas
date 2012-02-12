@@ -18,11 +18,11 @@
 }
 
 (* derived from the free pascal editor project source *)
-unit Incrementalfrm;
+Unit Incrementalfrm;
 
-interface
+Interface
 
-uses
+Uses
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
     StdCtrls, ActnList, SynEdit, SynEditTypes;
@@ -32,35 +32,35 @@ uses
   QStdCtrls, QActnList, QSynEdit, QSynEditTypes;
 {$ENDIF}
 
-type
-    TfrmIncremental = class(TForm)
+Type
+    TfrmIncremental = Class(TForm)
         Edit: TEdit;
         ActionList1: TActionList;
         SearchAgain: TAction;
-        procedure EditChange(Sender: TObject);
-        procedure FormShow(Sender: TObject);
-        procedure EditKeyPress(Sender: TObject; var Key: Char);
-        procedure SearchAgainExecute(Sender: TObject);
-        procedure EditKeyDown(Sender: TObject; var Key: Word;
+        Procedure EditChange(Sender: TObject);
+        Procedure FormShow(Sender: TObject);
+        Procedure EditKeyPress(Sender: TObject; Var Key: Char);
+        Procedure SearchAgainExecute(Sender: TObject);
+        Procedure EditKeyDown(Sender: TObject; Var Key: Word;
             Shift: TShiftState);
-    private
+    Private
         rOptions: TSynSearchOptions;
-    public
-        SearchString: string;
+    Public
+        SearchString: String;
         Editor: TSynEdit;
         OrgPt: TBufferCoord;
-    protected
-        procedure CreateParams(var Params: TCreateParams); override;
-    end;
+    Protected
+        Procedure CreateParams(Var Params: TCreateParams); Override;
+    End;
 
-var
+Var
     frmIncremental: TfrmIncremental;
 
-implementation
+Implementation
 
 {$R *.dfm}
 
-uses
+Uses
 {$IFDEF WIN32}
     main;
 {$ENDIF}
@@ -68,67 +68,67 @@ uses
   Xlib, main;
 {$ENDIF}
 
-procedure TfrmIncremental.EditChange(Sender: TObject);
-var
+Procedure TfrmIncremental.EditChange(Sender: TObject);
+Var
     ALen: Integer;
-begin
+Begin
     ALen := 0;
-    if Editor.SelAvail then
-    begin
+    If Editor.SelAvail Then
+    Begin
         ALen := Length(Editor.SelText);
         Editor.CaretX := Editor.CaretX - ALen;
-    end;
-    if Editor.SearchReplace(Edit.Text, '', rOptions) = 0 then
-    begin
+    End;
+    If Editor.SearchReplace(Edit.Text, '', rOptions) = 0 Then
+    Begin
         Include(rOptions, ssoBackwards);
         Editor.CaretX := Editor.CaretX + ALen;
-        if Editor.SearchReplace(Edit.Text, '', rOptions) = 0 then
+        If Editor.SearchReplace(Edit.Text, '', rOptions) = 0 Then
             Edit.Font.Color := clRed
-        else
+        Else
             Edit.Font.Color := clBlack;
-    end
-    else
+    End
+    Else
         Edit.Font.Color := clBlack;
     rOptions := [];
-    if Length(Edit.Text) = 0 then
-    begin
+    If Length(Edit.Text) = 0 Then
+    Begin
         Editor.BlockBegin := OrgPt;
         Editor.BlockEnd := OrgPt;
         Editor.CaretXY := OrgPt;
-    end;
-end;
+    End;
+End;
 
-procedure TfrmIncremental.FormShow(Sender: TObject);
-begin
+Procedure TfrmIncremental.FormShow(Sender: TObject);
+Begin
     SearchString := Edit.Text;
     Edit.Text := '';
     OrgPt := Editor.CaretXY;
     EditChange(Sender);
-end;
+End;
 
-procedure TfrmIncremental.EditKeyPress(Sender: TObject; var Key: Char);
-begin
-    case Key of
+Procedure TfrmIncremental.EditKeyPress(Sender: TObject; Var Key: Char);
+Begin
+    Case Key Of
         #27:
             Close;
         #13:
             SearchAgainExecute(self);
-    else
-    begin
-    end;
-    end;
-end;
+    Else
+    Begin
+    End;
+    End;
+End;
 
-procedure TfrmIncremental.SearchAgainExecute(Sender: TObject);
-begin
+Procedure TfrmIncremental.SearchAgainExecute(Sender: TObject);
+Begin
     MainForm.actFindNextExecute(Self);
     OrgPt := Editor.CaretXY;
-end;
+End;
 
-procedure TfrmIncremental.EditKeyDown(Sender: TObject; var Key: Word;
+Procedure TfrmIncremental.EditKeyDown(Sender: TObject; Var Key: Word;
     Shift: TShiftState);
-begin
-    case Key of
+Begin
+    Case Key Of
 {$IFDEF WIN32}
         VK_LEFT, VK_RIGHT, VK_UP, VK_DOWN:
             Close;
@@ -136,20 +136,20 @@ begin
 {$IFDEF LINUX}
     XK_LEFT, XK_RIGHT, XK_UP, XK_DOWN : Close;
 {$ENDIF}
-    end;
-end;
+    End;
+End;
 
-procedure TfrmIncremental.CreateParams(var Params: TCreateParams);
-begin
-    inherited;
-    if (Parent <> nil) or (ParentWindow <> 0) then
+Procedure TfrmIncremental.CreateParams(Var Params: TCreateParams);
+Begin
+    Inherited;
+    If (Parent <> Nil) Or (ParentWindow <> 0) Then
         Exit;  // must not mess with wndparent if form is embedded
 
-    if Assigned(Owner) and (Owner is TWincontrol) then
+    If Assigned(Owner) And (Owner Is TWincontrol) Then
         Params.WndParent := TWinControl(Owner).handle
-    else
-    if Assigned(Screen.Activeform) then
+    Else
+    If Assigned(Screen.Activeform) Then
         Params.WndParent := Screen.Activeform.Handle;
-end;
+End;
 
-end.
+End.

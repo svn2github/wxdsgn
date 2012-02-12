@@ -24,126 +24,126 @@
 { ****************************************************************** }
 
 
-unit wxDialUpManager;
+Unit wxDialUpManager;
 
-interface
+Interface
 
-uses
-  Windows, Messages, SysUtils, Classes, wxUtils, WxNonVisibleBaseComponent;
+Uses
+    Windows, Messages, SysUtils, Classes, wxUtils, WxNonVisibleBaseComponent;
 
-type
-  TWxDialUpManager = class(TWxNonVisibleBaseComponent, IWxComponentInterface)
-  private
+Type
+    TWxDialUpManager = Class(TWxNonVisibleBaseComponent, IWxComponentInterface)
+    Private
     { Private declarations }
-    FWx_Class: string;
-    FWx_PropertyList: TStringList;
-    FWx_EventList   : TStringList;
-    FWx_Comments: TStrings;
-    FEVT_DIALUP_CONNECTED:String;
-    FEVT_DIALUP_DISCONNECTED:String;
+        FWx_Class: String;
+        FWx_PropertyList: TStringList;
+        FWx_EventList: TStringList;
+        FWx_Comments: TStrings;
+        FEVT_DIALUP_CONNECTED: String;
+        FEVT_DIALUP_DISCONNECTED: String;
 
-    procedure AutoInitialize;
-    procedure AutoDestroy;
+        Procedure AutoInitialize;
+        Procedure AutoDestroy;
 
-  protected
+    Protected
 
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    function GenerateControlIDs: string;
-    function GenerateEnumControlIDs: string;
-    function GenerateEventTableEntries(CurrClassName: string): string;
-    function GenerateGUIControlCreation: string;
-    function GenerateXRCControlCreation(IndentString: string): TStringList;
-    function GenerateGUIControlDeclaration: string;
-    function GenerateHeaderInclude: string;
-    function GenerateImageInclude: string;
-    function GetEventList: TStringList;
-    function GetIDName: string;
-    function GetIDValue: integer;
-    function GetParameterFromEventName(EventName: string): string;
-    function GetPropertyList: TStringList;
-    function GetTypeFromEventName(EventName: string): string;
-    function GetWxClassName: string;
-    procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
-    procedure SetIDName(IDName: string);
-    procedure SetIDValue(IDValue: integer);
-    procedure SetWxClassName(wxClassName: string);
-    function GetFGColor: string;
-    procedure SetFGColor(strValue: string);
-    function GetBGColor: string;
-    procedure SetBGColor(strValue: string);
-    procedure SetProxyFGColorString(Value: string);
-    procedure SetProxyBGColorString(Value: string);
-    
-    function GetGenericColor(strVariableName:String): string;
-    procedure SetGenericColor(strVariableName,strValue: string);
+    Public
+        Constructor Create(AOwner: TComponent); Override;
+        Destructor Destroy; Override;
+        Function GenerateControlIDs: String;
+        Function GenerateEnumControlIDs: String;
+        Function GenerateEventTableEntries(CurrClassName: String): String;
+        Function GenerateGUIControlCreation: String;
+        Function GenerateXRCControlCreation(IndentString: String): TStringList;
+        Function GenerateGUIControlDeclaration: String;
+        Function GenerateHeaderInclude: String;
+        Function GenerateImageInclude: String;
+        Function GetEventList: TStringList;
+        Function GetIDName: String;
+        Function GetIDValue: Integer;
+        Function GetParameterFromEventName(EventName: String): String;
+        Function GetPropertyList: TStringList;
+        Function GetTypeFromEventName(EventName: String): String;
+        Function GetWxClassName: String;
+        Procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
+        Procedure SetIDName(IDName: String);
+        Procedure SetIDValue(IDValue: Integer);
+        Procedure SetWxClassName(wxClassName: String);
+        Function GetFGColor: String;
+        Procedure SetFGColor(strValue: String);
+        Function GetBGColor: String;
+        Procedure SetBGColor(strValue: String);
+        Procedure SetProxyFGColorString(Value: String);
+        Procedure SetProxyBGColorString(Value: String);
 
-    function GetBorderAlignment: TWxBorderAlignment;
-    procedure SetBorderAlignment(border: TWxBorderAlignment);
-    function GetBorderWidth: integer;
-    procedure SetBorderWidth(width: integer);
-    function GetStretchFactor: integer;
-    procedure SetStretchFactor(intValue: integer);
+        Function GetGenericColor(strVariableName: String): String;
+        Procedure SetGenericColor(strVariableName, strValue: String);
 
-  published
+        Function GetBorderAlignment: TWxBorderAlignment;
+        Procedure SetBorderAlignment(border: TWxBorderAlignment);
+        Function GetBorderWidth: Integer;
+        Procedure SetBorderWidth(width: Integer);
+        Function GetStretchFactor: Integer;
+        Procedure SetStretchFactor(intValue: Integer);
+
+    Published
     { Published declarations }
-    property Wx_Class: string Read FWx_Class Write FWx_Class;
-    property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
-    property EVT_DIALUP_CONNECTED:String Read FEVT_DIALUP_CONNECTED Write FEVT_DIALUP_CONNECTED;
-    property EVT_DIALUP_DISCONNECTED:String Read FEVT_DIALUP_DISCONNECTED Write FEVT_DIALUP_DISCONNECTED;
-  end;
+        Property Wx_Class: String Read FWx_Class Write FWx_Class;
+        Property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
+        Property EVT_DIALUP_CONNECTED: String Read FEVT_DIALUP_CONNECTED Write FEVT_DIALUP_CONNECTED;
+        Property EVT_DIALUP_DISCONNECTED: String Read FEVT_DIALUP_DISCONNECTED Write FEVT_DIALUP_DISCONNECTED;
+    End;
 
-procedure Register;
+Procedure Register;
 
-implementation
+Implementation
 
-procedure Register;
-begin
-  RegisterComponents('wxWidgets', [TWxDialUpManager]);
-end;
+Procedure Register;
+Begin
+    RegisterComponents('wxWidgets', [TWxDialUpManager]);
+End;
 
 { Method to set variable and property values and create objects }
-procedure TWxDialUpManager.AutoInitialize;
-begin
-  FWx_PropertyList := TStringList.Create;
-  FWx_EventList    := TStringList.Create;
-  FWx_Class    := 'wxDialUpManager';
-  FWx_Comments := TStringList.Create;
-  Glyph.Handle := LoadBitmap(hInstance, 'TWxDialUpManager');
-end; { of AutoInitialize }
+Procedure TWxDialUpManager.AutoInitialize;
+Begin
+    FWx_PropertyList := TStringList.Create;
+    FWx_EventList := TStringList.Create;
+    FWx_Class := 'wxDialUpManager';
+    FWx_Comments := TStringList.Create;
+    Glyph.Handle := LoadBitmap(hInstance, 'TWxDialUpManager');
+End; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
-procedure TWxDialUpManager.AutoDestroy;
-begin
-  FWx_PropertyList.Destroy;
-  FWx_EventList.Destroy;
-  FWx_Comments.Destroy;
-  Glyph.Assign(nil);
-end; { of AutoDestroy }
+Procedure TWxDialUpManager.AutoDestroy;
+Begin
+    FWx_PropertyList.Destroy;
+    FWx_EventList.Destroy;
+    FWx_Comments.Destroy;
+    Glyph.Assign(Nil);
+End; { of AutoDestroy }
 
-constructor TWxDialUpManager.Create(AOwner: TComponent);
-begin
+Constructor TWxDialUpManager.Create(AOwner: TComponent);
+Begin
   { Call the Create method of the container's parent class       }
-  inherited Create(AOwner);
+    Inherited Create(AOwner);
 
   { AutoInitialize method is generated by Component Create.      }
-  AutoInitialize;
+    AutoInitialize;
 
   { Code to perform other tasks when the component is created }
   { Code to perform other tasks when the component is created }
-  FWx_PropertyList.add('Name:Name');
-  FWx_PropertyList.add('Wx_Class:Base Class');
-  FWx_PropertyList.add('Wx_Comments:Comments');
-  FWx_EventList.add('EVT_DIALUP_CONNECTED:OnDialupConnected');
-  FWx_EventList.add('EVT_DIALUP_DISCONNECTED:OnDialupDisConnected');  
-end;
+    FWx_PropertyList.add('Name:Name');
+    FWx_PropertyList.add('Wx_Class:Base Class');
+    FWx_PropertyList.add('Wx_Comments:Comments');
+    FWx_EventList.add('EVT_DIALUP_CONNECTED:OnDialupConnected');
+    FWx_EventList.add('EVT_DIALUP_DISCONNECTED:OnDialupDisConnected');
+End;
 
-destructor TWxDialUpManager.Destroy;
-begin
+Destructor TWxDialUpManager.Destroy;
+Begin
   { AutoDestroy, which is generated by Component Create, frees any   }
   { objects created by AutoInitialize.                               }
-  AutoDestroy;
+    AutoDestroy;
 
   { Here, free any other dynamic objects that the component methods  }
   { created but have not yet freed.  Also perform any other clean-up }
@@ -151,205 +151,205 @@ begin
 
   { Last, free the component by calling the Destroy method of the    }
   { parent class.                                                    }
-  inherited Destroy;
-end;
+    Inherited Destroy;
+End;
 
-function TWxDialUpManager.GenerateControlIDs: string;
-begin
-  Result := '';
-end;
+Function TWxDialUpManager.GenerateControlIDs: String;
+Begin
+    Result := '';
+End;
 
-function TWxDialUpManager.GenerateEnumControlIDs: string;
-begin
-  Result := '';
-end;
+Function TWxDialUpManager.GenerateEnumControlIDs: String;
+Begin
+    Result := '';
+End;
 
-function TWxDialUpManager.GenerateEventTableEntries(CurrClassName: string): string;
-begin
-  Result := '';
-  
-  if trim(EVT_DIALUP_CONNECTED) <> '' then
-    Result := Format('EVT_DIALUP_CONNECTED(%s::%s)',
-      [ CurrClassName, EVT_DIALUP_CONNECTED]) + '';
+Function TWxDialUpManager.GenerateEventTableEntries(CurrClassName: String): String;
+Begin
+    Result := '';
 
-  if trim(EVT_DIALUP_DISCONNECTED) <> '' then
-    Result := Result + #13 + Format('EVT_DIALUP_DISCONNECTED(%s::%s)',
-      [CurrClassName, EVT_DIALUP_DISCONNECTED]) + '';
-  
-end;
+    If trim(EVT_DIALUP_CONNECTED) <> '' Then
+        Result := Format('EVT_DIALUP_CONNECTED(%s::%s)',
+            [CurrClassName, EVT_DIALUP_CONNECTED]) + '';
 
-function TWxDialUpManager.GenerateXRCControlCreation(IndentString: string): TStringList;
-begin
+    If trim(EVT_DIALUP_DISCONNECTED) <> '' Then
+        Result := Result + #13 + Format('EVT_DIALUP_DISCONNECTED(%s::%s)',
+            [CurrClassName, EVT_DIALUP_DISCONNECTED]) + '';
 
-  Result := TStringList.Create;
+End;
 
-  try
-    Result.Add(IndentString + Format('<object class="%s" name="%s">',
-      [self.Wx_Class, self.Name]));
-    Result.Add(IndentString + '</object>');
+Function TWxDialUpManager.GenerateXRCControlCreation(IndentString: String): TStringList;
+Begin
 
-  except
-    Result.Free;
-    raise;
-  end;
+    Result := TStringList.Create;
 
-end;
+    Try
+        Result.Add(IndentString + Format('<object class="%s" name="%s">',
+            [self.Wx_Class, self.Name]));
+        Result.Add(IndentString + '</object>');
 
-function TWxDialUpManager.GenerateGUIControlCreation: string;
-begin
+    Except
+        Result.Free;
+        Raise;
+    End;
 
-  Result := '';
-  Result := GetCommentString(self.FWx_Comments.Text);
+End;
 
-  Result := Result + #13 + Format('%s =  %s::Create();',
-    [self.Name, self.wx_Class]);
+Function TWxDialUpManager.GenerateGUIControlCreation: String;
+Begin
 
-end;
+    Result := '';
+    Result := GetCommentString(self.FWx_Comments.Text);
 
-function TWxDialUpManager.GenerateGUIControlDeclaration: string;
-begin
-  Result := '';
-  Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);  
-end;
+    Result := Result + #13 + Format('%s =  %s::Create();',
+        [self.Name, self.wx_Class]);
 
-function TWxDialUpManager.GenerateHeaderInclude: string;
-begin
-  Result := '';
-  Result := '#include <wx/dialup.h>';  
-end;
+End;
 
-function TWxDialUpManager.GenerateImageInclude: string;
-begin
+Function TWxDialUpManager.GenerateGUIControlDeclaration: String;
+Begin
+    Result := '';
+    Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
+End;
 
-end;
+Function TWxDialUpManager.GenerateHeaderInclude: String;
+Begin
+    Result := '';
+    Result := '#include <wx/dialup.h>';
+End;
 
-function TWxDialUpManager.GetEventList: TStringList;
-begin
-  Result := FWx_EventList;
-end;
+Function TWxDialUpManager.GenerateImageInclude: String;
+Begin
 
-function TWxDialUpManager.GetIDName: string;
-begin
+End;
 
-end;
+Function TWxDialUpManager.GetEventList: TStringList;
+Begin
+    Result := FWx_EventList;
+End;
 
-function TWxDialUpManager.GetIDValue: integer;
-begin
-  Result := 0;
-end;
+Function TWxDialUpManager.GetIDName: String;
+Begin
 
-function TWxDialUpManager.GetParameterFromEventName(EventName: string): string;
-begin
-  if EventName = 'EVT_DIALUP_CONNECTED' then
-  begin
-    Result := 'wxDialUpEvent& event';
-    exit;
-  end;
-  if EventName = 'EVT_DIALUP_DISCONNECTED' then
-  begin
-    Result := 'wxDialUpEvent& event';
-    exit;
-  end;
-end;
+End;
 
-function TWxDialUpManager.GetStretchFactor: integer;
-begin
+Function TWxDialUpManager.GetIDValue: Integer;
+Begin
+    Result := 0;
+End;
+
+Function TWxDialUpManager.GetParameterFromEventName(EventName: String): String;
+Begin
+    If EventName = 'EVT_DIALUP_CONNECTED' Then
+    Begin
+        Result := 'wxDialUpEvent& event';
+        exit;
+    End;
+    If EventName = 'EVT_DIALUP_DISCONNECTED' Then
+    Begin
+        Result := 'wxDialUpEvent& event';
+        exit;
+    End;
+End;
+
+Function TWxDialUpManager.GetStretchFactor: Integer;
+Begin
     Result := 1;
-end;
+End;
 
-function TWxDialUpManager.GetPropertyList: TStringList;
-begin
-  Result := FWx_PropertyList;
-end;
+Function TWxDialUpManager.GetPropertyList: TStringList;
+Begin
+    Result := FWx_PropertyList;
+End;
 
-function TWxDialUpManager.GetBorderAlignment: TWxBorderAlignment;
-begin
-  Result := [];
-end;
+Function TWxDialUpManager.GetBorderAlignment: TWxBorderAlignment;
+Begin
+    Result := [];
+End;
 
-procedure TWxDialUpManager.SetBorderAlignment(border: TWxBorderAlignment);
-begin
-end;
+Procedure TWxDialUpManager.SetBorderAlignment(border: TWxBorderAlignment);
+Begin
+End;
 
-function TWxDialUpManager.GetBorderWidth: integer;
-begin
-  Result := 0;
-end;
+Function TWxDialUpManager.GetBorderWidth: Integer;
+Begin
+    Result := 0;
+End;
 
-procedure TWxDialUpManager.SetBorderWidth(width: integer);
-begin
-end;
+Procedure TWxDialUpManager.SetBorderWidth(width: Integer);
+Begin
+End;
 
-function TWxDialUpManager.GetTypeFromEventName(EventName: string): string;
-begin
+Function TWxDialUpManager.GetTypeFromEventName(EventName: String): String;
+Begin
 
-end;
+End;
 
-function TWxDialUpManager.GetWxClassName: string;
-begin
-  if trim(wx_Class) = '' then
-    wx_Class := 'wxDialUpManager';
-  Result := wx_Class;
-end;
+Function TWxDialUpManager.GetWxClassName: String;
+Begin
+    If trim(wx_Class) = '' Then
+        wx_Class := 'wxDialUpManager';
+    Result := wx_Class;
+End;
 
-procedure TWxDialUpManager.SaveControlOrientation(
-  ControlOrientation: TWxControlOrientation);
-begin
+Procedure TWxDialUpManager.SaveControlOrientation(
+    ControlOrientation: TWxControlOrientation);
+Begin
 
-end;
+End;
 
-procedure TWxDialUpManager.SetIDName(IDName: string);
-begin
+Procedure TWxDialUpManager.SetIDName(IDName: String);
+Begin
 
-end;
+End;
 
-procedure TWxDialUpManager.SetIDValue(IDValue: integer);
-begin
+Procedure TWxDialUpManager.SetIDValue(IDValue: Integer);
+Begin
 
-end;
+End;
 
-procedure TWxDialUpManager.SetStretchFactor(intValue: integer);
-begin
-end;
+Procedure TWxDialUpManager.SetStretchFactor(intValue: Integer);
+Begin
+End;
 
-procedure TWxDialUpManager.SetWxClassName(wxClassName: string);
-begin
-  wx_Class := wxClassName;
-end;
+Procedure TWxDialUpManager.SetWxClassName(wxClassName: String);
+Begin
+    wx_Class := wxClassName;
+End;
 
-function TWxDialUpManager.GetFGColor: string;
-begin
+Function TWxDialUpManager.GetFGColor: String;
+Begin
 
-end;
+End;
 
-procedure TWxDialUpManager.SetFGColor(strValue: string);
-begin
-end;
+Procedure TWxDialUpManager.SetFGColor(strValue: String);
+Begin
+End;
 
-function TWxDialUpManager.GetBGColor: string;
-begin
-end;
+Function TWxDialUpManager.GetBGColor: String;
+Begin
+End;
 
-procedure TWxDialUpManager.SetBGColor(strValue: string);
-begin
-end;
+Procedure TWxDialUpManager.SetBGColor(strValue: String);
+Begin
+End;
 
-procedure TWxDialUpManager.SetProxyFGColorString(Value: string);
-begin
-end;
+Procedure TWxDialUpManager.SetProxyFGColorString(Value: String);
+Begin
+End;
 
-procedure TWxDialUpManager.SetProxyBGColorString(Value: string);
-begin
-end;
+Procedure TWxDialUpManager.SetProxyBGColorString(Value: String);
+Begin
+End;
 
-function TWxDialUpManager.GetGenericColor(strVariableName:String): string;
-begin
+Function TWxDialUpManager.GetGenericColor(strVariableName: String): String;
+Begin
 
-end;
-procedure TWxDialUpManager.SetGenericColor(strVariableName,strValue: string);
-begin
+End;
+Procedure TWxDialUpManager.SetGenericColor(strVariableName, strValue: String);
+Begin
 
-end;
+End;
 
-end.
+End.
  

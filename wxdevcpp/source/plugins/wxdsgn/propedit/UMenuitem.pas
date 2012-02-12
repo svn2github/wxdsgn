@@ -26,126 +26,126 @@ Add support for MenuHightLight event
 {Contact gururamnath@yahoo.com for details                           }
 { ****************************************************************** }
 
-unit UMenuitem;
+Unit UMenuitem;
 
-interface
+Interface
 
-uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Menus, ExtCtrls, WxCustomMenuItem, DateUtils, xprocs, wxUtils,
-  UPicEdit, Spin, strUtils, ComCtrls, XPMenu;
+Uses
+    Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+    StdCtrls, Menus, ExtCtrls, WxCustomMenuItem, DateUtils, xprocs, wxUtils,
+    UPicEdit, Spin, strUtils, ComCtrls, XPMenu;
 
 {$WARNINGS OFF}
-type
-  TMenuItemForm = class(TForm)
-    GroupBox1: TGroupBox;
-    GroupBox2: TGroupBox;
-    tvMenuItem: TTreeView;
-    Label1: TLabel;
-    Label2: TLabel;
-    Label3: TLabel;
-    Label5: TLabel;
-    Label8: TLabel;
-    Label12: TLabel;
-    cbMenuType: TComboBox;
-    txtCaption: TEdit;
-    cbChecked: TComboBox;
-    cbEnabled: TComboBox;
-    txtHint: TEdit;
-    btnOK: TButton;
-    btnCancel: TButton;
-    btnInsert: TButton;
-    btnDelete: TButton;
-    btnSubmenu: TButton;
-    PopupMenu1: TPopupMenu;
-    iNSERT1: TMenuItem;
-    Delete1: TMenuItem;
-    N1: TMenuItem;
-    CreateSubmenu1: TMenuItem;
-    GroupBox3: TGroupBox;
-    Label4: TLabel;
-    cbOnMenu: TComboBox;
-    Label6: TLabel;
-    cbOnUpdateUI: TComboBox;
-    Label7: TLabel;
-    txtIDValue: TEdit;
-    Label10: TLabel;
-    btBrowse: TButton;
-    btApply: TButton;
-    btEdit: TButton;
-    txtIDName: TComboBox;
-    btNewOnMenu: TButton;
-    btNewUpdateUI: TButton;
-    pnlMenuImage: TPanel;
-    bmpMenuImage: TImage;
-    XPMenu: TXPMenu;
-    procedure btnInsertClick(Sender: TObject);
-    procedure btnSubmenuClick(Sender: TObject);
-    procedure txtCaptionKeyDown(Sender: TObject; var Key: word; Shift: TShiftState);
-    procedure btnDeleteClick(Sender: TObject);
-    procedure Delete1Click(Sender: TObject);
-    procedure iNSERT1Click(Sender: TObject);
-    procedure CreateSubmenu1Click(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
-    procedure tvMenuItemChange(Sender: TObject; Node: TTreeNode);
-    procedure txtCaptionExit(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
-    procedure btApplyClick(Sender: TObject);
-    procedure btEditClick(Sender: TObject);
-    procedure cbMenuTypeChange(Sender: TObject);
-    procedure btBrowseClick(Sender: TObject);
-    procedure btNewOnMenuClick(Sender: TObject);
-    procedure btNewUpdateUIClick(Sender: TObject);
-    procedure tvMenuItemDragDrop(Sender, Source: TObject; X, Y: integer);
-    procedure tvMenuItemDragOver(Sender, Source: TObject; X, Y: integer;
-      State: TDragState; var Accept: boolean);
-    procedure tvMenuItemKeyDown(Sender: TObject; var Key: word; Shift: TShiftState);
-    procedure txtIDNameChange(Sender: TObject);
+Type
+    TMenuItemForm = Class(TForm)
+        GroupBox1: TGroupBox;
+        GroupBox2: TGroupBox;
+        tvMenuItem: TTreeView;
+        Label1: TLabel;
+        Label2: TLabel;
+        Label3: TLabel;
+        Label5: TLabel;
+        Label8: TLabel;
+        Label12: TLabel;
+        cbMenuType: TComboBox;
+        txtCaption: TEdit;
+        cbChecked: TComboBox;
+        cbEnabled: TComboBox;
+        txtHint: TEdit;
+        btnOK: TButton;
+        btnCancel: TButton;
+        btnInsert: TButton;
+        btnDelete: TButton;
+        btnSubmenu: TButton;
+        PopupMenu1: TPopupMenu;
+        iNSERT1: TMenuItem;
+        Delete1: TMenuItem;
+        N1: TMenuItem;
+        CreateSubmenu1: TMenuItem;
+        GroupBox3: TGroupBox;
+        Label4: TLabel;
+        cbOnMenu: TComboBox;
+        Label6: TLabel;
+        cbOnUpdateUI: TComboBox;
+        Label7: TLabel;
+        txtIDValue: TEdit;
+        Label10: TLabel;
+        btBrowse: TButton;
+        btApply: TButton;
+        btEdit: TButton;
+        txtIDName: TComboBox;
+        btNewOnMenu: TButton;
+        btNewUpdateUI: TButton;
+        pnlMenuImage: TPanel;
+        bmpMenuImage: TImage;
+        XPMenu: TXPMenu;
+        Procedure btnInsertClick(Sender: TObject);
+        Procedure btnSubmenuClick(Sender: TObject);
+        Procedure txtCaptionKeyDown(Sender: TObject; Var Key: Word; Shift: TShiftState);
+        Procedure btnDeleteClick(Sender: TObject);
+        Procedure Delete1Click(Sender: TObject);
+        Procedure iNSERT1Click(Sender: TObject);
+        Procedure CreateSubmenu1Click(Sender: TObject);
+        Procedure FormCreate(Sender: TObject);
+        Procedure tvMenuItemChange(Sender: TObject; Node: TTreeNode);
+        Procedure txtCaptionExit(Sender: TObject);
+        Procedure FormDestroy(Sender: TObject);
+        Procedure btApplyClick(Sender: TObject);
+        Procedure btEditClick(Sender: TObject);
+        Procedure cbMenuTypeChange(Sender: TObject);
+        Procedure btBrowseClick(Sender: TObject);
+        Procedure btNewOnMenuClick(Sender: TObject);
+        Procedure btNewUpdateUIClick(Sender: TObject);
+        Procedure tvMenuItemDragDrop(Sender, Source: TObject; X, Y: Integer);
+        Procedure tvMenuItemDragOver(Sender, Source: TObject; X, Y: Integer;
+            State: TDragState; Var Accept: Boolean);
+        Procedure tvMenuItemKeyDown(Sender: TObject; Var Key: Word; Shift: TShiftState);
+        Procedure txtIDNameChange(Sender: TObject);
 
-  private
+    Private
     { Private declarations }
-    FMaxID: integer;
-    FCounter: integer;
-    FSubMenuItemCreationClicked: boolean;
-    FShiftDown: boolean;
-    FMenuName:String;
+        FMaxID: Integer;
+        FCounter: Integer;
+        FSubMenuItemCreationClicked: Boolean;
+        FShiftDown: Boolean;
+        FMenuName: String;
 
-    procedure MoveNode(SourceNode, TargetNode: TTreeNode);
+        Procedure MoveNode(SourceNode, TargetNode: TTreeNode);
 
-  public
+    Public
     { Public declarations }
-    FMenuItems: TWxCustomMenuItem;
-    constructor Create(AOwner: TComponent; ParentMenuName:String);
-    procedure SetMaxID(Value: integer);
+        FMenuItems: TWxCustomMenuItem;
+        Constructor Create(AOwner: TComponent; ParentMenuName: String);
+        Procedure SetMaxID(Value: Integer);
 
-    procedure UpdateScreenDataFromMenuItemData(cmenu: TWxCustomMenuItem);
-    procedure UpdateMenuItemDataFromScreenData(cmenu: TWxCustomMenuItem);
-    function GetFunctionName(strF: string): string;
-    procedure SetMenuItemsAsc(ThisOwnerControl, ThisParentControl: TWinControl;
-      SourceMenuItems: TWxCustomMenuItem; DestMenuItems: TWxCustomMenuItem);
-    procedure SetMenuItemsDes(ThisOwnerControl, ThisParentControl: TWinControl;
-      SourceMenuItems: TWxCustomMenuItem; DestMenuItems: TWxCustomMenuItem);
-    procedure EnableUpdate;
-    procedure DisableUpdate;
-    function GetValidMenuName(str: string): string;
-    function NextValue(str: string): string;
-    procedure CopyMenuItem(SrcMenuItem: TWxCustomMenuItem; var DesMenuItem: TWxCustomMenuItem);
-  end;
+        Procedure UpdateScreenDataFromMenuItemData(cmenu: TWxCustomMenuItem);
+        Procedure UpdateMenuItemDataFromScreenData(cmenu: TWxCustomMenuItem);
+        Function GetFunctionName(strF: String): String;
+        Procedure SetMenuItemsAsc(ThisOwnerControl, ThisParentControl: TWinControl;
+            SourceMenuItems: TWxCustomMenuItem; DestMenuItems: TWxCustomMenuItem);
+        Procedure SetMenuItemsDes(ThisOwnerControl, ThisParentControl: TWinControl;
+            SourceMenuItems: TWxCustomMenuItem; DestMenuItems: TWxCustomMenuItem);
+        Procedure EnableUpdate;
+        Procedure DisableUpdate;
+        Function GetValidMenuName(str: String): String;
+        Function NextValue(str: String): String;
+        Procedure CopyMenuItem(SrcMenuItem: TWxCustomMenuItem; Var DesMenuItem: TWxCustomMenuItem);
+    End;
 {$WARNINGS ON}
 
-var
-  MenuItemForm: TMenuItemForm;
+Var
+    MenuItemForm: TMenuItemForm;
 
-implementation
+Implementation
 {$R *.DFM}
 
-uses wxdesigner, CreateOrderFm;
+Uses wxdesigner, CreateOrderFm;
 
-constructor TMenuItemForm.Create(AOwner: TComponent;ParentMenuName:String);
-begin
-  FMenuName:=ParentMenuName;
-  inherited Create(AOwner);
-end;
+Constructor TMenuItemForm.Create(AOwner: TComponent; ParentMenuName: String);
+Begin
+    FMenuName := ParentMenuName;
+    Inherited Create(AOwner);
+End;
 
 {$IFDEF DELPHI4}
 constructor TMenuItemForm.Create(AOwner: TComponent{; Designer: IFormDesigner});
@@ -155,674 +155,679 @@ begin
 end;
 {$ENDIF}
 
-procedure TMenuItemForm.btnInsertClick(Sender: TObject);
-var
-  MenuItem: TWxCustomMenuItem;
-  Node:     TTreeNode;
-begin
-  MenuItem := TWxCustomMenuItem.Create(nil);
-  Inc(FMaxID);
-  Inc(FCounter);
+Procedure TMenuItemForm.btnInsertClick(Sender: TObject);
+Var
+    MenuItem: TWxCustomMenuItem;
+    Node: TTreeNode;
+Begin
+    MenuItem := TWxCustomMenuItem.Create(Nil);
+    Inc(FMaxID);
+    Inc(FCounter);
 
-  MenuItem.Wx_IDValue := FMaxID;
-  MenuItem.Wx_Caption := 'MenuItem' + IntToStr(FCounter);
+    MenuItem.Wx_IDValue := FMaxID;
+    MenuItem.Wx_Caption := 'MenuItem' + IntToStr(FCounter);
 
-  if (tvMenuItem.Items.Count = 0) then  // No other nodes exist so let's add the first
-  begin
-    Node := tvMenuItem.Items.AddChildObject(nil, MenuItem.Wx_Caption, MenuItem);
-    FMenuItems.Add(MenuItem, FMenuItems.Count)
-  end
+    If (tvMenuItem.Items.Count = 0) Then  // No other nodes exist so let's add the first
+    Begin
+        Node := tvMenuItem.Items.AddChildObject(Nil, MenuItem.Wx_Caption, MenuItem);
+        FMenuItems.Add(MenuItem, FMenuItems.Count);
+    End
 
-  else
-  if (tvMenuItem.Selected.GetNextSibling <> nil) then
+    Else
+    If (tvMenuItem.Selected.GetNextSibling <> Nil) Then
     // Other siblings exist, let's insert it
-  begin
+    Begin
      // New behavior inserts the node after the currently selected node
-    Node := tvMenuItem.Items.InsertObject(tvMenuItem.Selected.GetNextSibling,
-      MenuItem.Wx_Caption, MenuItem);
-    FMenuItems.Wx_Items.Insert(Node.Index, MenuItem)
-  end
-  else begin
-     Node := tvMenuItem.Items.AddChildObject(nil,
-      MenuItem.Wx_Caption, MenuItem);
-    FMenuItems.Add(MenuItem, FMenuItems.Count)
-  end;
+        Node := tvMenuItem.Items.InsertObject(tvMenuItem.Selected.GetNextSibling,
+            MenuItem.Wx_Caption, MenuItem);
+        FMenuItems.Wx_Items.Insert(Node.Index, MenuItem);
+    End
+    Else
+    Begin
+        Node := tvMenuItem.Items.AddChildObject(Nil,
+            MenuItem.Wx_Caption, MenuItem);
+        FMenuItems.Add(MenuItem, FMenuItems.Count);
+    End;
 
-  tvMenuItem.Selected := Node;
-  tvMenuItem.SetFocus;
-  EnableUpdate;
-
-  txtIDValue.Text := IntToStr(FMaxID);
-  txtCaption.Text := 'MenuItem' + IntToStr(FCounter);
-  txtCaption.SetFocus;
-  //Just to refresh the checked combo status
-  self.cbMenuTypeChange(self);
-
-end;
-
-procedure TMenuItemForm.EnableUpdate;
-begin
-  btApply.Enabled    := True;
-  btEdit.Enabled     := False;
-  tvMenuItem.Enabled := False;
-  btnSubmenu.Enabled := False;
-  btnInsert.Enabled  := False;
-  btnDelete.Enabled  := False;
-  btnOK.Enabled      := False;
-  btnCancel.Enabled  := True;
-
-  txtCaption.Enabled   := True;
-  txtHint.Enabled      := True;
-  txtIDName.Enabled    := True;
-  txtIDValue.Enabled   := not AnsiStartsStr('wxID', txtIDName.Text);
-  cbEnabled.Enabled    := True;
-  cbChecked.Enabled    := True;
-  bmpMenuImage.Enabled := True;
-  btBrowse.Enabled     := True;
-  cbMenuType.Enabled   := True;
-  cbOnMenu.Enabled     := True;
-  cbOnUpdateUI.Enabled := True;
-  btNewOnMenu.Enabled  := True;
-  btNewUpdateUI.Enabled := True;
-end;
-
-procedure TMenuItemForm.DisableUpdate;
-begin
-  btApply.Enabled    := False;
-  tvMenuItem.Enabled := True;
-  btnSubmenu.Enabled := True;
-  btnInsert.Enabled  := True;
-  btnOK.Enabled      := True;
-  btnCancel.Enabled  := True;
-  btEdit.Enabled     := tvMenuItem.Selected <> nil;
-  btnDelete.Enabled  := tvMenuItem.Selected <> nil;
-
-  txtCaption.Enabled   := False;
-  txtHint.Enabled      := False;
-  txtIDName.Enabled    := False;
-  txtIDValue.Enabled   := False;
-  cbEnabled.Enabled    := False;
-  cbChecked.Enabled    := False;
-  bmpMenuImage.Enabled := False;
-  btBrowse.Enabled     := False;
-  cbMenuType.Enabled   := False;
-  cbOnMenu.Enabled     := False;
-  cbOnUpdateUI.Enabled := False;
-  btNewOnMenu.Enabled  := False;
-  btNewUpdateUI.Enabled := False;
-
-end;
-
-procedure TMenuItemForm.btnSubmenuClick(Sender: TObject);
-var
-  Node:     TTreeNode;
-  MenuItem: TWxCustomMenuItem;
-  curMnuItem: TWxCustomMenuItem;
-begin
-  if tvMenuItem.Selected = nil then
-    Exit;
-  if TWxCustomMenuItem(tvMenuItem.Selected.Data).Wx_MenuItemStyle = wxMnuItm_History then
-  begin
-    MessageDlg('Children cannot be added to the Recent File History', mtError, [mbOK], Handle);
-    Exit;
-  end;
-
-  FSubMenuItemCreationClicked := True;
-  MenuItem := TWxCustomMenuItem.Create(nil);
-  Inc(FCounter);
-  Inc(FMaxID);
-
-  MenuItem.Wx_Caption := 'SubMenuItem' + IntToStr(FCounter);
-  MenuItem.Wx_IDValue := FMaxID;
-  curMnuItem := TWxCustomMenuItem(tvMenuItem.Selected.Data);
-  Node := tvMenuItem.Items.AddChildObject(tvMenuItem.Selected,
-    MenuItem.Wx_Caption, MenuItem);
-  if Node <> nil then
     tvMenuItem.Selected := Node;
-  curMnuItem.Add(MenuItem, curMnuItem.Count);
-  tvMenuItem.SetFocus;
-  EnableUpdate;
-  txtIDValue.Text := IntToStr(FMaxID);
-  txtCaption.Text := 'SubMenuItem' + IntToStr(FCounter);
-  txtCaption.SetFocus;
-end;
+    tvMenuItem.SetFocus;
+    EnableUpdate;
 
-procedure TMenuItemForm.txtCaptionKeyDown(Sender: TObject; var Key: word;
-  Shift: TShiftState);
-begin
-  if Key = VK_RETURN then
-    txtCaptionExit(Sender);
-end;
+    txtIDValue.Text := IntToStr(FMaxID);
+    txtCaption.Text := 'MenuItem' + IntToStr(FCounter);
+    txtCaption.SetFocus;
+  //Just to refresh the checked combo status
+    self.cbMenuTypeChange(self);
 
-procedure TMenuItemForm.btnDeleteClick(Sender: TObject);
-begin
-  if tvMenuItem.Selected = nil then
-    Exit;
+End;
 
-  if tvMenuItem.Selected.Parent <> nil then
-    TWxCustomMenuItem(tvMenuItem.Selected.Parent.Data).Remove(
-      TWxCustomMenuItem(tvMenuItem.Selected.Data))
-  else
-    FMenuItems.Remove(TWxCustomMenuItem(tvMenuItem.Selected.Data));
+Procedure TMenuItemForm.EnableUpdate;
+Begin
+    btApply.Enabled := True;
+    btEdit.Enabled := False;
+    tvMenuItem.Enabled := False;
+    btnSubmenu.Enabled := False;
+    btnInsert.Enabled := False;
+    btnDelete.Enabled := False;
+    btnOK.Enabled := False;
+    btnCancel.Enabled := True;
 
-  tvMenuItem.Items.Delete(tvMenuItem.Selected);
-  tvMenuItem.SetFocus;
-  if tvMenuItem.Selected <> nil then
-    UpdateScreenDataFromMenuItemData(TWxCustomMenuItem(tvMenuItem.Selected.Data));
-  DisableUpdate;
-end;
+    txtCaption.Enabled := True;
+    txtHint.Enabled := True;
+    txtIDName.Enabled := True;
+    txtIDValue.Enabled := Not AnsiStartsStr('wxID', txtIDName.Text);
+    cbEnabled.Enabled := True;
+    cbChecked.Enabled := True;
+    bmpMenuImage.Enabled := True;
+    btBrowse.Enabled := True;
+    cbMenuType.Enabled := True;
+    cbOnMenu.Enabled := True;
+    cbOnUpdateUI.Enabled := True;
+    btNewOnMenu.Enabled := True;
+    btNewUpdateUI.Enabled := True;
+End;
 
-procedure TMenuItemForm.Delete1Click(Sender: TObject);
-begin
-  btnDeleteClick(self);
-end;
+Procedure TMenuItemForm.DisableUpdate;
+Begin
+    btApply.Enabled := False;
+    tvMenuItem.Enabled := True;
+    btnSubmenu.Enabled := True;
+    btnInsert.Enabled := True;
+    btnOK.Enabled := True;
+    btnCancel.Enabled := True;
+    btEdit.Enabled := tvMenuItem.Selected <> Nil;
+    btnDelete.Enabled := tvMenuItem.Selected <> Nil;
 
-procedure TMenuItemForm.iNSERT1Click(Sender: TObject);
-begin
-  btnInsertClick(self);
-end;
+    txtCaption.Enabled := False;
+    txtHint.Enabled := False;
+    txtIDName.Enabled := False;
+    txtIDValue.Enabled := False;
+    cbEnabled.Enabled := False;
+    cbChecked.Enabled := False;
+    bmpMenuImage.Enabled := False;
+    btBrowse.Enabled := False;
+    cbMenuType.Enabled := False;
+    cbOnMenu.Enabled := False;
+    cbOnUpdateUI.Enabled := False;
+    btNewOnMenu.Enabled := False;
+    btNewUpdateUI.Enabled := False;
 
-procedure TMenuItemForm.CreateSubmenu1Click(Sender: TObject);
-begin
-  btnSubmenuClick(self);
-end;
+End;
 
-procedure TMenuItemForm.UpdateScreenDataFromMenuItemData(cmenu: TWxCustomMenuItem);
-begin
-  txtCaption.Text := cmenu.Wx_Caption;
-  txtHint.Text    := cmenu.Wx_HelpText;
+Procedure TMenuItemForm.btnSubmenuClick(Sender: TObject);
+Var
+    Node: TTreeNode;
+    MenuItem: TWxCustomMenuItem;
+    curMnuItem: TWxCustomMenuItem;
+Begin
+    If tvMenuItem.Selected = Nil Then
+        Exit;
+    If TWxCustomMenuItem(tvMenuItem.Selected.Data).Wx_MenuItemStyle = wxMnuItm_History Then
+    Begin
+        MessageDlg('Children cannot be added to the Recent File History', mtError, [mbOK], Handle);
+        Exit;
+    End;
 
-  txtIDName.Text  := cmenu.Wx_IDName;
-  txtIDValue.Text := IntToStr(cmenu.Wx_IDValue);
-
-  if cmenu.Wx_Enabled then
-    cbEnabled.ItemIndex := 1
-  else
-    cbEnabled.ItemIndex := 0;
-
-  if cmenu.Wx_Checked then
-    cbChecked.ItemIndex := 1
-  else
-    cbChecked.ItemIndex := 0;
-
-  bmpMenuImage.Picture.Assign(cmenu.WX_BITMAP);
-
-  if cmenu.Wx_MenuItemStyle = wxMnuItm_Normal then
-    cbMenuType.ItemIndex := 0;
-
-  if cmenu.Wx_MenuItemStyle = wxMnuItm_Separator then
-    cbMenuType.ItemIndex := 1;
-
-  if cmenu.Wx_MenuItemStyle = wxMnuItm_Radio then
-    cbMenuType.ItemIndex := 3;
-
-  if cmenu.Wx_MenuItemStyle = wxMnuItm_Check then
-    cbMenuType.ItemIndex := 2;
-
-  if cmenu.Wx_MenuItemStyle = wxMnuItm_History then
-    cbMenuType.ItemIndex := 4;
-
-  cbOnMenu.Text     := cmenu.EVT_Menu;
-  cbOnUpdateUI.Text := cmenu.EVT_UPDATE_UI;
-end;
-
-procedure TMenuItemForm.UpdateMenuItemDataFromScreenData(cmenu: TWxCustomMenuItem);
-var
-  FName: string;
-begin
-
-  cmenu.Wx_Caption  := txtCaption.Text;
-  cmenu.Wx_HelpText := txtHint.Text;
-
-  cmenu.Wx_IDName  := txtIDName.Text;
-  if txtIDValue.Enabled then
-    cmenu.Wx_IDValue := StrToInt(txtIDValue.Text);
-
-  if cbEnabled.ItemIndex = 1 then
-    cmenu.Wx_Enabled := True
-  else
-    cmenu.Wx_Enabled := False;
-
-  if cbChecked.ItemIndex = 1 then
-    cmenu.Wx_Checked := True
-  else
-    cmenu.Wx_Checked := False;
-
-  cmenu.WX_BITMAP.Assign(bmpMenuImage.Picture);
-
-  cmenu.Wx_MenuItemStyle := wxMnuItm_Normal;
-
-  if cbMenuType.ItemIndex = 0 then
-    cmenu.Wx_MenuItemStyle := wxMnuItm_Normal
-  else if cbMenuType.ItemIndex = 1 then
-    cmenu.Wx_MenuItemStyle := wxMnuItm_Separator
-  else if cbMenuType.ItemIndex = 3 then
-    cmenu.Wx_MenuItemStyle := wxMnuItm_Radio
-  else if cbMenuType.ItemIndex = 2 then
-    cmenu.Wx_MenuItemStyle := wxMnuItm_Check
-  else if cbMenuType.ItemIndex = 4 then
-  begin
-    cmenu.Wx_MenuItemStyle := wxMnuItm_History;
-  end;
-
-  cmenu.EVT_Menu := cbOnMenu.Text;
-  cmenu.EVT_UPDATE_UI := cbOnUpdateUI.Text;
-  FName := wx_designer.main.GetActiveEditorName;
-  GenerateXPMDirectly(cmenu.WX_BITMAP.Bitmap, cmenu.wx_IDName, ChangeFileExt(ExtractFileName(FName), ''),FName);
-end;
-
-procedure TMenuItemForm.SetMaxID(Value: integer);
-begin
-  FMaxID := Value;
-end;
-
-procedure TMenuItemForm.SetMenuItemsAsc(ThisOwnerControl, ThisParentControl: TWinControl;
-  SourceMenuItems: TWxCustomMenuItem; DestMenuItems: TWxCustomMenuItem);
-var
-  I:     integer;
-  Node:  TTreeNode;
-  S:     string;
-  Item:  TWxCustomMenuItem;
-  aItem: TWxCustomMenuItem;
-
-  procedure AddSubMenuitem(Menuitem: TWxCustomMenuItem;
-    Nd: TTreeNode; anotherItemToAdd: TWxCustomMenuItem);
-  var
-    J:     integer;
-    Cap:   string;
-    MItem, aMitem: TWxCustomMenuItem;
-    TNode: TTreeNode;
-  begin
-    for J := MenuItem.Count - 1 downto 0 do
-    begin
-      MItem  := MenuItem.Items[J];
-      Cap    := MItem.Wx_Caption;
-      aMitem := TWxCustomMenuItem.Create(ThisParentControl);
-      CopyMenuItem(MItem, aMitem);
-      //aMitem.Caption:=MItem.Caption;
-      TNode      := tvMenuItem.Items.AddChildObject(Nd, Cap, aMitem);
-      TNode.Text := Cap;
-      anotherItemToAdd.Add(aMitem, 0);
-      Inc(FCounter);
-      if MItem.Count > 0 then
-        AddSubMenuitem(MItem, TNode, aMitem);
-    end;
-  end;
-
-begin
-  //DestMenuItems.Clear;
-  FCounter := 0;
-  for I := SourceMenuItems.Count - 1 downto 0 do
-  begin
-    //TODO: Guru: <Blank Todo string>
-    aItem := TWxCustomMenuItem.Create(ThisParentControl);
-    Item  := (SourceMenuItems.Items[I]);
-    S     := Item.Wx_Caption;
-    aItem.Wx_Caption := Item.Wx_Caption;
-    CopyMenuItem(Item, aItem);
-    DestMenuItems.add(aItem, 0);
-    Node := tvMenuItem.Items.AddChildObject(nil, S, aItem);
+    FSubMenuItemCreationClicked := True;
+    MenuItem := TWxCustomMenuItem.Create(Nil);
     Inc(FCounter);
-    if Item.Count > 0 then
-      AddSubMenuitem(Item, Node, aItem);
-  end;
-end;
+    Inc(FMaxID);
 
-procedure TMenuItemForm.SetMenuItemsDes(ThisOwnerControl, ThisParentControl: TWinControl;
-  SourceMenuItems: TWxCustomMenuItem; DestMenuItems: TWxCustomMenuItem);
-var
-  I:     integer;
-  Node:  TTreeNode;
-  S:     string;
-  Item:  TWxCustomMenuItem;
-  aItem: TWxCustomMenuItem;
+    MenuItem.Wx_Caption := 'SubMenuItem' + IntToStr(FCounter);
+    MenuItem.Wx_IDValue := FMaxID;
+    curMnuItem := TWxCustomMenuItem(tvMenuItem.Selected.Data);
+    Node := tvMenuItem.Items.AddChildObject(tvMenuItem.Selected,
+        MenuItem.Wx_Caption, MenuItem);
+    If Node <> Nil Then
+        tvMenuItem.Selected := Node;
+    curMnuItem.Add(MenuItem, curMnuItem.Count);
+    tvMenuItem.SetFocus;
+    EnableUpdate;
+    txtIDValue.Text := IntToStr(FMaxID);
+    txtCaption.Text := 'SubMenuItem' + IntToStr(FCounter);
+    txtCaption.SetFocus;
+End;
 
-  procedure AddSubMenuitem(Menuitem: TWxCustomMenuItem;
-    Nd: TTreeNode; anotherItemToAdd: TWxCustomMenuItem);
-  var
-    J:     integer;
-    Cap:   string;
-    MItem, aMitem: TWxCustomMenuItem;
-    TNode: TTreeNode;
-  begin
-    for J := 0 to MenuItem.Count - 1 do
-    begin
-      MItem  := MenuItem.Items[J];
-      Cap    := MItem.Wx_Caption;
-      aMitem := TWxCustomMenuItem.Create(ThisParentControl);
-      CopyMenuItem(MItem, aMitem);
+Procedure TMenuItemForm.txtCaptionKeyDown(Sender: TObject; Var Key: Word;
+    Shift: TShiftState);
+Begin
+    If Key = VK_RETURN Then
+        txtCaptionExit(Sender);
+End;
+
+Procedure TMenuItemForm.btnDeleteClick(Sender: TObject);
+Begin
+    If tvMenuItem.Selected = Nil Then
+        Exit;
+
+    If tvMenuItem.Selected.Parent <> Nil Then
+        TWxCustomMenuItem(tvMenuItem.Selected.Parent.Data).Remove(
+            TWxCustomMenuItem(tvMenuItem.Selected.Data))
+    Else
+        FMenuItems.Remove(TWxCustomMenuItem(tvMenuItem.Selected.Data));
+
+    tvMenuItem.Items.Delete(tvMenuItem.Selected);
+    tvMenuItem.SetFocus;
+    If tvMenuItem.Selected <> Nil Then
+        UpdateScreenDataFromMenuItemData(TWxCustomMenuItem(tvMenuItem.Selected.Data));
+    DisableUpdate;
+End;
+
+Procedure TMenuItemForm.Delete1Click(Sender: TObject);
+Begin
+    btnDeleteClick(self);
+End;
+
+Procedure TMenuItemForm.iNSERT1Click(Sender: TObject);
+Begin
+    btnInsertClick(self);
+End;
+
+Procedure TMenuItemForm.CreateSubmenu1Click(Sender: TObject);
+Begin
+    btnSubmenuClick(self);
+End;
+
+Procedure TMenuItemForm.UpdateScreenDataFromMenuItemData(cmenu: TWxCustomMenuItem);
+Begin
+    txtCaption.Text := cmenu.Wx_Caption;
+    txtHint.Text := cmenu.Wx_HelpText;
+
+    txtIDName.Text := cmenu.Wx_IDName;
+    txtIDValue.Text := IntToStr(cmenu.Wx_IDValue);
+
+    If cmenu.Wx_Enabled Then
+        cbEnabled.ItemIndex := 1
+    Else
+        cbEnabled.ItemIndex := 0;
+
+    If cmenu.Wx_Checked Then
+        cbChecked.ItemIndex := 1
+    Else
+        cbChecked.ItemIndex := 0;
+
+    bmpMenuImage.Picture.Assign(cmenu.WX_BITMAP);
+
+    If cmenu.Wx_MenuItemStyle = wxMnuItm_Normal Then
+        cbMenuType.ItemIndex := 0;
+
+    If cmenu.Wx_MenuItemStyle = wxMnuItm_Separator Then
+        cbMenuType.ItemIndex := 1;
+
+    If cmenu.Wx_MenuItemStyle = wxMnuItm_Radio Then
+        cbMenuType.ItemIndex := 3;
+
+    If cmenu.Wx_MenuItemStyle = wxMnuItm_Check Then
+        cbMenuType.ItemIndex := 2;
+
+    If cmenu.Wx_MenuItemStyle = wxMnuItm_History Then
+        cbMenuType.ItemIndex := 4;
+
+    cbOnMenu.Text := cmenu.EVT_Menu;
+    cbOnUpdateUI.Text := cmenu.EVT_UPDATE_UI;
+End;
+
+Procedure TMenuItemForm.UpdateMenuItemDataFromScreenData(cmenu: TWxCustomMenuItem);
+Var
+    FName: String;
+Begin
+
+    cmenu.Wx_Caption := txtCaption.Text;
+    cmenu.Wx_HelpText := txtHint.Text;
+
+    cmenu.Wx_IDName := txtIDName.Text;
+    If txtIDValue.Enabled Then
+        cmenu.Wx_IDValue := StrToInt(txtIDValue.Text);
+
+    If cbEnabled.ItemIndex = 1 Then
+        cmenu.Wx_Enabled := True
+    Else
+        cmenu.Wx_Enabled := False;
+
+    If cbChecked.ItemIndex = 1 Then
+        cmenu.Wx_Checked := True
+    Else
+        cmenu.Wx_Checked := False;
+
+    cmenu.WX_BITMAP.Assign(bmpMenuImage.Picture);
+
+    cmenu.Wx_MenuItemStyle := wxMnuItm_Normal;
+
+    If cbMenuType.ItemIndex = 0 Then
+        cmenu.Wx_MenuItemStyle := wxMnuItm_Normal
+    Else
+    If cbMenuType.ItemIndex = 1 Then
+        cmenu.Wx_MenuItemStyle := wxMnuItm_Separator
+    Else
+    If cbMenuType.ItemIndex = 3 Then
+        cmenu.Wx_MenuItemStyle := wxMnuItm_Radio
+    Else
+    If cbMenuType.ItemIndex = 2 Then
+        cmenu.Wx_MenuItemStyle := wxMnuItm_Check
+    Else
+    If cbMenuType.ItemIndex = 4 Then
+    Begin
+        cmenu.Wx_MenuItemStyle := wxMnuItm_History;
+    End;
+
+    cmenu.EVT_Menu := cbOnMenu.Text;
+    cmenu.EVT_UPDATE_UI := cbOnUpdateUI.Text;
+    FName := wx_designer.main.GetActiveEditorName;
+    GenerateXPMDirectly(cmenu.WX_BITMAP.Bitmap, cmenu.wx_IDName, ChangeFileExt(ExtractFileName(FName), ''), FName);
+End;
+
+Procedure TMenuItemForm.SetMaxID(Value: Integer);
+Begin
+    FMaxID := Value;
+End;
+
+Procedure TMenuItemForm.SetMenuItemsAsc(ThisOwnerControl, ThisParentControl: TWinControl;
+    SourceMenuItems: TWxCustomMenuItem; DestMenuItems: TWxCustomMenuItem);
+Var
+    I: Integer;
+    Node: TTreeNode;
+    S: String;
+    Item: TWxCustomMenuItem;
+    aItem: TWxCustomMenuItem;
+
+    Procedure AddSubMenuitem(Menuitem: TWxCustomMenuItem;
+        Nd: TTreeNode; anotherItemToAdd: TWxCustomMenuItem);
+    Var
+        J: Integer;
+        Cap: String;
+        MItem, aMitem: TWxCustomMenuItem;
+        TNode: TTreeNode;
+    Begin
+        For J := MenuItem.Count - 1 Downto 0 Do
+        Begin
+            MItem := MenuItem.Items[J];
+            Cap := MItem.Wx_Caption;
+            aMitem := TWxCustomMenuItem.Create(ThisParentControl);
+            CopyMenuItem(MItem, aMitem);
       //aMitem.Caption:=MItem.Caption;
-      TNode      := tvMenuItem.Items.AddChildObject(Nd, Cap, aMitem);
-      TNode.Text := Cap;
-      anotherItemToAdd.Add(aMitem, J);
-      Inc(FCounter);
-      if MItem.Count > 0 then
-        AddSubMenuitem(MItem, TNode, aMitem);
-    end;
-  end;
+            TNode := tvMenuItem.Items.AddChildObject(Nd, Cap, aMitem);
+            TNode.Text := Cap;
+            anotherItemToAdd.Add(aMitem, 0);
+            Inc(FCounter);
+            If MItem.Count > 0 Then
+                AddSubMenuitem(MItem, TNode, aMitem);
+        End;
+    End;
 
-begin
+Begin
   //DestMenuItems.Clear;
-  FCounter := 0;
-  for I := 0 to SourceMenuItems.Count - 1 do
-  begin
+    FCounter := 0;
+    For I := SourceMenuItems.Count - 1 Downto 0 Do
+    Begin
     //TODO: Guru: <Blank Todo string>
-    aItem := TWxCustomMenuItem.Create(ThisParentControl);
-    Item  := (SourceMenuItems.Items[I]);
-    S     := Item.Wx_Caption;
-    aItem.Wx_Caption := Item.Wx_Caption;
-    CopyMenuItem(Item, aItem);
-    DestMenuItems.add(aItem, I);
-    Node := tvMenuItem.Items.AddChildObject(nil, S, aItem);
-    Inc(FCounter);
-    if Item.Count > 0 then
-      AddSubMenuitem(Item, Node, aItem);
-  end;
-end;
+        aItem := TWxCustomMenuItem.Create(ThisParentControl);
+        Item := (SourceMenuItems.Items[I]);
+        S := Item.Wx_Caption;
+        aItem.Wx_Caption := Item.Wx_Caption;
+        CopyMenuItem(Item, aItem);
+        DestMenuItems.add(aItem, 0);
+        Node := tvMenuItem.Items.AddChildObject(Nil, S, aItem);
+        Inc(FCounter);
+        If Item.Count > 0 Then
+            AddSubMenuitem(Item, Node, aItem);
+    End;
+End;
 
-procedure TMenuItemForm.FormCreate(Sender: TObject);
-var
-  strLst: TStringList;
-begin
-  DesktopFont := True;
-  XPMenu.Active := wx_designer.XPTheme;
-  tvMenuItem.Items.Clear;
-  FSubMenuItemCreationClicked := False;
-  txtIDName.Items.Assign(wx_designer.strStdwxIDList);
+Procedure TMenuItemForm.SetMenuItemsDes(ThisOwnerControl, ThisParentControl: TWinControl;
+    SourceMenuItems: TWxCustomMenuItem; DestMenuItems: TWxCustomMenuItem);
+Var
+    I: Integer;
+    Node: TTreeNode;
+    S: String;
+    Item: TWxCustomMenuItem;
+    aItem: TWxCustomMenuItem;
 
-  FMenuItems := TWxCustomMenuItem.Create(nil);
-  FMaxID     := 2000;
-  strLst     := TStringList.Create;
-  wx_designer.main.GetFunctionsFromSource(wx_designer.GetCurrentClassName, strLst);
+    Procedure AddSubMenuitem(Menuitem: TWxCustomMenuItem;
+        Nd: TTreeNode; anotherItemToAdd: TWxCustomMenuItem);
+    Var
+        J: Integer;
+        Cap: String;
+        MItem, aMitem: TWxCustomMenuItem;
+        TNode: TTreeNode;
+    Begin
+        For J := 0 To MenuItem.Count - 1 Do
+        Begin
+            MItem := MenuItem.Items[J];
+            Cap := MItem.Wx_Caption;
+            aMitem := TWxCustomMenuItem.Create(ThisParentControl);
+            CopyMenuItem(MItem, aMitem);
+      //aMitem.Caption:=MItem.Caption;
+            TNode := tvMenuItem.Items.AddChildObject(Nd, Cap, aMitem);
+            TNode.Text := Cap;
+            anotherItemToAdd.Add(aMitem, J);
+            Inc(FCounter);
+            If MItem.Count > 0 Then
+                AddSubMenuitem(MItem, TNode, aMitem);
+        End;
+    End;
 
-  cbOnMenu.Items.Assign(strLst);
-  cbOnUpdateUI.Items.Assign(strLst);
-  strLst.Destroy;
-end;
+Begin
+  //DestMenuItems.Clear;
+    FCounter := 0;
+    For I := 0 To SourceMenuItems.Count - 1 Do
+    Begin
+    //TODO: Guru: <Blank Todo string>
+        aItem := TWxCustomMenuItem.Create(ThisParentControl);
+        Item := (SourceMenuItems.Items[I]);
+        S := Item.Wx_Caption;
+        aItem.Wx_Caption := Item.Wx_Caption;
+        CopyMenuItem(Item, aItem);
+        DestMenuItems.add(aItem, I);
+        Node := tvMenuItem.Items.AddChildObject(Nil, S, aItem);
+        Inc(FCounter);
+        If Item.Count > 0 Then
+            AddSubMenuitem(Item, Node, aItem);
+    End;
+End;
 
-procedure TMenuItemForm.tvMenuItemChange(Sender: TObject; Node: TTreeNode);
-begin
+Procedure TMenuItemForm.FormCreate(Sender: TObject);
+Var
+    strLst: TStringList;
+Begin
+    DesktopFont := True;
+    XPMenu.Active := wx_designer.XPTheme;
+    tvMenuItem.Items.Clear;
+    FSubMenuItemCreationClicked := False;
+    txtIDName.Items.Assign(wx_designer.strStdwxIDList);
+
+    FMenuItems := TWxCustomMenuItem.Create(Nil);
+    FMaxID := 2000;
+    strLst := TStringList.Create;
+    wx_designer.main.GetFunctionsFromSource(wx_designer.GetCurrentClassName, strLst);
+
+    cbOnMenu.Items.Assign(strLst);
+    cbOnUpdateUI.Items.Assign(strLst);
+    strLst.Destroy;
+End;
+
+Procedure TMenuItemForm.tvMenuItemChange(Sender: TObject; Node: TTreeNode);
+Begin
   //Update the button states
-  btEdit.Enabled     := Node <> nil;
-  btnDelete.Enabled  := Node <> nil;
+    btEdit.Enabled := Node <> Nil;
+    btnDelete.Enabled := Node <> Nil;
 
   //Exit if we don't have a selected node
-  if Node = nil then
-    Exit;
+    If Node = Nil Then
+        Exit;
 
   //Otherwise update the editor data
-  with TWxCustomMenuItem(Node.Data) do
-  begin
-    txtCaption.Text := Wx_Caption;
-    txtIDValue.Text := IntToStr(Wx_IDValue);
-    txtIDName.Text  := Wx_IDName;
-    UpdateScreenDataFromMenuItemData(TWxCustomMenuItem(tvMenuItem.Selected.Data));
-  end;
-end;
+    With TWxCustomMenuItem(Node.Data) Do
+    Begin
+        txtCaption.Text := Wx_Caption;
+        txtIDValue.Text := IntToStr(Wx_IDValue);
+        txtIDName.Text := Wx_IDName;
+        UpdateScreenDataFromMenuItemData(TWxCustomMenuItem(tvMenuItem.Selected.Data));
+    End;
+End;
 
-function TMenuItemForm.GetValidMenuName(str: string): string;
-var
-  i: integer;
-  lastTabIndex: integer;
+Function TMenuItemForm.GetValidMenuName(str: String): String;
+Var
+    i: Integer;
+    lastTabIndex: Integer;
 
-  function AnsiPosR(const needle, haystack: string) : Integer;
-  var
-    Temp: String;
-  begin
-    for Result := Length(haystack) downto 0 do
-    begin
-      Temp := Copy(haystack, Result, Length(needle));
+    Function AnsiPosR(Const needle, haystack: String): Integer;
+    Var
+        Temp: String;
+    Begin
+        For Result := Length(haystack) Downto 0 Do
+        Begin
+            Temp := Copy(haystack, Result, Length(needle));
       //Do we have a match?
-      if Temp = needle then
-        break;
-    end;
-  end;
-begin
+            If Temp = needle Then
+                break;
+        End;
+    End;
+Begin
   //Strip the string starting from the last \t
-  lastTabIndex := AnsiPosR('\t', str);
-  if lastTabIndex > 0 then
-    str := Copy(str, 0, lastTabIndex - 1);
-  
+    lastTabIndex := AnsiPosR('\t', str);
+    If lastTabIndex > 0 Then
+        str := Copy(str, 0, lastTabIndex - 1);
+
   //TODO: Guru: <Blank Todo string>
-  Result := UpperCase(trim(str));
+    Result := UpperCase(trim(str));
 
   // Added by Termit
   // In polish language use code page 8859-2 or Win-1250 with character up to 127 code
   //change characters up to 127 code
-  for i := 1 to Length(Result) do
-    if Ord(Result[i]) > 127 then
-      Result[i] :=
-        '_';
+    For i := 1 To Length(Result) Do
+        If Ord(Result[i]) > 127 Then
+            Result[i] :=
+                '_';
 
-  strSearchReplace(Result, ' ', '', [srAll]);
-  strSearchReplace(Result, '&', '', [srAll]);
-  strSearchReplace(Result, '\t', '_', [srAll]);
-  strSearchReplace(Result, '-', '_', [srAll]);
-  strSearchReplace(Result, '~', '_', [srAll]);
-  strSearchReplace(Result, '*', '_', [srAll]);
-  strSearchReplace(Result, '!', '_', [srAll]);
-  strSearchReplace(Result, '@', '_', [srAll]);
-  strSearchReplace(Result, '#', '_', [srAll]);
-  strSearchReplace(Result, '$', '_', [srAll]);
-  strSearchReplace(Result, '%', '_', [srAll]);
-  strSearchReplace(Result, '^', '_', [srAll]);
-  strSearchReplace(Result, '&', '_', [srAll]);
-  strSearchReplace(Result, '*', '_', [srAll]);
-  strSearchReplace(Result, '(', '_', [srAll]);
-  strSearchReplace(Result, ')', '_', [srAll]);
-  strSearchReplace(Result, ';', '_', [srAll]);
-  strSearchReplace(Result, ':', '_', [srAll]);
-  strSearchReplace(Result, '+', '_', [srAll]);
-  strSearchReplace(Result, '=', '_', [srAll]);
-  strSearchReplace(Result, '{', '_', [srAll]);
-  strSearchReplace(Result, '}', '_', [srAll]);
-  strSearchReplace(Result, '[', '_', [srAll]);
-  strSearchReplace(Result, ']', '_', [srAll]);
-  strSearchReplace(Result, '|', '_', [srAll]);
-  strSearchReplace(Result, '\', '_', [srAll]);
-  strSearchReplace(Result, '/', '_', [srAll]);
-  strSearchReplace(Result, '?', '_', [srAll]);
-  strSearchReplace(Result, '>', '_', [srAll]);
-  strSearchReplace(Result, '<', '_', [srAll]);
-  strSearchReplace(Result, ',', '_', [srAll]);
-  strSearchReplace(Result, '.', '_', [srAll]);
-  strSearchReplace(Result, '`', '_', [srAll]);
+    strSearchReplace(Result, ' ', '', [srAll]);
+    strSearchReplace(Result, '&', '', [srAll]);
+    strSearchReplace(Result, '\t', '_', [srAll]);
+    strSearchReplace(Result, '-', '_', [srAll]);
+    strSearchReplace(Result, '~', '_', [srAll]);
+    strSearchReplace(Result, '*', '_', [srAll]);
+    strSearchReplace(Result, '!', '_', [srAll]);
+    strSearchReplace(Result, '@', '_', [srAll]);
+    strSearchReplace(Result, '#', '_', [srAll]);
+    strSearchReplace(Result, '$', '_', [srAll]);
+    strSearchReplace(Result, '%', '_', [srAll]);
+    strSearchReplace(Result, '^', '_', [srAll]);
+    strSearchReplace(Result, '&', '_', [srAll]);
+    strSearchReplace(Result, '*', '_', [srAll]);
+    strSearchReplace(Result, '(', '_', [srAll]);
+    strSearchReplace(Result, ')', '_', [srAll]);
+    strSearchReplace(Result, ';', '_', [srAll]);
+    strSearchReplace(Result, ':', '_', [srAll]);
+    strSearchReplace(Result, '+', '_', [srAll]);
+    strSearchReplace(Result, '=', '_', [srAll]);
+    strSearchReplace(Result, '{', '_', [srAll]);
+    strSearchReplace(Result, '}', '_', [srAll]);
+    strSearchReplace(Result, '[', '_', [srAll]);
+    strSearchReplace(Result, ']', '_', [srAll]);
+    strSearchReplace(Result, '|', '_', [srAll]);
+    strSearchReplace(Result, '\', '_', [srAll]);
+    strSearchReplace(Result, '/', '_', [srAll]);
+    strSearchReplace(Result, '?', '_', [srAll]);
+    strSearchReplace(Result, '>', '_', [srAll]);
+    strSearchReplace(Result, '<', '_', [srAll]);
+    strSearchReplace(Result, ',', '_', [srAll]);
+    strSearchReplace(Result, '.', '_', [srAll]);
+    strSearchReplace(Result, '`', '_', [srAll]);
 
-end;
+End;
 
-function TMenuItemForm.NextValue(str: string): string;
-begin
+Function TMenuItemForm.NextValue(str: String): String;
+Begin
 
-end;
+End;
 
-procedure TMenuItemForm.CopyMenuItem(SrcMenuItem: TWxCustomMenuItem;
-  var DesMenuItem: TWxCustomMenuItem);
-begin
-  DesMenuItem.Wx_Caption  := SrcMenuItem.Wx_Caption;
-  DesMenuItem.Wx_HelpText := SrcMenuItem.Wx_HelpText;
+Procedure TMenuItemForm.CopyMenuItem(SrcMenuItem: TWxCustomMenuItem;
+    Var DesMenuItem: TWxCustomMenuItem);
+Begin
+    DesMenuItem.Wx_Caption := SrcMenuItem.Wx_Caption;
+    DesMenuItem.Wx_HelpText := SrcMenuItem.Wx_HelpText;
 
-  DesMenuItem.Wx_IDName  := SrcMenuItem.Wx_IDName;
-  DesMenuItem.Wx_IDValue := SrcMenuItem.Wx_IDValue;
-  DesMenuItem.Wx_Enabled := SrcMenuItem.Wx_Enabled;
-  DesMenuItem.Wx_Hidden  := SrcMenuItem.Wx_Hidden;
-  DesMenuItem.Wx_Checked := SrcMenuItem.Wx_Checked;
-  DesMenuItem.WX_BITMAP.Assign(SrcMenuItem.WX_BITMAP);
-  DesMenuItem.Wx_MenuItemStyle := SrcMenuItem.Wx_MenuItemStyle;
-  DesMenuItem.EVT_Menu      := SrcMenuItem.EVT_Menu;
-  DesMenuItem.EVT_UPDATE_UI := SrcMenuItem.EVT_UPDATE_UI;
-  DesMenuItem.Wx_FileHistory := SrcMenuItem.Wx_FileHistory;
+    DesMenuItem.Wx_IDName := SrcMenuItem.Wx_IDName;
+    DesMenuItem.Wx_IDValue := SrcMenuItem.Wx_IDValue;
+    DesMenuItem.Wx_Enabled := SrcMenuItem.Wx_Enabled;
+    DesMenuItem.Wx_Hidden := SrcMenuItem.Wx_Hidden;
+    DesMenuItem.Wx_Checked := SrcMenuItem.Wx_Checked;
+    DesMenuItem.WX_BITMAP.Assign(SrcMenuItem.WX_BITMAP);
+    DesMenuItem.Wx_MenuItemStyle := SrcMenuItem.Wx_MenuItemStyle;
+    DesMenuItem.EVT_Menu := SrcMenuItem.EVT_Menu;
+    DesMenuItem.EVT_UPDATE_UI := SrcMenuItem.EVT_UPDATE_UI;
+    DesMenuItem.Wx_FileHistory := SrcMenuItem.Wx_FileHistory;
 
-end;
+End;
 
-procedure TMenuItemForm.txtCaptionExit(Sender: TObject);
-var
-  OldName: string;
-begin
-  if tvMenuItem.Selected = nil then
-    Exit;
-  tvMenuItem.Selected.Text := txtCaption.Text;
-  OldName := TWxCustomMenuItem(tvMenuItem.Selected.Data).Wx_Caption;
-  TWxCustomMenuItem(tvMenuItem.Selected.Data).Wx_Caption := txtCaption.Text;
+Procedure TMenuItemForm.txtCaptionExit(Sender: TObject);
+Var
+    OldName: String;
+Begin
+    If tvMenuItem.Selected = Nil Then
+        Exit;
+    tvMenuItem.Selected.Text := txtCaption.Text;
+    OldName := TWxCustomMenuItem(tvMenuItem.Selected.Data).Wx_Caption;
+    TWxCustomMenuItem(tvMenuItem.Selected.Data).Wx_Caption := txtCaption.Text;
 
-  if (UpperCase('ID_MNU_' + trim(OldName) + '_' + txtIDValue.Text) =
-    UpperCase(trim(txtIDName.Text) + '_' + txtIDValue.Text)) or
-    (trim(txtIDName.Text) = '') then
-  begin
-    txtIDName.Text := 'ID_MNU_' + GetValidMenuName(txtCaption.Text);
+    If (UpperCase('ID_MNU_' + trim(OldName) + '_' + txtIDValue.Text) =
+        UpperCase(trim(txtIDName.Text) + '_' + txtIDValue.Text)) Or
+        (trim(txtIDName.Text) = '') Then
+    Begin
+        txtIDName.Text := 'ID_MNU_' + GetValidMenuName(txtCaption.Text);
     //Conditionally append the menu ID, since -1 is now a valid value
     //(to let the enum decide on the ID)
-    if trim(txtIDValue.Text) <> '-1' then
-      txtIDName.Text := txtIDName.Text + '_' + txtIDValue.Text;
-    TWxCustomMenuItem(tvMenuItem.Selected.Data).Wx_IDName := txtIDName.Text;
-    exit;
-  end;
-end;
+        If trim(txtIDValue.Text) <> '-1' Then
+            txtIDName.Text := txtIDName.Text + '_' + txtIDValue.Text;
+        TWxCustomMenuItem(tvMenuItem.Selected.Data).Wx_IDName := txtIDName.Text;
+        exit;
+    End;
+End;
 
-procedure TMenuItemForm.FormDestroy(Sender: TObject);
-begin
-  FMenuItems.Destroy;
-end;
+Procedure TMenuItemForm.FormDestroy(Sender: TObject);
+Begin
+    FMenuItems.Destroy;
+End;
 
-procedure TMenuItemForm.btApplyClick(Sender: TObject);
-begin
-  if tvMenuItem.Selected <> nil then
-    UpdateMenuItemDataFromScreenData(TWxCustomMenuItem(tvMenuItem.Selected.Data));
-  DisableUpdate;
-  if FSubMenuItemCreationClicked = True then
-  begin
-    if tvMenuItem.Selected <> nil then
-      if tvMenuItem.Selected.Parent <> nil then
-      begin
-        tvMenuItem.Selected := tvMenuItem.Selected.Parent;
-        tvMenuItem.Selected.Expand(True);
-      end;
-    FSubMenuItemCreationClicked := False;
-  end;
-end;
+Procedure TMenuItemForm.btApplyClick(Sender: TObject);
+Begin
+    If tvMenuItem.Selected <> Nil Then
+        UpdateMenuItemDataFromScreenData(TWxCustomMenuItem(tvMenuItem.Selected.Data));
+    DisableUpdate;
+    If FSubMenuItemCreationClicked = True Then
+    Begin
+        If tvMenuItem.Selected <> Nil Then
+            If tvMenuItem.Selected.Parent <> Nil Then
+            Begin
+                tvMenuItem.Selected := tvMenuItem.Selected.Parent;
+                tvMenuItem.Selected.Expand(True);
+            End;
+        FSubMenuItemCreationClicked := False;
+    End;
+End;
 
-procedure TMenuItemForm.btEditClick(Sender: TObject);
-begin
-  if tvMenuItem.Selected = nil then
-  begin
-    MessageDlg('Please select an item before trying to edit it.',
-      mtError, [mbOK], 0);
-    exit;
-  end;
-  EnableUpdate;
-  txtCaption.SetFocus;
-end;
+Procedure TMenuItemForm.btEditClick(Sender: TObject);
+Begin
+    If tvMenuItem.Selected = Nil Then
+    Begin
+        MessageDlg('Please select an item before trying to edit it.',
+            mtError, [mbOK], 0);
+        exit;
+    End;
+    EnableUpdate;
+    txtCaption.SetFocus;
+End;
 
-procedure TMenuItemForm.cbMenuTypeChange(Sender: TObject);
-begin
-  if cbMenuType.ItemIndex = -1 then
-    exit;
+Procedure TMenuItemForm.cbMenuTypeChange(Sender: TObject);
+Begin
+    If cbMenuType.ItemIndex = -1 Then
+        exit;
 
-  if cbMenuType.ItemIndex = 1 then
-  begin
-    txtCaption.Text := '---';
-    txtIDName.Text := 'wxID_STATIC';
-    if tvMenuItem.Selected <> nil then
-      tvMenuItem.Selected.Text := txtCaption.Text;
-  end;
+    If cbMenuType.ItemIndex = 1 Then
+    Begin
+        txtCaption.Text := '---';
+        txtIDName.Text := 'wxID_STATIC';
+        If tvMenuItem.Selected <> Nil Then
+            tvMenuItem.Selected.Text := txtCaption.Text;
+    End;
 
-  if cbMenuType.ItemIndex = 4 then
-  begin
-    txtCaption.Text := 'Recent Files';
-    cbEnabled.Enabled := False
-    end;
+    If cbMenuType.ItemIndex = 4 Then
+    Begin
+        txtCaption.Text := 'Recent Files';
+        cbEnabled.Enabled := False;
+    End;
 
-  if (cbMenuType.ItemIndex = 2) or (cbMenuType.ItemIndex = 3) then
-    cbChecked.Enabled := True
-  else
-    cbChecked.Enabled := False;
+    If (cbMenuType.ItemIndex = 2) Or (cbMenuType.ItemIndex = 3) Then
+        cbChecked.Enabled := True
+    Else
+        cbChecked.Enabled := False;
 
-end;
+End;
 
-procedure TMenuItemForm.btBrowseClick(Sender: TObject);
-var
-  PictureEdit: TPictureEdit;
-begin
-  PictureEdit := TPictureEdit.Create(self);
-  PictureEdit.Image1.Picture.Assign(bmpMenuImage.Picture);
-  if PictureEdit.ShowModal <> mrOk then
-    exit;
-  bmpMenuImage.Picture.Assign(PictureEdit.Image1.Picture);
+Procedure TMenuItemForm.btBrowseClick(Sender: TObject);
+Var
+    PictureEdit: TPictureEdit;
+Begin
+    PictureEdit := TPictureEdit.Create(self);
+    PictureEdit.Image1.Picture.Assign(bmpMenuImage.Picture);
+    If PictureEdit.ShowModal <> mrOk Then
+        exit;
+    bmpMenuImage.Picture.Assign(PictureEdit.Image1.Picture);
 
-end;
+End;
 
-function TMenuItemForm.GetFunctionName(strF: string): string;
-begin
-  Result := LowerCase(strF);
-  strSearchReplace(Result, 'ID_', '', [srAll]);
-  strSearchReplace(Result, '_', '', [srAll]);
-  Result := strCapitalize(Result);
-  strSearchReplace(Result, ' ', '', [srAll]);
-end;
+Function TMenuItemForm.GetFunctionName(strF: String): String;
+Begin
+    Result := LowerCase(strF);
+    strSearchReplace(Result, 'ID_', '', [srAll]);
+    strSearchReplace(Result, '_', '', [srAll]);
+    Result := strCapitalize(Result);
+    strSearchReplace(Result, ' ', '', [srAll]);
+End;
 
-procedure TMenuItemForm.btNewOnMenuClick(Sender: TObject);
-var
-  strFnc, ErrorString: string;
-begin
-  if wx_designer.isCurrentFormFilesNeedToBeSaved = True then
-  begin
-    if MessageDlg('Files need to be saved before adding one.' +
-      #13 + #10 + 'Would you like to save the files before adding the function?',
-      mtConfirmation, [mbYes, mbNo], 0) <> mrYes then
-      exit;
-    if wx_designer.saveCurrentFormFiles = False then
-    begin
-      MessageDlg('Unable to save Files.', mtError, [mbOK], 0);
-      exit;
-    end;
-  end;
-  strFnc := trim(InputBox('New Function', 'Create New Function ?',
-    GetFunctionName(trim(txtIDName.Text)) + 'Click'));
-  if strFnc = '' then
-    exit;
+Procedure TMenuItemForm.btNewOnMenuClick(Sender: TObject);
+Var
+    strFnc, ErrorString: String;
+Begin
+    If wx_designer.isCurrentFormFilesNeedToBeSaved = True Then
+    Begin
+        If MessageDlg('Files need to be saved before adding one.' +
+            #13 + #10 + 'Would you like to save the files before adding the function?',
+            mtConfirmation, [mbYes, mbNo], 0) <> mrYes Then
+            exit;
+        If wx_designer.saveCurrentFormFiles = False Then
+        Begin
+            MessageDlg('Unable to save Files.', mtError, [mbOK], 0);
+            exit;
+        End;
+    End;
+    strFnc := trim(InputBox('New Function', 'Create New Function ?',
+        GetFunctionName(trim(txtIDName.Text)) + 'Click'));
+    If strFnc = '' Then
+        exit;
 
-  wx_designer.CreateFunctionInEditor(strFnc, 'void', 'wxCommandEvent& event', ErrorString);
+    wx_designer.CreateFunctionInEditor(strFnc, 'void', 'wxCommandEvent& event', ErrorString);
 
-  cbOnMenu.Text := strFnc;
-  btNewOnMenu.Enabled := False;
+    cbOnMenu.Text := strFnc;
+    btNewOnMenu.Enabled := False;
 
-end;
+End;
 
-procedure TMenuItemForm.btNewUpdateUIClick(Sender: TObject);
-var
-  strFnc, ErrorString: string;
-begin
-  if wx_designer.isCurrentFormFilesNeedToBeSaved = True then
-  begin
-    if MessageDlg('Files need to be saved before adding one.' +
-      #13 + #10 + 'Would you like to save the files before adding the function ?',
-      mtConfirmation, [mbYes, mbNo], 0) <> mrYes then
-      exit;
-    if wx_designer.saveCurrentFormFiles = False then
-    begin
-      MessageDlg('Unable to save Files.', mtError, [mbOK], 0);
-      exit;
-    end;
-  end;
+Procedure TMenuItemForm.btNewUpdateUIClick(Sender: TObject);
+Var
+    strFnc, ErrorString: String;
+Begin
+    If wx_designer.isCurrentFormFilesNeedToBeSaved = True Then
+    Begin
+        If MessageDlg('Files need to be saved before adding one.' +
+            #13 + #10 + 'Would you like to save the files before adding the function ?',
+            mtConfirmation, [mbYes, mbNo], 0) <> mrYes Then
+            exit;
+        If wx_designer.saveCurrentFormFiles = False Then
+        Begin
+            MessageDlg('Unable to save Files.', mtError, [mbOK], 0);
+            exit;
+        End;
+    End;
 
-  strFnc := trim(InputBox('New Function', 'Create New Function ?',
-    GetFunctionName(trim(txtIDName.Text)) + 'UpdateUI'));
-  if strFnc = '' then
-    exit;
-  wx_designer.CreateFunctionInEditor(strFnc, 'void', 'wxUpdateUIEvent& event', ErrorString);
-  cbOnUpdateUI.Text     := strFnc;
-  btNewUpdateUI.Enabled := False;
-end;
+    strFnc := trim(InputBox('New Function', 'Create New Function ?',
+        GetFunctionName(trim(txtIDName.Text)) + 'UpdateUI'));
+    If strFnc = '' Then
+        exit;
+    wx_designer.CreateFunctionInEditor(strFnc, 'void', 'wxUpdateUIEvent& event', ErrorString);
+    cbOnUpdateUI.Text := strFnc;
+    btNewUpdateUI.Enabled := False;
+End;
 
-procedure TMenuItemForm.MoveNode(SourceNode, TargetNode: TTreeNode);
-var
-  Node:  TTreeNode;
-  indiciesarray: array of integer;
-  sourceindex, targetindex: integer;
-  level: integer;
-  SourceItem, TargetItem: TWxCustomMenuItem;
-begin
-  sourceindex := SourceNode.Index;
-  targetindex := TargetNode.Index;
+Procedure TMenuItemForm.MoveNode(SourceNode, TargetNode: TTreeNode);
+Var
+    Node: TTreeNode;
+    indiciesarray: Array Of Integer;
+    sourceindex, targetindex: Integer;
+    level: Integer;
+    SourceItem, TargetItem: TWxCustomMenuItem;
+Begin
+    sourceindex := SourceNode.Index;
+    targetindex := TargetNode.Index;
 
   // Tony Reina 1 July 2005
   // Basic idea:
@@ -847,44 +852,44 @@ begin
   //      be at the level we want to work on).
   //      --> This cycling is essentially just moving the variable's pointer down the levels
 
-  Node := SourceNode;
-  SetLength(indiciesarray, SourceNode.Level + 1);
+    Node := SourceNode;
+    SetLength(indiciesarray, SourceNode.Level + 1);
   // Dynamically size the array (.Level is 0-based count)
-  indiciesarray[0] := Node.Index;
-  for level := 1 to SourceNode.Level do
-  begin
-    Node := Node.Parent;  // Point the node to the parent node
-    indiciesarray[level] := Node.Index;  // Record the index of the current node
-  end;
+    indiciesarray[0] := Node.Index;
+    For level := 1 To SourceNode.Level Do
+    Begin
+        Node := Node.Parent;  // Point the node to the parent node
+        indiciesarray[level] := Node.Index;  // Record the index of the current node
+    End;
 
   // Get source pointer
-  SourceItem := FMenuItems;  // Point to the menu
+    SourceItem := FMenuItems;  // Point to the menu
 
   // Move the pointer down through the parents
-  for level := SourceNode.Level downto 1 do
-    SourceItem := SourceItem.Items[indiciesarray[level]];
+    For level := SourceNode.Level Downto 1 Do
+        SourceItem := SourceItem.Items[indiciesarray[level]];
 
   // Now do the same procedure for the target node
 
   // Get target pointer
-  TargetItem := FMenuItems;
-  Node := TargetNode;
+    TargetItem := FMenuItems;
+    Node := TargetNode;
 
-  SetLength(indiciesarray, TargetNode.Level + 1); // .Level is 0-based count
-  indiciesarray[0] := Node.Index;
-  for level := 1 to TargetNode.Level do
-  begin
-    Node := Node.Parent; // Point the node to the parent node
-    indiciesarray[level] := Node.Index;  // Record the index of the current node
-  end;
+    SetLength(indiciesarray, TargetNode.Level + 1); // .Level is 0-based count
+    indiciesarray[0] := Node.Index;
+    For level := 1 To TargetNode.Level Do
+    Begin
+        Node := Node.Parent; // Point the node to the parent node
+        indiciesarray[level] := Node.Index;  // Record the index of the current node
+    End;
 
-  for level := TargetNode.Level downto 1 do
-    TargetItem := TargetItem.Items[indiciesarray[level]];
+    For level := TargetNode.Level Downto 1 Do
+        TargetItem := TargetItem.Items[indiciesarray[level]];
 
 
-  if (FShiftDown) then    // Shift, drag, and drop = Add as a child
+    If (FShiftDown) Then    // Shift, drag, and drop = Add as a child
 
-  begin
+    Begin
 
     // At this point, SourceItem and TargetItem point to the correct level
     // in the menu. Just need to insert the source at the target and delete
@@ -892,21 +897,21 @@ begin
 
     // Change the TList (this is what generates the code and gets saved)
     // Let's insert this as a child of the target node
-    TargetItem := TargetItem.Items[targetindex];
+        TargetItem := TargetItem.Items[targetindex];
 
-    if (not TargetNode.HasChildren) then
+        If (Not TargetNode.HasChildren) Then
       // If there are no children, then we need to Create them
-      TargetItem.Create(self.Parent);
+            TargetItem.Create(self.Parent);
 
-    TargetItem.Wx_Items.Add(SourceItem.Wx_Items[sourceindex]);
-    SourceItem.Wx_Items.Delete(sourceindex);
+        TargetItem.Wx_Items.Add(SourceItem.Wx_Items[sourceindex]);
+        SourceItem.Wx_Items.Delete(sourceindex);
 
     // Change the Treeview (this is what is displayed, but doesn't set the code)
-    SourceNode.MoveTo(TargetNode, naAddChild)
+        SourceNode.MoveTo(TargetNode, naAddChild);
 
-  end
-  else   // Drag and drop = Add as a sibling
-  begin
+    End
+    Else   // Drag and drop = Add as a sibling
+    Begin
 
     // At this point, SourceItem and TargetItem point to the correct level
     // in the menu. Just need to insert the source at the target and delete
@@ -914,97 +919,97 @@ begin
 
     // Change the TList (this is what generates the code and gets saved)
     // Let's insert this AFTER the target node (targetindex + 1)
-    TargetItem.Wx_Items.Insert(targetindex + 1, SourceItem.Wx_Items[sourceindex]);
-    if (sourceindex > (targetindex + 1)) and (TargetNode.Level = SourceNode.Level) then
-      SourceItem.Wx_Items.Delete(sourceindex + 1)
-    else
-      SourceItem.Wx_Items.Delete(sourceindex);
+        TargetItem.Wx_Items.Insert(targetindex + 1, SourceItem.Wx_Items[sourceindex]);
+        If (sourceindex > (targetindex + 1)) And (TargetNode.Level = SourceNode.Level) Then
+            SourceItem.Wx_Items.Delete(sourceindex + 1)
+        Else
+            SourceItem.Wx_Items.Delete(sourceindex);
 
     // Change the Treeview (this is what is displayed, but doesn't set the code)
-    if (TargetNode.GetNextSibling <> nil) then
-      SourceNode.MoveTo(TargetNode.GetNextSibling, naInsert)
-    else
-      SourceNode.MoveTo(TargetNode, naAdd);
+        If (TargetNode.GetNextSibling <> Nil) Then
+            SourceNode.MoveTo(TargetNode.GetNextSibling, naInsert)
+        Else
+            SourceNode.MoveTo(TargetNode, naAdd);
 
-  end;
+    End;
 
   // Remove shift down flag
-  FShiftDown := False;
-end;
+    FShiftDown := False;
+End;
 
 //http://users.iafrica.com/d/da/dart/zen/Articles/TTreeView/TTreeView_eg13.html
 //The drag-drop code was modified from Andre .v.d. Merwe's website
 //Source code was released as public domain
-procedure TMenuItemForm.tvMenuItemDragDrop(Sender, Source: TObject; X, Y: integer);
-var
-  TargetNode, SourceNode: TTreeNode;
-begin
-  with tvMenuItem do
-  begin
+Procedure TMenuItemForm.tvMenuItemDragDrop(Sender, Source: TObject; X, Y: Integer);
+Var
+    TargetNode, SourceNode: TTreeNode;
+Begin
+    With tvMenuItem Do
+    Begin
     {Get the node the item was dropped on}
-    TargetNode := GetNodeAt(X, Y);
+        TargetNode := GetNodeAt(X, Y);
     {Just to make things a bit easier}
-    SourceNode := Selected;
+        SourceNode := Selected;
 
     {Make sure something was droped onto}
-    if (TargetNode = nil) then
-    begin
-      EndDrag(False);
-      Exit;
-    end;
+        If (TargetNode = Nil) Then
+        Begin
+            EndDrag(False);
+            Exit;
+        End;
 
     {Dropping onto self?}
-    if (TargetNode = Selected) then
-    begin
-      EndDrag(False);
-      Exit;
-    end;
+        If (TargetNode = Selected) Then
+        Begin
+            EndDrag(False);
+            Exit;
+        End;
 
     {Dropping a parent onto a child node? No No!}
-    if (TargetNode.HasAsParent(SourceNode)) then
-    begin
-      MessageDlg('A parent node cannot be added as a child of itself', mtError, [mbOK], Handle);
-      EndDrag(False);
-      Exit;
-    end;
+        If (TargetNode.HasAsParent(SourceNode)) Then
+        Begin
+            MessageDlg('A parent node cannot be added as a child of itself', mtError, [mbOK], Handle);
+            EndDrag(False);
+            Exit;
+        End;
 
     {Dropping an empty child onto the root level? Mal says not on my watch!}
-    if (TargetNode.Level = 0) and
-      (not SourceNode.HasChildren) and (SourceNode.Level <> 0) and
-      not FShiftDown then
-    begin
-      MessageDlg('Children without submenus cannot be moved to root.', mtError, [mbOK], Handle);
-      EndDrag(False);
-      Exit;
-    end;
+        If (TargetNode.Level = 0) And
+            (Not SourceNode.HasChildren) And (SourceNode.Level <> 0) And
+            Not FShiftDown Then
+        Begin
+            MessageDlg('Children without submenus cannot be moved to root.', mtError, [mbOK], Handle);
+            EndDrag(False);
+            Exit;
+        End;
 
     {Drag drop was valid so move the nodes}
-    MoveNode(SourceNode, TargetNode);
-  end;
-end;
+        MoveNode(SourceNode, TargetNode);
+    End;
+End;
 
-procedure TMenuItemForm.tvMenuItemDragOver(Sender, Source: TObject;
-  X, Y: integer; State: TDragState; var Accept: boolean);
-begin
-  Accept := False;
+Procedure TMenuItemForm.tvMenuItemDragOver(Sender, Source: TObject;
+    X, Y: Integer; State: TDragState; Var Accept: Boolean);
+Begin
+    Accept := False;
 
   //Only accept drag and drop from a TTreeView
-  if (Sender is TTreeView) then
+    If (Sender Is TTreeView) Then
     //Only accept from self
-    if (TTreeView(Sender) = tvMenuItem) then
-      Accept := True;
-end;
+        If (TTreeView(Sender) = tvMenuItem) Then
+            Accept := True;
+End;
 
-procedure TMenuItemForm.tvMenuItemKeyDown(Sender: TObject; var Key: word;
-  Shift: TShiftState);
-begin
-  if (ssShift in Shift) then
-    FShiftDown := True;
-end;
+Procedure TMenuItemForm.tvMenuItemKeyDown(Sender: TObject; Var Key: Word;
+    Shift: TShiftState);
+Begin
+    If (ssShift In Shift) Then
+        FShiftDown := True;
+End;
 
-procedure TMenuItemForm.txtIDNameChange(Sender: TObject);
-begin
-  txtIDValue.Enabled := not AnsiStartsStr('wxID', txtIDName.Text);
-end;
+Procedure TMenuItemForm.txtIDNameChange(Sender: TObject);
+Begin
+    txtIDValue.Enabled := Not AnsiStartsStr('wxID', txtIDName.Text);
+End;
 
-end.
+End.

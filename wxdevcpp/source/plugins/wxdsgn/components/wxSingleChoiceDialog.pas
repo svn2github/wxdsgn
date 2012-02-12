@@ -24,116 +24,116 @@
 { ****************************************************************** }
 
 
-unit wxSingleChoiceDialog;
+Unit wxSingleChoiceDialog;
 
-interface
+Interface
 
-uses
-  Windows, Messages, SysUtils, Classes, wxUtils, WxNonVisibleBaseComponent;
+Uses
+    Windows, Messages, SysUtils, Classes, wxUtils, WxNonVisibleBaseComponent;
 
-type
-  TWxSingleChoiceDialog = class(TWxNonVisibleBaseComponent, IWxComponentInterface)
-  private
+Type
+    TWxSingleChoiceDialog = Class(TWxNonVisibleBaseComponent, IWxComponentInterface)
+    Private
     { Private declarations }
-    FWx_Class: string;
-    FWx_PropertyList: TStringList;
-    FWx_Message: string;
-    FWx_Caption: string;
-    FWx_Comments: TStrings;
-    FWx_ValueList:TStrings;
+        FWx_Class: String;
+        FWx_PropertyList: TStringList;
+        FWx_Message: String;
+        FWx_Caption: String;
+        FWx_Comments: TStrings;
+        FWx_ValueList: TStrings;
 
-    FWx_DialogStyle: TWxMessageDialogStyleSet;
-    procedure AutoInitialize;
-    procedure AutoDestroy;
+        FWx_DialogStyle: TWxMessageDialogStyleSet;
+        Procedure AutoInitialize;
+        Procedure AutoDestroy;
 
-  protected
+    Protected
 
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    function GenerateControlIDs: string;
-    function GenerateEnumControlIDs: string;
-    function GenerateEventTableEntries(CurrClassName: string): string;
-    function GenerateGUIControlCreation: string;
-    function GenerateXRCControlCreation(IndentString: string): TStringList;
-    function GenerateGUIControlDeclaration: string;
-    function GenerateHeaderInclude: string;
-    function GenerateImageInclude: string;
-    function GetEventList: TStringList;
-    function GetIDName: string;
-    function GetIDValue: integer;
-    function GetParameterFromEventName(EventName: string): string;
-    function GetPropertyList: TStringList;
-    function GetTypeFromEventName(EventName: string): string;
-    function GetWxClassName: string;
-    procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
-    procedure SetIDName(IDName: string);
-    procedure SetIDValue(IDValue: integer);
-    procedure SetWxClassName(wxClassName: string);
-    function GetFGColor: string;
-    procedure SetFGColor(strValue: string);
-    function GetBGColor: string;
-    procedure SetBGColor(strValue: string);
+    Public
+        Constructor Create(AOwner: TComponent); Override;
+        Destructor Destroy; Override;
+        Function GenerateControlIDs: String;
+        Function GenerateEnumControlIDs: String;
+        Function GenerateEventTableEntries(CurrClassName: String): String;
+        Function GenerateGUIControlCreation: String;
+        Function GenerateXRCControlCreation(IndentString: String): TStringList;
+        Function GenerateGUIControlDeclaration: String;
+        Function GenerateHeaderInclude: String;
+        Function GenerateImageInclude: String;
+        Function GetEventList: TStringList;
+        Function GetIDName: String;
+        Function GetIDValue: Integer;
+        Function GetParameterFromEventName(EventName: String): String;
+        Function GetPropertyList: TStringList;
+        Function GetTypeFromEventName(EventName: String): String;
+        Function GetWxClassName: String;
+        Procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
+        Procedure SetIDName(IDName: String);
+        Procedure SetIDValue(IDValue: Integer);
+        Procedure SetWxClassName(wxClassName: String);
+        Function GetFGColor: String;
+        Procedure SetFGColor(strValue: String);
+        Function GetBGColor: String;
+        Procedure SetBGColor(strValue: String);
 
-    function GetGenericColor(strVariableName:String): string;
-    procedure SetGenericColor(strVariableName,strValue: string);
+        Function GetGenericColor(strVariableName: String): String;
+        Procedure SetGenericColor(strVariableName, strValue: String);
 
-    procedure SetProxyFGColorString(Value: string);
-    procedure SetProxyBGColorString(Value: string);
+        Procedure SetProxyFGColorString(Value: String);
+        Procedure SetProxyBGColorString(Value: String);
 
-    function GetBorderAlignment: TWxBorderAlignment;
-    procedure SetBorderAlignment(border: TWxBorderAlignment);
-    function GetBorderWidth: integer;
-    procedure SetBorderWidth(width: integer);
-    function GetStretchFactor: integer;
-    procedure SetStretchFactor(intValue: integer);
+        Function GetBorderAlignment: TWxBorderAlignment;
+        Procedure SetBorderAlignment(border: TWxBorderAlignment);
+        Function GetBorderWidth: Integer;
+        Procedure SetBorderWidth(width: Integer);
+        Function GetStretchFactor: Integer;
+        Procedure SetStretchFactor(intValue: Integer);
 
-  published
+    Published
     { Published declarations }
-    property Wx_Class: string Read FWx_Class Write FWx_Class;
-    property Wx_Message: string Read FWx_Message Write FWx_Message;
-    property Wx_Caption: string Read FWx_Caption Write FWx_Caption;
-    property Wx_DialogStyle: TWxMessageDialogStyleSet
-      Read FWx_DialogStyle Write FWx_DialogStyle;
-    property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
-    property Wx_ValueList: TStrings Read FWx_ValueList Write FWx_ValueList;   
+        Property Wx_Class: String Read FWx_Class Write FWx_Class;
+        Property Wx_Message: String Read FWx_Message Write FWx_Message;
+        Property Wx_Caption: String Read FWx_Caption Write FWx_Caption;
+        Property Wx_DialogStyle: TWxMessageDialogStyleSet
+            Read FWx_DialogStyle Write FWx_DialogStyle;
+        Property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
+        Property Wx_ValueList: TStrings Read FWx_ValueList Write FWx_ValueList;
 
-  end;
+    End;
 
-procedure Register;
+Procedure Register;
 
-implementation
+Implementation
 
-procedure Register;
-begin
-  RegisterComponents('wxWidgets', [TWxSingleChoiceDialog]);
-end;
+Procedure Register;
+Begin
+    RegisterComponents('wxWidgets', [TWxSingleChoiceDialog]);
+End;
 
 { Method to set variable and property values and create objects }
-procedure TWxSingleChoiceDialog.AutoInitialize;
-begin
-  FWx_PropertyList := TStringList.Create;
-  FWx_Class    := 'wxSingleChoiceDialog';
-  Glyph.Handle := LoadBitmap(hInstance, 'TwxSingleChoiceDialog');
-  FWx_Caption  := 'Single Choice List';
-  FWx_Comments := TStringList.Create;
-  FWx_ValueList:= TStringList.Create;
+Procedure TWxSingleChoiceDialog.AutoInitialize;
+Begin
+    FWx_PropertyList := TStringList.Create;
+    FWx_Class := 'wxSingleChoiceDialog';
+    Glyph.Handle := LoadBitmap(hInstance, 'TwxSingleChoiceDialog');
+    FWx_Caption := 'Single Choice List';
+    FWx_Comments := TStringList.Create;
+    FWx_ValueList := TStringList.Create;
 
-end; { of AutoInitialize }
+End; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
-procedure TWxSingleChoiceDialog.AutoDestroy;
-begin
-  FWx_PropertyList.Destroy;
-  FWx_Comments.Destroy;
-  FWx_ValueList.Destroy;
-  Glyph.Assign(nil);
-end; { of AutoDestroy }
+Procedure TWxSingleChoiceDialog.AutoDestroy;
+Begin
+    FWx_PropertyList.Destroy;
+    FWx_Comments.Destroy;
+    FWx_ValueList.Destroy;
+    Glyph.Assign(Nil);
+End; { of AutoDestroy }
 
-constructor TWxSingleChoiceDialog.Create(AOwner: TComponent);
-begin
+Constructor TWxSingleChoiceDialog.Create(AOwner: TComponent);
+Begin
   { Call the Create method of the container's parent class       }
-  inherited Create(AOwner);
+    Inherited Create(AOwner);
 
   { AutoInitialize sets the initial values of variables          }
   { (including subcomponent variables) and properties;           }
@@ -141,34 +141,34 @@ begin
   { Delphi object types (e.g., TFont, TTimer, TPicture)          }
   { and for any variables marked as objects.                     }
   { AutoInitialize method is generated by Component Create.      }
-  AutoInitialize;
+    AutoInitialize;
 
   { Code to perform other tasks when the component is created }
   { Code to perform other tasks when the component is created }
-  FWx_PropertyList.add('Wx_DialogStyle:Message Dialog Style');
+    FWx_PropertyList.add('Wx_DialogStyle:Message Dialog Style');
 
-  FWx_PropertyList.add('wxOK:wxOK');
-  FWx_PropertyList.add('wxCENTRE:wxCENTRE');
-  FWx_PropertyList.add('wxCANCEL:wxCANCEL');
-  FWx_PropertyList.add('wxYES_NO:wxYES_NO');
-  FWx_PropertyList.add('wxYES_DEFAULT:wxYES_DEFAULT');
-  FWx_PropertyList.add('wxNO_DEFAULT:wxNO_DEFAULT');
+    FWx_PropertyList.add('wxOK:wxOK');
+    FWx_PropertyList.add('wxCENTRE:wxCENTRE');
+    FWx_PropertyList.add('wxCANCEL:wxCANCEL');
+    FWx_PropertyList.add('wxYES_NO:wxYES_NO');
+    FWx_PropertyList.add('wxYES_DEFAULT:wxYES_DEFAULT');
+    FWx_PropertyList.add('wxNO_DEFAULT:wxNO_DEFAULT');
 
-  FWx_PropertyList.add('Wx_ValueList:Items');
+    FWx_PropertyList.add('Wx_ValueList:Items');
 
-  FWx_PropertyList.add('Wx_Message:Message');
-  FWx_PropertyList.add('Wx_Caption:Caption');
-  FWx_PropertyList.add('Name:Name');
-  FWx_PropertyList.add('Wx_Class:Base Class');
-  FWx_PropertyList.add('Wx_Comments:Comments');
+    FWx_PropertyList.add('Wx_Message:Message');
+    FWx_PropertyList.add('Wx_Caption:Caption');
+    FWx_PropertyList.add('Name:Name');
+    FWx_PropertyList.add('Wx_Class:Base Class');
+    FWx_PropertyList.add('Wx_Comments:Comments');
 
-end;
+End;
 
-destructor TWxSingleChoiceDialog.Destroy;
-begin
+Destructor TWxSingleChoiceDialog.Destroy;
+Begin
   { AutoDestroy, which is generated by Component Create, frees any   }
   { objects created by AutoInitialize.                               }
-  AutoDestroy;
+    AutoDestroy;
 
   { Here, free any other dynamic objects that the component methods  }
   { created but have not yet freed.  Also perform any other clean-up }
@@ -176,201 +176,201 @@ begin
 
   { Last, free the component by calling the Destroy method of the    }
   { parent class.                                                    }
-  inherited Destroy;
-end;
+    Inherited Destroy;
+End;
 
-function TWxSingleChoiceDialog.GenerateControlIDs: string;
-begin
-  Result := '';
-end;
+Function TWxSingleChoiceDialog.GenerateControlIDs: String;
+Begin
+    Result := '';
+End;
 
 
-function TWxSingleChoiceDialog.GenerateEnumControlIDs: string;
-begin
-  Result := '';
-end;
+Function TWxSingleChoiceDialog.GenerateEnumControlIDs: String;
+Begin
+    Result := '';
+End;
 
-function TWxSingleChoiceDialog.GenerateEventTableEntries(CurrClassName: string): string;
-begin
-  Result := '';
-end;
+Function TWxSingleChoiceDialog.GenerateEventTableEntries(CurrClassName: String): String;
+Begin
+    Result := '';
+End;
 
-function TWxSingleChoiceDialog.GenerateXRCControlCreation(IndentString: string): TStringList;
-begin
+Function TWxSingleChoiceDialog.GenerateXRCControlCreation(IndentString: String): TStringList;
+Begin
 
-  Result := TStringList.Create;
+    Result := TStringList.Create;
 
-  try
+    Try
 
-    Result.Add(IndentString + Format('<object class="%s" name="%s">',
-      [self.Wx_Class, self.Name]));
-    Result.Add(IndentString + '</object>');
+        Result.Add(IndentString + Format('<object class="%s" name="%s">',
+            [self.Wx_Class, self.Name]));
+        Result.Add(IndentString + '</object>');
 
-  except
+    Except
 
-    Result.Free;
-    raise;
+        Result.Free;
+        Raise;
 
-  end;
+    End;
 
-end;
+End;
 
-function TWxSingleChoiceDialog.GenerateGUIControlCreation: string;
-var
-  strStyle: string;
-  i:Integer;
-begin
-  Result   := '';
-  strStyle := GetMessageDialogStyleString(self.Wx_DialogStyle,false);
-  
+Function TWxSingleChoiceDialog.GenerateGUIControlCreation: String;
+Var
+    strStyle: String;
+    i: Integer;
+Begin
+    Result := '';
+    strStyle := GetMessageDialogStyleString(self.Wx_DialogStyle, False);
+
     Result := GetCommentString(self.FWx_Comments.Text) +
-    'wxArrayString arrayStringFor_' + self.Name + ';';
+        'wxArrayString arrayStringFor_' + self.Name + ';';
 
-  for i := 0 to self.Wx_ValueList.Count - 1 do
-    Result := Result + #13 + Format(
-      '%s.Add(%s);', ['arrayStringFor_' + self.Name, GetCppString(self.Wx_ValueList[i])]);
-      
-    Result := Result + #13 +Format('%s =  new %s(this, %s, %s, %s,NULL%s);', [self.Name, self.wx_Class,
-    GetCppString(wx_Message), GetCppString(wx_Caption), 'arrayStringFor_' + self.Name,strStyle]);
+    For i := 0 To self.Wx_ValueList.Count - 1 Do
+        Result := Result + #13 + Format(
+            '%s.Add(%s);', ['arrayStringFor_' + self.Name, GetCppString(self.Wx_ValueList[i])]);
 
-end;
+    Result := Result + #13 + Format('%s =  new %s(this, %s, %s, %s,NULL%s);', [self.Name, self.wx_Class,
+        GetCppString(wx_Message), GetCppString(wx_Caption), 'arrayStringFor_' + self.Name, strStyle]);
 
-function TWxSingleChoiceDialog.GenerateGUIControlDeclaration: string;
-begin
-  Result := '';
-  Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
-end;
+End;
 
-function TWxSingleChoiceDialog.GenerateHeaderInclude: string;
-begin
-  Result := '';
-  Result := '#include <wx/choicdlg.h>';
-end;
+Function TWxSingleChoiceDialog.GenerateGUIControlDeclaration: String;
+Begin
+    Result := '';
+    Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
+End;
 
-function TWxSingleChoiceDialog.GenerateImageInclude: string;
-begin
+Function TWxSingleChoiceDialog.GenerateHeaderInclude: String;
+Begin
+    Result := '';
+    Result := '#include <wx/choicdlg.h>';
+End;
 
-end;
+Function TWxSingleChoiceDialog.GenerateImageInclude: String;
+Begin
 
-function TWxSingleChoiceDialog.GetEventList: TStringList;
-begin
-  Result := nil;
-end;
+End;
 
-function TWxSingleChoiceDialog.GetIDName: string;
-begin
+Function TWxSingleChoiceDialog.GetEventList: TStringList;
+Begin
+    Result := Nil;
+End;
 
-end;
+Function TWxSingleChoiceDialog.GetIDName: String;
+Begin
 
-function TWxSingleChoiceDialog.GetIDValue: integer;
-begin
-  Result := 0;
-end;
+End;
 
-function TWxSingleChoiceDialog.GetParameterFromEventName(EventName: string): string;
-begin
+Function TWxSingleChoiceDialog.GetIDValue: Integer;
+Begin
+    Result := 0;
+End;
 
-end;
+Function TWxSingleChoiceDialog.GetParameterFromEventName(EventName: String): String;
+Begin
 
-function TWxSingleChoiceDialog.GetStretchFactor: integer;
-begin
-   Result := 1;
-end;
+End;
 
-function TWxSingleChoiceDialog.GetPropertyList: TStringList;
-begin
-  Result := FWx_PropertyList;
-end;
+Function TWxSingleChoiceDialog.GetStretchFactor: Integer;
+Begin
+    Result := 1;
+End;
 
-function TWxSingleChoiceDialog.GetBorderAlignment: TWxBorderAlignment;
-begin
-  Result := [];
-end;
+Function TWxSingleChoiceDialog.GetPropertyList: TStringList;
+Begin
+    Result := FWx_PropertyList;
+End;
 
-procedure TWxSingleChoiceDialog.SetBorderAlignment(border: TWxBorderAlignment);
-begin
-end;
+Function TWxSingleChoiceDialog.GetBorderAlignment: TWxBorderAlignment;
+Begin
+    Result := [];
+End;
 
-function TWxSingleChoiceDialog.GetBorderWidth: integer;
-begin
-  Result := 0;
-end;
+Procedure TWxSingleChoiceDialog.SetBorderAlignment(border: TWxBorderAlignment);
+Begin
+End;
 
-procedure TWxSingleChoiceDialog.SetBorderWidth(width: integer);
-begin
-end;
+Function TWxSingleChoiceDialog.GetBorderWidth: Integer;
+Begin
+    Result := 0;
+End;
 
-function TWxSingleChoiceDialog.GetTypeFromEventName(EventName: string): string;
-begin
+Procedure TWxSingleChoiceDialog.SetBorderWidth(width: Integer);
+Begin
+End;
 
-end;
+Function TWxSingleChoiceDialog.GetTypeFromEventName(EventName: String): String;
+Begin
 
-function TWxSingleChoiceDialog.GetWxClassName: string;
-begin
-  if trim(wx_Class) = '' then
-    wx_Class := 'wxMessageDialog';
-  Result := wx_Class;
-end;
+End;
 
-procedure TWxSingleChoiceDialog.SaveControlOrientation(
-  ControlOrientation: TWxControlOrientation);
-begin
+Function TWxSingleChoiceDialog.GetWxClassName: String;
+Begin
+    If trim(wx_Class) = '' Then
+        wx_Class := 'wxMessageDialog';
+    Result := wx_Class;
+End;
 
-end;
+Procedure TWxSingleChoiceDialog.SaveControlOrientation(
+    ControlOrientation: TWxControlOrientation);
+Begin
 
-procedure TWxSingleChoiceDialog.SetIDName(IDName: string);
-begin
+End;
 
-end;
+Procedure TWxSingleChoiceDialog.SetIDName(IDName: String);
+Begin
 
-procedure TWxSingleChoiceDialog.SetIDValue(IDValue: integer);
-begin
+End;
 
-end;
+Procedure TWxSingleChoiceDialog.SetIDValue(IDValue: Integer);
+Begin
 
-procedure TWxSingleChoiceDialog.SetStretchFactor(intValue: integer);
-begin
-end;
+End;
 
-procedure TWxSingleChoiceDialog.SetWxClassName(wxClassName: string);
-begin
-  wx_Class := wxClassName;
-end;
+Procedure TWxSingleChoiceDialog.SetStretchFactor(intValue: Integer);
+Begin
+End;
 
-function TWxSingleChoiceDialog.GetGenericColor(strVariableName:String): string;
-begin
+Procedure TWxSingleChoiceDialog.SetWxClassName(wxClassName: String);
+Begin
+    wx_Class := wxClassName;
+End;
 
-end;
-procedure TWxSingleChoiceDialog.SetGenericColor(strVariableName,strValue: string);
-begin
+Function TWxSingleChoiceDialog.GetGenericColor(strVariableName: String): String;
+Begin
 
-end;
+End;
+Procedure TWxSingleChoiceDialog.SetGenericColor(strVariableName, strValue: String);
+Begin
 
-function TWxSingleChoiceDialog.GetFGColor: string;
-begin
+End;
 
-end;
+Function TWxSingleChoiceDialog.GetFGColor: String;
+Begin
 
-procedure TWxSingleChoiceDialog.SetFGColor(strValue: string);
-begin
-end;
+End;
 
-function TWxSingleChoiceDialog.GetBGColor: string;
-begin
-end;
+Procedure TWxSingleChoiceDialog.SetFGColor(strValue: String);
+Begin
+End;
 
-procedure TWxSingleChoiceDialog.SetBGColor(strValue: string);
-begin
-end;
+Function TWxSingleChoiceDialog.GetBGColor: String;
+Begin
+End;
 
-procedure TWxSingleChoiceDialog.SetProxyFGColorString(Value: string);
-begin
-end;
+Procedure TWxSingleChoiceDialog.SetBGColor(strValue: String);
+Begin
+End;
 
-procedure TWxSingleChoiceDialog.SetProxyBGColorString(Value: string);
-begin
+Procedure TWxSingleChoiceDialog.SetProxyFGColorString(Value: String);
+Begin
+End;
 
-end;
+Procedure TWxSingleChoiceDialog.SetProxyBGColorString(Value: String);
+Begin
 
-end.
+End;
+
+End.
  

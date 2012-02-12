@@ -17,11 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-unit LangFrm;
+Unit LangFrm;
 
-interface
+Interface
 
-uses
+Uses
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
     StdCtrls, Buttons, ExtCtrls, Menus, XPMenu, ComCtrls,
@@ -34,8 +34,8 @@ uses
   QStdCtrls, QButtons, QExtCtrls, QMenus, QComCtrls;
 {$ENDIF}
 
-type
-    TLangForm = class(TForm)
+Type
+    TLangForm = Class(TForm)
         OkBtn: TBitBtn;
         PicPanel: TPanel;
         PopupMenu: TPopupMenu;
@@ -72,79 +72,79 @@ type
         Label4: TLabel;
         Label7: TLabel;
         Label8: TLabel;
-        procedure PreviewBtnClick(Sender: TObject);
-        procedure FormActivate(Sender: TObject);
-        procedure OkBtnClick(Sender: TObject);
-        procedure XPCheckBoxClick(Sender: TObject);
-        procedure DirCheckBoxClick(Sender: TObject);
-        procedure LoadBtnClick(Sender: TObject);
-        procedure ThemeBoxChange(Sender: TObject);
-    private
-        HasProgressStarted: boolean;
+        Procedure PreviewBtnClick(Sender: TObject);
+        Procedure FormActivate(Sender: TObject);
+        Procedure OkBtnClick(Sender: TObject);
+        Procedure XPCheckBoxClick(Sender: TObject);
+        Procedure DirCheckBoxClick(Sender: TObject);
+        Procedure LoadBtnClick(Sender: TObject);
+        Procedure ThemeBoxChange(Sender: TObject);
+    Private
+        HasProgressStarted: Boolean;
 
-        function GetSelected: integer;
-        procedure CppParserTotalProgress(Sender: TObject; FileName: String;
+        Function GetSelected: Integer;
+        Procedure CppParserTotalProgress(Sender: TObject; FileName: String;
             Total, Current: Integer);
-        procedure CppParserStartParsing(Sender: TObject);
-        procedure CppParserEndParsing(Sender: TObject);
+        Procedure CppParserStartParsing(Sender: TObject);
+        Procedure CppParserEndParsing(Sender: TObject);
 
-    public
-        procedure UpdateList(const List: TStrings);
-        property Selected: integer read GetSelected;
-    end;
+    Public
+        Procedure UpdateList(Const List: TStrings);
+        Property Selected: Integer Read GetSelected;
+    End;
 
-implementation
+Implementation
 
-uses
+Uses
     MultiLangSupport, datamod, DevThemes, devcfg, utils, main, version;
 
 {$R *.dfm}
 
-procedure TLangForm.UpdateList;
-var
-    idx: integer;
-    sel: integer;
-begin
+Procedure TLangForm.UpdateList;
+Var
+    idx: Integer;
+    sel: Integer;
+Begin
     ListBox.Clear;
-    for idx := 0 to pred(List.Count) do
-    begin
+    For idx := 0 To pred(List.Count) Do
+    Begin
         sel := ListBox.Items.Add(List.Values[List.Names[idx]]);
-        if Pos('english', LowerCase(ListBox.Items[sel])) > 0 then
+        If Pos('english', LowerCase(ListBox.Items[sel])) > 0 Then
             ListBox.Selected[sel] := True;
-    end;
-end;
+    End;
+End;
 
-function TLangForm.GetSelected: integer;
-begin
+Function TLangForm.GetSelected: Integer;
+Begin
     result := ListBox.ItemIndex;
-end;
+End;
 
-procedure TLangForm.PreviewBtnClick(Sender: TObject);
-var
+Procedure TLangForm.PreviewBtnClick(Sender: TObject);
+Var
     aPoint: TPoint;
-begin
-    if ThemeBox.ItemIndex = 1 then
+Begin
+    If ThemeBox.ItemIndex = 1 Then
         PopupMenu.Images := dmMain.MenuImages_Gnome
-    else
-    if ThemeBox.ItemIndex = 2 then
+    Else
+    If ThemeBox.ItemIndex = 2 Then
         PopupMenu.Images := dmMain.MenuImages_Blue
-    else
-    if ThemeBox.ItemIndex = 3 then
+    Else
+    If ThemeBox.ItemIndex = 3 Then
         PopupMenu.Images := dmMain.MenuImages_Classic
-    else
+    Else
         PopupMenu.Images := dmMain.MenuImages_NewLook;
     aPoint := Point(0, 0);
     aPoint := PreviewBtn.ClientToScreen(aPoint);
     PopupMenu.Popup(aPoint.X, aPoint.Y);
-end;
+End;
 
-procedure TLangForm.FormActivate(Sender: TObject);
-var s: array [0..255] of char;
+Procedure TLangForm.FormActivate(Sender: TObject);
+Var s: Array [0..255] Of Char;
     d: DWORD;
     sl: TStrings;
-begin
+Begin
     DesktopFont := True;
-    HasProgressStarted := false;
+    HasProgressStarted := False;
     sl := devTheme.ThemeList;
     ThemeBox.Items.AddStrings(sl);
     sl.Free;
@@ -160,94 +160,94 @@ begin
              +'pass -c "Configuration File Directory" when starting wxDev-C++.'),
              PChar('Beta Version Notice'), MB_OK);
 {$ENDIF}
-end;
+End;
 
-procedure TLangForm.CppParserStartParsing(Sender: TObject);
-begin
+Procedure TLangForm.CppParserStartParsing(Sender: TObject);
+Begin
     pbCCCache.Visible := True;
-end;
+End;
 
-procedure TLangForm.CppParserEndParsing(Sender: TObject);
-begin
+Procedure TLangForm.CppParserEndParsing(Sender: TObject);
+Begin
     pbCCCache.Visible := False;
-end;
+End;
 
-procedure TLangForm.CppParserTotalProgress(Sender: TObject;
+Procedure TLangForm.CppParserTotalProgress(Sender: TObject;
     FileName: String; Total, Current: Integer);
-begin
-    if not HasProgressStarted then
-    begin
+Begin
+    If Not HasProgressStarted Then
+    Begin
         pbCCCache.Max := Total;
-        HasProgressStarted := true;
-    end;
+        HasProgressStarted := True;
+    End;
     pbCCCache.Position := pbCCCache.Position + Current;
-    if FileName <> '' then
+    If FileName <> '' Then
         ParseLabel.Caption := 'Parsing file: ' + FileName
-    else
+    Else
         ParseLabel.Caption := 'Finalizing... Please wait';
     ParseLabel.Width := 236;
     Application.ProcessMessages;
-end;
+End;
 
-procedure TLangForm.OkBtnClick(Sender: TObject);
-var s, f: TStringList;
-    i, j: integer;
-begin
-    if OkBtn.Tag = 0 then
-    begin
+Procedure TLangForm.OkBtnClick(Sender: TObject);
+Var s, f: TStringList;
+    i, j: Integer;
+Begin
+    If OkBtn.Tag = 0 Then
+    Begin
         OkBtn.Tag := 1;
-        SecondPanel.Visible := true;
-        FirstPanel.Visible := false;
-        devData.ThemeChange := true;
+        SecondPanel.Visible := True;
+        FirstPanel.Visible := False;
+        devData.ThemeChange := True;
         devData.Theme := ThemeBox.Items[ThemeBox.ItemIndex];
         devData.XPTheme := XPCheckBox.Checked;
-        devClassBrowsing.Enabled := true;
+        devClassBrowsing.Enabled := True;
         // EAB: There's no reason for classbrowsing disabled by default as far as we know.
-    end
-    else
-    if OkBtn.Tag = 1 then
-    begin
-        if YesClassBrowser.Checked then
-        begin
+    End
+    Else
+    If OkBtn.Tag = 1 Then
+    Begin
+        If YesClassBrowser.Checked Then
+        Begin
             OkBtn.Tag := 2;
-            CachePanel.Visible := true;
-            SecondPanel.Visible := false;
-        end
-        else
-        begin
+            CachePanel.Visible := True;
+            SecondPanel.Visible := False;
+        End
+        Else
+        Begin
             OkBtn.Tag := 3;
             OkBtn.Kind := bkOK;
             OkBtn.ModalResult := mrOK;
-            FinishPanel.Visible := true;
-            SecondPanel.Visible := false;
-            devCodeCompletion.Enabled := false;
-            devCodeCompletion.UseCacheFiles := false;
-            devClassBrowsing.ParseLocalHeaders := false;
-            devClassBrowsing.ParseGlobalHeaders := false;
+            FinishPanel.Visible := True;
+            SecondPanel.Visible := False;
+            devCodeCompletion.Enabled := False;
+            devCodeCompletion.UseCacheFiles := False;
+            devClassBrowsing.ParseLocalHeaders := False;
+            devClassBrowsing.ParseGlobalHeaders := False;
             SaveOptions;
-        end;
-    end
-    else
-    if OkBtn.Tag = 2 then
-    begin
-        if YesCache.Checked then
-        begin
-            YesCache.Enabled := false;
-            NoCache.Enabled := false;
-            OkBtn.Enabled := false;
-            DirEdit.Enabled := false;
-            DirCheckBox.Enabled := false;
-            LoadBtn.Enabled := false;
+        End;
+    End
+    Else
+    If OkBtn.Tag = 2 Then
+    Begin
+        If YesCache.Checked Then
+        Begin
+            YesCache.Enabled := False;
+            NoCache.Enabled := False;
+            OkBtn.Enabled := False;
+            DirEdit.Enabled := False;
+            DirCheckBox.Enabled := False;
+            LoadBtn.Enabled := False;
             BuildPanel.Visible := False;
             ProgressPanel.Visible := True;
             OkBtn.Caption := 'Please wait...';
-            MainForm.CacheCreated := true;
+            MainForm.CacheCreated := True;
             Application.ProcessMessages;
-            devCodeCompletion.Enabled := true;
-            devCodeCompletion.UseCacheFiles := true;
-            devClassBrowsing.Enabled := true;
-            devClassBrowsing.ParseLocalHeaders := true;
-            devClassBrowsing.ParseGlobalHeaders := false;
+            devCodeCompletion.Enabled := True;
+            devCodeCompletion.UseCacheFiles := True;
+            devClassBrowsing.Enabled := True;
+            devClassBrowsing.ParseLocalHeaders := True;
+            devClassBrowsing.ParseGlobalHeaders := False;
             SaveOptions;
 
             MainForm.CppParser1.ParseLocalHeaders := True;
@@ -260,41 +260,41 @@ begin
             MainForm.ClassBrowser1.SetUpdateOff;
 
             s := TStringList.Create;
-            if DirCheckBox.Checked then
+            If DirCheckBox.Checked Then
                 StrToList(DirEdit.Text, s)
-            else
-            begin
+            Else
+            Begin
        {$IFDEF PLUGIN_BUILD}
-                for i := 0 to MainForm.pluginsCount - 1 do
-                begin
-                    if (devDirs.Cpp = '') then
+                For i := 0 To MainForm.pluginsCount - 1 Do
+                Begin
+                    If (devDirs.Cpp = '') Then
                         devDirs.Cpp := devDirs.Cpp + ';' +
                             devDirs.CallValidatePaths(MainForm.plugins[i].GET_COMMON_CPP_INCLUDE_DIR)
                     // EAB TODO: make it multiplugin functional.
-                    else
+                    Else
                         devDirs.Cpp := devDirs.Cpp + ';' +
                             devDirs.CallValidatePaths(MainForm.plugins[i].GET_COMMON_CPP_INCLUDE_DIR);
                     // EAB TODO: make it multiplugin functional.
-                end;
+                End;
         {$ENDIF}
                 StrToList(devDirs.Cpp, s);
-            end;
+            End;
 
             f := TStringList.Create;
-            for i := 0 to s.Count - 1 do
-            begin
-                if DirectoryExists(s[i]) then
-                begin
-                    FilesFromWildcard(s[i], '*.*', f, false, false, false);
+            For i := 0 To s.Count - 1 Do
+            Begin
+                If DirectoryExists(s[i]) Then
+                Begin
+                    FilesFromWildcard(s[i], '*.*', f, False, False, False);
                     Screen.Cursor := crHourglass;
                     Application.ProcessMessages;
-                    for j := 0 to f.Count - 1 do
+                    For j := 0 To f.Count - 1 Do
                         MainForm.CppParser1.AddFileToScan(f[j]);
-                end
-                else
+                End
+                Else
                     MessageDlg('Directory "' + s[i] + '" does not exist.',
                         mtWarning, [mbOK], 0);
-            end;
+            End;
             MainForm.CppParser1.ParseList;
             ParseLabel.Caption := 'Saving cache to disk...';
 
@@ -309,54 +309,54 @@ begin
             Screen.Cursor := crDefault;
             s.Free;
             f.Free;
-        end
-        else
-        begin
-            devClassBrowsing.ParseLocalHeaders := true;
-            devClassBrowsing.ParseGlobalHeaders := false;
-        end;
+        End
+        Else
+        Begin
+            devClassBrowsing.ParseLocalHeaders := True;
+            devClassBrowsing.ParseGlobalHeaders := False;
+        End;
         OkBtn.Tag := 3;
         OkBtn.Kind := bkOK;
         OkBtn.ModalResult := mrOK;
-        OkBtn.Enabled := true;
-        FinishPanel.Visible := true;
-        CachePanel.Visible := false;
-    end
-end;
+        OkBtn.Enabled := True;
+        FinishPanel.Visible := True;
+        CachePanel.Visible := False;
+    End;
+End;
 
-procedure TLangForm.XPCheckBoxClick(Sender: TObject);
-begin
-    if XPCheckBox.Checked then
-        XPMenu.Active := true
-    else
-        XPMenu.Active := false;
-end;
+Procedure TLangForm.XPCheckBoxClick(Sender: TObject);
+Begin
+    If XPCheckBox.Checked Then
+        XPMenu.Active := True
+    Else
+        XPMenu.Active := False;
+End;
 
-procedure TLangForm.DirCheckBoxClick(Sender: TObject);
-begin
+Procedure TLangForm.DirCheckBoxClick(Sender: TObject);
+Begin
     DirEdit.Enabled := DirCheckBox.Checked;
-    if DirEdit.Enabled then
+    If DirEdit.Enabled Then
         DirEdit.Color := clCaptionText
-    else
+    Else
         DirEdit.Color := clInactiveCaptionText;
-end;
+End;
 
-procedure TLangForm.LoadBtnClick(Sender: TObject);
-var
+Procedure TLangForm.LoadBtnClick(Sender: TObject);
+Var
 {$IFDEF WIN32}
-    s: string;
+    s: String;
 {$ENDIF}
 {$IFDEF LINUX}
   s: WideString;
 {$ENDIF}
-begin
-    if SelectDirectory('Include Directory', '', s) then
+Begin
+    If SelectDirectory('Include Directory', '', s) Then
         DirEdit.Text := s;
-end;
+End;
 
-procedure TLangForm.ThemeBoxChange(Sender: TObject);
-begin
-    case ThemeBox.ItemIndex of
+Procedure TLangForm.ThemeBoxChange(Sender: TObject);
+Begin
+    Case ThemeBox.ItemIndex Of
         1:
             Image2.Picture.Bitmap.LoadFromResourceName(HInstance, 'THEMEGNOME');
         2:
@@ -364,9 +364,9 @@ begin
         3:
             Image2.Picture.Bitmap.LoadFromResourceName(HInstance, 'THEMECLASSIC');
 
-    else
+    Else
         Image2.Picture.Bitmap.LoadFromResourceName(HInstance, 'THEMENEWLOOK');
-    end;
-end;
+    End;
+End;
 
-end.
+End.

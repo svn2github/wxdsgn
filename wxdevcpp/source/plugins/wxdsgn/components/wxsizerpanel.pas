@@ -25,95 +25,95 @@
 {Contact gururamnath@yahoo.com for details                           }
 { ****************************************************************** }
 
-unit WxSizerPanel;
+Unit WxSizerPanel;
 
-interface
+Interface
 
-uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
-  Forms, Graphics, ExtCtrls;
+Uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
+    Forms, Graphics, ExtCtrls;
 
-type
-  TWxSizerPanel = class(TPanel)
-  private
+Type
+    TWxSizerPanel = Class(TPanel)
+    Private
     { Private fields of TWxSizerPanel }
 
     { Private methods of TWxSizerPanel }
 
-  protected
+    Protected
     { Protected fields of TWxSizerPanel }
 
     { Protected methods of TWxSizerPanel }
-    procedure Click; override;
-    procedure KeyPress(var Key: char); override;
-    procedure Loaded; override;
-    procedure Paint; override;
+        Procedure Click; Override;
+        Procedure KeyPress(Var Key: Char); Override;
+        Procedure Loaded; Override;
+        Procedure Paint; Override;
 
-  public
+    Public
     { Public fields and properties of TWxSizerPanel }
 
     { Public methods of TWxSizerPanel }
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
+        Constructor Create(AOwner: TComponent); Override;
+        Destructor Destroy; Override;
 
-  published
+    Published
     { Published properties of TWxSizerPanel }
-    property OnClick;
-    property OnDblClick;
-    property OnDragDrop;
-    property OnEnter;
-    property OnExit;
-    property OnKeyDown;
-    property OnKeyPress;
-    property OnKeyUp;
-    property OnMouseDown;
-    property OnMouseMove;
-    property OnMouseUp;
-    property OnResize;
+        Property OnClick;
+        Property OnDblClick;
+        Property OnDragDrop;
+        Property OnEnter;
+        Property OnExit;
+        Property OnKeyDown;
+        Property OnKeyPress;
+        Property OnKeyUp;
+        Property OnMouseDown;
+        Property OnMouseMove;
+        Property OnMouseUp;
+        Property OnResize;
 
-  end;
+    End;
 
-procedure Register;
+Procedure Register;
 
-implementation
+Implementation
 
-procedure Register;
-begin
+Procedure Register;
+Begin
      { Register TWxSizerPanel with Standard as its
        default page on the Delphi component palette }
-  RegisterComponents('Standard', [TWxSizerPanel]);
-end;
+    RegisterComponents('Standard', [TWxSizerPanel]);
+End;
 
 { Override OnClick handler from TPanel }
-procedure TWxSizerPanel.Click;
-begin
-  inherited Click;
-end;
+Procedure TWxSizerPanel.Click;
+Begin
+    Inherited Click;
+End;
 
 { Override OnKeyPress handler from TPanel }
-procedure TWxSizerPanel.KeyPress(var Key: char);
-begin
-  inherited KeyPress(Key);
-end;
+Procedure TWxSizerPanel.KeyPress(Var Key: Char);
+Begin
+    Inherited KeyPress(Key);
+End;
 
-constructor TWxSizerPanel.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-end;
+Constructor TWxSizerPanel.Create(AOwner: TComponent);
+Begin
+    Inherited Create(AOwner);
+End;
 
-destructor TWxSizerPanel.Destroy;
-begin
-  inherited Destroy;
-end;
+Destructor TWxSizerPanel.Destroy;
+Begin
+    Inherited Destroy;
+End;
 
-procedure TWxSizerPanel.Loaded;
-begin
-  inherited Loaded;
-end;
+Procedure TWxSizerPanel.Loaded;
+Begin
+    Inherited Loaded;
+End;
 
-procedure TWxSizerPanel.Paint;
-begin
-  inherited Paint;
-end;
+Procedure TWxSizerPanel.Paint;
+Begin
+    Inherited Paint;
+End;
 
 
-end.
+End.

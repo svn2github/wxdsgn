@@ -17,11 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-unit NewTemplateFm;
+Unit NewTemplateFm;
 
-interface
+Interface
 
-uses
+Uses
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
     Dialogs, StdCtrls, CheckLst, devTabs, ExtCtrls, Buttons, ComCtrls,
@@ -33,8 +33,8 @@ uses
   project, QImgList, IniFiles, Types;
 {$ENDIF}
 
-type
-    TNewTemplateForm = class(TForm)
+Type
+    TNewTemplateForm = Class(TForm)
         devPages1: TPageControl;
         pgTemplate: TTabSheet;
         pgFiles: TTabSheet;
@@ -69,47 +69,47 @@ type
         cbRessource: TCheckBox;
         CompilerSet: TComboBox;
         Label1: TLabel;
-        procedure FormShow(Sender: TObject);
-        procedure btnLibClick(Sender: TObject);
-        procedure btnRemoveClick(Sender: TObject);
-        procedure btnBrowseClick(Sender: TObject);
-        procedure lstIconsDrawItem(Control: TWinControl; Index: Integer;
+        Procedure FormShow(Sender: TObject);
+        Procedure btnLibClick(Sender: TObject);
+        Procedure btnRemoveClick(Sender: TObject);
+        Procedure btnBrowseClick(Sender: TObject);
+        Procedure lstIconsDrawItem(Control: TWinControl; Index: Integer;
             Rect: TRect; State: TOwnerDrawState);
-        procedure lstIconsClick(Sender: TObject);
-        procedure btnCreateClick(Sender: TObject);
-        procedure cmbNameChange(Sender: TObject);
-        procedure CompilerSetChange(Sender: TObject);
-        procedure memCompilerChange(Sender: TObject);
-        procedure memCppCompilerChange(Sender: TObject);
-        procedure memLinkerChange(Sender: TObject);
-    private
+        Procedure lstIconsClick(Sender: TObject);
+        Procedure btnCreateClick(Sender: TObject);
+        Procedure cmbNameChange(Sender: TObject);
+        Procedure CompilerSetChange(Sender: TObject);
+        Procedure memCompilerChange(Sender: TObject);
+        Procedure memCppCompilerChange(Sender: TObject);
+        Procedure memLinkerChange(Sender: TObject);
+    Private
         { Private declarations }
-        Icons: array[0..1] of TIcon;
-        IconFiles: array[0..1] of TFileName;
-        sIcon: string;
-        sProjIcon: string;
-        procedure LoadText;
-        procedure ReadCategories;
-        procedure FillUnits;
-        procedure FillExtras;
-        procedure FillIconsList;
-        procedure CreateTemplate;
-    public
+        Icons: Array[0..1] Of TIcon;
+        IconFiles: Array[0..1] Of TFileName;
+        sIcon: String;
+        sProjIcon: String;
+        Procedure LoadText;
+        Procedure ReadCategories;
+        Procedure FillUnits;
+        Procedure FillExtras;
+        Procedure FillIconsList;
+        Procedure CreateTemplate;
+    Public
         { Public declarations }
         TempProject: TProject;
-    end;
+    End;
 
-var
+Var
     NewTemplateForm: TNewTemplateForm;
 
-implementation
+Implementation
 
-uses utils, IconFrm, devcfg, version, Templates, MultiLangSupport;
+Uses utils, IconFrm, devcfg, version, Templates, MultiLangSupport;
 
 {$R *.dfm}
 
-procedure TNewTemplateForm.FormShow(Sender: TObject);
-begin
+Procedure TNewTemplateForm.FormShow(Sender: TObject);
+Begin
     LoadText;
 
     cmbName.Text := 'Custom project 1';
@@ -127,165 +127,165 @@ begin
 
     devPages1.ActivePageIndex := 0;
 
-    cmbNameChange(nil);
-end;
+    cmbNameChange(Nil);
+End;
 
-procedure TNewTemplateForm.btnLibClick(Sender: TObject);
-var
-    IconFile: string;
-begin
+Procedure TNewTemplateForm.btnLibClick(Sender: TObject);
+Var
+    IconFile: String;
+Begin
     IconFile := '';
-    with TIconForm.Create(Self) do
-        try
-            if ShowModal = mrOk then
-                if Selected <> '' then
+    With TIconForm.Create(Self) Do
+        Try
+            If ShowModal = mrOk Then
+                If Selected <> '' Then
                     IconFile := Selected;
-        finally
+        Finally
             Free;
-        end;
+        End;
 
-    if IconFile <> '' then
-    begin
-        if Icons[lstIcons.ItemIndex] = nil then
+    If IconFile <> '' Then
+    Begin
+        If Icons[lstIcons.ItemIndex] = Nil Then
             Icons[lstIcons.ItemIndex] := TIcon.Create;
         Icons[lstIcons.ItemIndex].LoadFromFile(IconFile);
         IconFiles[lstIcons.ItemIndex] := IconFile;
         lstIcons.Repaint;
-    end;
-end;
+    End;
+End;
 
-procedure TNewTemplateForm.btnRemoveClick(Sender: TObject);
-begin
+Procedure TNewTemplateForm.btnRemoveClick(Sender: TObject);
+Begin
     FreeAndNil(Icons[lstIcons.ItemIndex]);
     IconFiles[lstIcons.ItemIndex] := '';
     lstIcons.Repaint;
-end;
+End;
 
-procedure TNewTemplateForm.btnBrowseClick(Sender: TObject);
-var
-    IconFile: string;
-begin
-    if dlgPic.Execute then
-    begin
+Procedure TNewTemplateForm.btnBrowseClick(Sender: TObject);
+Var
+    IconFile: String;
+Begin
+    If dlgPic.Execute Then
+    Begin
         IconFile := dlgPic.FileName;
-        if IconFile <> '' then
-        begin
-            if Icons[lstIcons.ItemIndex] = nil then
+        If IconFile <> '' Then
+        Begin
+            If Icons[lstIcons.ItemIndex] = Nil Then
                 Icons[lstIcons.ItemIndex] := TIcon.Create;
             Icons[lstIcons.ItemIndex].LoadFromFile(IconFile);
             IconFiles[lstIcons.ItemIndex] := IconFile;
             lstIcons.Repaint;
-        end;
-    end;
-end;
+        End;
+    End;
+End;
 
-procedure TNewTemplateForm.lstIconsDrawItem(Control: TWinControl;
+Procedure TNewTemplateForm.lstIconsDrawItem(Control: TWinControl;
     Index: Integer; Rect: TRect; State: TOwnerDrawState);
-var
+Var
     XOffset: Integer;
     YOffset: Integer;
-begin
-    with (Control as TListBox).Canvas do
-    begin
+Begin
+    With (Control As TListBox).Canvas Do
+    Begin
         FillRect(Rect);
         XOffset := 2;
-        YOffset := ((Control as TListBox).ItemHeight - Abs(Font.Height)) div 2;
-        if Icons[Index] <> nil then
-        begin
+        YOffset := ((Control As TListBox).ItemHeight - Abs(Font.Height)) Div 2;
+        If Icons[Index] <> Nil Then
+        Begin
             DrawIcon(Handle, Rect.Left + XOffset, Rect.Top + XOffset,
                 Icons[Index].Handle);
             XOffset := Icons[Index].Width + 6;
-        end
-        else
-        begin
+        End
+        Else
+        Begin
             Rectangle(Rect.Left + XOffset, Rect.Top + XOffset, Rect.Left +
                 32 + XOffset, Rect.Top + 32 + XOffset);
             TextOut(Rect.Left + XOffset + 1, Rect.Top + YOffset, 'Empty');
             XOffset := 32 + 6;
-        end;
+        End;
         TextOut(Rect.Left + XOffset, Rect.Top + YOffset,
-            (Control as TListBox).Items[Index])
-    end;
-end;
+            (Control As TListBox).Items[Index]);
+    End;
+End;
 
-procedure TNewTemplateForm.lstIconsClick(Sender: TObject);
-begin
+Procedure TNewTemplateForm.lstIconsClick(Sender: TObject);
+Begin
     btnLib.Enabled := lstIcons.ItemIndex <> -1;
     btnBrowse.Enabled := lstIcons.ItemIndex <> -1;
     btnRemove.Enabled := lstIcons.ItemIndex <> -1;
-end;
+End;
 
-procedure TNewTemplateForm.ReadCategories;
-    procedure AddCategory(FileName: TFileName);
-    var
+Procedure TNewTemplateForm.ReadCategories;
+    Procedure AddCategory(FileName: TFileName);
+    Var
         Temp: TTemplate;
-    begin
-        if not FileExists(FileName) then
+    Begin
+        If Not FileExists(FileName) Then
             Exit;
         Temp := TTemplate.Create;
         Temp.ReadTemplateFile(FileName);
-        if cmbCateg.Items.IndexOf(Temp.Catagory) = -1 then
+        If cmbCateg.Items.IndexOf(Temp.Catagory) = -1 Then
             cmbCateg.Items.Add(Temp.Catagory);
         cmbName.Items.Add(Temp.Name);
-    end;
-var
+    End;
+Var
     i: Integer;
     Templates: TStringList;
-    sDir: string;
-begin
+    sDir: String;
+Begin
     sDir := devDirs.Templates;
-    if not CheckChangeDir(sDir) then
+    If Not CheckChangeDir(sDir) Then
         Exit;
     cmbCateg.Clear;
     Templates := TStringList.Create;
-    try
+    Try
         FilesFromWildCard(devDirs.Templates, '*' + TEMPLATE_EXT,
-            Templates, FALSE, FALSE, TRUE);
-        if Templates.Count > 0 then
-        begin
-            for i := 0 to Templates.Count - 1 do
+            Templates, False, False, True);
+        If Templates.Count > 0 Then
+        Begin
+            For i := 0 To Templates.Count - 1 Do
                 AddCategory(Templates[i]);
-        end;
-    finally
+        End;
+    Finally
         Templates.Free;
-    end;
-end;
+    End;
+End;
 
-procedure TNewTemplateForm.FillUnits;
-var
-    I: integer;
-begin
+Procedure TNewTemplateForm.FillUnits;
+Var
+    I: Integer;
+Begin
 
     lstFiles.Clear;
-    for I := 0 to TempProject.Units.Count - 1 do
+    For I := 0 To TempProject.Units.Count - 1 Do
         lstFiles.Items.Add(ExtractFileName(TempProject.Units.Items[I].FileName));
-    for I := 0 to lstFiles.Items.Count - 1 do
+    For I := 0 To lstFiles.Items.Count - 1 Do
         lstFiles.Checked[I] := True;
-    if lstFiles.Items.Count > 0 then
+    If lstFiles.Items.Count > 0 Then
         lstFiles.ItemIndex := 0;
 
-end;
+End;
 
-procedure TNewTemplateForm.FillExtras;
-var
-    i: integer;
-begin
+Procedure TNewTemplateForm.FillExtras;
+Var
+    i: Integer;
+Begin
 
     // Add compiler profiles
     CompilerSet.Clear;
-    for i := 0 to TempProject.Profiles.Count - 1 do
+    For i := 0 To TempProject.Profiles.Count - 1 Do
         CompilerSet.Items.Add(TempProject.Profiles.Items[i].ProfileName);
 
     CompilerSet.ItemIndex := TempProject.CurrentProfileIndex;
-    CompilerSetChange(nil);
+    CompilerSetChange(Nil);
 
-end;
+End;
 
-procedure TNewTemplateForm.FillIconsList;
-begin
+Procedure TNewTemplateForm.FillIconsList;
+Begin
     lstIcons.Items.Clear;
-    if TempProject.CurrentProfile.Icon <> '' then
-    begin
+    If TempProject.CurrentProfile.Icon <> '' Then
+    Begin
         IconFiles[0] := ExpandFileto(TempProject.CurrentProfile.Icon,
             TempProject.Directory);
         Icons[0] := TIcon.Create;
@@ -296,64 +296,64 @@ begin
         Icons[1] := TIcon.Create;
         Icons[1].LoadFromFile(ExpandFileto(TempProject.CurrentProfile.Icon,
             TempProject.Directory));
-    end
-    else
-    begin
+    End
+    Else
+    Begin
         IconFiles[0] := '';
         IconFiles[1] := '';
-    end;
+    End;
 
     lstIcons.Items.Add(sIcon);
     lstIcons.Items.Add(sProjIcon);
-end;
+End;
 
-procedure TNewTemplateForm.cmbNameChange(Sender: TObject);
-begin
-    btnCreate.Enabled := (cmbName.Text <> '') and (cmbCateg.Text <> '');
-end;
+Procedure TNewTemplateForm.cmbNameChange(Sender: TObject);
+Begin
+    btnCreate.Enabled := (cmbName.Text <> '') And (cmbCateg.Text <> '');
+End;
 
-procedure TNewTemplateForm.btnCreateClick(Sender: TObject);
-begin
+Procedure TNewTemplateForm.btnCreateClick(Sender: TObject);
+Begin
     CreateTemplate;
     Close;
-end;
+End;
 
-procedure TNewTemplateForm.CreateTemplate;
-var
+Procedure TNewTemplateForm.CreateTemplate;
+Var
     tmpIni: TIniFile;
-    I, C: integer;
-    S, filename, ProfileName: string;
-begin
+    I, C: Integer;
+    S, filename, ProfileName: String;
+Begin
     filename := devDirs.Templates + cmbName.Text + '.template';
-    if FileExists(filename) then
-    begin
-        if MessageDlg(Lang[ID_MSG_FILEEXISTS],
-            mtWarning, [mbYes, mbNo], 0) = mrYes then
+    If FileExists(filename) Then
+    Begin
+        If MessageDlg(Lang[ID_MSG_FILEEXISTS],
+            mtWarning, [mbYes, mbNo], 0) = mrYes Then
             DeleteFile(filename)
-        else
-        begin
+        Else
+        Begin
             exit;
-        end;
-    end;
+        End;
+    End;
     tmpIni := TIniFile.Create(filename);
 
-    with tmpIni do
-        try
+    With tmpIni Do
+        Try
             WriteInteger('Template', 'ver', 3);
             WriteString('Template', 'Name', cmbName.Text);
-            if IconFiles[0] <> '' then
-            begin
-                CopyFile(PChar(IconFiles[0]), PChar(devDirs.Templates +
+            If IconFiles[0] <> '' Then
+            Begin
+                CopyFile(Pchar(IconFiles[0]), Pchar(devDirs.Templates +
                     cmbName.Text + '.ico'), False);
                 WriteString('Template', 'Icon', cmbName.Text + '.ico');
-            end;
+            End;
             WriteString('Template', 'Description', txtDescr.Text);
             WriteString('Template', 'Catagory', cmbCateg.Text);
             // 'catagory' is not a typo...
 
-            if txtProjName.Text = '' then
+            If txtProjName.Text = '' Then
                 WriteString('Project', 'Name', cmbName.Text)
-            else
+            Else
                 WriteString('Project', 'Name', txtProjName.Text);
 
             WriteBool('Project', 'IsCpp', TempProject.Profiles.useGPP);
@@ -362,14 +362,14 @@ begin
             WriteInteger('Project', 'ProfileIndex', 1);
 
 
-            if IconFiles[1] <> '' then
-            begin
-                CopyFile(PChar(IconFiles[1]), PChar(devDirs.Templates +
+            If IconFiles[1] <> '' Then
+            Begin
+                CopyFile(Pchar(IconFiles[1]), Pchar(devDirs.Templates +
                     cmbName.Text + '.project.ico'), False);
                 WriteString('Project', 'ProjectIcon', cmbName.Text + '.project.ico');
-            end;
+            End;
 
-            for i := 0 to TempProject.Profiles.Count - 1 do
+            For i := 0 To TempProject.Profiles.Count - 1 Do
             Begin
                 ProfileName := 'Profile' + IntToStr(i);
                 WriteString(ProfileName, 'ProfileName',
@@ -400,29 +400,29 @@ begin
                 WriteBool(ProfileName, 'SupportXPThemes',
                     TempProject.Profiles[i].SupportXPThemes);
 
-                if cbInclude.Checked then
+                If cbInclude.Checked Then
                     WriteString(ProfileName, 'Includes',
                         TempProject.Profiles[i].Includes.DelimitedText);
-                if cbLibrary.Checked then
+                If cbLibrary.Checked Then
                     WriteString(ProfileName, 'Libs',
                         TempProject.Profiles[i].Libs.DelimitedText);
-                if cbRessource.Checked then
+                If cbRessource.Checked Then
                     WriteString(ProfileName, 'ResourceIncludes',
                         TempProject.Profiles[i].ResourceIncludes.DelimitedText);
-            end;
+            End;
 
             C := 0;
-            for I := 0 to lstFiles.Items.Count - 1 do
-                if lstFiles.Checked[I] then
-                begin
+            For I := 0 To lstFiles.Items.Count - 1 Do
+                If lstFiles.Checked[I] Then
+                Begin
                     WriteString('Unit' + IntToStr(C), 'CppName', lstFiles.Items[I]);
                     S := StringReplace(cmbName.Text + '_' + lstFiles.Items[I] +
                         '.txt', ' ', '_', [rfReplaceAll]);
                     WriteString('Unit' + IntToStr(C), 'Cpp', S);
-                    CopyFile(PChar(TempProject.Units[I].FileName),
-                        PChar(devDirs.Templates + S), False);
+                    CopyFile(Pchar(TempProject.Units[I].FileName),
+                        Pchar(devDirs.Templates + S), False);
                     Inc(C);
-                end;
+                End;
 
             WriteInteger('Project', 'UnitCount', C);
 
@@ -430,17 +430,17 @@ begin
                 'You can find it as "' + cmbName.Text + '" under the "' +
                 cmbCateg.Text + '" tab in the "New project" dialog.',
                 mtInformation, [mbOk], 0);
-        finally
+        Finally
             tmpIni.Free;
-        end;
-end;
+        End;
+End;
 
-procedure TNewTemplateForm.LoadText;
-begin
+Procedure TNewTemplateForm.LoadText;
+Begin
     DesktopFont := True;
     XPMenu.Active := devData.XPTheme;
-    with Lang do
-    begin
+    With Lang Do
+    Begin
         lblName.Caption := Strings[ID_NEWTPL_NAME];
         lblDescr.Caption := Strings[ID_NEWTPL_DESCRIPTION];
         lblCateg.Caption := Strings[ID_NEWTPL_CATEGORY];
@@ -464,46 +464,46 @@ begin
         cbInclude.Caption := Strings[ID_NEWTPL_INCDIR];
         cbLibrary.Caption := Strings[ID_NEWTPL_LIBDIR];
         cbRessource.Caption := Strings[ID_NEWTPL_RESDIR];
-    end;
-end;
+    End;
+End;
 
-procedure TNewTemplateForm.CompilerSetChange(Sender: TObject);
-begin
+Procedure TNewTemplateForm.CompilerSetChange(Sender: TObject);
+Begin
 
     // Change the compiler and linker boxes to selected compiler set
     memCompiler.Clear;
     memCppCompiler.Clear;
     memLinker.Clear;
 
-    if TempProject.Profiles.Items[CompilerSet.ItemIndex].Compiler <> '' then
+    If TempProject.Profiles.Items[CompilerSet.ItemIndex].Compiler <> '' Then
         memCompiler.Lines.Add(StringReplace(
             TempProject.Profiles.Items[CompilerSet.ItemIndex].Compiler,
             '_@@_', #13#10, [rfReplaceAll]));
-    if TempProject.Profiles.Items[CompilerSet.ItemIndex].CppCompiler <> '' then
+    If TempProject.Profiles.Items[CompilerSet.ItemIndex].CppCompiler <> '' Then
         memCppCompiler.Lines.Add(
             StringReplace(TempProject.Profiles.Items[CompilerSet.ItemIndex].CppCompiler,
             '_@@_', #13#10, [rfReplaceAll]));
-    if TempProject.Profiles.Items[CompilerSet.ItemIndex].Linker <> '' then
+    If TempProject.Profiles.Items[CompilerSet.ItemIndex].Linker <> '' Then
         memLinker.Lines.Add(StringReplace(
             TempProject.Profiles.Items[CompilerSet.ItemIndex].Linker, '_@@_',
             #13#10, [rfReplaceAll]));
 
-end;
+End;
 
-procedure TNewTemplateForm.memCompilerChange(Sender: TObject);
-begin
+Procedure TNewTemplateForm.memCompilerChange(Sender: TObject);
+Begin
     TempProject.Profiles[CompilerSet.ItemIndex].Compiler := memCompiler.Text;
-end;
+End;
 
-procedure TNewTemplateForm.memCppCompilerChange(Sender: TObject);
-begin
+Procedure TNewTemplateForm.memCppCompilerChange(Sender: TObject);
+Begin
     TempProject.Profiles[CompilerSet.ItemIndex].CppCompiler :=
         memCppCompiler.Text;
-end;
+End;
 
-procedure TNewTemplateForm.memLinkerChange(Sender: TObject);
-begin
+Procedure TNewTemplateForm.memLinkerChange(Sender: TObject);
+Begin
     TempProject.Profiles[CompilerSet.ItemIndex].Linker := memLinker.Text;
-end;
+End;
 
-end.
+End.

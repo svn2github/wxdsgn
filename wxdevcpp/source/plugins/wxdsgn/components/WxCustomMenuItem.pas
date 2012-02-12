@@ -36,14 +36,14 @@
 {Contact gururamnath@yahoo.com for details                           }
 { ****************************************************************** }
 
-unit wxCustomMenuItem;
+Unit wxCustomMenuItem;
 
-interface
+Interface
 
-uses Forms, WinProcs, WinTypes, SysUtils, Menus, Classes, Messages, wxutils, Graphics;
+Uses Forms, WinProcs, WinTypes, SysUtils, Menus, Classes, Messages, wxutils, Graphics;
 
-type
-  EMenuError = class(Exception);
+Type
+    EMenuError = Class(Exception);
   //  TMenuItem = class(Menus.TMenuItem)
   //  private
   //    FEVT_Menu:String;
@@ -76,136 +76,136 @@ type
   //    //property WX_BITMAP:TPicture read FWX_BITMAP write FWX_BITMAP;
   //  end;
 
-  TWxCustomMenuItem = class(TPersistent)
-  private
-    FEVT_Menu: string;
-    FEVT_UPDATE_UI: string;
-    FWx_Class: string;
-    FWx_Enabled: boolean;
-    FWx_HelpText: string;
-    FWx_Hidden: boolean;
-    FWx_Name: string;
-    FWx_IDName: string;
-    FWx_IDValue: integer;
-    FWx_ToolTip: string;
-    FMenuItemStyle: TWxMenuItemStyleItem;
-    FWx_Caption: string;
-    FWx_Checked: boolean;
-    FWX_BITMAP: TPicture;
-    FKeepFormat: boolean;
-    FWx_Comments: TStrings;
-    FWx_FileHistory: boolean;
-    FItems: TList;
-    FAdded: boolean;
+    TWxCustomMenuItem = Class(TPersistent)
+    Private
+        FEVT_Menu: String;
+        FEVT_UPDATE_UI: String;
+        FWx_Class: String;
+        FWx_Enabled: Boolean;
+        FWx_HelpText: String;
+        FWx_Hidden: Boolean;
+        FWx_Name: String;
+        FWx_IDName: String;
+        FWx_IDValue: Integer;
+        FWx_ToolTip: String;
+        FMenuItemStyle: TWxMenuItemStyleItem;
+        FWx_Caption: String;
+        FWx_Checked: Boolean;
+        FWX_BITMAP: TPicture;
+        FKeepFormat: Boolean;
+        FWx_Comments: TStrings;
+        FWx_FileHistory: Boolean;
+        FItems: TList;
+        FAdded: Boolean;
     //FParentHandle: HMENU;
     //FPosInParent: integer;
     //FBreak: TMenuBreak;
-    FPopUp, FEnabled: boolean;
+        FPopUp, FEnabled: Boolean;
     //FCaption: string;
     //FHandle: HMENU;
-    FOnClick: TNotifyEvent;
+        FOnClick: TNotifyEvent;
     //function AppendTo(Menu: HMENU; Position: Word): Boolean;
     //procedure RedrawItem;
     //procedure SetBreak(Value: TMenuBreak);
     //procedure SetCaption(Value: string);
     //procedure SetChecked(Value: Boolean);
     //procedure SetEnabled(Value: Boolean);
-    procedure SetSubMenu(Value: boolean);
-  protected
+        Procedure SetSubMenu(Value: Boolean);
+    Protected
     //function HandleExists(Menu: HMENU): Boolean;
     //function GetHandle: HMENU; virtual;
-    function ItemExists(AItem: TWxCustomMenuItem): boolean;
-    function GetCount: integer;
-    procedure Click(Sender: TObject); virtual;
-    function GetItem(Index: integer): TWxCustomMenuItem;
-    procedure SetItem(Index: integer; Item: TWxCustomMenuItem);
+        Function ItemExists(AItem: TWxCustomMenuItem): Boolean;
+        Function GetCount: Integer;
+        Procedure Click(Sender: TObject); Virtual;
+        Function GetItem(Index: Integer): TWxCustomMenuItem;
+        Procedure SetItem(Index: Integer; Item: TWxCustomMenuItem);
     //function GetItemFromHandle(Menu: HMenu): TWxCustomMenuItem;
-  public
+    Public
     //property Handle: HMenu read GetHandle;
-    property Count: integer Read GetCount;
-    constructor Create(owner: TComponent); virtual;
-    destructor Destroy; override;
-    procedure Clear;
-    procedure Add(AItem: TWxCustomMenuItem; Position: word);
-    procedure Remove(AItem: TWxCustomMenuItem);
-    property Items[Index: integer]: TWxCustomMenuItem Read GetItem Write SetItem;
-      default;
-    procedure DefineProperties(Filer: TFiler); override;
-    procedure LoadFromStream(Stream: TStream);
-    procedure SaveToStream(Stream: TStream);
+        Property Count: Integer Read GetCount;
+        Constructor Create(owner: TComponent); Virtual;
+        Destructor Destroy; Override;
+        Procedure Clear;
+        Procedure Add(AItem: TWxCustomMenuItem; Position: Word);
+        Procedure Remove(AItem: TWxCustomMenuItem);
+        Property Items[Index: Integer]: TWxCustomMenuItem Read GetItem Write SetItem;
+            Default;
+        Procedure DefineProperties(Filer: TFiler); Override;
+        Procedure LoadFromStream(Stream: TStream);
+        Procedure SaveToStream(Stream: TStream);
 
-  published
+    Published
     //    property Break: TMenuBreak read FBreak write SetBreak default mbNone;
     //    property Caption: string read FCaption write SetCaption;
     //    property Checked: Boolean read FChecked write SetChecked default False;
     //    property Enabled: Boolean read FEnabled write SetEnabled default True;
 
-    property IsSubMenu: boolean Read FPopUp Write SetSubMenu;
-    property OnClick: TNotifyEvent Read FOnClick Write FOnClick;
+        Property IsSubMenu: Boolean Read FPopUp Write SetSubMenu;
+        Property OnClick: TNotifyEvent Read FOnClick Write FOnClick;
 
-    property EVT_Menu: string Read FEVT_Menu Write FEVT_Menu;
-    property EVT_UPDATE_UI: string Read FEVT_UPDATE_UI Write FEVT_UPDATE_UI;
+        Property EVT_Menu: String Read FEVT_Menu Write FEVT_Menu;
+        Property EVT_UPDATE_UI: String Read FEVT_UPDATE_UI Write FEVT_UPDATE_UI;
 
-    property Wx_Class: string Read FWx_Class Write FWx_Class;
-    property Wx_Enabled: boolean Read FWx_Enabled Write FWx_Enabled;
-    property Wx_HelpText: string Read FWx_HelpText Write FWx_HelpText;
-    property Wx_Hidden: boolean Read FWx_Hidden Write FWx_Hidden;
-    property Wx_Name: string Read FWx_Name Write FWx_Name;
-    property Wx_IDName: string Read FWx_IDName Write FWx_IDName;
-    property Wx_IDValue: integer Read FWx_IDValue Write FWx_IDValue;
-    property Wx_ToolTip: string Read FWx_ToolTip Write FWx_ToolTip;
-    property Wx_MenuItemStyle: TWxMenuItemStyleItem
-      Read FMenuItemStyle Write FMenuItemStyle;
-    property Wx_Caption: string Read FWx_Caption Write FWx_Caption;
-    property Wx_Checked: boolean Read FWx_Checked Write FWx_Checked;
-    property WX_BITMAP: TPicture Read FWX_BITMAP Write FWX_BITMAP;
-    property KeepFormat: boolean Read FKeepFormat Write FKeepFormat;
-    property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
+        Property Wx_Class: String Read FWx_Class Write FWx_Class;
+        Property Wx_Enabled: Boolean Read FWx_Enabled Write FWx_Enabled;
+        Property Wx_HelpText: String Read FWx_HelpText Write FWx_HelpText;
+        Property Wx_Hidden: Boolean Read FWx_Hidden Write FWx_Hidden;
+        Property Wx_Name: String Read FWx_Name Write FWx_Name;
+        Property Wx_IDName: String Read FWx_IDName Write FWx_IDName;
+        Property Wx_IDValue: Integer Read FWx_IDValue Write FWx_IDValue;
+        Property Wx_ToolTip: String Read FWx_ToolTip Write FWx_ToolTip;
+        Property Wx_MenuItemStyle: TWxMenuItemStyleItem
+            Read FMenuItemStyle Write FMenuItemStyle;
+        Property Wx_Caption: String Read FWx_Caption Write FWx_Caption;
+        Property Wx_Checked: Boolean Read FWx_Checked Write FWx_Checked;
+        Property WX_BITMAP: TPicture Read FWX_BITMAP Write FWX_BITMAP;
+        Property KeepFormat: Boolean Read FKeepFormat Write FKeepFormat;
+        Property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
 
-    property Wx_Items: TList Read FItems Write FItems;
-    property Wx_FileHistory: boolean Read FWx_FileHistory Write FWx_FileHistory;
+        Property Wx_Items: TList Read FItems Write FItems;
+        Property Wx_FileHistory: Boolean Read FWx_FileHistory Write FWx_FileHistory;
 
-  end;
+    End;
 
-  TwxCustomMenuItemWrapper = class(TComponent)
-  private
-    FCarried: TWxCustomMenuItem;
-  published
-    property Carried: TWxCustomMenuItem Read FCarried Write FCarried;
-  end;
+    TwxCustomMenuItemWrapper = Class(TComponent)
+    Private
+        FCarried: TWxCustomMenuItem;
+    Published
+        Property Carried: TWxCustomMenuItem Read FCarried Write FCarried;
+    End;
 
 
-implementation
+Implementation
 
 {TWxCustomMenuItem}
-constructor TWxCustomMenuItem.Create(owner: TComponent);
-begin
-  FEnabled    := True;
-  FPopUp      := False;
-  FAdded      := False;
-  FWX_BITMAP  := TPicture.Create;
-  FItems      := TList.Create;
-  FWx_Enabled := True;
-  FWx_FileHistory := false;
-  inherited Create;
-end;
+Constructor TWxCustomMenuItem.Create(owner: TComponent);
+Begin
+    FEnabled := True;
+    FPopUp := False;
+    FAdded := False;
+    FWX_BITMAP := TPicture.Create;
+    FItems := TList.Create;
+    FWx_Enabled := True;
+    FWx_FileHistory := False;
+    Inherited Create;
+End;
 
-destructor TWxCustomMenuItem.Destroy;
-var
-  I: Integer;
-begin
-  for I := 0 to FItems.Count - 1 do
-    TWxCustomMenuItem(FItems[I]).Destroy;
-  FItems.Destroy;
-  FWX_BITMAP.Destroy;
-  inherited Destroy;
-end;
+Destructor TWxCustomMenuItem.Destroy;
+Var
+    I: Integer;
+Begin
+    For I := 0 To FItems.Count - 1 Do
+        TWxCustomMenuItem(FItems[I]).Destroy;
+    FItems.Destroy;
+    FWX_BITMAP.Destroy;
+    Inherited Destroy;
+End;
 
-procedure TWxCustomMenuItem.Click(Sender: TObject);
-begin
-  if Assigned(FOnClick) then
-    FOnClick(Self);
-end;
+Procedure TWxCustomMenuItem.Click(Sender: TObject);
+Begin
+    If Assigned(FOnClick) Then
+        FOnClick(Self);
+End;
 
  //function TWxCustomMenuItem.GetHandle: HMenu;
  //begin
@@ -233,25 +233,25 @@ end;
  //  FAdded := True;
  //end;
 
-procedure TWxCustomMenuItem.Clear;
-var
-  i: integer;
-begin
+Procedure TWxCustomMenuItem.Clear;
+Var
+    i: Integer;
+Begin
   // OList owns it's objects so we free them
-  for i := 0 to pred(FItems.Count) do
-    if FItems[i] <> nil then
-      TWxCustomMenuItem(FItems[i]).Free;
+    For i := 0 To pred(FItems.Count) Do
+        If FItems[i] <> Nil Then
+            TWxCustomMenuItem(FItems[i]).Free;
   // then we clear the underlying list
-  FItems.Clear;
-end;
+    FItems.Clear;
+End;
 
-procedure TWxCustomMenuItem.Add(AItem: TWxCustomMenuItem; Position: word);
-begin
-  if ItemExists(AItem) then
-  begin
-    raise EMenuError.Create('Menu inserted twice');
-    exit;
-  end;
+Procedure TWxCustomMenuItem.Add(AItem: TWxCustomMenuItem; Position: Word);
+Begin
+    If ItemExists(AItem) Then
+    Begin
+        Raise EMenuError.Create('Menu inserted twice');
+        exit;
+    End;
 
   //  if not AItem.AppendTo(Handle, Position) then
   //  begin
@@ -259,110 +259,110 @@ begin
   //    exit;
   //  end;
 
-  if FItems = nil then
-    FItems := TList.Create;
-  FItems.Insert(Position, AItem);
-end;
+    If FItems = Nil Then
+        FItems := TList.Create;
+    FItems.Insert(Position, AItem);
+End;
 
-procedure TWxCustomMenuItem.Remove(AItem: TWxCustomMenuItem);
-begin
-  FItems.Remove(AItem);
-  if FItems.Count = 0 then
-    IsSubMenu := False;
-  AItem.Free;
-end;
+Procedure TWxCustomMenuItem.Remove(AItem: TWxCustomMenuItem);
+Begin
+    FItems.Remove(AItem);
+    If FItems.Count = 0 Then
+        IsSubMenu := False;
+    AItem.Free;
+End;
 
-function TWxCustomMenuItem.GetItem(Index: integer): TWxCustomMenuItem;
-begin
-   Result := nil;
-  if FItems = nil then
-    exit;
-  Result := FItems[Index];
-end;
+Function TWxCustomMenuItem.GetItem(Index: Integer): TWxCustomMenuItem;
+Begin
+    Result := Nil;
+    If FItems = Nil Then
+        exit;
+    Result := FItems[Index];
+End;
 
-procedure TWxCustomMenuItem.SetItem(Index: integer; Item: TWxCustomMenuItem);
-begin
-  TWxCustomMenuItem(FItems[Index]).Free;
-  FItems[Index] := Item;
-end;
+Procedure TWxCustomMenuItem.SetItem(Index: Integer; Item: TWxCustomMenuItem);
+Begin
+    TWxCustomMenuItem(FItems[Index]).Free;
+    FItems[Index] := Item;
+End;
 
-procedure TWxCustomMenuItem.DefineProperties(Filer: TFiler);
+Procedure TWxCustomMenuItem.DefineProperties(Filer: TFiler);
 
-  function DoWrite: boolean;
-  begin
-    Result := Count > 0;
-  end;
+    Function DoWrite: Boolean;
+    Begin
+        Result := Count > 0;
+    End;
 
-begin
-  Filer.DefineBinaryProperty('WxCustomMenuItem', LoadFromStream, SaveToStream, DoWrite);
-end;
+Begin
+    Filer.DefineBinaryProperty('WxCustomMenuItem', LoadFromStream, SaveToStream, DoWrite);
+End;
 
 // it's easier to understand SaveToStream first !!
 
-procedure TWxCustomMenuItem.LoadFromStream(Stream: TStream);
-var
-  c: TwxCustomMenuItemWrapper;
-  l: integer;
-  S: string;
-begin
+Procedure TWxCustomMenuItem.LoadFromStream(Stream: TStream);
+Var
+    c: TwxCustomMenuItemWrapper;
+    l: Integer;
+    S: String;
+Begin
   //Clear;
-  while Stream.Position <> Stream.Size do
-  begin
+    While Stream.Position <> Stream.Size Do
+    Begin
     // prepare a carrier component
-    c := TwxCustomMenuItemWrapper.Create(nil);
+        c := TwxCustomMenuItemWrapper.Create(Nil);
     // read the class of the stored object
     //  first its length
-    Stream.Read(l, SizeOf(l));
+        Stream.Read(l, SizeOf(l));
     //  then the string itself
-    SetLength(S, l);
-    Stream.Read(S[1], l);
+        SetLength(S, l);
+        Stream.Read(S[1], l);
     // look up the class and apply it
-    c.Carried := TWxCustomMenuItem(TPersistentClass(FindClass(S)).Create);
-    c.Carried.Create(nil);
+        c.Carried := TWxCustomMenuItem(TPersistentClass(FindClass(S)).Create);
+        c.Carried.Create(Nil);
     // let Delphi do its magic
-    Stream.ReadComponent(c);
+        Stream.ReadComponent(c);
     // extract the object and store it in the list
-    FItems.Add(c.Carried);
+        FItems.Add(c.Carried);
     // dispose of the carrier
-    c.Free;
-  end;
-end;
+        c.Free;
+    End;
+End;
 
-procedure TWxCustomMenuItem.SaveToStream(Stream: TStream);
-var
-  i: integer;
-  c: TwxCustomMenuItemWrapper;
-  l: integer;
-  S: string;
-begin
+Procedure TWxCustomMenuItem.SaveToStream(Stream: TStream);
+Var
+    i: Integer;
+    c: TwxCustomMenuItemWrapper;
+    l: Integer;
+    S: String;
+Begin
   // we go backwards to preserve list order when we Load
-  for i := 0 to pred(FItems.Count) do
-  begin
+    For i := 0 To pred(FItems.Count) Do
+    Begin
     // prepare a carrier component
-    c := TwxCustomMenuItemWrapper.Create(nil);
+        c := TwxCustomMenuItemWrapper.Create(Nil);
     // let it carry your object
-    c.Carried := TWxCustomMenuItem(FItems[i]);
+        c.Carried := TWxCustomMenuItem(FItems[i]);
     // write the class of the object to be stored
-    S := c.Carried.ClassName;
+        S := c.Carried.ClassName;
     //  first its Length
-    l := Length(S);
-    Stream.Write(l, SizeOf(l));
+        l := Length(S);
+        Stream.Write(l, SizeOf(l));
     //  then the string itself
-    Stream.Write(S[1], l);
+        Stream.Write(S[1], l);
     // let Delphi do it's magic
-    Stream.WriteComponent(c);
+        Stream.WriteComponent(c);
     // dispose of the carrier
-    c.Free;
-  end;
-end;
+        c.Free;
+    End;
+End;
 
-function TWxCustomMenuItem.GetCount: integer;
-begin
-  if FItems = nil then
-    Result := 0
-  else
-    Result := FItems.Count;
-end;
+Function TWxCustomMenuItem.GetCount: Integer;
+Begin
+    If FItems = Nil Then
+        Result := 0
+    Else
+        Result := FItems.Count;
+End;
 
  //procedure TWxCustomMenuItem.RedrawItem;
  //const
@@ -420,12 +420,12 @@ end;
  //  end;
  //end;
 
-procedure TWxCustomMenuItem.SetSubMenu(Value: boolean);
-begin
-  if FPopUp <> Value then
-    FPopUp := Value//if FAdded then RedrawItem;
-  ;
-end;
+Procedure TWxCustomMenuItem.SetSubMenu(Value: Boolean);
+Begin
+    If FPopUp <> Value Then
+        FPopUp := Value//if FAdded then RedrawItem;
+    ;
+End;
 
  //function TWxCustomMenuItem.HandleExists(Menu: HMenu): Boolean;
  //var
@@ -449,24 +449,24 @@ end;
  //  Result := False;
  //end;
 
-function TWxCustomMenuItem.ItemExists(AItem: TWxCustomMenuItem): boolean;
-var
-  i: integer;
-begin
-  if FItems = nil then
-  begin
+Function TWxCustomMenuItem.ItemExists(AItem: TWxCustomMenuItem): Boolean;
+Var
+    i: Integer;
+Begin
+    If FItems = Nil Then
+    Begin
+        Result := False;
+        exit;
+    End
+    Else
+        For i := 0 To FItems.Count - 1 Do
+            If AItem = FItems[i] Then
+            Begin
+                Result := True;
+                Exit;
+            End;
     Result := False;
-    exit;
-  end
-  else
-    for i := 0 to FItems.Count - 1 do
-      if AItem = FItems[i] then
-      begin
-        Result := True;
-        Exit;
-      end;
-  Result := False;
-end;
+End;
 
  //function TWxCustomMenuItem.GetItemFromHandle(Menu: HMenu): TWxCustomMenuItem;
  //var
@@ -490,12 +490,12 @@ end;
  //  Result := nil;
  //end;
 
-initialization
+Initialization
 
-  RegisterClasses([TWxCustomMenuItem, TwxCustomMenuItemWrapper]);
+    RegisterClasses([TWxCustomMenuItem, TwxCustomMenuItemWrapper]);
 
-finalization
+Finalization
 
-  UnRegisterClasses([TWxCustomMenuItem, TwxCustomMenuItemWrapper]);
+    UnRegisterClasses([TWxCustomMenuItem, TwxCustomMenuItemWrapper]);
 
-end.
+End.

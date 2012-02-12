@@ -17,11 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-unit ToolFrm;
+Unit ToolFrm;
 
-interface
+Interface
 
-uses
+Uses
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Classes, Menus, Graphics, Controls, Forms,
     StdCtrls, Buttons, ShellAPI, XPMenu;
@@ -31,48 +31,48 @@ uses
   QStdCtrls, QButtons;
 {$ENDIF}
 
-type
+Type
     { Tool List }
 
     PToolItem = ^TToolItem;
-    TToolItem = record
-        Title: string;
-        Exec: string;
-        WorkDir: string;
-        Params: string;
-        IcoNumGnome: integer;
-        IcoNumBlue: integer;
-        IcoNumClassic: integer;
-        IcoNumNewLook: integer;
-        HasIcon: boolean;
-    end;
+    TToolItem = Record
+        Title: String;
+        Exec: String;
+        WorkDir: String;
+        Params: String;
+        IcoNumGnome: Integer;
+        IcoNumBlue: Integer;
+        IcoNumClassic: Integer;
+        IcoNumNewLook: Integer;
+        HasIcon: Boolean;
+    End;
 
-    TToolList = class(TObject)
-    private
+    TToolList = Class(TObject)
+    Private
         fList: TList;
-        function GetItem(index: integer): PToolItem;
-        procedure SetItem(index: integer; Value: PToolItem);
-        function GetCount: integer;
-        procedure Packit;
-    public
-        constructor Create;
-        destructor Destroy; override;
-        function AddItem(Value: PToolItem): integer;
-        procedure MoveItem(CurIndex, NewIndex: integer);
-        procedure RemoveItem(index: integer);
-        procedure LoadTools;
-        procedure SaveTools;
-        function ParseString(const S: string): string;
+        Function GetItem(index: Integer): PToolItem;
+        Procedure SetItem(index: Integer; Value: PToolItem);
+        Function GetCount: Integer;
+        Procedure Packit;
+    Public
+        Constructor Create;
+        Destructor Destroy; Override;
+        Function AddItem(Value: PToolItem): Integer;
+        Procedure MoveItem(CurIndex, NewIndex: Integer);
+        Procedure RemoveItem(index: Integer);
+        Procedure LoadTools;
+        Procedure SaveTools;
+        Function ParseString(Const S: String): String;
 
-        property Items[index: integer]: PToolItem read GetItem write SetItem;
-            default;
-        property Count: integer read GetCount;
-    end;
+        Property Items[index: Integer]: PToolItem Read GetItem Write SetItem;
+            Default;
+        Property Count: Integer Read GetCount;
+    End;
 
     { Tool Edit Form }
-    TToolController = class;
+    TToolController = Class;
 
-    TToolForm = class(TForm)
+    TToolForm = Class(TForm)
         grpCurrent: TGroupBox;
         btnClose: TBitBtn;
         ListBox: TListBox;
@@ -82,43 +82,43 @@ type
         btnDelete: TSpeedButton;
         btnAdd: TSpeedButton;
         btnEdit: TSpeedButton;
-        procedure btnEditClick(Sender: TObject);
-        procedure btnAddClick(Sender: TObject);
-        procedure btnDeleteClick(Sender: TObject);
-        procedure ListBoxClick(Sender: TObject);
-        procedure PosbtnClick(Sender: TObject);
-        procedure FormClose(Sender: TObject; var Action: TCloseAction);
-        procedure FormShow(Sender: TObject);
-        procedure FormCreate(Sender: TObject);
-    private
+        Procedure btnEditClick(Sender: TObject);
+        Procedure btnAddClick(Sender: TObject);
+        Procedure btnDeleteClick(Sender: TObject);
+        Procedure ListBoxClick(Sender: TObject);
+        Procedure PosbtnClick(Sender: TObject);
+        Procedure FormClose(Sender: TObject; Var Action: TCloseAction);
+        Procedure FormShow(Sender: TObject);
+        Procedure FormCreate(Sender: TObject);
+    Private
         fController: TToolController;
-        procedure UpdateList;
-        procedure UpdateButtons;
-        procedure LoadText;
-    public
-        property Controller: TToolController read fController write fController;
-    end;
+        Procedure UpdateList;
+        Procedure UpdateButtons;
+        Procedure LoadText;
+    Public
+        Property Controller: TToolController Read fController Write fController;
+    End;
 
-    TToolController = class(TObject)
-    private
+    TToolController = Class(TObject)
+    Private
         fToolList: TToolList;
         fMenu: TMenuItem;
         fOnClick: TNotifyEvent;
-        fOffset: integer;
-    public
-        constructor Create;
-        destructor Destroy; override;
-        procedure BuildMenu;
-        procedure Edit;
-        property Menu: TMenuItem read fMenu write fMenu;
-        property Offset: integer read fOffset write fOffset;
-        property ToolClick: TNotifyEvent read fOnClick write fOnClick;
-        property ToolList: TToolList read fToolList write fToolList;
-    end;
+        fOffset: Integer;
+    Public
+        Constructor Create;
+        Destructor Destroy; Override;
+        Procedure BuildMenu;
+        Procedure Edit;
+        Property Menu: TMenuItem Read fMenu Write fMenu;
+        Property Offset: Integer Read fOffset Write fOffset;
+        Property ToolClick: TNotifyEvent Read fOnClick Write fOnClick;
+        Property ToolList: TToolList Read fToolList Write fToolList;
+    End;
 
-implementation
+Implementation
 
-uses ToolEditFrm, inifiles, devcfg, utils, MultiLangSupport, datamod,
+Uses ToolEditFrm, inifiles, devcfg, utils, MultiLangSupport, datamod,
     version, main;
 
 {$R *.dfm}
@@ -126,73 +126,73 @@ uses ToolEditFrm, inifiles, devcfg, utils, MultiLangSupport, datamod,
 
 { TToolList }
 
-constructor TToolList.Create;
-begin
-    inherited Create;
+Constructor TToolList.Create;
+Begin
+    Inherited Create;
     fList := TList.Create;
-end;
+End;
 
-destructor TToolList.Destroy;
-begin
+Destructor TToolList.Destroy;
+Begin
     fList.Free;
-    inherited Destroy;
-end;
+    Inherited Destroy;
+End;
 
-procedure TToolList.Packit;
-begin
+Procedure TToolList.Packit;
+Begin
     fList.Pack;
     fList.Capacity := fList.Count;
-end;
+End;
 
-function TToolList.GetItem(index: integer): PToolItem;
-begin
+Function TToolList.GetItem(index: Integer): PToolItem;
+Begin
     result := fList[index];
-end;
+End;
 
-procedure TToolList.SetItem(index: integer; Value: PToolItem);
-begin
+Procedure TToolList.SetItem(index: Integer; Value: PToolItem);
+Begin
     fList[index] := Value;
-end;
+End;
 
-function TToolList.GetCount: integer;
-begin
+Function TToolList.GetCount: Integer;
+Begin
     Packit;
     result := fList.Count;
-end;
+End;
 
-function TToolList.AddItem(Value: PToolItem): integer;
-begin
+Function TToolList.AddItem(Value: PToolItem): Integer;
+Begin
     result := fList.Add(Value);
-end;
+End;
 
-procedure TToolList.MoveItem(CurIndex, NewIndex: integer);
-begin
+Procedure TToolList.MoveItem(CurIndex, NewIndex: Integer);
+Begin
     fList.Move(CurIndex, NewIndex);
-end;
+End;
 
-procedure TToolList.RemoveItem(index: integer);
-begin
+Procedure TToolList.RemoveItem(index: Integer);
+Begin
     fList.Delete(index);
     Packit;
-end;
+End;
 
-procedure TToolList.LoadTools;
-var
+Procedure TToolList.LoadTools;
+Var
     Count,
-    idx: integer;
+    idx: Integer;
     Item: PToolItem;
     Value,
-    section: string;
-begin
-    if not FileExists(devDirs.Config + 'devcpp.cfg') then
+    section: String;
+Begin
+    If Not FileExists(devDirs.Config + 'devcpp.cfg') Then
         exit;
-    with TINIFile.Create(devDirs.Config + 'devcpp.cfg') do
-        try
+    With TINIFile.Create(devDirs.Config + 'devcpp.cfg') Do
+        Try
             Count := Readinteger('Tools', 'Count', 0);
-            if Count <= 0 then
+            If Count <= 0 Then
                 exit;
-            for idx := 0 to pred(Count) do
-            begin
+            For idx := 0 To pred(Count) Do
+            Begin
                 new(Item);
                 Value := '';
                 section := 'Tool' + inttostr(idx);
@@ -210,39 +210,39 @@ begin
                 Item^.IcoNumNewLook := -1;
                 Item^.HasIcon := False;
                 AddItem(Item);
-            end;
-        finally
+            End;
+        Finally
             Free;
-        end;
-end;
+        End;
+End;
 
-procedure TToolList.SaveTools;
-var
+Procedure TToolList.SaveTools;
+Var
     tmp: TStringList;
     Count,
-    idx: integer;
+    idx: Integer;
     Value,
-    section: string;
+    section: String;
     item: PToolItem;
-begin
-    with TINIFile.Create(devDirs.Config + 'devcpp.cfg') do
-        try
+Begin
+    With TINIFile.Create(devDirs.Config + 'devcpp.cfg') Do
+        Try
             // remove extra sections if items removed
             Count := ReadInteger('Tools', 'Count', 0);
-            if Count > fList.Count then
-            begin
+            If Count > fList.Count Then
+            Begin
                 tmp := TStringList.Create;
-                try
+                Try
                     ReadSections(tmp);
-                    for idx := fList.Count to Count do
+                    For idx := fList.Count To Count Do
                         EraseSection('Tool' + inttostr(idx));
-                finally
+                Finally
                     tmp.Free;
-                end;
-            end;
+                End;
+            End;
 
-            for idx := 0 to pred(fList.Count) do
-            begin
+            For idx := 0 To pred(fList.Count) Do
+            Begin
                 section := 'Tool' + inttostr(idx);
                 Item := fList[idx];
                 WriteString(section, 'Title', Item.Title);
@@ -253,94 +253,94 @@ begin
                 Value := Item.WorkDir;
                 Value := ParseString(Value);
                 WriteString(section, 'WorkDir', Value);
-                if (Item.Params <> '') and (Item.Params[1] = '"') and
-                    (Item.Params[length(Item.Params)] = '"') then
+                If (Item.Params <> '') And (Item.Params[1] = '"') And
+                    (Item.Params[length(Item.Params)] = '"') Then
                     // fix the case of param surrounded by quotes
                     WriteString(section, 'Params', '"' + Item.Params + '"')
-                else
+                Else
                     WriteString(section, 'Params', Item.Params);
-            end;
+            End;
             Writeinteger('Tools', 'Count', fList.Count);
-        finally
+        Finally
             free;
-        end;
-end;
+        End;
+End;
 
-function TToolList.ParseString(const s: string): string;
-begin
+Function TToolList.ParseString(Const s: String): String;
+Begin
     result := StringReplace(s, devDirs.Exec, '<EXECPATH>', [rfReplaceAll]);
     result := StringReplace(Result, devDirs.Default, '<DEFAULT>', [rfReplaceAll]);
-end;
+End;
 
 
 { TToolController }
 
-constructor TToolController.Create;
-begin
-    inherited;
-    fMenu := nil;
+Constructor TToolController.Create;
+Begin
+    Inherited;
+    fMenu := Nil;
     fOffset := -1;
-    fOnClick := nil;
+    fOnClick := Nil;
     fToolList := TToolList.Create;
     fToolList.LoadTools;
-end;
+End;
 
-destructor TToolController.Destroy;
-begin
-    if assigned(fMenu) then
+Destructor TToolController.Destroy;
+Begin
+    If assigned(fMenu) Then
         fMenu.Clear;
     fToolList.SaveTools;
     fToolList.Free;
-    inherited;
-end;
+    Inherited;
+End;
 
 { ** enable/disable if not executable }
-procedure TToolController.BuildMenu;
-var
-    idx: integer;
+Procedure TToolController.BuildMenu;
+Var
+    idx: Integer;
     Item: TMenuItem;
     Icon: TIcon;
-    P: PChar;
-    w: word;
-    s: string;
-begin
-    if Assigned(fMenu) then
+    P: Pchar;
+    w: Word;
+    s: String;
+Begin
+    If Assigned(fMenu) Then
         idx := fMenu.Count - 1  //Clear Tools
-    else
+    Else
         idx := -1;
 
-    if idx > fOffset then
-        repeat
+    If idx > fOffset Then
+        Repeat
             fMenu.Delete(idx);
             dec(idx);
-        until idx = fOffset;
+        Until idx = fOffset;
 
-    if not Assigned(fMenu) then
+    If Not Assigned(fMenu) Then
         Exit;
 
-    if fToolList.Count > 0 then
+    If fToolList.Count > 0 Then
         //Rebuild menu
-        for idx := 0 to pred(fToolList.Count) do
-        begin
+        For idx := 0 To pred(fToolList.Count) Do
+        Begin
             Item := TMenuItem.Create(fMenu);
             TMainForm(Application.MainForm).XPMenu.InitComponent(Item);
             Item.Caption := fToolList.Items[idx].Title;
             Item.OnClick := fOnClick;
             Item.Tag := idx;
-            if not fToolList.Items[idx].HasIcon then
-            begin
+            If Not fToolList.Items[idx].HasIcon Then
+            Begin
                 Icon := TIcon.Create;
-                try
+                Try
                     S := StringReplace(fToolList.Items[idx].Exec, '<DEFAULT>',
                         devDirs.Default, [rfReplaceAll]);
                     S := StringReplace(S, '<EXECPATH>', devDirs.Exec, [rfReplaceAll]);
-                    if FileExists(S) then
-                    begin
-                        P := PChar(S);
+                    If FileExists(S) Then
+                    Begin
+                        P := Pchar(S);
                         w := 0;
                         Icon.Handle := ExtractAssociatedIcon(hInstance, P, w);
-                        if Icon.Handle > 0 then
-                        begin
+                        If Icon.Handle > 0 Then
+                        Begin
                             fToolList.Items[idx].IcoNumNewLook :=
                                 dmMain.MenuImages_NewLook.AddIcon(Icon);
                             fToolList.Items[idx].IcoNumBlue :=
@@ -350,82 +350,82 @@ begin
                             fToolList.Items[idx].IcoNumClassic :=
                                 dmMain.MenuImages_Classic.AddIcon(Icon);
                             fToolList.Items[idx].HasIcon := True;
-                        end;
-                    end;
-                finally
+                        End;
+                    End;
+                Finally
                     Icon.Free;
-                end;
-            end;
-            if devData.Theme = DEV_GNOME_THEME then
+                End;
+            End;
+            If devData.Theme = DEV_GNOME_THEME Then
                 Item.ImageIndex := fToolList.Items[idx].IcoNumGnome
-            else
-            if devData.Theme = DEV_BLUE_THEME then
+            Else
+            If devData.Theme = DEV_BLUE_THEME Then
                 Item.ImageIndex := fToolList.Items[idx].IcoNumBlue
-            else
-            if devData.Theme = DEV_CLASSIC_THEME then
+            Else
+            If devData.Theme = DEV_CLASSIC_THEME Then
                 Item.ImageIndex := fToolList.Items[idx].IcoNumClassic
-            else
+            Else
                 Item.ImageIndex := fToolList.Items[idx].IcoNumNewLook;
             fMenu.Add(Item);
-        end;
+        End;
     fMenu.Visible := fMenu.Count > 0;
-end;
+End;
 
-procedure TToolController.Edit;
-begin
-    with TToolForm.Create(nil) do
-        try
+Procedure TToolController.Edit;
+Begin
+    With TToolForm.Create(Nil) Do
+        Try
             Controller := Self;
             ShowModal;
             fToolList.SaveTools;
             BuildMenu;
-        finally
+        Finally
             Free;
-        end;
-end;
+        End;
+End;
 
 { TToolForm }
 
-procedure TToolForm.btnEditClick(Sender: TObject);
-var
+Procedure TToolForm.btnEditClick(Sender: TObject);
+Var
     Item: PToolItem;
-begin
-    with TToolEditForm.Create(nil) do
-        try
+Begin
+    With TToolEditForm.Create(Nil) Do
+        Try
             Item := fController.ToolList[ListBox.ItemIndex];
             edTitle.Text := Item.Title;
             edProgram.Text := fController.ToolList.ParseString(Item.Exec);
             edWorkDir.Text := fController.ToolList.ParseString(Item.WorkDir);
             edParams.Text := Item.Params;
 
-            if ShowModal = mrOK then
-            begin
+            If ShowModal = mrOK Then
+            Begin
                 Item.Title := edTitle.Text;
                 Item.Exec := fController.ToolList.ParseString(edProgram.Text);
                 Item.WorkDir := fController.ToolList.ParseString(edWorkDir.text);
                 Item.Params := edParams.Text;
                 fController.ToolList[ListBox.ItemIndex] := Item;
                 UpdateList;
-            end;
-        finally
+            End;
+        Finally
             Free;
             UpdateButtons;
-        end;
-end;
+        End;
+End;
 
-procedure TToolForm.btnAddClick(Sender: TObject);
-var
+Procedure TToolForm.btnAddClick(Sender: TObject);
+Var
     NewItem: PToolItem;
-begin
-    with TToolEditForm.Create(Self) do
-        try
+Begin
+    With TToolEditForm.Create(Self) Do
+        Try
             new(NewItem);
             edTitle.Text := '';
             edProgram.Text := '';
             edWorkDir.Text := '';
             edParams.Text := '';
-            if ShowModal = mrOK then
-            begin
+            If ShowModal = mrOK Then
+            Begin
                 NewItem.Title := edTitle.Text;
                 NewItem.Exec := edProgram.Text;
                 NewItem.WorkDir := edWorkDir.Text;
@@ -433,74 +433,74 @@ begin
 
                 fController.ToolList.AddItem(NewItem);
                 UpdateList;
-            end;
-        finally
+            End;
+        Finally
             Free;
             UpdateButtons;
-        end;
-end;
+        End;
+End;
 
-procedure TToolForm.btnDeleteClick(Sender: TObject);
-begin
+Procedure TToolForm.btnDeleteClick(Sender: TObject);
+Begin
     fController.ToolList.RemoveItem(Listbox.ItemIndex);
     ListBox.Items.Delete(ListBox.ItemIndex);
     UpdateButtons;
-end;
+End;
 
-procedure TToolForm.ListBoxClick(Sender: TObject);
-begin
+Procedure TToolForm.ListBoxClick(Sender: TObject);
+Begin
     UpdateButtons;
-end;
+End;
 
-procedure TToolForm.PosbtnClick(Sender: TObject);
-begin
-    case (Sender as TSpeedButton).Tag of
+Procedure TToolForm.PosbtnClick(Sender: TObject);
+Begin
+    Case (Sender As TSpeedButton).Tag Of
         1: //move up
-        begin
+        Begin
             fController.ToolList.MoveItem(ListBox.ItemIndex, ListBox.ItemIndex - 1);
             ListBox.Items.Exchange(ListBox.ItemIndex, Listbox.ItemIndex - 1);
-        end;
+        End;
         2: //move down
-        begin
+        Begin
             fController.ToolList.MoveItem(ListBox.ItemIndex, ListBox.ItemIndex + 1);
             ListBox.Items.Exchange(ListBox.ItemIndex, Listbox.ItemIndex + 1);
-        end;
-    end;
+        End;
+    End;
     ListBox.SetFocus;
     UpdateButtons;
-end;
+End;
 
-procedure TToolForm.FormClose(Sender: TObject; var Action: TCloseAction);
-begin
+Procedure TToolForm.FormClose(Sender: TObject; Var Action: TCloseAction);
+Begin
     action := caFree;
-end;
+End;
 
-procedure TToolForm.FormShow(Sender: TObject);
-begin
+Procedure TToolForm.FormShow(Sender: TObject);
+Begin
     UpdateList;
-end;
+End;
 
-procedure TToolForm.UpdateList;
-var
-    idx: integer;
-begin
+Procedure TToolForm.UpdateList;
+Var
+    idx: Integer;
+Begin
     ListBox.Clear;
-    for idx := 0 to pred(fController.ToolList.Count) do
+    For idx := 0 To pred(fController.ToolList.Count) Do
         ListBox.Items.Append(fController.ToolList[idx].Title);
     UpdateButtons;
-end;
+End;
 
-procedure TToolForm.UpdateButtons;
-begin
-    btnDown.Enabled := (ListBox.ItemIndex < pred(Listbox.Count)) and
+Procedure TToolForm.UpdateButtons;
+Begin
+    btnDown.Enabled := (ListBox.ItemIndex < pred(Listbox.Count)) And
         (ListBox.ItemIndex > -1);
     btnUp.Enabled := ListBox.ItemIndex > 0;
     btnEdit.Enabled := Listbox.ItemIndex > -1;
     btnDelete.Enabled := ListBox.ItemIndex > -1;
-end;
+End;
 
-procedure TToolForm.LoadText;
-begin
+Procedure TToolForm.LoadText;
+Begin
     DesktopFont := True;
     XPMenu.Active := devData.XPTheme;
     Caption := Lang[ID_TF];
@@ -510,11 +510,11 @@ begin
     btnDelete.Caption := Lang[ID_BTN_DELETE];
     btnEdit.Caption := Lang[ID_BTN_EDIT];
     btnClose.Caption := Lang[ID_BTN_CLOSE];
-end;
+End;
 
-procedure TToolForm.FormCreate(Sender: TObject);
-begin
+Procedure TToolForm.FormCreate(Sender: TObject);
+Begin
     LoadText;
-end;
+End;
 
-end.
+End.

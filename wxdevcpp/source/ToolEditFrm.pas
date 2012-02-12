@@ -18,11 +18,11 @@
 }
 
 {$WARN UNIT_PLATFORM OFF}
-unit ToolEditFrm;
+Unit ToolEditFrm;
 
-interface
+Interface
 
-uses
+Uses
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
     Dialogs, StdCtrls, ExtCtrls, Buttons, XPMenu, Macros, OpenSaveDialogs;
@@ -32,8 +32,8 @@ uses
   QDialogs, QStdCtrls, QExtCtrls, QButtons, Macros;
 {$ENDIF}
 
-type
-    TToolEditForm = class(TForm)
+Type
+    TToolEditForm = Class(TForm)
         lblTitle: TLabel;
         edTitle: TEdit;
         lblProg: TLabel;
@@ -56,25 +56,25 @@ type
         ParamText: TEdit;
         btnProg: TSpeedButton;
         btnWorkDir: TSpeedButton;
-        procedure btnCancelClick(Sender: TObject);
-        procedure HelpClick(Sender: TObject);
-        procedure btnInsertClick(Sender: TObject);
-        procedure lstMacroClick(Sender: TObject);
-        procedure btnProgClick(Sender: TObject);
-        procedure btnWorkDirClick(Sender: TObject);
-        procedure EditEnter(Sender: TObject);
-        procedure FormCreate(Sender: TObject);
-        procedure edProgramChange(Sender: TObject);
-        procedure edParamsChange(Sender: TObject);
-    private
+        Procedure btnCancelClick(Sender: TObject);
+        Procedure HelpClick(Sender: TObject);
+        Procedure btnInsertClick(Sender: TObject);
+        Procedure lstMacroClick(Sender: TObject);
+        Procedure btnProgClick(Sender: TObject);
+        Procedure btnWorkDirClick(Sender: TObject);
+        Procedure EditEnter(Sender: TObject);
+        Procedure FormCreate(Sender: TObject);
+        Procedure edProgramChange(Sender: TObject);
+        Procedure edParamsChange(Sender: TObject);
+    Private
         fMacroTarget: TEdit;
         OpenDialog: TOpenDialogEx;
-        procedure LoadText;
-    end;
+        Procedure LoadText;
+    End;
 
-implementation
+Implementation
 
-uses
+Uses
 {$IFDEF WIN32}
     FileCtrl, MultiLangSupport, devcfg, utils, main;
 {$ENDIF}
@@ -84,13 +84,13 @@ uses
 
 {$R *.dfm}
 
-procedure TToolEditForm.btnCancelClick(Sender: TObject);
-begin
+Procedure TToolEditForm.btnCancelClick(Sender: TObject);
+Begin
     Close;
-end;
+End;
 
-procedure TToolEditForm.HelpClick(Sender: TObject);
-begin
+Procedure TToolEditForm.HelpClick(Sender: TObject);
+Begin
     Application.MessageBox(
         'You can use macros when calling a tool, how it can acts depending on what your doing'
         +
@@ -113,60 +113,60 @@ begin
 {$IFDEF LINUX}
     [smbOK], smsInformation);
 {$ENDIF}
-end;
+End;
 
-procedure TToolEditForm.btnInsertClick(Sender: TObject);
-begin
-    if lstMacro.itemindex > -1 then
+Procedure TToolEditForm.btnInsertClick(Sender: TObject);
+Begin
+    If lstMacro.itemindex > -1 Then
         fMacroTarget.SelText := lstMacro.Items[lstMacro.itemindex];
-end;
+End;
 
-procedure TToolEditForm.lstMacroClick(Sender: TObject);
-begin
+Procedure TToolEditForm.lstMacroClick(Sender: TObject);
+Begin
     lblDesc.Caption := Lang[lstMacro.ItemIndex + ID_ET_MACROS];
-end;
+End;
 
-procedure TToolEditForm.btnProgClick(Sender: TObject);
-begin
-    if OpenDialog.Execute then
-    begin
+Procedure TToolEditForm.btnProgClick(Sender: TObject);
+Begin
+    If OpenDialog.Execute Then
+    Begin
         edProgram.Text := OpenDialog.FileName;
         edWorkDir.Text := ExtractFilePath(OpenDialog.FileName);
-    end;
-end;
+    End;
+End;
 
-procedure TToolEditForm.btnWorkDirClick(Sender: TObject);
-var
+Procedure TToolEditForm.btnWorkDirClick(Sender: TObject);
+Var
 {$IFDEF WIN32}
-    new: string;
+    new: String;
 {$ENDIF}
 {$IFDEF LINUX}
   new: WideString;
 {$ENDIF}
-begin
-    if (Trim(edWorkDir.Text) <> '') and DirectoryExists(Trim(edWorkDir.Text)) then
+Begin
+    If (Trim(edWorkDir.Text) <> '') And DirectoryExists(Trim(edWorkDir.Text)) Then
         new := edWorkDir.Text
-    else
+    Else
         new := ExtractFilePath(edProgram.Text);
-    if SelectDirectory('Select Working Dir', '', new) then
+    If SelectDirectory('Select Working Dir', '', new) Then
         edWorkDir.text := New;
-end;
+End;
 
-procedure TToolEditForm.EditEnter(Sender: TObject);
-begin
-    fMacroTarget := Sender as TEdit;
-end;
+Procedure TToolEditForm.EditEnter(Sender: TObject);
+Begin
+    fMacroTarget := Sender As TEdit;
+End;
 
-procedure TToolEditForm.FormCreate(Sender: TObject);
-begin
+Procedure TToolEditForm.FormCreate(Sender: TObject);
+Begin
     OpenDialog := TOpenDialogEx.Create(MainForm);
     OpenDialog.Filter := 'Applications (*.exe)|*.exe|All files (*.*)|*.*';
     fMacroTarget := edParams;
     LoadText;
-end;
+End;
 
-procedure TToolEditForm.LoadText;
-begin
+Procedure TToolEditForm.LoadText;
+Begin
     DesktopFont := True;
     XPMenu.Active := devData.XPTheme;
     Caption := Lang[ID_TE];
@@ -180,16 +180,16 @@ begin
     btnOk.Caption := Lang[ID_BTN_OK];
     btnCancel.Caption := Lang[ID_BTN_CANCEL];
     btnHelp.Caption := Lang[ID_BTN_HELP];
-end;
+End;
 
-procedure TToolEditForm.edProgramChange(Sender: TObject);
-begin
+Procedure TToolEditForm.edProgramChange(Sender: TObject);
+Begin
     ParamText.Text := ParseMacros(edProgram.Text + ' ' + edParams.Text);
-end;
+End;
 
-procedure TToolEditForm.edParamsChange(Sender: TObject);
-begin
+Procedure TToolEditForm.edParamsChange(Sender: TObject);
+Begin
     ParamText.Text := ParseMacros(edProgram.Text + ' ' + edParams.Text);
-end;
+End;
 
-end.
+End.

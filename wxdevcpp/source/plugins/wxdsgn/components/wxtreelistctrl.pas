@@ -25,340 +25,340 @@
 {Contact gururamnath@yahoo.com for details                           }
 { ****************************************************************** }
 
-unit WxTreeListctrl;
+Unit WxTreeListctrl;
 
-interface
+Interface
 
-uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
-  Forms, Graphics, ComCtrls, WxUtils, ExtCtrls, WxAuiToolBar, WxAuiNotebookPage,
-  WxSizerPanel; //, JvExComCtrls, JvComCtrls;
+Uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
+    Forms, Graphics, ComCtrls, WxUtils, ExtCtrls, WxAuiToolBar, WxAuiNotebookPage,
+    WxSizerPanel; //, JvExComCtrls, JvComCtrls;
 
-type
-  TWxTreeListCtrl = class(TListView, IWxComponentInterface)
-  private
+Type
+    TWxTreeListCtrl = Class(TListView, IWxComponentInterface)
+    Private
     { Private fields of TWxListCtrl }
     { Storage for property EVT_TREE_BEGIN_DRAG }
-    FEVT_TREE_BEGIN_DRAG: string;
+        FEVT_TREE_BEGIN_DRAG: String;
     { Storage for property EVT_TREE_BEGIN_RDRAG }
-    FEVT_TREE_BEGIN_RDRAG: string;
+        FEVT_TREE_BEGIN_RDRAG: String;
     { Storage for property EVT_TREE_END_DRAG }
-    FEVT_TREE_END_DRAG: string;
+        FEVT_TREE_END_DRAG: String;
 
     { Storage for property EVT_TREE_BEGIN_LABEL_EDIT }
-    FEVT_TREE_BEGIN_LABEL_EDIT: string;
+        FEVT_TREE_BEGIN_LABEL_EDIT: String;
     { Storage for property EVT_TREE_END_LABEL_EDIT }
-    FEVT_TREE_END_LABEL_EDIT: string;
+        FEVT_TREE_END_LABEL_EDIT: String;
 
     { Storage for property EVT_TREE_DELETE_ITEM }
-    FEVT_TREE_DELETE_ITEM: string;
+        FEVT_TREE_DELETE_ITEM: String;
     { Storage for property EVT_TREE_ITEM_ACTIVATED }
-    FEVT_TREE_ITEM_ACTIVATED: string;
+        FEVT_TREE_ITEM_ACTIVATED: String;
 
     { Storage for property EVT_TREE_ITEM_COLLAPSED }
-    FEVT_TREE_ITEM_COLLAPSED: string;
+        FEVT_TREE_ITEM_COLLAPSED: String;
     { Storage for property EVT_TREE_ITEM_COLLAPSING }
-    FEVT_TREE_ITEM_COLLAPSING: string;
+        FEVT_TREE_ITEM_COLLAPSING: String;
 
     { Storage for property EVT_TREE_ITEM_EXPANDED }
-    FEVT_TREE_ITEM_EXPANDED: string;
+        FEVT_TREE_ITEM_EXPANDED: String;
     { Storage for property EVT_TREE_ITEM_EXPANDING }
-    FEVT_TREE_ITEM_EXPANDING: string;
+        FEVT_TREE_ITEM_EXPANDING: String;
 
     { Storage for property EVT_TREE_ITEM_RIGHT_CLICK }
-    FEVT_TREE_ITEM_RIGHT_CLICK: string;
+        FEVT_TREE_ITEM_RIGHT_CLICK: String;
     { Storage for property EVT_TREE_ITEM_MIDDLE_CLICK }
-    FEVT_TREE_ITEM_MIDDLE_CLICK: string;
+        FEVT_TREE_ITEM_MIDDLE_CLICK: String;
 
     { Storage for property EVT_TREE_SEL_CHANGED }
-    FEVT_TREE_SEL_CHANGED: string;
+        FEVT_TREE_SEL_CHANGED: String;
     { Storage for property EVT_TREE_SEL_CHANGING }
-    FEVT_TREE_SEL_CHANGING: string;
+        FEVT_TREE_SEL_CHANGING: String;
 
     { Storage for property EVT_TREE_KEY_DOWN }
-    FEVT_TREE_KEY_DOWN: string;
+        FEVT_TREE_KEY_DOWN: String;
 
     { Storage for property EVT_TREE_ITEM_MENU }
-    FEVT_TREE_ITEM_MENU: string;
+        FEVT_TREE_ITEM_MENU: String;
 
     { Storage for property EVT_UPDATE_UI }
-    FEVT_UPDATE_UI: string;
+        FEVT_UPDATE_UI: String;
     { Storage for property Wx_BGColor }
-    FWx_BGColor: TColor;
+        FWx_BGColor: TColor;
     { Storage for property Wx_Border }
-    FWx_Border: integer;
+        FWx_Border: Integer;
     { Storage for property Wx_Class }
-    FWx_Class: string;
+        FWx_Class: String;
     { Storage for property Wx_ControlOrientation }
-    FWx_ControlOrientation: TwxControlOrientation;
+        FWx_ControlOrientation: TwxControlOrientation;
     { Storage for property Wx_Enabled }
-    FWx_Enabled: boolean;
+        FWx_Enabled: Boolean;
     { Storage for property Wx_FGColor }
-    FWx_FGColor: TColor;
+        FWx_FGColor: TColor;
     { Storage for property Wx_GeneralStyle }
-    FWx_GeneralStyle: TWxStdStyleSet;
+        FWx_GeneralStyle: TWxStdStyleSet;
     { Storage for property Wx_HelpText }
-    FWx_HelpText: string;
+        FWx_HelpText: String;
     { Storage for property Wx_Hidden }
-    FWx_Hidden: boolean;
+        FWx_Hidden: Boolean;
     { Storage for property Wx_IDName }
-    FWx_IDName: string;
+        FWx_IDName: String;
     { Storage for property Wx_IDValue }
-    FWx_IDValue: integer;
+        FWx_IDValue: Integer;
     { Storage for property Wx_ListviewStyle }
-    FWx_ListviewStyle: TWxLVStyleSet;
+        FWx_ListviewStyle: TWxLVStyleSet;
     { Storage for property Wx_ListviewView }
     { Storage for property Wx_ProxyBGColorString }
-    FWx_ProxyBGColorString: TWxColorString;
+        FWx_ProxyBGColorString: TWxColorString;
     { Storage for property Wx_ProxyFGColorString }
-    FWx_ProxyFGColorString: TWxColorString;
+        FWx_ProxyFGColorString: TWxColorString;
     { Storage for property Wx_StretchFactor }
-    FWx_StretchFactor: integer;
+        FWx_StretchFactor: Integer;
     { Storage for property Wx_ToolTip }
-    FWx_ToolTip: string;
-    FWx_EventList: TStringList;
-    FWx_PropertyList: TStringList;
-    FInvisibleBGColorString: string;
-    FInvisibleFGColorString: string;
-    FWx_Comments: TStrings;
-    FWx_Alignment: TWxSizerAlignmentSet;
-    FWx_BorderAlignment: TWxBorderAlignment;
-    FWx_Include: string;
-    FWx_TreeListviewStyle : TWxTVStyleSet;
+        FWx_ToolTip: String;
+        FWx_EventList: TStringList;
+        FWx_PropertyList: TStringList;
+        FInvisibleBGColorString: String;
+        FInvisibleFGColorString: String;
+        FWx_Comments: TStrings;
+        FWx_Alignment: TWxSizerAlignmentSet;
+        FWx_BorderAlignment: TWxBorderAlignment;
+        FWx_Include: String;
+        FWx_TreeListviewStyle: TWxTVStyleSet;
 
 //Aui Properties
-    FWx_AuiManaged: Boolean;
-    FWx_PaneCaption: string;
-    FWx_PaneName: string;
-    FWx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem;
-    FWx_Aui_Dockable_Direction: TwxAuiPaneDockableDirectionSet;
-    FWx_Aui_Pane_Style: TwxAuiPaneStyleSet;
-    FWx_Aui_Pane_Buttons: TwxAuiPaneButtonSet;
-    FWx_BestSize_Height: Integer;
-    FWx_BestSize_Width: Integer;
-    FWx_MinSize_Height: Integer;
-    FWx_MinSize_Width: Integer;
-    FWx_MaxSize_Height: Integer;
-    FWx_MaxSize_Width: Integer;
-    FWx_Floating_Height: Integer;
-    FWx_Floating_Width: Integer;
-    FWx_Floating_X_Pos: Integer;
-    FWx_Floating_Y_Pos: Integer;
-    FWx_Layer: Integer;
-    FWx_Row: Integer;
-    FWx_Position: Integer;
+        FWx_AuiManaged: Boolean;
+        FWx_PaneCaption: String;
+        FWx_PaneName: String;
+        FWx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem;
+        FWx_Aui_Dockable_Direction: TwxAuiPaneDockableDirectionSet;
+        FWx_Aui_Pane_Style: TwxAuiPaneStyleSet;
+        FWx_Aui_Pane_Buttons: TwxAuiPaneButtonSet;
+        FWx_BestSize_Height: Integer;
+        FWx_BestSize_Width: Integer;
+        FWx_MinSize_Height: Integer;
+        FWx_MinSize_Width: Integer;
+        FWx_MaxSize_Height: Integer;
+        FWx_MaxSize_Width: Integer;
+        FWx_Floating_Height: Integer;
+        FWx_Floating_Width: Integer;
+        FWx_Floating_X_Pos: Integer;
+        FWx_Floating_Y_Pos: Integer;
+        FWx_Layer: Integer;
+        FWx_Row: Integer;
+        FWx_Position: Integer;
 
     { Private methods of TWxTreeListCtrl }
     { Method to set variable and property values and create objects }
-    procedure AutoInitialize;
+        Procedure AutoInitialize;
     { Method to free any objects created by AutoInitialize }
-    procedure AutoDestroy;
-    
-  protected
+        Procedure AutoDestroy;
+
+    Protected
     { Protected fields of TWxTreeListCtrl }
 
     { Protected methods of TWxTreeListCtrl }
-    procedure KeyPress(var Key: char); override;
-    procedure Loaded; override;
+        Procedure KeyPress(Var Key: Char); Override;
+        Procedure Loaded; Override;
 
-  public
+    Public
     { Public fields and properties of TWxTreeListCtrl }
-    defaultBGColor: TColor;
-    defaultFGColor: TColor;
+        defaultBGColor: TColor;
+        defaultFGColor: TColor;
     { Public methods of TWxTreeListCtrl }
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    function GenerateControlIDs: string;
-    function GenerateEnumControlIDs: string;
-    function GenerateEventTableEntries(CurrClassName: string): string;
-    function GenerateGUIControlCreation: string;
-    function GenerateXRCControlCreation(IndentString: string): TStringList;
-    function GenerateGUIControlDeclaration: string;
-    function GenerateHeaderInclude: string;
-    function GenerateImageInclude: string;
-    function GetEventList: TStringList;
-    function GetIDName: string;
-    function GetIDValue: integer;
-    function GetParameterFromEventName(EventName: string): string;
-    function GetPropertyList: TStringList;
-    function GetTypeFromEventName(EventName: string): string;
-    function GetWxClassName: string;
-    procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
-    procedure SetIDName(IDName: string);
-    procedure SetIDValue(IDValue: integer);
-    procedure SetWxClassName(wxClassName: string);
-    function GetFGColor: string;
-    procedure SetFGColor(strValue: string);
+        Constructor Create(AOwner: TComponent); Override;
+        Destructor Destroy; Override;
+        Function GenerateControlIDs: String;
+        Function GenerateEnumControlIDs: String;
+        Function GenerateEventTableEntries(CurrClassName: String): String;
+        Function GenerateGUIControlCreation: String;
+        Function GenerateXRCControlCreation(IndentString: String): TStringList;
+        Function GenerateGUIControlDeclaration: String;
+        Function GenerateHeaderInclude: String;
+        Function GenerateImageInclude: String;
+        Function GetEventList: TStringList;
+        Function GetIDName: String;
+        Function GetIDValue: Integer;
+        Function GetParameterFromEventName(EventName: String): String;
+        Function GetPropertyList: TStringList;
+        Function GetTypeFromEventName(EventName: String): String;
+        Function GetWxClassName: String;
+        Procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
+        Procedure SetIDName(IDName: String);
+        Procedure SetIDValue(IDValue: Integer);
+        Procedure SetWxClassName(wxClassName: String);
+        Function GetFGColor: String;
+        Procedure SetFGColor(strValue: String);
 
-    function GetBGColor: string;
-    procedure SetBGColor(strValue: string);
+        Function GetBGColor: String;
+        Procedure SetBGColor(strValue: String);
 
-    function GetGenericColor(strVariableName:String): string;
-    procedure SetGenericColor(strVariableName,strValue: string);
+        Function GetGenericColor(strVariableName: String): String;
+        Procedure SetGenericColor(strVariableName, strValue: String);
 
-    procedure SetProxyFGColorString(Value: string);
-    procedure SetProxyBGColorString(Value: string);
+        Procedure SetProxyFGColorString(Value: String);
+        Procedure SetProxyBGColorString(Value: String);
 
-    function GetBorderAlignment: TWxBorderAlignment;
-    procedure SetBorderAlignment(border: TWxBorderAlignment);
-    function GetBorderWidth: integer;
-    procedure SetBorderWidth(width: integer);
-    function GetStretchFactor: integer;
-    procedure SetStretchFactor(intValue: integer);
+        Function GetBorderAlignment: TWxBorderAlignment;
+        Procedure SetBorderAlignment(border: TWxBorderAlignment);
+        Function GetBorderWidth: Integer;
+        Procedure SetBorderWidth(width: Integer);
+        Function GetStretchFactor: Integer;
+        Procedure SetStretchFactor(intValue: Integer);
 
-    function TLAlignmentToStr(taPos: TAlignment): string;
+        Function TLAlignmentToStr(taPos: TAlignment): String;
 
-  published
+    Published
     { Published properties of TWxTreeListCtrl }
-    property OnKeyDown;
-    property OnKeyPress;
-    property OnKeyUp;
+        Property OnKeyDown;
+        Property OnKeyPress;
+        Property OnKeyUp;
 
-    property EVT_TREE_BEGIN_DRAG: string Read FEVT_TREE_BEGIN_DRAG
-      Write FEVT_TREE_BEGIN_DRAG;
-    property EVT_TREE_BEGIN_RDRAG: string Read FEVT_TREE_BEGIN_RDRAG
-      Write FEVT_TREE_BEGIN_RDRAG;
-    property EVT_TREE_END_DRAG: string
-      Read FEVT_TREE_END_DRAG Write FEVT_TREE_END_DRAG;
+        Property EVT_TREE_BEGIN_DRAG: String Read FEVT_TREE_BEGIN_DRAG
+            Write FEVT_TREE_BEGIN_DRAG;
+        Property EVT_TREE_BEGIN_RDRAG: String Read FEVT_TREE_BEGIN_RDRAG
+            Write FEVT_TREE_BEGIN_RDRAG;
+        Property EVT_TREE_END_DRAG: String
+            Read FEVT_TREE_END_DRAG Write FEVT_TREE_END_DRAG;
 
-    property EVT_TREE_BEGIN_LABEL_EDIT: string Read FEVT_TREE_BEGIN_LABEL_EDIT
-      Write FEVT_TREE_BEGIN_LABEL_EDIT;
-    property EVT_TREE_END_LABEL_EDIT: string
-      Read FEVT_TREE_END_LABEL_EDIT Write FEVT_TREE_END_LABEL_EDIT;
+        Property EVT_TREE_BEGIN_LABEL_EDIT: String Read FEVT_TREE_BEGIN_LABEL_EDIT
+            Write FEVT_TREE_BEGIN_LABEL_EDIT;
+        Property EVT_TREE_END_LABEL_EDIT: String
+            Read FEVT_TREE_END_LABEL_EDIT Write FEVT_TREE_END_LABEL_EDIT;
 
-    property EVT_TREE_DELETE_ITEM: string Read FEVT_TREE_DELETE_ITEM
-      Write FEVT_TREE_DELETE_ITEM;
+        Property EVT_TREE_DELETE_ITEM: String Read FEVT_TREE_DELETE_ITEM
+            Write FEVT_TREE_DELETE_ITEM;
 
-    property EVT_TREE_ITEM_ACTIVATED: string
-      Read FEVT_TREE_ITEM_ACTIVATED Write FEVT_TREE_ITEM_ACTIVATED;
+        Property EVT_TREE_ITEM_ACTIVATED: String
+            Read FEVT_TREE_ITEM_ACTIVATED Write FEVT_TREE_ITEM_ACTIVATED;
 
-    property EVT_TREE_ITEM_COLLAPSED: string Read FEVT_TREE_ITEM_COLLAPSED
-      Write FEVT_TREE_ITEM_COLLAPSED;
-    property EVT_TREE_ITEM_COLLAPSING: string
-      Read FEVT_TREE_ITEM_COLLAPSING Write FEVT_TREE_ITEM_COLLAPSING;
+        Property EVT_TREE_ITEM_COLLAPSED: String Read FEVT_TREE_ITEM_COLLAPSED
+            Write FEVT_TREE_ITEM_COLLAPSED;
+        Property EVT_TREE_ITEM_COLLAPSING: String
+            Read FEVT_TREE_ITEM_COLLAPSING Write FEVT_TREE_ITEM_COLLAPSING;
 
-    property EVT_TREE_ITEM_EXPANDED: string Read FEVT_TREE_ITEM_EXPANDED
-      Write FEVT_TREE_ITEM_EXPANDED;
-    property EVT_TREE_ITEM_EXPANDING: string
-      Read FEVT_TREE_ITEM_EXPANDING Write FEVT_TREE_ITEM_EXPANDING;
+        Property EVT_TREE_ITEM_EXPANDED: String Read FEVT_TREE_ITEM_EXPANDED
+            Write FEVT_TREE_ITEM_EXPANDED;
+        Property EVT_TREE_ITEM_EXPANDING: String
+            Read FEVT_TREE_ITEM_EXPANDING Write FEVT_TREE_ITEM_EXPANDING;
 
-   property EVT_TREE_ITEM_RIGHT_CLICK: string
-      Read FEVT_TREE_ITEM_RIGHT_CLICK Write FEVT_TREE_ITEM_RIGHT_CLICK;
-   property EVT_TREE_ITEM_MIDDLE_CLICK: string
-      Read FEVT_TREE_ITEM_MIDDLE_CLICK Write FEVT_TREE_ITEM_MIDDLE_CLICK;
+        Property EVT_TREE_ITEM_RIGHT_CLICK: String
+            Read FEVT_TREE_ITEM_RIGHT_CLICK Write FEVT_TREE_ITEM_RIGHT_CLICK;
+        Property EVT_TREE_ITEM_MIDDLE_CLICK: String
+            Read FEVT_TREE_ITEM_MIDDLE_CLICK Write FEVT_TREE_ITEM_MIDDLE_CLICK;
 
-    property EVT_TREE_SEL_CHANGED: string
-      Read FEVT_TREE_SEL_CHANGED Write FEVT_TREE_SEL_CHANGED;
+        Property EVT_TREE_SEL_CHANGED: String
+            Read FEVT_TREE_SEL_CHANGED Write FEVT_TREE_SEL_CHANGED;
 
-    property EVT_TREE_SEL_CHANGING: string
-      Read FEVT_TREE_SEL_CHANGING Write FEVT_TREE_SEL_CHANGING;
+        Property EVT_TREE_SEL_CHANGING: String
+            Read FEVT_TREE_SEL_CHANGING Write FEVT_TREE_SEL_CHANGING;
 
-    property EVT_TREE_KEY_DOWN: string Read FEVT_TREE_KEY_DOWN Write FEVT_TREE_KEY_DOWN;
+        Property EVT_TREE_KEY_DOWN: String Read FEVT_TREE_KEY_DOWN Write FEVT_TREE_KEY_DOWN;
 
-    property EVT_TREE_ITEM_MENU: string Read FEVT_TREE_ITEM_MENU Write FEVT_TREE_ITEM_MENU;
+        Property EVT_TREE_ITEM_MENU: String Read FEVT_TREE_ITEM_MENU Write FEVT_TREE_ITEM_MENU;
 
-    property EVT_UPDATE_UI: string Read FEVT_UPDATE_UI Write FEVT_UPDATE_UI;
-    property Wx_BGColor: TColor Read FWx_BGColor Write FWx_BGColor;
-    property Wx_Class: string Read FWx_Class Write FWx_Class;
-    property Wx_ControlOrientation: TwxControlOrientation
-      Read FWx_ControlOrientation Write FWx_ControlOrientation;
-    property Wx_Enabled: boolean Read FWx_Enabled Write FWx_Enabled default True;
-    property Wx_FGColor: TColor Read FWx_FGColor Write FWx_FGColor;
-    property Wx_GeneralStyle: TWxStdStyleSet
-      Read FWx_GeneralStyle Write FWx_GeneralStyle;
-    property Wx_HelpText: string Read FWx_HelpText Write FWx_HelpText;
-    property Wx_Hidden: boolean Read FWx_Hidden Write FWx_Hidden default False;
-    property Wx_IDName: string Read FWx_IDName Write FWx_IDName;
-    property Wx_IDValue: integer Read FWx_IDValue Write FWx_IDValue default -1;
-    property Wx_TreeListviewStyle: TWxTVStyleSet Read FWx_TreeListviewStyle Write FWx_TreeListviewStyle;
-    property Wx_ToolTip: string Read FWx_ToolTip Write FWx_ToolTip;
+        Property EVT_UPDATE_UI: String Read FEVT_UPDATE_UI Write FEVT_UPDATE_UI;
+        Property Wx_BGColor: TColor Read FWx_BGColor Write FWx_BGColor;
+        Property Wx_Class: String Read FWx_Class Write FWx_Class;
+        Property Wx_ControlOrientation: TwxControlOrientation
+            Read FWx_ControlOrientation Write FWx_ControlOrientation;
+        Property Wx_Enabled: Boolean Read FWx_Enabled Write FWx_Enabled Default True;
+        Property Wx_FGColor: TColor Read FWx_FGColor Write FWx_FGColor;
+        Property Wx_GeneralStyle: TWxStdStyleSet
+            Read FWx_GeneralStyle Write FWx_GeneralStyle;
+        Property Wx_HelpText: String Read FWx_HelpText Write FWx_HelpText;
+        Property Wx_Hidden: Boolean Read FWx_Hidden Write FWx_Hidden Default False;
+        Property Wx_IDName: String Read FWx_IDName Write FWx_IDName;
+        Property Wx_IDValue: Integer Read FWx_IDValue Write FWx_IDValue Default -1;
+        Property Wx_TreeListviewStyle: TWxTVStyleSet Read FWx_TreeListviewStyle Write FWx_TreeListviewStyle;
+        Property Wx_ToolTip: String Read FWx_ToolTip Write FWx_ToolTip;
 
-    property Wx_Border: integer Read GetBorderWidth Write SetBorderWidth default 5;
-    property Wx_BorderAlignment: TWxBorderAlignment Read GetBorderAlignment Write SetBorderAlignment default [wxALL];
-    property Wx_Include: string Read FWx_Include Write FWx_Include;
-    property Wx_Alignment: TWxSizerAlignmentSet Read FWx_Alignment Write FWx_Alignment default [wxALIGN_CENTER];
-    property Wx_StretchFactor: integer Read GetStretchFactor Write SetStretchFactor default 0;
-    
-    property InvisibleBGColorString: string Read FInvisibleBGColorString Write FInvisibleBGColorString;
-    property InvisibleFGColorString: string Read FInvisibleFGColorString Write FInvisibleFGColorString;
-    property Wx_ProxyBGColorString: TWxColorString Read FWx_ProxyBGColorString Write FWx_ProxyBGColorString;
-    property Wx_ProxyFGColorString: TWxColorString Read FWx_ProxyFGColorString Write FWx_ProxyFGColorString;
+        Property Wx_Border: Integer Read GetBorderWidth Write SetBorderWidth Default 5;
+        Property Wx_BorderAlignment: TWxBorderAlignment Read GetBorderAlignment Write SetBorderAlignment Default [wxALL];
+        Property Wx_Include: String Read FWx_Include Write FWx_Include;
+        Property Wx_Alignment: TWxSizerAlignmentSet Read FWx_Alignment Write FWx_Alignment Default [wxALIGN_CENTER];
+        Property Wx_StretchFactor: Integer Read GetStretchFactor Write SetStretchFactor Default 0;
 
-    property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
+        Property InvisibleBGColorString: String Read FInvisibleBGColorString Write FInvisibleBGColorString;
+        Property InvisibleFGColorString: String Read FInvisibleFGColorString Write FInvisibleFGColorString;
+        Property Wx_ProxyBGColorString: TWxColorString Read FWx_ProxyBGColorString Write FWx_ProxyBGColorString;
+        Property Wx_ProxyFGColorString: TWxColorString Read FWx_ProxyFGColorString Write FWx_ProxyFGColorString;
+
+        Property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
 
 //Aui Properties
-    property Wx_AuiManaged: boolean read FWx_AuiManaged write FWx_AuiManaged default False;
-    property Wx_PaneCaption: string read FWx_PaneCaption write FWx_PaneCaption;
-    property Wx_PaneName: string read FWx_PaneName write FWx_PaneName;
-    property Wx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem read FWx_Aui_Dock_Direction write FWx_Aui_Dock_Direction;
-    property Wx_Aui_Dockable_Direction: TwxAuiPaneDockableDirectionSet read FWx_Aui_Dockable_Direction write FWx_Aui_Dockable_Direction;
-    property Wx_Aui_Pane_Style: TwxAuiPaneStyleSet read FWx_Aui_Pane_Style write FWx_Aui_Pane_Style;
-    property Wx_Aui_Pane_Buttons: TwxAuiPaneButtonSet read FWx_Aui_Pane_Buttons write FWx_Aui_Pane_Buttons;
-    property Wx_BestSize_Height: integer read FWx_BestSize_Height write FWx_BestSize_Height default -1;
-    property Wx_BestSize_Width: integer read FWx_BestSize_Width write FWx_BestSize_Width default -1;
-    property Wx_MinSize_Height: integer read FWx_MinSize_Height write FWx_MinSize_Height default -1;
-    property Wx_MinSize_Width: integer read FWx_MinSize_Width write FWx_MinSize_Width default -1;
-    property Wx_MaxSize_Height: integer read FWx_MaxSize_Height write FWx_MaxSize_Height default -1;
-    property Wx_MaxSize_Width: integer read FWx_MaxSize_Width write FWx_MaxSize_Width default -1;
-    property Wx_Floating_Height: integer read FWx_Floating_Height write FWx_Floating_Height default -1;
-    property Wx_Floating_Width: integer read FWx_Floating_Width write FWx_Floating_Width default -1;
-    property Wx_Floating_X_Pos: integer read FWx_Floating_X_Pos write FWx_Floating_X_Pos default -1;
-    property Wx_Floating_Y_Pos: integer read FWx_Floating_Y_Pos write FWx_Floating_Y_Pos default -1;
-    property Wx_Layer: integer read FWx_Layer write FWx_Layer default 0;
-    property Wx_Row: integer read FWx_Row write FWx_Row default 0;
-    property Wx_Position: integer read FWx_Position write FWx_Position default 0;
+        Property Wx_AuiManaged: Boolean Read FWx_AuiManaged Write FWx_AuiManaged Default False;
+        Property Wx_PaneCaption: String Read FWx_PaneCaption Write FWx_PaneCaption;
+        Property Wx_PaneName: String Read FWx_PaneName Write FWx_PaneName;
+        Property Wx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem Read FWx_Aui_Dock_Direction Write FWx_Aui_Dock_Direction;
+        Property Wx_Aui_Dockable_Direction: TwxAuiPaneDockableDirectionSet Read FWx_Aui_Dockable_Direction Write FWx_Aui_Dockable_Direction;
+        Property Wx_Aui_Pane_Style: TwxAuiPaneStyleSet Read FWx_Aui_Pane_Style Write FWx_Aui_Pane_Style;
+        Property Wx_Aui_Pane_Buttons: TwxAuiPaneButtonSet Read FWx_Aui_Pane_Buttons Write FWx_Aui_Pane_Buttons;
+        Property Wx_BestSize_Height: Integer Read FWx_BestSize_Height Write FWx_BestSize_Height Default -1;
+        Property Wx_BestSize_Width: Integer Read FWx_BestSize_Width Write FWx_BestSize_Width Default -1;
+        Property Wx_MinSize_Height: Integer Read FWx_MinSize_Height Write FWx_MinSize_Height Default -1;
+        Property Wx_MinSize_Width: Integer Read FWx_MinSize_Width Write FWx_MinSize_Width Default -1;
+        Property Wx_MaxSize_Height: Integer Read FWx_MaxSize_Height Write FWx_MaxSize_Height Default -1;
+        Property Wx_MaxSize_Width: Integer Read FWx_MaxSize_Width Write FWx_MaxSize_Width Default -1;
+        Property Wx_Floating_Height: Integer Read FWx_Floating_Height Write FWx_Floating_Height Default -1;
+        Property Wx_Floating_Width: Integer Read FWx_Floating_Width Write FWx_Floating_Width Default -1;
+        Property Wx_Floating_X_Pos: Integer Read FWx_Floating_X_Pos Write FWx_Floating_X_Pos Default -1;
+        Property Wx_Floating_Y_Pos: Integer Read FWx_Floating_Y_Pos Write FWx_Floating_Y_Pos Default -1;
+        Property Wx_Layer: Integer Read FWx_Layer Write FWx_Layer Default 0;
+        Property Wx_Row: Integer Read FWx_Row Write FWx_Row Default 0;
+        Property Wx_Position: Integer Read FWx_Position Write FWx_Position Default 0;
 
-  end;
+    End;
 
-procedure Register;
+Procedure Register;
 
-implementation
+Implementation
 
-procedure Register;
-begin
+Procedure Register;
+Begin
      { Register TWxTreeListCtrl with wxWidgets as its
        default page on the Delphi component palette }
-  RegisterComponents('wxWidgets', [TWxTreeListCtrl]);
-end;
+    RegisterComponents('wxWidgets', [TWxTreeListCtrl]);
+End;
 
 { Method to set variable and property values and create objects }
-procedure TWxTreeListCtrl.AutoInitialize;
-begin
-  ViewStyle              := vsReport;
-  FWx_ListviewStyle      := [];
-  FWx_EventList          := TStringList.Create;
-  FWx_PropertyList       := TStringList.Create;
-  FWx_Border             := 5;
-  FWx_Class              := 'wxTreeListCtrl';
-  FWx_Enabled            := True;
-  FWx_Hidden             := False;
-  FWx_BorderAlignment    := [wxAll];
-  FWx_Alignment          := [wxALIGN_CENTER];
-  FWx_Include            := '#include <wx/treelistctrl.h>';
-  FWx_IDValue            := -1;
-  FWx_StretchFactor      := 0;
-  FWx_ProxyBGColorString := TWxColorString.Create;
-  FWx_ProxyFGColorString := TWxColorString.Create;
-  defaultBGColor         := self.color;
-  defaultFGColor         := self.font.color;
-  FWx_Comments           := TStringList.Create;
-end; { of AutoInitialize }
+Procedure TWxTreeListCtrl.AutoInitialize;
+Begin
+    ViewStyle := vsReport;
+    FWx_ListviewStyle := [];
+    FWx_EventList := TStringList.Create;
+    FWx_PropertyList := TStringList.Create;
+    FWx_Border := 5;
+    FWx_Class := 'wxTreeListCtrl';
+    FWx_Enabled := True;
+    FWx_Hidden := False;
+    FWx_BorderAlignment := [wxAll];
+    FWx_Alignment := [wxALIGN_CENTER];
+    FWx_Include := '#include <wx/treelistctrl.h>';
+    FWx_IDValue := -1;
+    FWx_StretchFactor := 0;
+    FWx_ProxyBGColorString := TWxColorString.Create;
+    FWx_ProxyFGColorString := TWxColorString.Create;
+    defaultBGColor := self.color;
+    defaultFGColor := self.font.color;
+    FWx_Comments := TStringList.Create;
+End; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
-procedure TWxTreeListCtrl.AutoDestroy;
-begin
-  FWx_EventList.Destroy;
-  FWx_PropertyList.Destroy;
-  FWx_Comments.Destroy;
-  FWx_ProxyBGColorString.Destroy;
-  FWx_ProxyFGColorString.Destroy;
-end; { of AutoDestroy }
+Procedure TWxTreeListCtrl.AutoDestroy;
+Begin
+    FWx_EventList.Destroy;
+    FWx_PropertyList.Destroy;
+    FWx_Comments.Destroy;
+    FWx_ProxyBGColorString.Destroy;
+    FWx_ProxyFGColorString.Destroy;
+End; { of AutoDestroy }
 
 { Override OnKeyPress handler from TListView,IWxComponentInterface }
-procedure TWxTreeListCtrl.KeyPress(var Key: char);
-const
-  TabKey   = char(VK_TAB);
-  EnterKey = char(VK_RETURN);
-begin
+Procedure TWxTreeListCtrl.KeyPress(Var Key: Char);
+Const
+    TabKey = Char(VK_TAB);
+    EnterKey = Char(VK_RETURN);
+Begin
      { Key contains the character produced by the keypress.
        It can be tested or assigned a new value before the
        call to the inherited KeyPress method.  Setting Key
@@ -366,75 +366,75 @@ begin
        terminates any further processing of the character. }
 
   { Activate KeyPress behavior of parent }
-  inherited KeyPress(Key);
+    Inherited KeyPress(Key);
 
   { Code to execute after KeyPress behavior of parent }
 
-end;
+End;
 
-constructor TWxTreeListCtrl.Create(AOwner: TComponent);
-begin
+Constructor TWxTreeListCtrl.Create(AOwner: TComponent);
+Begin
   { Call the Create method of the parent class }
-  inherited Create(AOwner);
+    Inherited Create(AOwner);
 
   { AutoInitialize sets the initial values of variables and      }
   { properties; also, it creates objects for properties of       }
   { standard Delphi object types (e.g., TFont, TTimer,           }
   { TPicture) and for any variables marked as objects.           }
   { AutoInitialize method is generated by Component Create.      }
-  AutoInitialize;
+    AutoInitialize;
 
   { Code to perform other tasks when the component is created }
-  PopulateGenericProperties(FWx_PropertyList);
-  PopulateAuiGenericProperties(FWx_PropertyList);
+    PopulateGenericProperties(FWx_PropertyList);
+    PopulateAuiGenericProperties(FWx_PropertyList);
 
-  FWx_PropertyList.add('Wx_TreeListViewStyle:TreeList Styles');
-  FWx_PropertyList.Add('wxTR_EDIT_LABELS:wxTR_EDIT_LABELS');
-  FWx_PropertyList.Add('wxTR_NO_BUTTONS:wxTR_NO_BUTTONS');
-  FWx_PropertyList.Add('wxTR_HAS_BUTTONS:wxTR_HAS_BUTTONS');
-  FWx_PropertyList.Add('wxTR_TWIST_BUTTONS:wxTR_TWIST_BUTTONS');
-  FWx_PropertyList.Add('wxTR_NO_LINES:wxTR_NO_LINES');
-  FWx_PropertyList.Add('wxTR_FULL_ROW_HIGHLIGHT:wxTR_FULL_ROW_HIGHLIGHT');
-  FWx_PropertyList.Add('wxTR_LINES_AT_ROOT:wxTR_LINES_AT_ROOT');
-  FWx_PropertyList.Add('wxTR_HIDE_ROOT:wxTR_HIDE_ROOT');
-  FWx_PropertyList.Add('wxTR_ROW_LINES:wxTR_ROW_LINES');
-  FWx_PropertyList.Add('wxTR_HAS_VARIABLE_ROW_HEIGHT:wxTR_HAS_VARIABLE_ROW_HEIGHT');
-  FWx_PropertyList.Add('wxTR_SINGLE:wxTR_SINGLE');
-  FWx_PropertyList.Add('wxTR_MULTIPLE:wxTR_MULTIPLE');
-  FWx_PropertyList.Add('wxTR_EXTENDED:wxTR_EXTENDED');
-  FWx_PropertyList.Add('wxTR_DEFAULT_STYLE:wxTR_DEFAULT_STYLE');
-  FWx_PropertyList.Add('wxTR_VIRTUAL:wxTR_VIRTUAL');
+    FWx_PropertyList.add('Wx_TreeListViewStyle:TreeList Styles');
+    FWx_PropertyList.Add('wxTR_EDIT_LABELS:wxTR_EDIT_LABELS');
+    FWx_PropertyList.Add('wxTR_NO_BUTTONS:wxTR_NO_BUTTONS');
+    FWx_PropertyList.Add('wxTR_HAS_BUTTONS:wxTR_HAS_BUTTONS');
+    FWx_PropertyList.Add('wxTR_TWIST_BUTTONS:wxTR_TWIST_BUTTONS');
+    FWx_PropertyList.Add('wxTR_NO_LINES:wxTR_NO_LINES');
+    FWx_PropertyList.Add('wxTR_FULL_ROW_HIGHLIGHT:wxTR_FULL_ROW_HIGHLIGHT');
+    FWx_PropertyList.Add('wxTR_LINES_AT_ROOT:wxTR_LINES_AT_ROOT');
+    FWx_PropertyList.Add('wxTR_HIDE_ROOT:wxTR_HIDE_ROOT');
+    FWx_PropertyList.Add('wxTR_ROW_LINES:wxTR_ROW_LINES');
+    FWx_PropertyList.Add('wxTR_HAS_VARIABLE_ROW_HEIGHT:wxTR_HAS_VARIABLE_ROW_HEIGHT');
+    FWx_PropertyList.Add('wxTR_SINGLE:wxTR_SINGLE');
+    FWx_PropertyList.Add('wxTR_MULTIPLE:wxTR_MULTIPLE');
+    FWx_PropertyList.Add('wxTR_EXTENDED:wxTR_EXTENDED');
+    FWx_PropertyList.Add('wxTR_DEFAULT_STYLE:wxTR_DEFAULT_STYLE');
+    FWx_PropertyList.Add('wxTR_VIRTUAL:wxTR_VIRTUAL');
  // FWx_PropertyList.Add('wxTR_SHOW_ROOT_LABEL_ONLY:wxTR_SHOW_ROOT_LABEL_ONLY');
-  FWx_PropertyList.add('Columns:Columns');
+    FWx_PropertyList.add('Columns:Columns');
 
-  FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
+    FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
 
-  FWx_EventList.add('EVT_TREE_BEGIN_DRAG:OnBeginDrag');
-  FWx_EventList.add('EVT_TREE_BEGIN_RDRAG:OnBeginRDrag');
-  FWx_EventList.add('EVT_TREE_END_DRAG:OnEndDrag');
-  FWx_EventList.add('EVT_TREE_BEGIN_LABEL_EDIT:OnBeginLabelEdit');
-  FWx_EventList.add('EVT_TREE_END_LABEL_EDIT:OnEndLabelEdit');
-  FWx_EventList.add('EVT_TREE_DELETE_ITEM:OnDeleteItem');
-  FWx_EventList.add('EVT_TREE_ITEM_ACTIVATED:OnItemActivated');
-  FWx_EventList.add('EVT_TREE_ITEM_COLLAPSED:OnItemCollapsed');
-  FWx_EventList.add('EVT_TREE_ITEM_COLLAPSING:OnItemCollapsing');
-  FWx_EventList.add('EVT_TREE_ITEM_EXPANDED:OnItemExpanded');
-  FWx_EventList.add('EVT_TREE_ITEM_EXPANDING:OnItemExpanding');
-  FWx_EventList.add('EVT_TREE_ITEM_RIGHT_CLICK:OnRightClick');
-  FWx_EventList.add('EVT_TREE_ITEM_MIDDLE_CLICK:OnMiddleClick');
-  FWx_EventList.add('EVT_TREE_SEL_CHANGE:OnSelectionChange');
-  FWx_EventList.add('EVT_TREE_SEL_CHANGED:OnSelectionChanged');
-  FWx_EventList.add('EVT_TREE_KEY_DOWN:OnTreeKeyDown');
-  FWx_EventList.add('EVT_TREE_MENU:OnTreeItemMenu');
+    FWx_EventList.add('EVT_TREE_BEGIN_DRAG:OnBeginDrag');
+    FWx_EventList.add('EVT_TREE_BEGIN_RDRAG:OnBeginRDrag');
+    FWx_EventList.add('EVT_TREE_END_DRAG:OnEndDrag');
+    FWx_EventList.add('EVT_TREE_BEGIN_LABEL_EDIT:OnBeginLabelEdit');
+    FWx_EventList.add('EVT_TREE_END_LABEL_EDIT:OnEndLabelEdit');
+    FWx_EventList.add('EVT_TREE_DELETE_ITEM:OnDeleteItem');
+    FWx_EventList.add('EVT_TREE_ITEM_ACTIVATED:OnItemActivated');
+    FWx_EventList.add('EVT_TREE_ITEM_COLLAPSED:OnItemCollapsed');
+    FWx_EventList.add('EVT_TREE_ITEM_COLLAPSING:OnItemCollapsing');
+    FWx_EventList.add('EVT_TREE_ITEM_EXPANDED:OnItemExpanded');
+    FWx_EventList.add('EVT_TREE_ITEM_EXPANDING:OnItemExpanding');
+    FWx_EventList.add('EVT_TREE_ITEM_RIGHT_CLICK:OnRightClick');
+    FWx_EventList.add('EVT_TREE_ITEM_MIDDLE_CLICK:OnMiddleClick');
+    FWx_EventList.add('EVT_TREE_SEL_CHANGE:OnSelectionChange');
+    FWx_EventList.add('EVT_TREE_SEL_CHANGED:OnSelectionChanged');
+    FWx_EventList.add('EVT_TREE_KEY_DOWN:OnTreeKeyDown');
+    FWx_EventList.add('EVT_TREE_MENU:OnTreeItemMenu');
 
-  FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
-end;
+    FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
+End;
 
-destructor TWxTreeListCtrl.Destroy;
-begin
+Destructor TWxTreeListCtrl.Destroy;
+Begin
   { AutoDestroy, which is generated by Component Create, frees any   }
   { objects created by AutoInitialize.                               }
-  AutoDestroy;
+    AutoDestroy;
 
   { Here, free any other dynamic objects that the component methods  }
   { created but have not yet freed.  Also perform any other clean-up }
@@ -442,108 +442,108 @@ begin
 
   { Last, free the component by calling the Destroy method of the    }
   { parent class.                                                    }
-  inherited Destroy;
-end;
+    Inherited Destroy;
+End;
 
 
-function TWxTreeListCtrl.GenerateEnumControlIDs: string;
-begin
-  Result := GetWxEnum(self.Wx_IDValue, self.Wx_IDName);
-end;
+Function TWxTreeListCtrl.GenerateEnumControlIDs: String;
+Begin
+    Result := GetWxEnum(self.Wx_IDValue, self.Wx_IDName);
+End;
 
-function TWxTreeListCtrl.GenerateControlIDs: string;
-begin
-  Result := '';
-  if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-    Result := Format('#define %s %d ', [Wx_IDName, Wx_IDValue]);
-end;
+Function TWxTreeListCtrl.GenerateControlIDs: String;
+Begin
+    Result := '';
+    If (Wx_IDValue > 0) And (trim(Wx_IDName) <> '') Then
+        Result := Format('#define %s %d ', [Wx_IDName, Wx_IDValue]);
+End;
 
-function TWxTreeListCtrl.GenerateEventTableEntries(CurrClassName: string): string;
-begin
+Function TWxTreeListCtrl.GenerateEventTableEntries(CurrClassName: String): String;
+Begin
 
-  Result := '';
+    Result := '';
 
-  if trim(EVT_TREE_BEGIN_DRAG) <> '' then
-    Result := Result + #13 + Format('EVT_TREE_BEGIN_DRAG(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_TREE_BEGIN_DRAG]) + '';
+    If trim(EVT_TREE_BEGIN_DRAG) <> '' Then
+        Result := Result + #13 + Format('EVT_TREE_BEGIN_DRAG(%s,%s::%s)',
+            [WX_IDName, CurrClassName, EVT_TREE_BEGIN_DRAG]) + '';
 
-  if trim(EVT_TREE_BEGIN_RDRAG) <> '' then
-    Result := Result + #13 + Format('EVT_TREE_BEGIN_RDRAG(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_TREE_BEGIN_RDRAG]) + '';
+    If trim(EVT_TREE_BEGIN_RDRAG) <> '' Then
+        Result := Result + #13 + Format('EVT_TREE_BEGIN_RDRAG(%s,%s::%s)',
+            [WX_IDName, CurrClassName, EVT_TREE_BEGIN_RDRAG]) + '';
 
-  if trim(EVT_TREE_END_DRAG) <> '' then
-    Result := Result + #13 + Format('EVT_TREE_END_DRAG(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_TREE_END_DRAG]) + '';
+    If trim(EVT_TREE_END_DRAG) <> '' Then
+        Result := Result + #13 + Format('EVT_TREE_END_DRAG(%s,%s::%s)',
+            [WX_IDName, CurrClassName, EVT_TREE_END_DRAG]) + '';
 
-  if trim(EVT_TREE_BEGIN_LABEL_EDIT) <> '' then
-    Result := Result + #13 + Format('EVT_TREE_BEGIN_LABEL_EDIT(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_TREE_BEGIN_LABEL_EDIT]) + '';
+    If trim(EVT_TREE_BEGIN_LABEL_EDIT) <> '' Then
+        Result := Result + #13 + Format('EVT_TREE_BEGIN_LABEL_EDIT(%s,%s::%s)',
+            [WX_IDName, CurrClassName, EVT_TREE_BEGIN_LABEL_EDIT]) + '';
 
-  if trim(EVT_TREE_END_LABEL_EDIT) <> '' then
-    Result := Result + #13 + Format('EVT_TREE_END_LABEL_EDIT(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_TREE_END_LABEL_EDIT]) + '';
+    If trim(EVT_TREE_END_LABEL_EDIT) <> '' Then
+        Result := Result + #13 + Format('EVT_TREE_END_LABEL_EDIT(%s,%s::%s)',
+            [WX_IDName, CurrClassName, EVT_TREE_END_LABEL_EDIT]) + '';
 
-  if trim(EVT_TREE_DELETE_ITEM) <> '' then
-    Result := Result + #13 + Format('EVT_TREE_DELETE_ITEM(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_TREE_DELETE_ITEM]) + '';
+    If trim(EVT_TREE_DELETE_ITEM) <> '' Then
+        Result := Result + #13 + Format('EVT_TREE_DELETE_ITEM(%s,%s::%s)',
+            [WX_IDName, CurrClassName, EVT_TREE_DELETE_ITEM]) + '';
 
-  if trim(EVT_TREE_ITEM_ACTIVATED) <> '' then
-    Result := Result + #13 + Format('EVT_TREE_ITEM_ACTIVATED(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_TREE_ITEM_ACTIVATED]) + '';
+    If trim(EVT_TREE_ITEM_ACTIVATED) <> '' Then
+        Result := Result + #13 + Format('EVT_TREE_ITEM_ACTIVATED(%s,%s::%s)',
+            [WX_IDName, CurrClassName, EVT_TREE_ITEM_ACTIVATED]) + '';
 
 
-  if trim(EVT_TREE_ITEM_COLLAPSED) <> '' then
-    Result := Result + #13 + Format('EVT_TREE_ITEM_COLLAPSED(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_TREE_ITEM_COLLAPSED]) + '';
+    If trim(EVT_TREE_ITEM_COLLAPSED) <> '' Then
+        Result := Result + #13 + Format('EVT_TREE_ITEM_COLLAPSED(%s,%s::%s)',
+            [WX_IDName, CurrClassName, EVT_TREE_ITEM_COLLAPSED]) + '';
 
-  if trim(EVT_TREE_ITEM_COLLAPSING) <> '' then
-    Result := Result + #13 + Format('EVT_TREE_ITEM_COLLAPSING(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_TREE_ITEM_COLLAPSING]) + '';
+    If trim(EVT_TREE_ITEM_COLLAPSING) <> '' Then
+        Result := Result + #13 + Format('EVT_TREE_ITEM_COLLAPSING(%s,%s::%s)',
+            [WX_IDName, CurrClassName, EVT_TREE_ITEM_COLLAPSING]) + '';
 
-  if trim(EVT_TREE_ITEM_EXPANDED) <> '' then
-    Result := Result + #13 + Format('EVT_TREE_ITEM_EXPANDED(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_TREE_ITEM_EXPANDED]) + '';
+    If trim(EVT_TREE_ITEM_EXPANDED) <> '' Then
+        Result := Result + #13 + Format('EVT_TREE_ITEM_EXPANDED(%s,%s::%s)',
+            [WX_IDName, CurrClassName, EVT_TREE_ITEM_EXPANDED]) + '';
 
-  if trim(EVT_TREE_ITEM_EXPANDING) <> '' then
-    Result := Result + #13 + Format('EVT_TREE_ITEM_EXPANDING(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_TREE_ITEM_EXPANDING]) + '';
+    If trim(EVT_TREE_ITEM_EXPANDING) <> '' Then
+        Result := Result + #13 + Format('EVT_TREE_ITEM_EXPANDING(%s,%s::%s)',
+            [WX_IDName, CurrClassName, EVT_TREE_ITEM_EXPANDING]) + '';
 
-  if trim(EVT_TREE_ITEM_RIGHT_CLICK) <> '' then
-    Result := Result + #13 + Format('EVT_TREE_ITEM_RIGHT_CLICK(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_TREE_ITEM_RIGHT_CLICK]) + '';
+    If trim(EVT_TREE_ITEM_RIGHT_CLICK) <> '' Then
+        Result := Result + #13 + Format('EVT_TREE_ITEM_RIGHT_CLICK(%s,%s::%s)',
+            [WX_IDName, CurrClassName, EVT_TREE_ITEM_RIGHT_CLICK]) + '';
 
-  if trim(EVT_TREE_ITEM_MIDDLE_CLICK) <> '' then
-    Result := Result + #13 + Format('EVT_TREE_ITEM_MIDDLE_CLICK(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_TREE_ITEM_MIDDLE_CLICK]) + '';
+    If trim(EVT_TREE_ITEM_MIDDLE_CLICK) <> '' Then
+        Result := Result + #13 + Format('EVT_TREE_ITEM_MIDDLE_CLICK(%s,%s::%s)',
+            [WX_IDName, CurrClassName, EVT_TREE_ITEM_MIDDLE_CLICK]) + '';
 
-  if trim(EVT_TREE_SEL_CHANGED) <> '' then
-    Result := Result + #13 + Format('EVT_TREE_SEL_CHANGED(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_TREE_SEL_CHANGED]) + '';
+    If trim(EVT_TREE_SEL_CHANGED) <> '' Then
+        Result := Result + #13 + Format('EVT_TREE_SEL_CHANGED(%s,%s::%s)',
+            [WX_IDName, CurrClassName, EVT_TREE_SEL_CHANGED]) + '';
 
-  if trim(EVT_TREE_SEL_CHANGING) <> '' then
-    Result := Result + #13 + Format('EVT_TREE_SEL_CHANGING(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_TREE_SEL_CHANGING]) + '';
+    If trim(EVT_TREE_SEL_CHANGING) <> '' Then
+        Result := Result + #13 + Format('EVT_TREE_SEL_CHANGING(%s,%s::%s)',
+            [WX_IDName, CurrClassName, EVT_TREE_SEL_CHANGING]) + '';
 
-  if trim(EVT_TREE_KEY_DOWN) <> '' then
-    Result := Result + #13 + Format('EVT_TREE_KEY_DOWN(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_TREE_KEY_DOWN]) + '';
+    If trim(EVT_TREE_KEY_DOWN) <> '' Then
+        Result := Result + #13 + Format('EVT_TREE_KEY_DOWN(%s,%s::%s)',
+            [WX_IDName, CurrClassName, EVT_TREE_KEY_DOWN]) + '';
 
-  if trim(EVT_TREE_ITEM_MENU) <> '' then
-    Result := Result + #13 + Format('EVT_TREE_ITEM_MENU(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_TREE_ITEM_MENU]) + '';
-      
-  if trim(EVT_UPDATE_UI) <> '' then
-    Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
+    If trim(EVT_TREE_ITEM_MENU) <> '' Then
+        Result := Result + #13 + Format('EVT_TREE_ITEM_MENU(%s,%s::%s)',
+            [WX_IDName, CurrClassName, EVT_TREE_ITEM_MENU]) + '';
 
-end;
+    If trim(EVT_UPDATE_UI) <> '' Then
+        Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
+            [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
 
-function TWxTreeListCtrl.GenerateXRCControlCreation(IndentString: string): TStringList;
-begin
+End;
 
-  Result := TStringList.Create;
-  try
-	Result.Add(IndentString + Format('<object class="unknown" name="%s"/>', [self.Name]));
+Function TWxTreeListCtrl.GenerateXRCControlCreation(IndentString: String): TStringList;
+Begin
+
+    Result := TStringList.Create;
+    Try
+	       Result.Add(IndentString + Format('<object class="unknown" name="%s"/>', [self.Name]));
   {
     Result.Add(IndentString + Format('<object class="%s" name="%s">',
       [self.Wx_Class, self.Name]));
@@ -558,413 +558,416 @@ begin
     Result.Add(IndentString + Format('  <style>%s</style>',
       [GetTreeViewSpecificStyle(Wx_GeneralStyle, Wx_TreeListviewStyle)]));
     Result.Add(IndentString + '</object>');}
-  except
-    Result.Free;
-    raise;
-  end;
+    Except
+        Result.Free;
+        Raise;
+    End;
 
-end;
+End;
 
-function TWxTreeListCtrl.GenerateGUIControlCreation: string;
-var
-  strColorStr: string;
-  strStyle, parentName, strAlignment: string;
-  i: integer;
-begin
-  Result := '';
+Function TWxTreeListCtrl.GenerateGUIControlCreation: String;
+Var
+    strColorStr: String;
+    strStyle, parentName, strAlignment: String;
+    i: Integer;
+Begin
+    Result := '';
 
-    if FWx_PaneCaption = '' then
-    FWx_PaneCaption := Self.Name;
-  if FWx_PaneName = '' then
-    FWx_PaneName := Self.Name + '_Pane';
+    If FWx_PaneCaption = '' Then
+        FWx_PaneCaption := Self.Name;
+    If FWx_PaneName = '' Then
+        FWx_PaneName := Self.Name + '_Pane';
 
-  parentName := GetWxWidgetParent(self, Wx_AuiManaged);
+    parentName := GetWxWidgetParent(self, Wx_AuiManaged);
 
-  strStyle := GetTreeViewSpecificStyle(Wx_GeneralStyle, Wx_TreeListviewStyle);
-  if Trim(strStyle) <> '' then
-    strStyle := ',' + strStyle;
+    strStyle := GetTreeViewSpecificStyle(Wx_GeneralStyle, Wx_TreeListviewStyle);
+    If Trim(strStyle) <> '' Then
+        strStyle := ',' + strStyle;
 
-  Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s = new %s(%s, %s, %s, %s%s);',
-    [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
-    self.Wx_IDValue),
-    GetWxPosition(self.Left, self.Top), GetWxSize(self.Width, self.Height), strStyle]);
+    Result := GetCommentString(self.FWx_Comments.Text) +
+        Format('%s = new %s(%s, %s, %s, %s%s);',
+        [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
+        self.Wx_IDValue),
+        GetWxPosition(self.Left, self.Top), GetWxSize(self.Width, self.Height), strStyle]);
 
-    if (XRCGEN) then
- begin//generate xrc loading code
+    If (XRCGEN) Then
+    Begin//generate xrc loading code
 //xrc unknown used so we are inserting our control into the unknown container. (a panel)
-Result := Result + #13 + Format('wxXmlResource::Get()->AttachUnknownControl(%s("%s"), (wxWindow*)%s, (wxWindow*)%s);', 
-[StringFormat, self.Name, self.Name, parentName]);
- end;
+        Result := Result + #13 + Format('wxXmlResource::Get()->AttachUnknownControl(%s("%s"), (wxWindow*)%s, (wxWindow*)%s);',
+            [StringFormat, self.Name, self.Name, parentName]);
+    End;
 
-  if trim(self.Wx_ToolTip) <> '' then
-    Result := Result + #13 + Format('%s->SetToolTip(%s);',
-      [self.Name, GetCppString(self.Wx_ToolTip)]);
+    If trim(self.Wx_ToolTip) <> '' Then
+        Result := Result + #13 + Format('%s->SetToolTip(%s);',
+            [self.Name, GetCppString(self.Wx_ToolTip)]);
 
-  if self.Wx_Hidden then
-    Result := Result + #13 + Format('%s->Show(false);', [self.Name]);
+    If self.Wx_Hidden Then
+        Result := Result + #13 + Format('%s->Show(false);', [self.Name]);
 
-  if not Wx_Enabled then
-    Result := Result + #13 + Format('%s->Enable(false);', [self.Name]);
+    If Not Wx_Enabled Then
+        Result := Result + #13 + Format('%s->Enable(false);', [self.Name]);
 
-  if trim(self.Wx_HelpText) <> '' then
-    Result := Result + #13 + Format('%s->SetHelpText(%s);',
-      [self.Name, GetCppString(self.Wx_HelpText)]);
-  for i := self.columns.Count - 1 downto 0 do
-  begin
-    if (i = self.columns.Count - 1) then
-      Result := Result + #13 + Format('%s->AddColumn(%s, %d, %s);',[self.Name, GetCppString(self.columns[i].Caption), self.columns[i].Width, TLAlignmentToStr(columns[i].Alignment)])
-    else
-        Result := Result + #13 + Format('%s->InsertColumn(0, %s, %d, %s);',[self.Name, GetCppString(self.columns[i].Caption), self.columns[i].Width, TLAlignmentToStr( columns[i].Alignment)]);
-  end;
+    If trim(self.Wx_HelpText) <> '' Then
+        Result := Result + #13 + Format('%s->SetHelpText(%s);',
+            [self.Name, GetCppString(self.Wx_HelpText)]);
+    For i := self.columns.Count - 1 Downto 0 Do
+    Begin
+        If (i = self.columns.Count - 1) Then
+            Result := Result + #13 + Format('%s->AddColumn(%s, %d, %s);', [self.Name, GetCppString(self.columns[i].Caption), self.columns[i].Width, TLAlignmentToStr(columns[i].Alignment)])
+        Else
+            Result := Result + #13 + Format('%s->InsertColumn(0, %s, %d, %s);', [self.Name, GetCppString(self.columns[i].Caption), self.columns[i].Width, TLAlignmentToStr(columns[i].Alignment)]);
+    End;
 
-  strColorStr := trim(GetwxColorFromString(InvisibleFGColorString));
-  if strColorStr <> '' then
-    Result := Result + #13 + Format('%s->SetForegroundColour(%s);',
-      [self.Name, strColorStr]);
+    strColorStr := trim(GetwxColorFromString(InvisibleFGColorString));
+    If strColorStr <> '' Then
+        Result := Result + #13 + Format('%s->SetForegroundColour(%s);',
+            [self.Name, strColorStr]);
 
-  strColorStr := trim(GetwxColorFromString(InvisibleBGColorString));
-  if strColorStr <> '' then
-    Result := Result + #13 + Format('%s->SetBackgroundColour(%s);',
-      [self.Name, strColorStr]);
+    strColorStr := trim(GetwxColorFromString(InvisibleBGColorString));
+    If strColorStr <> '' Then
+        Result := Result + #13 + Format('%s->SetBackgroundColour(%s);',
+            [self.Name, strColorStr]);
 
 
-  strColorStr := GetWxFontDeclaration(self.Font);
-  if strColorStr <> '' then
-    Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
-if not (XRCGEN) then //NUKLEAR ZELPH
-  begin
-    if (Wx_AuiManaged and FormHasAuiManager(self)) and not (self.Parent is TWxSizerPanel) then
-    begin
-      if HasToolbarPaneStyle(Self.Wx_Aui_Pane_Style) then
-      begin
-        Self.Wx_Aui_Pane_Style := Self.Wx_Aui_Pane_Style + [ToolbarPane]; //always make sure we are a toolbar
-        Self.Wx_Layer := 10;
-      end;
+    strColorStr := GetWxFontDeclaration(self.Font);
+    If strColorStr <> '' Then
+        Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
+    If Not (XRCGEN) Then //NUKLEAR ZELPH
+    Begin
+        If (Wx_AuiManaged And FormHasAuiManager(self)) And Not (self.Parent Is TWxSizerPanel) Then
+        Begin
+            If HasToolbarPaneStyle(Self.Wx_Aui_Pane_Style) Then
+            Begin
+                Self.Wx_Aui_Pane_Style := Self.Wx_Aui_Pane_Style + [ToolbarPane]; //always make sure we are a toolbar
+                Self.Wx_Layer := 10;
+            End;
 
-      if not HasToolbarPaneStyle(Self.Wx_Aui_Pane_Style) then
-      begin
-        if (self.Parent.ClassName = 'TWxPanel') then
-          if not (self.Parent.Parent is TForm) then
-            Result := Result + #13 + Format('%s->Reparent(this);', [parentName]);
-      end;
+            If Not HasToolbarPaneStyle(Self.Wx_Aui_Pane_Style) Then
+            Begin
+                If (self.Parent.ClassName = 'TWxPanel') Then
+                    If Not (self.Parent.Parent Is TForm) Then
+                        Result := Result + #13 + Format('%s->Reparent(this);', [parentName]);
+            End;
 
-      if (self.Parent is TWxAuiToolBar) then
-        Result := Result + #13 + Format('%s->AddControl(%s);',
-          [self.Parent.Name, self.Name])
-      else
-        Result := Result + #13 + Format('%s->AddPane(%s, wxAuiPaneInfo()%s%s%s%s%s%s%s%s%s%s%s%s);',
-          [GetAuiManagerName(self), self.Name,
-          GetAuiPaneName(Self.Wx_PaneName),
-            GetAuiPaneCaption(Self.Wx_PaneCaption),
-            GetAuiDockDirection(Self.Wx_Aui_Dock_Direction),
-            GetAuiDockableDirections(self.Wx_Aui_Dockable_Direction),
-            GetAui_Pane_Style(Self.Wx_Aui_Pane_Style),
-            GetAui_Pane_Buttons(Self.Wx_Aui_Pane_Buttons),
-            GetAuiRow(Self.Wx_Row),
-            GetAuiPosition(Self.Wx_Position),
-            GetAuiLayer(Self.Wx_Layer),
-            GetAuiPaneBestSize(Self.Wx_BestSize_Width, Self.Wx_BestSize_Height),
-            GetAuiPaneMinSize(Self.Wx_MinSize_Width, Self.Wx_MinSize_Height),
-            GetAuiPaneMaxSize(Self.Wx_MaxSize_Width, Self.Wx_MaxSize_Height)]);
+            If (self.Parent Is TWxAuiToolBar) Then
+                Result := Result + #13 + Format('%s->AddControl(%s);',
+                    [self.Parent.Name, self.Name])
+            Else
+                Result := Result + #13 + Format('%s->AddPane(%s, wxAuiPaneInfo()%s%s%s%s%s%s%s%s%s%s%s%s);',
+                    [GetAuiManagerName(self), self.Name,
+                    GetAuiPaneName(Self.Wx_PaneName),
+                    GetAuiPaneCaption(Self.Wx_PaneCaption),
+                    GetAuiDockDirection(Self.Wx_Aui_Dock_Direction),
+                    GetAuiDockableDirections(self.Wx_Aui_Dockable_Direction),
+                    GetAui_Pane_Style(Self.Wx_Aui_Pane_Style),
+                    GetAui_Pane_Buttons(Self.Wx_Aui_Pane_Buttons),
+                    GetAuiRow(Self.Wx_Row),
+                    GetAuiPosition(Self.Wx_Position),
+                    GetAuiLayer(Self.Wx_Layer),
+                    GetAuiPaneBestSize(Self.Wx_BestSize_Width, Self.Wx_BestSize_Height),
+                    GetAuiPaneMinSize(Self.Wx_MinSize_Width, Self.Wx_MinSize_Height),
+                    GetAuiPaneMaxSize(Self.Wx_MaxSize_Width, Self.Wx_MaxSize_Height)]);
 
-    end
-    else
-    begin
-  if (self.Parent is TWxSizerPanel) then
-  begin
-    strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
-    Result := Result + #13 + Format('%s->Add(%s, %d, %s, %d);',
-      [self.Parent.Name, self.Name, self.Wx_StretchFactor, strAlignment,
-      self.Wx_Border]);
-  end;
+        End
+        Else
+        Begin
+            If (self.Parent Is TWxSizerPanel) Then
+            Begin
+                strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
+                Result := Result + #13 + Format('%s->Add(%s, %d, %s, %d);',
+                    [self.Parent.Name, self.Name, self.Wx_StretchFactor, strAlignment,
+                    self.Wx_Border]);
+            End;
 
-      if (self.Parent is TWxAuiNotebookPage) then
-      begin
+            If (self.Parent Is TWxAuiNotebookPage) Then
+            Begin
         //        strParentLabel := TWxAuiNoteBookPage(Self.Parent).Caption;
-        Result := Result + #13 + Format('%s->AddPage(%s, %s);',
+                Result := Result + #13 + Format('%s->AddPage(%s, %s);',
           //          [self.Parent.Parent.Name, self.Name, GetCppString(strParentLabel)]);
-          [self.Parent.Parent.Name, self.Name, GetCppString(TWxAuiNoteBookPage(Self.Parent).Caption)]);
-      end;
+                    [self.Parent.Parent.Name, self.Name, GetCppString(TWxAuiNoteBookPage(Self.Parent).Caption)]);
+            End;
 
-      if (self.Parent is TWxAuiToolBar) then
-        Result := Result + #13 + Format('%s->AddControl(%s);',
-          [self.Parent.Name, self.Name]);
-    end;
-  end;
+            If (self.Parent Is TWxAuiToolBar) Then
+                Result := Result + #13 + Format('%s->AddControl(%s);',
+                    [self.Parent.Name, self.Name]);
+        End;
+    End;
 
-end;
+End;
 
-function TWxTreeListCtrl.GenerateGUIControlDeclaration: string;
-begin
-  Result := '';
-  Result := Format('%s *%s;', [Self.wx_Class, Self.Name]);
-end;
+Function TWxTreeListCtrl.GenerateGUIControlDeclaration: String;
+Begin
+    Result := '';
+    Result := Format('%s *%s;', [Self.wx_Class, Self.Name]);
+End;
 
-function TWxTreeListCtrl.GenerateHeaderInclude: string;
-begin
-  Result := '';
-  Result := Wx_Include;
-end;
+Function TWxTreeListCtrl.GenerateHeaderInclude: String;
+Begin
+    Result := '';
+    Result := Wx_Include;
+End;
 
-function TWxTreeListCtrl.GenerateImageInclude: string;
-begin
+Function TWxTreeListCtrl.GenerateImageInclude: String;
+Begin
 
-end;
+End;
 
-function TWxTreeListCtrl.GetEventList: TStringList;
-begin
-  Result := FWx_EventList;
-end;
+Function TWxTreeListCtrl.GetEventList: TStringList;
+Begin
+    Result := FWx_EventList;
+End;
 
-function TWxTreeListCtrl.GetIDName: string;
-begin
-  Result := wx_IDName;
-end;
+Function TWxTreeListCtrl.GetIDName: String;
+Begin
+    Result := wx_IDName;
+End;
 
-function TWxTreeListCtrl.GetIDValue: integer;
-begin
-  Result := wx_IDValue;
-end;
+Function TWxTreeListCtrl.GetIDValue: Integer;
+Begin
+    Result := wx_IDValue;
+End;
 
-function TWxTreeListCtrl.GetParameterFromEventName(EventName: string): string;
-begin
-  Result := 'void';
+Function TWxTreeListCtrl.GetParameterFromEventName(EventName: String): String;
+Begin
+    Result := 'void';
 
-  if EventName = 'EVT_TREE_BEGIN_DRAG' then
-  begin
-    Result := 'wxTreeEvent& event';
-    exit;
-  end;
-  if EventName = 'EVT_TREE_BEGIN_RDRAG' then
-  begin
-    Result := 'wxTreeEvent& event';
-    exit;
-  end;
-  if EventName = 'EVT_TREE_END_DRAG' then
-  begin
-    Result := 'wxTreeEvent& event';
-    exit;
-  end;
-  if EventName = 'EVT_TREE_BEGIN_LABEL_EDIT' then
-  begin
-    Result := 'wxTreeEvent& event';
-    exit;
-  end;
-  if EventName = 'EVT_TREE_END_LABEL_EDIT' then
-  begin
-    Result := 'wxTreeEvent& event';
-    exit;
-  end;
-  if EventName = 'EVT_TREE_DELETE_ITEM' then
-  begin
-    Result := 'wxTreeEvent& event';
-    exit;
-  end;
+    If EventName = 'EVT_TREE_BEGIN_DRAG' Then
+    Begin
+        Result := 'wxTreeEvent& event';
+        exit;
+    End;
+    If EventName = 'EVT_TREE_BEGIN_RDRAG' Then
+    Begin
+        Result := 'wxTreeEvent& event';
+        exit;
+    End;
+    If EventName = 'EVT_TREE_END_DRAG' Then
+    Begin
+        Result := 'wxTreeEvent& event';
+        exit;
+    End;
+    If EventName = 'EVT_TREE_BEGIN_LABEL_EDIT' Then
+    Begin
+        Result := 'wxTreeEvent& event';
+        exit;
+    End;
+    If EventName = 'EVT_TREE_END_LABEL_EDIT' Then
+    Begin
+        Result := 'wxTreeEvent& event';
+        exit;
+    End;
+    If EventName = 'EVT_TREE_DELETE_ITEM' Then
+    Begin
+        Result := 'wxTreeEvent& event';
+        exit;
+    End;
 
-  if EventName = 'EVT_TREE_ITEM_ACTIVATED' then
-  begin
-    Result := 'wxTreeEvent& event';
-    exit;
-  end;
+    If EventName = 'EVT_TREE_ITEM_ACTIVATED' Then
+    Begin
+        Result := 'wxTreeEvent& event';
+        exit;
+    End;
 
-  if EventName = 'EVT_TREE_COLLAPSED' then
-  begin
-    Result := 'wxTreeEvent& event';
-    exit;
-  end;
-  if EventName = 'EVT_TREE_COLLAPSING' then
-  begin
-    Result := 'wxTreeEvent& event';
-    exit;
-  end;
+    If EventName = 'EVT_TREE_COLLAPSED' Then
+    Begin
+        Result := 'wxTreeEvent& event';
+        exit;
+    End;
+    If EventName = 'EVT_TREE_COLLAPSING' Then
+    Begin
+        Result := 'wxTreeEvent& event';
+        exit;
+    End;
 
-  if EventName = 'EVT_TREE_EXPANDED' then
-  begin
-    Result := 'wxTreeEvent& event';
-    exit;
-  end;
-  if EventName = 'EVT_TREE_EXPANDING' then
-  begin
-    Result := 'wxTreeEvent& event';
-    exit;
-  end;
+    If EventName = 'EVT_TREE_EXPANDED' Then
+    Begin
+        Result := 'wxTreeEvent& event';
+        exit;
+    End;
+    If EventName = 'EVT_TREE_EXPANDING' Then
+    Begin
+        Result := 'wxTreeEvent& event';
+        exit;
+    End;
 
-  if EventName = 'EVT_TREE_ITEM_RIGHT_CLICK' then
-  begin
-    Result := 'wxTreeEvent& event';
-    exit;
-  end;
+    If EventName = 'EVT_TREE_ITEM_RIGHT_CLICK' Then
+    Begin
+        Result := 'wxTreeEvent& event';
+        exit;
+    End;
 
-  if EventName = 'EVT_TREE_ITEM_MIDDLE_CLICK' then
-  begin
-    Result := 'wxTreeEvent& event';
-    exit;
-  end;
+    If EventName = 'EVT_TREE_ITEM_MIDDLE_CLICK' Then
+    Begin
+        Result := 'wxTreeEvent& event';
+        exit;
+    End;
 
-  if EventName = 'EVT_TREE_SEL_CHANGED' then
-  begin
-    Result := 'wxTreeEvent& event';
-    exit;
-  end;
-  if EventName = 'EVT_TREE_SEL_CHANGING' then
-  begin
-    Result := 'wxTreeEvent& event';
-    exit;
-  end;
+    If EventName = 'EVT_TREE_SEL_CHANGED' Then
+    Begin
+        Result := 'wxTreeEvent& event';
+        exit;
+    End;
+    If EventName = 'EVT_TREE_SEL_CHANGING' Then
+    Begin
+        Result := 'wxTreeEvent& event';
+        exit;
+    End;
 
-  if EventName = 'EVT_TREE_KEY_DOWN' then
-  begin
-    Result := 'wxTreeEvent& event';
-    exit;
-  end;
+    If EventName = 'EVT_TREE_KEY_DOWN' Then
+    Begin
+        Result := 'wxTreeEvent& event';
+        exit;
+    End;
 
-  if EventName = 'EVT_TREE_ITEM_MENU' then
-  begin
-    Result := 'wxTreeEvent& event';
-    exit;
-  end;
+    If EventName = 'EVT_TREE_ITEM_MENU' Then
+    Begin
+        Result := 'wxTreeEvent& event';
+        exit;
+    End;
 
- if EventName = 'EVT_UPDATE_UI' then
-  begin
-    Result := 'wxUpdateUIEvent& event';
-    exit;
-  end;
-end;
+    If EventName = 'EVT_UPDATE_UI' Then
+    Begin
+        Result := 'wxUpdateUIEvent& event';
+        exit;
+    End;
+End;
 
-function TWxTreeListCtrl.GetPropertyList: TStringList;
-begin
-  Result := FWx_PropertyList;
-end;
+Function TWxTreeListCtrl.GetPropertyList: TStringList;
+Begin
+    Result := FWx_PropertyList;
+End;
 
-function TWxTreeListCtrl.GetStretchFactor: integer;
-begin
-  Result := FWx_StretchFactor;
-end;
+Function TWxTreeListCtrl.GetStretchFactor: Integer;
+Begin
+    Result := FWx_StretchFactor;
+End;
 
-function TWxTreeListCtrl.GetTypeFromEventName(EventName: string): string;
-begin
+Function TWxTreeListCtrl.GetTypeFromEventName(EventName: String): String;
+Begin
 
-end;
+End;
 
-function TWxTreeListCtrl.GetBorderAlignment: TWxBorderAlignment;
-begin
-  Result := FWx_BorderAlignment;
-end;
+Function TWxTreeListCtrl.GetBorderAlignment: TWxBorderAlignment;
+Begin
+    Result := FWx_BorderAlignment;
+End;
 
-procedure TWxTreeListCtrl.SetBorderAlignment(border: TWxBorderAlignment);
-begin
-  FWx_BorderAlignment := border;
-end;
+Procedure TWxTreeListCtrl.SetBorderAlignment(border: TWxBorderAlignment);
+Begin
+    FWx_BorderAlignment := border;
+End;
 
-function TWxTreeListCtrl.GetBorderWidth: integer;
-begin
-  Result := FWx_Border;
-end;
+Function TWxTreeListCtrl.GetBorderWidth: Integer;
+Begin
+    Result := FWx_Border;
+End;
 
-procedure TWxTreeListCtrl.SetBorderWidth(width: integer);
-begin
-  FWx_Border := width;
-end;
+Procedure TWxTreeListCtrl.SetBorderWidth(width: Integer);
+Begin
+    FWx_Border := width;
+End;
 
-function TWxTreeListCtrl.GetWxClassName: string;
-begin
-  if wx_Class = '' then
-    wx_Class := 'wxTreeListCtrl';
-  Result := wx_Class;
-end;
+Function TWxTreeListCtrl.GetWxClassName: String;
+Begin
+    If wx_Class = '' Then
+        wx_Class := 'wxTreeListCtrl';
+    Result := wx_Class;
+End;
 
-procedure TWxTreeListCtrl.Loaded;
-begin
-  inherited Loaded;
+Procedure TWxTreeListCtrl.Loaded;
+Begin
+    Inherited Loaded;
 
      { Perform any component setup that depends on the property
        values having been set }
 
-end;
+End;
 
-procedure TWxTreeListCtrl.SaveControlOrientation(ControlOrientation: TWxControlOrientation);
-begin
-  wx_ControlOrientation := ControlOrientation;
-end;
+Procedure TWxTreeListCtrl.SaveControlOrientation(ControlOrientation: TWxControlOrientation);
+Begin
+    wx_ControlOrientation := ControlOrientation;
+End;
 
-procedure TWxTreeListCtrl.SetIDName(IDName: string);
-begin
-  wx_IDName := IDName;
-end;
+Procedure TWxTreeListCtrl.SetIDName(IDName: String);
+Begin
+    wx_IDName := IDName;
+End;
 
-procedure TWxTreeListCtrl.SetIDValue(IDValue: integer);
-begin
-  Wx_IDValue := IDVAlue;
-end;
+Procedure TWxTreeListCtrl.SetIDValue(IDValue: Integer);
+Begin
+    Wx_IDValue := IDVAlue;
+End;
 
-procedure TWxTreeListCtrl.SetStretchFactor(intValue: integer);
-begin
-  FWx_StretchFactor := intValue;
-end;
+Procedure TWxTreeListCtrl.SetStretchFactor(intValue: Integer);
+Begin
+    FWx_StretchFactor := intValue;
+End;
 
-procedure TWxTreeListCtrl.SetWxClassName(wxClassName: string);
-begin
-  wx_Class := wxClassName;
-end;
+Procedure TWxTreeListCtrl.SetWxClassName(wxClassName: String);
+Begin
+    wx_Class := wxClassName;
+End;
 
-function TWxTreeListCtrl.GetGenericColor(strVariableName:String): string;
-begin
+Function TWxTreeListCtrl.GetGenericColor(strVariableName: String): String;
+Begin
 
-end;
-procedure TWxTreeListCtrl.SetGenericColor(strVariableName,strValue: string);
-begin
+End;
+Procedure TWxTreeListCtrl.SetGenericColor(strVariableName, strValue: String);
+Begin
 
-end;
+End;
 
-function TWxTreeListCtrl.GetFGColor: string;
-begin
-  Result := FInvisibleFGColorString;
-end;
+Function TWxTreeListCtrl.GetFGColor: String;
+Begin
+    Result := FInvisibleFGColorString;
+End;
 
-procedure TWxTreeListCtrl.SetFGColor(strValue: string);
-begin
-  FInvisibleFGColorString := strValue;
-  if IsDefaultColorStr(strValue) then
-    self.Font.Color := defaultFGColor
-  else
-    self.Font.Color := GetColorFromString(strValue);
-end;
+Procedure TWxTreeListCtrl.SetFGColor(strValue: String);
+Begin
+    FInvisibleFGColorString := strValue;
+    If IsDefaultColorStr(strValue) Then
+        self.Font.Color := defaultFGColor
+    Else
+        self.Font.Color := GetColorFromString(strValue);
+End;
 
-function TWxTreeListCtrl.GetBGColor: string;
-begin
-  Result := FInvisibleBGColorString;
-end;
+Function TWxTreeListCtrl.GetBGColor: String;
+Begin
+    Result := FInvisibleBGColorString;
+End;
 
-procedure TWxTreeListCtrl.SetBGColor(strValue: string);
-begin
-  FInvisibleBGColorString := strValue;
-  if IsDefaultColorStr(strValue) then
-    self.Color := defaultBGColor
-  else
-    self.Color := GetColorFromString(strValue);
-end;
+Procedure TWxTreeListCtrl.SetBGColor(strValue: String);
+Begin
+    FInvisibleBGColorString := strValue;
+    If IsDefaultColorStr(strValue) Then
+        self.Color := defaultBGColor
+    Else
+        self.Color := GetColorFromString(strValue);
+End;
 
-procedure TWxTreeListCtrl.SetProxyFGColorString(Value: string);
-begin
-  FInvisibleFGColorString := Value;
-  self.Color := GetColorFromString(Value);
-end;
+Procedure TWxTreeListCtrl.SetProxyFGColorString(Value: String);
+Begin
+    FInvisibleFGColorString := Value;
+    self.Color := GetColorFromString(Value);
+End;
 
-procedure TWxTreeListCtrl.SetProxyBGColorString(Value: string);
-begin
-  FInvisibleBGColorString := Value;
-  self.Font.Color := GetColorFromString(Value);
-end;
+Procedure TWxTreeListCtrl.SetProxyBGColorString(Value: String);
+Begin
+    FInvisibleBGColorString := Value;
+    self.Font.Color := GetColorFromString(Value);
+End;
 
-function TWxTreeListCtrl.TLAlignmentToStr(taPos: TAlignment): string;
-begin
-  Result := '';
-  case taPos of
-    taLeftJustify: Result := 'wxALIGN_LEFT';
-    taRightJustify: Result := 'wxALIGN_RIGHT';
-    taCenter: Result := 'wxALIGN_CENTER';
-  end; // case
-end;
+Function TWxTreeListCtrl.TLAlignmentToStr(taPos: TAlignment): String;
+Begin
+    Result := '';
+    Case taPos Of
+        taLeftJustify:
+            Result := 'wxALIGN_LEFT';
+        taRightJustify:
+            Result := 'wxALIGN_RIGHT';
+        taCenter:
+            Result := 'wxALIGN_CENTER';
+    End; // case
+End;
 
-end.
+End.

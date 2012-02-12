@@ -25,270 +25,270 @@
 {Contact gururamnath@yahoo.com for details                           }
 { ****************************************************************** }
 
-unit WxSplitterWindow;
+Unit WxSplitterWindow;
 
-interface
+Interface
 
-uses WinTypes, WinProcs, Messages, Classes, Controls,
-  Forms, Graphics, ExtCtrls, WxUtils, WxSizerPanel, WxAuiNotebookPage, wxAuiToolBar;
+Uses WinTypes, WinProcs, Messages, Classes, Controls,
+    Forms, Graphics, ExtCtrls, WxUtils, WxSizerPanel, WxAuiNotebookPage, wxAuiToolBar;
 
-type
-  TWxSplitterWindow = class(TPanel, IWxComponentInterface, IWxWindowInterface,
-    IWxContainerInterface, IWxContainerAndSizerInterface,IWxSplitterInterface)
-  private
-    FOrientation: TWxSizerOrientation;
-    FSpaceValue: integer;
-    FWx_Class: string;
-    FWx_ControlOrientation: TWxControlOrientation;
-    FWx_EventList: TStringList;
-    FWx_IDName: string;
-    FWx_IDValue: integer;
-    FWx_StretchFactor: integer;
-    FWx_Border: integer;
-    FWx_PropertyList: TStringList;
-    FInvisibleBGColorString: string;
-    FInvisibleFGColorString: string;
-    FWx_GeneralStyle: TWxStdStyleSet;
-    FWx_SplitterStyle: TWxSplitterWinStyleSet;
-    FWx_Comments: TStrings;
-    FWx_Alignment: TWxSizerAlignmentSet;
-    FWx_BorderAlignment: TWxBorderAlignment;
+Type
+    TWxSplitterWindow = Class(TPanel, IWxComponentInterface, IWxWindowInterface,
+        IWxContainerInterface, IWxContainerAndSizerInterface, IWxSplitterInterface)
+    Private
+        FOrientation: TWxSizerOrientation;
+        FSpaceValue: Integer;
+        FWx_Class: String;
+        FWx_ControlOrientation: TWxControlOrientation;
+        FWx_EventList: TStringList;
+        FWx_IDName: String;
+        FWx_IDValue: Integer;
+        FWx_StretchFactor: Integer;
+        FWx_Border: Integer;
+        FWx_PropertyList: TStringList;
+        FInvisibleBGColorString: String;
+        FInvisibleFGColorString: String;
+        FWx_GeneralStyle: TWxStdStyleSet;
+        FWx_SplitterStyle: TWxSplitterWinStyleSet;
+        FWx_Comments: TStrings;
+        FWx_Alignment: TWxSizerAlignmentSet;
+        FWx_BorderAlignment: TWxBorderAlignment;
 
-    FEVT_SPLITTER_SASH_POS_CHANGING: string;
-    FEVT_SPLITTER_SASH_POS_CHANGED: string;
-    FEVT_SPLITTER_UNSPLIT: string;
-    FEVT_SPLITTER_DCLICK: string;
-    FEVT_UPDATE_UI: string;
-    FWx_SashPosition: integer;
+        FEVT_SPLITTER_SASH_POS_CHANGING: String;
+        FEVT_SPLITTER_SASH_POS_CHANGED: String;
+        FEVT_SPLITTER_UNSPLIT: String;
+        FEVT_SPLITTER_DCLICK: String;
+        FEVT_UPDATE_UI: String;
+        FWx_SashPosition: Integer;
 
 //Aui Properties
-    FWx_AuiManaged: Boolean;
-    FWx_PaneCaption: string;
-    FWx_PaneName: string;
-    FWx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem;
-    FWx_Aui_Dockable_Direction: TwxAuiPaneDockableDirectionSet;
-    FWx_Aui_Pane_Style: TwxAuiPaneStyleSet;
-    FWx_Aui_Pane_Buttons: TwxAuiPaneButtonSet;
-    FWx_BestSize_Height: Integer;
-    FWx_BestSize_Width: Integer;
-    FWx_MinSize_Height: Integer;
-    FWx_MinSize_Width: Integer;
-    FWx_MaxSize_Height: Integer;
-    FWx_MaxSize_Width: Integer;
-    FWx_Floating_Height: Integer;
-    FWx_Floating_Width: Integer;
-    FWx_Floating_X_Pos: Integer;
-    FWx_Floating_Y_Pos: Integer;
-    FWx_Layer: Integer;
-    FWx_Row: Integer;
-    FWx_Position: Integer;
+        FWx_AuiManaged: Boolean;
+        FWx_PaneCaption: String;
+        FWx_PaneName: String;
+        FWx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem;
+        FWx_Aui_Dockable_Direction: TwxAuiPaneDockableDirectionSet;
+        FWx_Aui_Pane_Style: TwxAuiPaneStyleSet;
+        FWx_Aui_Pane_Buttons: TwxAuiPaneButtonSet;
+        FWx_BestSize_Height: Integer;
+        FWx_BestSize_Width: Integer;
+        FWx_MinSize_Height: Integer;
+        FWx_MinSize_Width: Integer;
+        FWx_MaxSize_Height: Integer;
+        FWx_MaxSize_Width: Integer;
+        FWx_Floating_Height: Integer;
+        FWx_Floating_Width: Integer;
+        FWx_Floating_X_Pos: Integer;
+        FWx_Floating_Y_Pos: Integer;
+        FWx_Layer: Integer;
+        FWx_Row: Integer;
+        FWx_Position: Integer;
 
 
-    procedure AutoInitialize;
-    procedure AutoDestroy;
+        Procedure AutoInitialize;
+        Procedure AutoDestroy;
    // procedure SetWx_EventList(Value: TStringList);
 
-  protected
-    procedure Click; override;
-    procedure KeyPress(var Key: char); override;
-    procedure Resize; override;
-    procedure Loaded; override;
-    procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
+    Protected
+        Procedure Click; Override;
+        Procedure KeyPress(Var Key: Char); Override;
+        Procedure Resize; Override;
+        Procedure Loaded; Override;
+        Procedure WMPaint(Var Message: TWMPaint); Message WM_PAINT;
 
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    function GenerateControlIDs: string;
-    function GenerateEnumControlIDs: string;
-    function GenerateEventTableEntries(CurrClassName: string): string;
-    function GenerateGUIControlCreation: string;
-    function GenerateXRCControlCreation(IndentString: string): TStringList;
-    function GenerateGUIControlDeclaration: string;
-    function GenerateHeaderInclude: string;
-    function GenerateImageInclude: string;
-    function GetEventList: TStringList;
-    function GetIDName: string;
-    function GetIDValue: integer;
-    function GetParameterFromEventName(EventName: string): string;
-    function GetPropertyList: TStringList;
-    function GetTypeFromEventName(EventName: string): string;
-    function GetWxClassName: string;
-    procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
-    procedure SetIDName(IDName: string);
-    procedure SetIDValue(IDValue: integer);
-    procedure SetWxClassName(wxClassName: string);
-    function GetFGColor: string;
-    procedure SetFGColor(strValue: string);
-    function GetBGColor: string;
-    procedure SetBGColor(strValue: string);
+    Public
+        Constructor Create(AOwner: TComponent); Override;
+        Destructor Destroy; Override;
+        Function GenerateControlIDs: String;
+        Function GenerateEnumControlIDs: String;
+        Function GenerateEventTableEntries(CurrClassName: String): String;
+        Function GenerateGUIControlCreation: String;
+        Function GenerateXRCControlCreation(IndentString: String): TStringList;
+        Function GenerateGUIControlDeclaration: String;
+        Function GenerateHeaderInclude: String;
+        Function GenerateImageInclude: String;
+        Function GetEventList: TStringList;
+        Function GetIDName: String;
+        Function GetIDValue: Integer;
+        Function GetParameterFromEventName(EventName: String): String;
+        Function GetPropertyList: TStringList;
+        Function GetTypeFromEventName(EventName: String): String;
+        Function GetWxClassName: String;
+        Procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
+        Procedure SetIDName(IDName: String);
+        Procedure SetIDValue(IDValue: Integer);
+        Procedure SetWxClassName(wxClassName: String);
+        Function GetFGColor: String;
+        Procedure SetFGColor(strValue: String);
+        Function GetBGColor: String;
+        Procedure SetBGColor(strValue: String);
 
-    function GetGenericColor(strVariableName:String): string;
-    procedure SetGenericColor(strVariableName,strValue: string);
+        Function GetGenericColor(strVariableName: String): String;
+        Procedure SetGenericColor(strVariableName, strValue: String);
 
-    function GenerateLastCreationCode: string;
+        Function GenerateLastCreationCode: String;
 
-    function GetBorderAlignment: TWxBorderAlignment;
-    procedure SetBorderAlignment(border: TWxBorderAlignment);
-    function GetBorderWidth: integer;
-    procedure SetBorderWidth(width: integer);
-    function GetStretchFactor: integer;
-    procedure SetStretchFactor(intValue: integer);
+        Function GetBorderAlignment: TWxBorderAlignment;
+        Procedure SetBorderAlignment(border: TWxBorderAlignment);
+        Function GetBorderWidth: Integer;
+        Procedure SetBorderWidth(width: Integer);
+        Function GetStretchFactor: Integer;
+        Procedure SetStretchFactor(intValue: Integer);
 
-  published
-    property OnClick;
-    property OnDblClick;
-    property OnDragDrop;
-    property OnEnter;
-    property OnExit;
-    property OnKeyDown;
-    property OnKeyPress;
-    property OnKeyUp;
-    property OnMouseDown;
-    property OnMouseMove;
-    property OnMouseUp;
-    property OnResize;
-    property EVT_SPLITTER_SASH_POS_CHANGING: string
-      Read FEVT_SPLITTER_SASH_POS_CHANGING Write FEVT_SPLITTER_SASH_POS_CHANGING;
-    property EVT_SPLITTER_SASH_POS_CHANGED: string
-      Read FEVT_SPLITTER_SASH_POS_CHANGED Write FEVT_SPLITTER_SASH_POS_CHANGED;
-    property EVT_SPLITTER_UNSPLIT: string Read FEVT_SPLITTER_UNSPLIT
-      Write FEVT_SPLITTER_UNSPLIT;
-    property EVT_SPLITTER_DCLICK: string Read FEVT_SPLITTER_DCLICK
-      Write FEVT_SPLITTER_DCLICK;
-    property EVT_UPDATE_UI: string Read FEVT_UPDATE_UI Write FEVT_UPDATE_UI;
-    property Orientation: TWxSizerOrientation
-      Read FOrientation Write FOrientation default wxHorizontal;
-    property SpaceValue: integer Read FSpaceValue Write FSpaceValue default 5;
-    property Wx_Class: string Read FWx_Class Write FWx_Class;
-    property Wx_ControlOrientation: TWxControlOrientation
-      Read FWx_ControlOrientation Write FWx_ControlOrientation;
-    property Wx_EventList: TStringList Read FWx_EventList Write FWx_EventList;
-    property Wx_IDName: string Read FWx_IDName Write FWx_IDName;
-    property Wx_IDValue: integer Read FWx_IDValue Write FWx_IDValue default -1;
-    property Wx_SashPosition: integer Read FWx_SashPosition Write FWx_SashPosition;
-    property Wx_GeneralStyle: TWxStdStyleSet
-      Read FWx_GeneralStyle Write FWx_GeneralStyle;
-    property Wx_SplitterStyle: TWxSplitterWinStyleSet
-      Read FWx_SplitterStyle Write FWx_SplitterStyle;
+    Published
+        Property OnClick;
+        Property OnDblClick;
+        Property OnDragDrop;
+        Property OnEnter;
+        Property OnExit;
+        Property OnKeyDown;
+        Property OnKeyPress;
+        Property OnKeyUp;
+        Property OnMouseDown;
+        Property OnMouseMove;
+        Property OnMouseUp;
+        Property OnResize;
+        Property EVT_SPLITTER_SASH_POS_CHANGING: String
+            Read FEVT_SPLITTER_SASH_POS_CHANGING Write FEVT_SPLITTER_SASH_POS_CHANGING;
+        Property EVT_SPLITTER_SASH_POS_CHANGED: String
+            Read FEVT_SPLITTER_SASH_POS_CHANGED Write FEVT_SPLITTER_SASH_POS_CHANGED;
+        Property EVT_SPLITTER_UNSPLIT: String Read FEVT_SPLITTER_UNSPLIT
+            Write FEVT_SPLITTER_UNSPLIT;
+        Property EVT_SPLITTER_DCLICK: String Read FEVT_SPLITTER_DCLICK
+            Write FEVT_SPLITTER_DCLICK;
+        Property EVT_UPDATE_UI: String Read FEVT_UPDATE_UI Write FEVT_UPDATE_UI;
+        Property Orientation: TWxSizerOrientation
+            Read FOrientation Write FOrientation Default wxHorizontal;
+        Property SpaceValue: Integer Read FSpaceValue Write FSpaceValue Default 5;
+        Property Wx_Class: String Read FWx_Class Write FWx_Class;
+        Property Wx_ControlOrientation: TWxControlOrientation
+            Read FWx_ControlOrientation Write FWx_ControlOrientation;
+        Property Wx_EventList: TStringList Read FWx_EventList Write FWx_EventList;
+        Property Wx_IDName: String Read FWx_IDName Write FWx_IDName;
+        Property Wx_IDValue: Integer Read FWx_IDValue Write FWx_IDValue Default -1;
+        Property Wx_SashPosition: Integer Read FWx_SashPosition Write FWx_SashPosition;
+        Property Wx_GeneralStyle: TWxStdStyleSet
+            Read FWx_GeneralStyle Write FWx_GeneralStyle;
+        Property Wx_SplitterStyle: TWxSplitterWinStyleSet
+            Read FWx_SplitterStyle Write FWx_SplitterStyle;
 
-    property Wx_Border: integer Read GetBorderWidth Write SetBorderWidth default 5;
-    property Wx_BorderAlignment: TWxBorderAlignment Read GetBorderAlignment Write SetBorderAlignment default [wxALL];
-    property Wx_Alignment: TWxSizerAlignmentSet Read FWx_Alignment Write FWx_Alignment default [wxALIGN_CENTER];
-    property Wx_StretchFactor: integer Read GetStretchFactor Write SetStretchFactor default 0;
+        Property Wx_Border: Integer Read GetBorderWidth Write SetBorderWidth Default 5;
+        Property Wx_BorderAlignment: TWxBorderAlignment Read GetBorderAlignment Write SetBorderAlignment Default [wxALL];
+        Property Wx_Alignment: TWxSizerAlignmentSet Read FWx_Alignment Write FWx_Alignment Default [wxALIGN_CENTER];
+        Property Wx_StretchFactor: Integer Read GetStretchFactor Write SetStretchFactor Default 0;
 
-    property InvisibleBGColorString: string Read FInvisibleBGColorString Write FInvisibleBGColorString;
-    property InvisibleFGColorString: string Read FInvisibleFGColorString Write FInvisibleFGColorString;
+        Property InvisibleBGColorString: String Read FInvisibleBGColorString Write FInvisibleBGColorString;
+        Property InvisibleFGColorString: String Read FInvisibleFGColorString Write FInvisibleFGColorString;
 
-    property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
+        Property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
 
     //Aui Properties
-    property Wx_AuiManaged: boolean read FWx_AuiManaged write FWx_AuiManaged default False;
-    property Wx_PaneCaption: string read FWx_PaneCaption write FWx_PaneCaption;
-    property Wx_PaneName: string read FWx_PaneName write FWx_PaneName;
-    property Wx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem read FWx_Aui_Dock_Direction write FWx_Aui_Dock_Direction;
-    property Wx_Aui_Dockable_Direction: TwxAuiPaneDockableDirectionSet read FWx_Aui_Dockable_Direction write FWx_Aui_Dockable_Direction;
-    property Wx_Aui_Pane_Style: TwxAuiPaneStyleSet read FWx_Aui_Pane_Style write FWx_Aui_Pane_Style;
-    property Wx_Aui_Pane_Buttons: TwxAuiPaneButtonSet read FWx_Aui_Pane_Buttons write FWx_Aui_Pane_Buttons;
-    property Wx_BestSize_Height: integer read FWx_BestSize_Height write FWx_BestSize_Height default -1;
-    property Wx_BestSize_Width: integer read FWx_BestSize_Width write FWx_BestSize_Width default -1;
-    property Wx_MinSize_Height: integer read FWx_MinSize_Height write FWx_MinSize_Height default -1;
-    property Wx_MinSize_Width: integer read FWx_MinSize_Width write FWx_MinSize_Width default -1;
-    property Wx_MaxSize_Height: integer read FWx_MaxSize_Height write FWx_MaxSize_Height default -1;
-    property Wx_MaxSize_Width: integer read FWx_MaxSize_Width write FWx_MaxSize_Width default -1;
-    property Wx_Floating_Height: integer read FWx_Floating_Height write FWx_Floating_Height default -1;
-    property Wx_Floating_Width: integer read FWx_Floating_Width write FWx_Floating_Width default -1;
-    property Wx_Floating_X_Pos: integer read FWx_Floating_X_Pos write FWx_Floating_X_Pos default -1;
-    property Wx_Floating_Y_Pos: integer read FWx_Floating_Y_Pos write FWx_Floating_Y_Pos default -1;
-    property Wx_Layer: integer read FWx_Layer write FWx_Layer default 0;
-    property Wx_Row: integer read FWx_Row write FWx_Row default 0;
-    property Wx_Position: integer read FWx_Position write FWx_Position default 0;
+        Property Wx_AuiManaged: Boolean Read FWx_AuiManaged Write FWx_AuiManaged Default False;
+        Property Wx_PaneCaption: String Read FWx_PaneCaption Write FWx_PaneCaption;
+        Property Wx_PaneName: String Read FWx_PaneName Write FWx_PaneName;
+        Property Wx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem Read FWx_Aui_Dock_Direction Write FWx_Aui_Dock_Direction;
+        Property Wx_Aui_Dockable_Direction: TwxAuiPaneDockableDirectionSet Read FWx_Aui_Dockable_Direction Write FWx_Aui_Dockable_Direction;
+        Property Wx_Aui_Pane_Style: TwxAuiPaneStyleSet Read FWx_Aui_Pane_Style Write FWx_Aui_Pane_Style;
+        Property Wx_Aui_Pane_Buttons: TwxAuiPaneButtonSet Read FWx_Aui_Pane_Buttons Write FWx_Aui_Pane_Buttons;
+        Property Wx_BestSize_Height: Integer Read FWx_BestSize_Height Write FWx_BestSize_Height Default -1;
+        Property Wx_BestSize_Width: Integer Read FWx_BestSize_Width Write FWx_BestSize_Width Default -1;
+        Property Wx_MinSize_Height: Integer Read FWx_MinSize_Height Write FWx_MinSize_Height Default -1;
+        Property Wx_MinSize_Width: Integer Read FWx_MinSize_Width Write FWx_MinSize_Width Default -1;
+        Property Wx_MaxSize_Height: Integer Read FWx_MaxSize_Height Write FWx_MaxSize_Height Default -1;
+        Property Wx_MaxSize_Width: Integer Read FWx_MaxSize_Width Write FWx_MaxSize_Width Default -1;
+        Property Wx_Floating_Height: Integer Read FWx_Floating_Height Write FWx_Floating_Height Default -1;
+        Property Wx_Floating_Width: Integer Read FWx_Floating_Width Write FWx_Floating_Width Default -1;
+        Property Wx_Floating_X_Pos: Integer Read FWx_Floating_X_Pos Write FWx_Floating_X_Pos Default -1;
+        Property Wx_Floating_Y_Pos: Integer Read FWx_Floating_Y_Pos Write FWx_Floating_Y_Pos Default -1;
+        Property Wx_Layer: Integer Read FWx_Layer Write FWx_Layer Default 0;
+        Property Wx_Row: Integer Read FWx_Row Write FWx_Row Default 0;
+        Property Wx_Position: Integer Read FWx_Position Write FWx_Position Default 0;
 
-  end;
+    End;
 
-procedure Register;
+Procedure Register;
 
-implementation
-uses
-  SysUtils;
+Implementation
+Uses
+    SysUtils;
 
-procedure Register;
-begin
-  RegisterComponents('wxSplitterWindow', [TWxSplitterWindow]);
-end;
+Procedure Register;
+Begin
+    RegisterComponents('wxSplitterWindow', [TWxSplitterWindow]);
+End;
 
-procedure TWxSplitterWindow.AutoInitialize;
-begin
-  FWx_EventList       := TStringList.Create;
-  FWx_Comments        := TStringList.Create;
-  FWx_PropertyList    := TStringList.Create;
-  FOrientation        := wxHorizontal;
-  FSpaceValue         := 5;
-  FWx_Border          := 0;
-  FWx_SashPosition    := 0;
-  FWx_Class           := 'wxSplitterWindow';
-  FWx_BorderAlignment := [wxAll];
-  FWx_Alignment       := [wxALIGN_CENTER];
-  FWx_IDValue         := -1;
-end; { of AutoInitialize }
+Procedure TWxSplitterWindow.AutoInitialize;
+Begin
+    FWx_EventList := TStringList.Create;
+    FWx_Comments := TStringList.Create;
+    FWx_PropertyList := TStringList.Create;
+    FOrientation := wxHorizontal;
+    FSpaceValue := 5;
+    FWx_Border := 0;
+    FWx_SashPosition := 0;
+    FWx_Class := 'wxSplitterWindow';
+    FWx_BorderAlignment := [wxAll];
+    FWx_Alignment := [wxALIGN_CENTER];
+    FWx_IDValue := -1;
+End; { of AutoInitialize }
 
-procedure TWxSplitterWindow.AutoDestroy;
-begin
-  FWx_PropertyList.Destroy;
-  FWx_EventList.Destroy;
-  FWx_Comments.Destroy;
-end; { of AutoDestroy }
+Procedure TWxSplitterWindow.AutoDestroy;
+Begin
+    FWx_PropertyList.Destroy;
+    FWx_EventList.Destroy;
+    FWx_Comments.Destroy;
+End; { of AutoDestroy }
 
-procedure TWxSplitterWindow.Click;
-begin
-  inherited Click;
-end;
+Procedure TWxSplitterWindow.Click;
+Begin
+    Inherited Click;
+End;
 
-procedure TWxSplitterWindow.KeyPress(var Key: char);
-const
-  TabKey   = char(VK_TAB);
-  EnterKey = char(VK_RETURN);
-begin
-  inherited KeyPress(Key);
-end;
+Procedure TWxSplitterWindow.KeyPress(Var Key: Char);
+Const
+    TabKey = Char(VK_TAB);
+    EnterKey = Char(VK_RETURN);
+Begin
+    Inherited KeyPress(Key);
+End;
 
-procedure TWxSplitterWindow.Resize;
-begin
-  inherited Resize;
-end;
+Procedure TWxSplitterWindow.Resize;
+Begin
+    Inherited Resize;
+End;
 
-constructor TWxSplitterWindow.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  AutoInitialize;
+Constructor TWxSplitterWindow.Create(AOwner: TComponent);
+Begin
+    Inherited Create(AOwner);
+    AutoInitialize;
 
-  PopulateGenericProperties(FWx_PropertyList);
-  PopulateAuiGenericProperties(FWx_PropertyList);
+    PopulateGenericProperties(FWx_PropertyList);
+    PopulateAuiGenericProperties(FWx_PropertyList);
 
-  FWx_PropertyList.add('Wx_SplitterStyle : Splitter Window Styles');
-  FWx_PropertyList.add('wxSP_3D:wxSP_3D');
-  FWx_PropertyList.add('wxSP_3DSASH:wxSP_3DSASH');
-  FWx_PropertyList.add('wxSP_3DBORDER:wxSP_3DBORDER');
-  FWx_PropertyList.add('wxSP_BORDER :wxSP_BORDER');
-  FWx_PropertyList.add('wxSP_NOBORDER:wxSP_NOBORDER');
-  FWx_PropertyList.add('wxSP_NO_XP_THEME:wxSP_NO_XP_THEME');
-  FWx_PropertyList.add('wxSP_PERMIT_UNSPLIT:wxSP_PERMIT_UNSPLIT');
-  FWx_PropertyList.add('wxSP_LIVE_UPDATE:wxSP_LIVE_UPDATE');
-  FWx_PropertyList.add('Orientation:Orientation');
-  FWx_PropertyList.add('Wx_SashPosition:Sash Position');
+    FWx_PropertyList.add('Wx_SplitterStyle : Splitter Window Styles');
+    FWx_PropertyList.add('wxSP_3D:wxSP_3D');
+    FWx_PropertyList.add('wxSP_3DSASH:wxSP_3DSASH');
+    FWx_PropertyList.add('wxSP_3DBORDER:wxSP_3DBORDER');
+    FWx_PropertyList.add('wxSP_BORDER :wxSP_BORDER');
+    FWx_PropertyList.add('wxSP_NOBORDER:wxSP_NOBORDER');
+    FWx_PropertyList.add('wxSP_NO_XP_THEME:wxSP_NO_XP_THEME');
+    FWx_PropertyList.add('wxSP_PERMIT_UNSPLIT:wxSP_PERMIT_UNSPLIT');
+    FWx_PropertyList.add('wxSP_LIVE_UPDATE:wxSP_LIVE_UPDATE');
+    FWx_PropertyList.add('Orientation:Orientation');
+    FWx_PropertyList.add('Wx_SashPosition:Sash Position');
 
-  FWx_EventList.Add('EVT_SPLITTER_SASH_POS_CHANGING : OnSashPosChanging');
-  FWx_EventList.Add('EVT_SPLITTER_SASH_POS_CHANGED : OnSashPosChanged');
-  FWx_EventList.Add('EVT_SPLITTER_UNSPLIT : OnUnSplit');
-  FWx_EventList.Add('EVT_SPLITTER_DCLICK : OnDoubleClick');
-  FWx_EventList.Add('EVT_UPDATE_UI : OnUpdateUI');
+    FWx_EventList.Add('EVT_SPLITTER_SASH_POS_CHANGING : OnSashPosChanging');
+    FWx_EventList.Add('EVT_SPLITTER_SASH_POS_CHANGED : OnSashPosChanged');
+    FWx_EventList.Add('EVT_SPLITTER_UNSPLIT : OnUnSplit');
+    FWx_EventList.Add('EVT_SPLITTER_DCLICK : OnDoubleClick');
+    FWx_EventList.Add('EVT_UPDATE_UI : OnUpdateUI');
 
-end;
+End;
 
-destructor TWxSplitterWindow.Destroy;
-begin
+Destructor TWxSplitterWindow.Destroy;
+Begin
   { AutoDestroy, which is generated by Component Create, frees any   }
   { objects created by AutoInitialize.                               }
-  AutoDestroy;
+    AutoDestroy;
 
   { Here, free any other dynamic objects that the component methods  }
   { created but have not yet freed.  Also perform any other clean-up }
@@ -296,490 +296,492 @@ begin
 
   { Last, free the component by calling the Destroy method of the    }
   { parent class.                                                    }
-  inherited Destroy;
-end;
+    Inherited Destroy;
+End;
 
 
-function TWxSplitterWindow.GenerateEnumControlIDs: string;
-begin
-  Result := GetWxEnum(self.Wx_IDValue, self.Wx_IDName);
-end;
+Function TWxSplitterWindow.GenerateEnumControlIDs: String;
+Begin
+    Result := GetWxEnum(self.Wx_IDValue, self.Wx_IDName);
+End;
 
-function TWxSplitterWindow.GenerateControlIDs: string;
-begin
-  Result := '';
-  if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-    Result := Format('#define %s %d ', [Wx_IDName, Wx_IDValue]);
-end;
+Function TWxSplitterWindow.GenerateControlIDs: String;
+Begin
+    Result := '';
+    If (Wx_IDValue > 0) And (trim(Wx_IDName) <> '') Then
+        Result := Format('#define %s %d ', [Wx_IDName, Wx_IDValue]);
+End;
 
-function TWxSplitterWindow.GenerateEventTableEntries(CurrClassName: string): string;
-begin
-  Result := '';
-  
-    if (XRCGEN) then
- begin
-    if trim(EVT_SPLITTER_SASH_POS_CHANGING) <> '' then
-    Result := Format('EVT_SPLITTER_SASH_POS_CHANGING(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_SPLITTER_SASH_POS_CHANGING]) + '';
-  
-  if trim(EVT_SPLITTER_SASH_POS_CHANGED) <> '' then
-    Result := Format('EVT_SPLITTER_SASH_POS_CHANGED(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_SPLITTER_SASH_POS_CHANGED]) + '';
-  
-  if trim(EVT_SPLITTER_DCLICK) <> '' then
-    Result := Format('EVT_SPLITTER_DCLICK(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_SPLITTER_DCLICK]) + '';
-  
-  if trim(EVT_SPLITTER_UNSPLIT) <> '' then
-    Result := Format('EVT_SPLITTER_UNSPLIT(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_SPLITTER_UNSPLIT]) + '';
+Function TWxSplitterWindow.GenerateEventTableEntries(CurrClassName: String): String;
+Begin
+    Result := '';
 
-  if trim(EVT_UPDATE_UI) <> '' then
-    Result := Result + #13 + Format('EVT_UPDATE_UI(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + '';
-   end
- else
- begin
-  if trim(EVT_SPLITTER_SASH_POS_CHANGING) <> '' then
-    Result := Format('EVT_SPLITTER_SASH_POS_CHANGING(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_SPLITTER_SASH_POS_CHANGING]) + '';
-  
-  if trim(EVT_SPLITTER_SASH_POS_CHANGED) <> '' then
-    Result := Format('EVT_SPLITTER_SASH_POS_CHANGED(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_SPLITTER_SASH_POS_CHANGED]) + '';
-  
-  if trim(EVT_SPLITTER_DCLICK) <> '' then
-    Result := Format('EVT_SPLITTER_DCLICK(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_SPLITTER_DCLICK]) + '';
-  
-  if trim(EVT_SPLITTER_UNSPLIT) <> '' then
-    Result := Format('EVT_SPLITTER_UNSPLIT(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_SPLITTER_UNSPLIT]) + '';
+    If (XRCGEN) Then
+    Begin
+        If trim(EVT_SPLITTER_SASH_POS_CHANGING) <> '' Then
+            Result := Format('EVT_SPLITTER_SASH_POS_CHANGING(XRCID(%s("%s")),%s::%s)',
+                [StringFormat, self.Name, CurrClassName, EVT_SPLITTER_SASH_POS_CHANGING]) + '';
 
-  if trim(EVT_UPDATE_UI) <> '' then
-    Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
-  end
-end;
+        If trim(EVT_SPLITTER_SASH_POS_CHANGED) <> '' Then
+            Result := Format('EVT_SPLITTER_SASH_POS_CHANGED(XRCID(%s("%s")),%s::%s)',
+                [StringFormat, self.Name, CurrClassName, EVT_SPLITTER_SASH_POS_CHANGED]) + '';
 
-function TWxSplitterWindow.GenerateXRCControlCreation(IndentString: string): TStringList;
-  var
-  strOrientation: string;
-  i: integer;
-  wxcompInterface: IWxComponentInterface;
-  tempstring: TStringList;
-  begin
+        If trim(EVT_SPLITTER_DCLICK) <> '' Then
+            Result := Format('EVT_SPLITTER_DCLICK(XRCID(%s("%s")),%s::%s)',
+                [StringFormat, self.Name, CurrClassName, EVT_SPLITTER_DCLICK]) + '';
 
-  Result := TStringList.Create;
+        If trim(EVT_SPLITTER_UNSPLIT) <> '' Then
+            Result := Format('EVT_SPLITTER_UNSPLIT(XRCID(%s("%s")),%s::%s)',
+                [StringFormat, self.Name, CurrClassName, EVT_SPLITTER_UNSPLIT]) + '';
 
-  try
-    Result.Add(IndentString + Format('<object class="%s" name="%s">',
-      [self.Wx_Class, self.Name]));
-    Result.Add(IndentString + Format('  <label>%s</label>', [self.Caption]));
-    Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
-    Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
+        If trim(EVT_UPDATE_UI) <> '' Then
+            Result := Result + #13 + Format('EVT_UPDATE_UI(XRCID(%s("%s")),%s::%s)',
+                [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + '';
+    End
+    Else
+    Begin
+        If trim(EVT_SPLITTER_SASH_POS_CHANGING) <> '' Then
+            Result := Format('EVT_SPLITTER_SASH_POS_CHANGING(%s,%s::%s)',
+                [WX_IDName, CurrClassName, EVT_SPLITTER_SASH_POS_CHANGING]) + '';
 
-    if not(UseDefaultSize)then
-      Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
-    if not(UseDefaultPos) then
-      Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
+        If trim(EVT_SPLITTER_SASH_POS_CHANGED) <> '' Then
+            Result := Format('EVT_SPLITTER_SASH_POS_CHANGED(%s,%s::%s)',
+                [WX_IDName, CurrClassName, EVT_SPLITTER_SASH_POS_CHANGED]) + '';
 
-    Result.Add(IndentString + Format('  <sashpos>%d</sashpos>', [self.Wx_SashPosition]));
-    if Orientation = wxVertical then
-      strOrientation := 'vertical'
-    else
-      strOrientation := 'horizontal';
-    Result.Add(IndentString + Format('  <orientation>%s</orientation>', [strOrientation]));
-    Result.Add(IndentString + Format('  <style>%s</style>',
-      [GetSplitterWindowSpecificStyle(self.Wx_GeneralStyle, Wx_SplitterStyle)]));
-  
-  for i := 0 to self.ControlCount - 1 do // Iterate
-      if self.Controls[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) then
+        If trim(EVT_SPLITTER_DCLICK) <> '' Then
+            Result := Format('EVT_SPLITTER_DCLICK(%s,%s::%s)',
+                [WX_IDName, CurrClassName, EVT_SPLITTER_DCLICK]) + '';
+
+        If trim(EVT_SPLITTER_UNSPLIT) <> '' Then
+            Result := Format('EVT_SPLITTER_UNSPLIT(%s,%s::%s)',
+                [WX_IDName, CurrClassName, EVT_SPLITTER_UNSPLIT]) + '';
+
+        If trim(EVT_UPDATE_UI) <> '' Then
+            Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
+                [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
+    End;
+End;
+
+Function TWxSplitterWindow.GenerateXRCControlCreation(IndentString: String): TStringList;
+Var
+    strOrientation: String;
+    i: Integer;
+    wxcompInterface: IWxComponentInterface;
+    tempstring: TStringList;
+Begin
+
+    Result := TStringList.Create;
+
+    Try
+        Result.Add(IndentString + Format('<object class="%s" name="%s">',
+            [self.Wx_Class, self.Name]));
+        Result.Add(IndentString + Format('  <label>%s</label>', [self.Caption]));
+        Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
+        Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
+
+        If Not (UseDefaultSize) Then
+            Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
+        If Not (UseDefaultPos) Then
+            Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
+
+        Result.Add(IndentString + Format('  <sashpos>%d</sashpos>', [self.Wx_SashPosition]));
+        If Orientation = wxVertical Then
+            strOrientation := 'vertical'
+        Else
+            strOrientation := 'horizontal';
+        Result.Add(IndentString + Format('  <orientation>%s</orientation>', [strOrientation]));
+        Result.Add(IndentString + Format('  <style>%s</style>',
+            [GetSplitterWindowSpecificStyle(self.Wx_GeneralStyle, Wx_SplitterStyle)]));
+
+        For i := 0 To self.ControlCount - 1 Do // Iterate
+            If self.Controls[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) Then
         // Only add the XRC control if it is a child of the top-most parent (the form)
         //  If it is a child of a sizer, panel, or other object, then it's XRC code
         //  is created in GenerateXRCControlCreation of that control.
-        if (self.Controls[i].GetParentComponent.Name = self.Name) then
-        begin
-          tempstring := wxcompInterface.GenerateXRCControlCreation('    ' + IndentString);
-          try
-            Result.AddStrings(tempstring);
-          finally
-            tempstring.Free;
-          end;
-        end; // for
-  
-    Result.Add(IndentString + '</object>');
+                If (self.Controls[i].GetParentComponent.Name = self.Name) Then
+                Begin
+                    tempstring := wxcompInterface.GenerateXRCControlCreation('    ' + IndentString);
+                    Try
+                        Result.AddStrings(tempstring);
+                    Finally
+                        tempstring.Free;
+                    End;
+                End; // for
 
-  except
-    Result.Free;
-    raise;
-  end;
+        Result.Add(IndentString + '</object>');
 
-end;
+    Except
+        Result.Free;
+        Raise;
+    End;
 
-function TWxSplitterWindow.GenerateGUIControlCreation: string;
-var
-  strColorStr:  string;
-  strAlignment: string;
-  parentName:   string;
-  strStyle:     string;
-begin
-    if FWx_PaneCaption = '' then
-    FWx_PaneCaption := Self.Name;
-  if FWx_PaneName = '' then
-    FWx_PaneName := Self.Name + '_Pane';
+End;
 
-  parentName := GetWxWidgetParent(self, Wx_AuiManaged);
-  strStyle   := GetSplitterWindowSpecificStyle(self.Wx_GeneralStyle,
-    self.Wx_SplitterStyle);
+Function TWxSplitterWindow.GenerateGUIControlCreation: String;
+Var
+    strColorStr: String;
+    strAlignment: String;
+    parentName: String;
+    strStyle: String;
+Begin
+    If FWx_PaneCaption = '' Then
+        FWx_PaneCaption := Self.Name;
+    If FWx_PaneName = '' Then
+        FWx_PaneName := Self.Name + '_Pane';
 
-  if (trim(strStyle) <> '') then
-    strStyle := ', ' + strStyle;
+    parentName := GetWxWidgetParent(self, Wx_AuiManaged);
+    strStyle := GetSplitterWindowSpecificStyle(self.Wx_GeneralStyle,
+        self.Wx_SplitterStyle);
 
-  if (XRCGEN) then
- begin//generate xrc loading code
-  Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
-    [self.Name, parentName, StringFormat, self.Name, self.wx_Class]);   
- end
- else
- begin
-  Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s = new %s(%s, %s, %s, %s%s);',
-    [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
-    self.Wx_IDValue),
-    GetWxPosition(self.Left, self.Top), GetWxSize(self.Width, self.Height), strStyle]);
-end;
-  
-  strColorStr := trim(GetwxColorFromString(InvisibleFGColorString));
-  if strColorStr <> '' then
-    Result := Result + #13 + Format('%s->SetForegroundColour(%s);',
-      [self.Name, strColorStr]);
+    If (trim(strStyle) <> '') Then
+        strStyle := ', ' + strStyle;
 
-  strColorStr := trim(GetwxColorFromString(InvisibleBGColorString));
-  if strColorStr <> '' then
-    Result := Result + #13 + Format('%s->SetBackgroundColour(%s);',
-      [self.Name, strColorStr]);
+    If (XRCGEN) Then
+    Begin//generate xrc loading code
+        Result := GetCommentString(self.FWx_Comments.Text) +
+            Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
+            [self.Name, parentName, StringFormat, self.Name, self.wx_Class]);
+    End
+    Else
+    Begin
+        Result := GetCommentString(self.FWx_Comments.Text) +
+            Format('%s = new %s(%s, %s, %s, %s%s);',
+            [self.Name, self.wx_Class, parentName, GetWxIDString(self.Wx_IDName,
+            self.Wx_IDValue),
+            GetWxPosition(self.Left, self.Top), GetWxSize(self.Width, self.Height), strStyle]);
+    End;
 
-  strColorStr := GetWxFontDeclaration(self.Font);
-  if strColorStr <> '' then
-    Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
-if not (XRCGEN) then //NUKLEAR ZELPH
-  begin
-    if (Wx_AuiManaged and FormHasAuiManager(self)) and not (self.Parent is TWxSizerPanel) then
-    begin
-      if HasToolbarPaneStyle(Self.Wx_Aui_Pane_Style) then
-      begin
-        Self.Wx_Aui_Pane_Style := Self.Wx_Aui_Pane_Style + [ToolbarPane]; //always make sure we are a toolbar
-        Self.Wx_Layer := 10;
-      end;
+    strColorStr := trim(GetwxColorFromString(InvisibleFGColorString));
+    If strColorStr <> '' Then
+        Result := Result + #13 + Format('%s->SetForegroundColour(%s);',
+            [self.Name, strColorStr]);
 
-      if not HasToolbarPaneStyle(Self.Wx_Aui_Pane_Style) then
-      begin
-        if (self.Parent.ClassName = 'TWxPanel') then
-          if not (self.Parent.Parent is TForm) then
-            Result := Result + #13 + Format('%s->Reparent(this);', [parentName]);
-      end;
+    strColorStr := trim(GetwxColorFromString(InvisibleBGColorString));
+    If strColorStr <> '' Then
+        Result := Result + #13 + Format('%s->SetBackgroundColour(%s);',
+            [self.Name, strColorStr]);
 
-      if (self.Parent is TWxAuiToolBar) then
-        Result := Result + #13 + Format('%s->AddControl(%s);',
-          [self.Parent.Name, self.Name])
-      else
-        Result := Result + #13 + Format('%s->AddPane(%s, wxAuiPaneInfo()%s%s%s%s%s%s%s%s%s%s%s%s);',
-          [GetAuiManagerName(self), self.Name,
-          GetAuiPaneName(Self.Wx_PaneName),
-            GetAuiPaneCaption(Self.Wx_PaneCaption),
-            GetAuiDockDirection(Self.Wx_Aui_Dock_Direction),
-            GetAuiDockableDirections(self.Wx_Aui_Dockable_Direction),
-            GetAui_Pane_Style(Self.Wx_Aui_Pane_Style),
-            GetAui_Pane_Buttons(Self.Wx_Aui_Pane_Buttons),
-            GetAuiRow(Self.Wx_Row),
-            GetAuiPosition(Self.Wx_Position),
-            GetAuiLayer(Self.Wx_Layer),
-            GetAuiPaneBestSize(Self.Wx_BestSize_Width, Self.Wx_BestSize_Height),
-            GetAuiPaneMinSize(Self.Wx_MinSize_Width, Self.Wx_MinSize_Height),
-            GetAuiPaneMaxSize(Self.Wx_MaxSize_Width, Self.Wx_MaxSize_Height)]);
+    strColorStr := GetWxFontDeclaration(self.Font);
+    If strColorStr <> '' Then
+        Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
+    If Not (XRCGEN) Then //NUKLEAR ZELPH
+    Begin
+        If (Wx_AuiManaged And FormHasAuiManager(self)) And Not (self.Parent Is TWxSizerPanel) Then
+        Begin
+            If HasToolbarPaneStyle(Self.Wx_Aui_Pane_Style) Then
+            Begin
+                Self.Wx_Aui_Pane_Style := Self.Wx_Aui_Pane_Style + [ToolbarPane]; //always make sure we are a toolbar
+                Self.Wx_Layer := 10;
+            End;
 
-    end
-    else
-    begin
-  if (self.Parent is TWxSizerPanel) then
-  begin
-    strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
-    Result := Result + #13 + Format('%s->Add(%s, %d, %s, %d);',
-      [self.Parent.Name, self.Name, self.Wx_StretchFactor, strAlignment,
-      self.wx_Border]);
-  end;
+            If Not HasToolbarPaneStyle(Self.Wx_Aui_Pane_Style) Then
+            Begin
+                If (self.Parent.ClassName = 'TWxPanel') Then
+                    If Not (self.Parent.Parent Is TForm) Then
+                        Result := Result + #13 + Format('%s->Reparent(this);', [parentName]);
+            End;
 
-      if (self.Parent is TWxAuiNotebookPage) then
-      begin
+            If (self.Parent Is TWxAuiToolBar) Then
+                Result := Result + #13 + Format('%s->AddControl(%s);',
+                    [self.Parent.Name, self.Name])
+            Else
+                Result := Result + #13 + Format('%s->AddPane(%s, wxAuiPaneInfo()%s%s%s%s%s%s%s%s%s%s%s%s);',
+                    [GetAuiManagerName(self), self.Name,
+                    GetAuiPaneName(Self.Wx_PaneName),
+                    GetAuiPaneCaption(Self.Wx_PaneCaption),
+                    GetAuiDockDirection(Self.Wx_Aui_Dock_Direction),
+                    GetAuiDockableDirections(self.Wx_Aui_Dockable_Direction),
+                    GetAui_Pane_Style(Self.Wx_Aui_Pane_Style),
+                    GetAui_Pane_Buttons(Self.Wx_Aui_Pane_Buttons),
+                    GetAuiRow(Self.Wx_Row),
+                    GetAuiPosition(Self.Wx_Position),
+                    GetAuiLayer(Self.Wx_Layer),
+                    GetAuiPaneBestSize(Self.Wx_BestSize_Width, Self.Wx_BestSize_Height),
+                    GetAuiPaneMinSize(Self.Wx_MinSize_Width, Self.Wx_MinSize_Height),
+                    GetAuiPaneMaxSize(Self.Wx_MaxSize_Width, Self.Wx_MaxSize_Height)]);
+
+        End
+        Else
+        Begin
+            If (self.Parent Is TWxSizerPanel) Then
+            Begin
+                strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
+                Result := Result + #13 + Format('%s->Add(%s, %d, %s, %d);',
+                    [self.Parent.Name, self.Name, self.Wx_StretchFactor, strAlignment,
+                    self.wx_Border]);
+            End;
+
+            If (self.Parent Is TWxAuiNotebookPage) Then
+            Begin
         //        strParentLabel := TWxAuiNoteBookPage(Self.Parent).Caption;
-        Result := Result + #13 + Format('%s->AddPage(%s, %s);',
+                Result := Result + #13 + Format('%s->AddPage(%s, %s);',
           //          [self.Parent.Parent.Name, self.Name, GetCppString(strParentLabel)]);
-          [self.Parent.Parent.Name, self.Name, GetCppString(TWxAuiNoteBookPage(Self.Parent).Caption)]);
-      end;
+                    [self.Parent.Parent.Name, self.Name, GetCppString(TWxAuiNoteBookPage(Self.Parent).Caption)]);
+            End;
 
-      if (self.Parent is TWxAuiToolBar) then
-        Result := Result + #13 + Format('%s->AddControl(%s);',
-          [self.Parent.Name, self.Name]);
-    end;
-  end;
+            If (self.Parent Is TWxAuiToolBar) Then
+                Result := Result + #13 + Format('%s->AddControl(%s);',
+                    [self.Parent.Name, self.Name]);
+        End;
+    End;
 
-end;
+End;
 
-function TWxSplitterWindow.GenerateGUIControlDeclaration: string;
-begin
-  Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
-end;
+Function TWxSplitterWindow.GenerateGUIControlDeclaration: String;
+Begin
+    Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
+End;
 
-function TWxSplitterWindow.GenerateHeaderInclude: string;
-begin
-  Result := '#include <wx/splitter.h>';
-end;
+Function TWxSplitterWindow.GenerateHeaderInclude: String;
+Begin
+    Result := '#include <wx/splitter.h>';
+End;
 
-function TWxSplitterWindow.GenerateImageInclude: string;
-begin
+Function TWxSplitterWindow.GenerateImageInclude: String;
+Begin
 
-end;
+End;
 
-function TWxSplitterWindow.GetEventList: TStringList;
-begin
-  Result := Wx_EventList;
-end;
+Function TWxSplitterWindow.GetEventList: TStringList;
+Begin
+    Result := Wx_EventList;
+End;
 
-function TWxSplitterWindow.GetIDName: string;
-begin
-  Result := wx_IDName;
-end;
+Function TWxSplitterWindow.GetIDName: String;
+Begin
+    Result := wx_IDName;
+End;
 
-function TWxSplitterWindow.GetIDValue: integer;
-begin
-  Result := wx_IDValue;
-end;
+Function TWxSplitterWindow.GetIDValue: Integer;
+Begin
+    Result := wx_IDValue;
+End;
 
-function TWxSplitterWindow.GetParameterFromEventName(EventName: string): string;
-begin
-  if (EventName = 'EVT_SPLITTER_SASH_POS_CHANGING') or
-    (EventName = 'EVT_SPLITTER_SASH_POS_CHANGED') or
-    (EventName = 'EVT_SPLITTER_UNSPLIT') or (EventName = 'EVT_SPLITTER_DCLICK') then
-  begin
-    Result := 'wxSplitterEvent& event';
-    exit;
-  end;
+Function TWxSplitterWindow.GetParameterFromEventName(EventName: String): String;
+Begin
+    If (EventName = 'EVT_SPLITTER_SASH_POS_CHANGING') Or
+        (EventName = 'EVT_SPLITTER_SASH_POS_CHANGED') Or
+        (EventName = 'EVT_SPLITTER_UNSPLIT') Or (EventName = 'EVT_SPLITTER_DCLICK') Then
+    Begin
+        Result := 'wxSplitterEvent& event';
+        exit;
+    End;
 
-  if EventName = 'EVT_UPDATE_UI' then
-  begin
-    Result := 'wxUpdateUIEvent& event';
-    exit;
-  end;
-end;
+    If EventName = 'EVT_UPDATE_UI' Then
+    Begin
+        Result := 'wxUpdateUIEvent& event';
+        exit;
+    End;
+End;
 
-function TWxSplitterWindow.GetPropertyList: TStringList;
-begin
-  Result := FWx_PropertyList;
-end;
+Function TWxSplitterWindow.GetPropertyList: TStringList;
+Begin
+    Result := FWx_PropertyList;
+End;
 
-function TWxSplitterWindow.GetStretchFactor: integer;
-begin
-  Result := FWx_StretchFactor;
-end;
+Function TWxSplitterWindow.GetStretchFactor: Integer;
+Begin
+    Result := FWx_StretchFactor;
+End;
 
-function TWxSplitterWindow.GetTypeFromEventName(EventName: string): string;
-begin
+Function TWxSplitterWindow.GetTypeFromEventName(EventName: String): String;
+Begin
 
-end;
+End;
 
-function TWxSplitterWindow.GetBorderAlignment: TWxBorderAlignment;
-begin
-  Result := FWx_BorderAlignment;
-end;
+Function TWxSplitterWindow.GetBorderAlignment: TWxBorderAlignment;
+Begin
+    Result := FWx_BorderAlignment;
+End;
 
-procedure TWxSplitterWindow.SetBorderAlignment(border: TWxBorderAlignment);
-begin
-  FWx_BorderAlignment := border;
-end;
+Procedure TWxSplitterWindow.SetBorderAlignment(border: TWxBorderAlignment);
+Begin
+    FWx_BorderAlignment := border;
+End;
 
-function TWxSplitterWindow.GetBorderWidth: integer;
-begin
-  Result := FWx_Border;
-end;
+Function TWxSplitterWindow.GetBorderWidth: Integer;
+Begin
+    Result := FWx_Border;
+End;
 
-procedure TWxSplitterWindow.SetBorderWidth(width: integer);
-begin
-  FWx_Border := width;
-end;
+Procedure TWxSplitterWindow.SetBorderWidth(width: Integer);
+Begin
+    FWx_Border := width;
+End;
 
-function TWxSplitterWindow.GetWxClassName: string;
-begin
-  if trim(wx_Class) = '' then
-    wx_Class := 'wxSplitterWindow';
-  Result := wx_Class;
-end;
+Function TWxSplitterWindow.GetWxClassName: String;
+Begin
+    If trim(wx_Class) = '' Then
+        wx_Class := 'wxSplitterWindow';
+    Result := wx_Class;
+End;
 
-procedure TWxSplitterWindow.Loaded;
-begin
-  inherited Loaded;
+Procedure TWxSplitterWindow.Loaded;
+Begin
+    Inherited Loaded;
 
      { Perform any component setup that depends on the property
        values having been set }
 
-end;
+End;
 
-procedure TWxSplitterWindow.SaveControlOrientation(
-  ControlOrientation: TWxControlOrientation);
-begin
-  wx_ControlOrientation := ControlOrientation;
-end;
+Procedure TWxSplitterWindow.SaveControlOrientation(
+    ControlOrientation: TWxControlOrientation);
+Begin
+    wx_ControlOrientation := ControlOrientation;
+End;
 
-procedure TWxSplitterWindow.SetIDName(IDName: string);
-begin
-  wx_IDName := IDName;
-end;
+Procedure TWxSplitterWindow.SetIDName(IDName: String);
+Begin
+    wx_IDName := IDName;
+End;
 
-procedure TWxSplitterWindow.SetIDValue(IDValue: integer);
-begin
-  Wx_IDValue := IDVAlue;
-end;
+Procedure TWxSplitterWindow.SetIDValue(IDValue: Integer);
+Begin
+    Wx_IDValue := IDVAlue;
+End;
 
-procedure TWxSplitterWindow.SetStretchFactor(intValue: integer);
-begin
-  FWx_StretchFactor := intValue;
-end;
+Procedure TWxSplitterWindow.SetStretchFactor(intValue: Integer);
+Begin
+    FWx_StretchFactor := intValue;
+End;
 
-procedure TWxSplitterWindow.SetWxClassName(wxClassName: string);
-begin
-  wx_Class := wxClassName;
-end;
+Procedure TWxSplitterWindow.SetWxClassName(wxClassName: String);
+Begin
+    wx_Class := wxClassName;
+End;
 
-procedure TWxSplitterWindow.WMPaint(var Message: TWMPaint);
-var
-  extraHeight: integer;
-  maxWidth, maxHt: integer;
-  totalmaxWidth, totalmaxHt: integer;
-  startX : integer;
-  i: integer;
-  coordTop, coordLeft: integer;
-  wxcompInterface: IWxComponentInterface;
-  cntIntf: IWxContainerInterface;
-  splitIntf: IWxSplitterInterface;  
-begin
+Procedure TWxSplitterWindow.WMPaint(Var Message: TWMPaint);
+Var
+    extraHeight: Integer;
+    maxWidth, maxHt: Integer;
+    totalmaxWidth, totalmaxHt: Integer;
+    startX: Integer;
+    i: Integer;
+    coordTop, coordLeft: Integer;
+    wxcompInterface: IWxComponentInterface;
+    cntIntf: IWxContainerInterface;
+    splitIntf: IWxSplitterInterface;
+Begin
   //Make this component look like its parent component by calling its parent's
   //Paint method.
-  Caption := '';
-  if ControlCount < 1 then
-  begin
-    inherited;
-    Exit;
-  end;
+    Caption := '';
+    If ControlCount < 1 Then
+    Begin
+        Inherited;
+        Exit;
+    End;
 
-  if (ControlCount > 0) and (Wx_SashPosition = 0) then
-    Wx_SashPosition := self.Controls[0].Width;
+    If (ControlCount > 0) And (Wx_SashPosition = 0) Then
+        Wx_SashPosition := self.Controls[0].Width;
 
-  totalmaxWidth := 0;
-  totalmaxHt    := 0;
-  maxWidth      := 0;
-  maxHt         := 2 * self.FSpaceValue;
+    totalmaxWidth := 0;
+    totalmaxHt := 0;
+    maxWidth := 0;
+    maxHt := 2 * self.FSpaceValue;
 
-  for i := 0 to self.ControlCount - 1 do
-  begin
+    For i := 0 To self.ControlCount - 1 Do
+    Begin
     //Calculate the total size for all children
-    if IsControlWxNonVisible(Controls[i]) then
-      Continue;
+        If IsControlWxNonVisible(Controls[i]) Then
+            Continue;
 
-    totalmaxWidth := totalmaxWidth + self.Controls[i].Width + 2 * self.FSpaceValue;
-    totalmaxHt    := totalmaxHt + self.Controls[i].Height + 2 * self.FSpaceValue;
+        totalmaxWidth := totalmaxWidth + self.Controls[i].Width + 2 * self.FSpaceValue;
+        totalmaxHt := totalmaxHt + self.Controls[i].Height + 2 * self.FSpaceValue;
 
-    if self.Controls[i].Width > maxWidth then
-      maxWidth := self.Controls[i].Width;
+        If self.Controls[i].Width > maxWidth Then
+            maxWidth := self.Controls[i].Width;
 
-    if self.Controls[i].Height > maxHt then
-      maxHt := self.Controls[i].Height;
+        If self.Controls[i].Height > maxHt Then
+            maxHt := self.Controls[i].Height;
 
     //Set the control orientation
-    if self.Controls[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) then
-      if Orientation = wxVertical then
-        wxcompInterface.SaveControlOrientation(wxControlVertical)
-      else
-        wxcompInterface.SaveControlOrientation(wxControlHorizontal);
-  end;
+        If self.Controls[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) Then
+            If Orientation = wxVertical Then
+                wxcompInterface.SaveControlOrientation(wxControlVertical)
+            Else
+                wxcompInterface.SaveControlOrientation(wxControlHorizontal);
+    End;
 
-  if self.Parent is TForm then
-  begin
-    extraHeight := 0;
-    for i := 0 to TForm(self.Parent).ControlCount - 1 do
-      if Parent.Controls[i].ClassName = 'TWxStatusBar' then
-        Inc(extraHeight, Parent.Controls[i].Height);
+    If self.Parent Is TForm Then
+    Begin
+        extraHeight := 0;
+        For i := 0 To TForm(self.Parent).ControlCount - 1 Do
+            If Parent.Controls[i].ClassName = 'TWxStatusBar' Then
+                Inc(extraHeight, Parent.Controls[i].Height);
 
-    if totalmaxWidth < 20 then
-      self.Parent.ClientWidth := 20
-    else if self.Orientation = wxHorizontal then
-      self.Parent.ClientWidth := totalmaxWidth + self.FSpaceValue + self.FSpaceValue
-    else
-      self.Parent.ClientWidth := maxWidth + self.FSpaceValue + self.FSpaceValue + self.FSpaceValue;
+        If totalmaxWidth < 20 Then
+            self.Parent.ClientWidth := 20
+        Else
+        If self.Orientation = wxHorizontal Then
+            self.Parent.ClientWidth := totalmaxWidth + self.FSpaceValue + self.FSpaceValue
+        Else
+            self.Parent.ClientWidth := maxWidth + self.FSpaceValue + self.FSpaceValue + self.FSpaceValue;
 
-    if totalmaxht < 20 then
-      self.Parent.ClientHeight := 20 + extraHeight
-    else if self.Orientation = wxVertical then
-      if maxht + 2 * self.FSpaceValue < 35 then
-        self.Parent.ClientHeight := 35 + extraHeight
-      else
-        self.Parent.ClientHeight := totalmaxht + self.FSpaceValue + self.FSpaceValue + extraHeight
-    else
-      self.Parent.ClientHeight := maxht + self.FSpaceValue + self.FSpaceValue + extraHeight;
-    self.Align := alClient;
-  end
-  else
-  begin
-    if self.parent.GetInterface(IDD_IWxContainerInterface, cntIntf) then
-      if self.parent.GetInterface(IID_IWxSplitterInterface, splitIntf) then
-        self.Align := alNone
-      else
-        self.Align := alClient
-    else
-      self.Align := alNone;
+        If totalmaxht < 20 Then
+            self.Parent.ClientHeight := 20 + extraHeight
+        Else
+        If self.Orientation = wxVertical Then
+            If maxht + 2 * self.FSpaceValue < 35 Then
+                self.Parent.ClientHeight := 35 + extraHeight
+            Else
+                self.Parent.ClientHeight := totalmaxht + self.FSpaceValue + self.FSpaceValue + extraHeight
+        Else
+            self.Parent.ClientHeight := maxht + self.FSpaceValue + self.FSpaceValue + extraHeight;
+        self.Align := alClient;
+    End
+    Else
+    Begin
+        If self.parent.GetInterface(IDD_IWxContainerInterface, cntIntf) Then
+            If self.parent.GetInterface(IID_IWxSplitterInterface, splitIntf) Then
+                self.Align := alNone
+            Else
+                self.Align := alClient
+        Else
+            self.Align := alNone;
 
-    if self.Orientation = wxVertical then
-    begin
-      if maxHt * self.ControlCount + self.ControlCount * 2 * self.FSpaceValue = 0 then
-        self.Height := 4 * self.FSpaceValue
-      else
-        self.Height := totalmaxHt;
-      self.Width := maxWidth + 2 * self.FSpaceValue;
-    end
-    else
-    begin
-      if maxWidth = 0 then
-        self.Width := 4 * self.FSpaceValue
-      else
-        self.Width := totalmaxWidth + 2 * self.FSpaceValue;
-      self.Height := maxHt + 2 * self.FSpaceValue;
-    end;
-  end;
+        If self.Orientation = wxVertical Then
+        Begin
+            If maxHt * self.ControlCount + self.ControlCount * 2 * self.FSpaceValue = 0 Then
+                self.Height := 4 * self.FSpaceValue
+            Else
+                self.Height := totalmaxHt;
+            self.Width := maxWidth + 2 * self.FSpaceValue;
+        End
+        Else
+        Begin
+            If maxWidth = 0 Then
+                self.Width := 4 * self.FSpaceValue
+            Else
+                self.Width := totalmaxWidth + 2 * self.FSpaceValue;
+            self.Height := maxHt + 2 * self.FSpaceValue;
+        End;
+    End;
 
-  startX := FSpaceValue;
+    startX := FSpaceValue;
 
-  if Orientation = wxHorizontal then
-    for i := 0 to self.ControlCount - 1 do
-    begin
-      if IsControlWxNonVisible(Controls[i]) then
-        continue;
+    If Orientation = wxHorizontal Then
+        For i := 0 To self.ControlCount - 1 Do
+        Begin
+            If IsControlWxNonVisible(Controls[i]) Then
+                continue;
 
-      coordTop := maxHt + 2 * FSpaceValue - self.Controls[i].Height;
-      self.Controls[i].Top := coordTop div 2;
-      self.Controls[i].left := startX;
-      startX   := startX + self.Controls[i].Width + FSpaceValue + FSpaceValue;
-    end
-  else
-    for i := 0 to self.ControlCount - 1 do
-    begin
-      if IsControlWxNonVisible(Controls[i]) then
-        continue;
+            coordTop := maxHt + 2 * FSpaceValue - self.Controls[i].Height;
+            self.Controls[i].Top := coordTop Div 2;
+            self.Controls[i].left := startX;
+            startX := startX + self.Controls[i].Width + FSpaceValue + FSpaceValue;
+        End
+    Else
+        For i := 0 To self.ControlCount - 1 Do
+        Begin
+            If IsControlWxNonVisible(Controls[i]) Then
+                continue;
 
-      coordLeft := maxWidth + 2 * FSpaceValue - self.Controls[i].Width;
-      self.Controls[i].left := coordLeft div 2;
-      self.Controls[i].Top := startX;
-      startX    := startX + self.Controls[i].Height + FSpaceValue + self.FSpaceValue;
-    end;
+            coordLeft := maxWidth + 2 * FSpaceValue - self.Controls[i].Width;
+            self.Controls[i].left := coordLeft Div 2;
+            self.Controls[i].Top := startX;
+            startX := startX + self.Controls[i].Height + FSpaceValue + self.FSpaceValue;
+        End;
 
 
 {  //if self.parent.GetInterface(IDD_IWxContainerInterface,cntIntf) then
@@ -791,85 +793,85 @@ begin
       parent.Width := Self.Width;
   end;}
 
-  inherited;
-end;
+    Inherited;
+End;
 
-function TWxSplitterWindow.GetGenericColor(strVariableName:String): string;
-begin
+Function TWxSplitterWindow.GetGenericColor(strVariableName: String): String;
+Begin
 
-end;
-procedure TWxSplitterWindow.SetGenericColor(strVariableName,strValue: string);
-begin
+End;
+Procedure TWxSplitterWindow.SetGenericColor(strVariableName, strValue: String);
+Begin
 
-end;
+End;
 
-function TWxSplitterWindow.GetFGColor: string;
-begin
-end;
+Function TWxSplitterWindow.GetFGColor: String;
+Begin
+End;
 
-procedure TWxSplitterWindow.SetFGColor(strValue: string);
-begin
-end;
+Procedure TWxSplitterWindow.SetFGColor(strValue: String);
+Begin
+End;
 
-function TWxSplitterWindow.GetBGColor: string;
-begin
-end;
+Function TWxSplitterWindow.GetBGColor: String;
+Begin
+End;
 
-procedure TWxSplitterWindow.SetBGColor(strValue: string);
-begin
-end;
+Procedure TWxSplitterWindow.SetBGColor(strValue: String);
+Begin
+End;
 
-function TWxSplitterWindow.GenerateLastCreationCode: string;
-var
-  strFirstControl, strSecondControl, strOrientation: string;
+Function TWxSplitterWindow.GenerateLastCreationCode: String;
+Var
+    strFirstControl, strSecondControl, strOrientation: String;
 
-  function GenerateParentSizerCode: string;
-  begin
+    Function GenerateParentSizerCode: String;
+    Begin
 
-  end;
+    End;
 
-begin
-  Result := GenerateParentSizerCode;
-  if self.ControlCount = 0 then
-    exit;
+Begin
+    Result := GenerateParentSizerCode;
+    If self.ControlCount = 0 Then
+        exit;
 
-  if self.ControlCount > 0 then
-    strFirstControl := self.Controls[0].Name;
+    If self.ControlCount > 0 Then
+        strFirstControl := self.Controls[0].Name;
 
-  if self.ControlCount > 1 then
-    strSecondControl := self.Controls[1].Name;
+    If self.ControlCount > 1 Then
+        strSecondControl := self.Controls[1].Name;
 
-  strOrientation := 'SplitHorizontally';
-  if self.Orientation = wxVertical then
-    strOrientation := 'SplitHorizontally'
-  else
-    strOrientation := 'SplitVertically';
-  
-if not XRCGEN then
-begin
-  if self.ControlCount = 1 then
-  begin
-    if Result = '' then
-      Result := Format('%s->Initialize(%s);', [self.Name, strFirstControl])
-    else
-      Result := Result + #13 + #10 +
-        Format('%s->Initialize(%s);', [self.Name, strFirstControl]);
-    exit;
-  end;
+    strOrientation := 'SplitHorizontally';
+    If self.Orientation = wxVertical Then
+        strOrientation := 'SplitHorizontally'
+    Else
+        strOrientation := 'SplitVertically';
 
-  if self.ControlCount > 1 then
-  begin
-    if Result = '' then
-      Result := Format('%s->%s(%s,%s,%d);',
-        [self.Name, strOrientation, strFirstControl, strSecondControl,
-        self.Wx_SashPosition])
-    else
-      Result := Result + #13 + #10 + Format('%s->%s(%s,%s,%d);',
-        [self.Name, strOrientation, strFirstControl, strSecondControl,
-        self.Wx_SashPosition]);
-    exit;
-  end;
-end;//Nuklear Zelph
-end;
+    If Not XRCGEN Then
+    Begin
+        If self.ControlCount = 1 Then
+        Begin
+            If Result = '' Then
+                Result := Format('%s->Initialize(%s);', [self.Name, strFirstControl])
+            Else
+                Result := Result + #13 + #10 +
+                    Format('%s->Initialize(%s);', [self.Name, strFirstControl]);
+            exit;
+        End;
 
-end.
+        If self.ControlCount > 1 Then
+        Begin
+            If Result = '' Then
+                Result := Format('%s->%s(%s,%s,%d);',
+                    [self.Name, strOrientation, strFirstControl, strSecondControl,
+                    self.Wx_SashPosition])
+            Else
+                Result := Result + #13 + #10 + Format('%s->%s(%s,%s,%d);',
+                    [self.Name, strOrientation, strFirstControl, strSecondControl,
+                    self.Wx_SashPosition]);
+            exit;
+        End;
+    End;//Nuklear Zelph
+End;
+
+End.

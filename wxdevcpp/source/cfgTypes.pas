@@ -17,11 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-unit cfgTypes;
+Unit cfgTypes;
 
-interface
+Interface
 
-uses
+Uses
 {$IFDEF WIN32}
     Windows, Classes;
 {$ENDIF}
@@ -31,21 +31,21 @@ uses
 
 //  abstract class for additional windows
 //  i.e. a sub form
-type
-    TCFGOptions = class(TPersistent)
-    private
-        fName: string;
+Type
+    TCFGOptions = Class(TPersistent)
+    Private
+        fName: String;
         fWinPlace: TWindowPlacement;
-    public
-        procedure SettoDefaults; virtual; abstract;
-        procedure SaveSettings; virtual; abstract;
-        procedure LoadSettings; virtual; abstract;
-        property Name: string read fName write fName;
-        property WindowPlacement: TWindowPlacement read fWinPlace write fWinPlace;
-    end;
+    Public
+        Procedure SettoDefaults; Virtual; Abstract;
+        Procedure SaveSettings; Virtual; Abstract;
+        Procedure LoadSettings; Virtual; Abstract;
+        Property Name: String Read fName Write fName;
+        Property WindowPlacement: TWindowPlacement Read fWinPlace Write fWinPlace;
+    End;
 
 
-implementation
+Implementation
 
-end.
+End.
  

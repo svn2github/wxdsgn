@@ -25,293 +25,293 @@
 {Contact gururamnath@yahoo.com for details                           }
 { ****************************************************************** }
 
-unit WxSpinButton;
+Unit WxSpinButton;
 
-interface
+Interface
 
-uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
-  Forms, Graphics, ComCtrls, WxUtils, ExtCtrls, WxSizerPanel, wxAuiToolBar, WxAuiNotebookPage, WxToolBar;
+Uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
+    Forms, Graphics, ComCtrls, WxUtils, ExtCtrls, WxSizerPanel, wxAuiToolBar, WxAuiNotebookPage, WxToolBar;
 
-type
-  TWxSpinButton = class(TUpDown, IWxComponentInterface, IWxToolBarInsertableInterface,
-    IWxToolBarNonInsertableInterface)
-  private
+Type
+    TWxSpinButton = Class(TUpDown, IWxComponentInterface, IWxToolBarInsertableInterface,
+        IWxToolBarNonInsertableInterface)
+    Private
     { Private fields of TWxSpinButton }
     { Storage for property EVT_SPIN }
-    FEVT_SPIN: string;
+        FEVT_SPIN: String;
     { Storage for property EVT_SPIN_DOWN }
-    FEVT_SPIN_DOWN: string;
+        FEVT_SPIN_DOWN: String;
     { Storage for property EVT_SPIN_UP }
-    FEVT_SPIN_UP: string;
+        FEVT_SPIN_UP: String;
     { Storage for property EVT_UPDATE_UI }
-    FEVT_UPDATE_UI: string;
+        FEVT_UPDATE_UI: String;
     { Storage for property Wx_BGColor }
-    FWx_BGColor: TColor;
+        FWx_BGColor: TColor;
     { Storage for property Wx_Border }
-    FWx_Border: integer;
+        FWx_Border: Integer;
     { Storage for property Wx_Class }
-    FWx_Class: string;
+        FWx_Class: String;
     { Storage for property Wx_ControlOrientation }
-    FWx_ControlOrientation: TWxControlOrientation;
+        FWx_ControlOrientation: TWxControlOrientation;
     { Storage for property Wx_Enabled }
-    FWx_Enabled: boolean;
+        FWx_Enabled: Boolean;
     { Storage for property Wx_FGColor }
-    FWx_FGColor: TColor;
+        FWx_FGColor: TColor;
     { Storage for property Wx_GeneralStyle }
-    FWx_GeneralStyle: TWxStdStyleSet;
+        FWx_GeneralStyle: TWxStdStyleSet;
     { Storage for property Wx_HelpText }
-    FWx_HelpText: string;
+        FWx_HelpText: String;
     { Storage for property Wx_Hidden }
-    FWx_Hidden: boolean;
+        FWx_Hidden: Boolean;
     { Storage for property Wx_IDName }
-    FWx_IDName: string;
+        FWx_IDName: String;
     { Storage for property Wx_IDValue }
-    FWx_IDValue: integer;
+        FWx_IDValue: Integer;
     { Storage for property Wx_Max }
-    FWx_Max: integer;
+        FWx_Max: Integer;
     { Storage for property Wx_Position }
 //mn    FWx_Position: integer;
     { Storage for property Wx_ProxyBGColorString }
-    FWx_ProxyBGColorString: TWxColorString;
+        FWx_ProxyBGColorString: TWxColorString;
     { Storage for property Wx_ProxyFGColorString }
-    FWx_ProxyFGColorString: TWxColorString;
+        FWx_ProxyFGColorString: TWxColorString;
     { Storage for property Wx_SpinButtonStyle }
-    FWx_SpinButtonStyle: TWxsbtnStyleSet;
+        FWx_SpinButtonStyle: TWxsbtnStyleSet;
     { Storage for property Wx_SpinButtonOrientation }
-    FWx_SpinButtonOrientation: TWxsbtnOrientation;
+        FWx_SpinButtonOrientation: TWxsbtnOrientation;
     { Storage for property Wx_StretchFactor }
-    FWx_StretchFactor: integer;
+        FWx_StretchFactor: Integer;
     { Storage for property Wx_ToolTip }
-    FWx_ToolTip: string;
-    FWx_EventList: TStringList;
-    FWx_PropertyList: TStringList;
-    FInvisibleBGColorString: string;
-    FInvisibleFGColorString: string;
-    FWx_Comments: TStrings;
-    FWx_Alignment: TWxSizerAlignmentSet;
-    FWx_BorderAlignment: TWxBorderAlignment;
+        FWx_ToolTip: String;
+        FWx_EventList: TStringList;
+        FWx_PropertyList: TStringList;
+        FInvisibleBGColorString: String;
+        FInvisibleFGColorString: String;
+        FWx_Comments: TStrings;
+        FWx_Alignment: TWxSizerAlignmentSet;
+        FWx_BorderAlignment: TWxBorderAlignment;
 
 //Aui Properties
-    FWx_AuiManaged: Boolean;
-    FWx_PaneCaption: string;
-    FWx_PaneName: string;
-    FWx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem;
-    FWx_Aui_Dockable_Direction: TwxAuiPaneDockableDirectionSet;
-    FWx_Aui_Pane_Style: TwxAuiPaneStyleSet;
-    FWx_Aui_Pane_Buttons: TwxAuiPaneButtonSet;
-    FWx_BestSize_Height: Integer;
-    FWx_BestSize_Width: Integer;
-    FWx_MinSize_Height: Integer;
-    FWx_MinSize_Width: Integer;
-    FWx_MaxSize_Height: Integer;
-    FWx_MaxSize_Width: Integer;
-    FWx_Floating_Height: Integer;
-    FWx_Floating_Width: Integer;
-    FWx_Floating_X_Pos: Integer;
-    FWx_Floating_Y_Pos: Integer;
-    FWx_Layer: Integer;
-    FWx_Row: Integer;
-    FWx_Position: Integer;
+        FWx_AuiManaged: Boolean;
+        FWx_PaneCaption: String;
+        FWx_PaneName: String;
+        FWx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem;
+        FWx_Aui_Dockable_Direction: TwxAuiPaneDockableDirectionSet;
+        FWx_Aui_Pane_Style: TwxAuiPaneStyleSet;
+        FWx_Aui_Pane_Buttons: TwxAuiPaneButtonSet;
+        FWx_BestSize_Height: Integer;
+        FWx_BestSize_Width: Integer;
+        FWx_MinSize_Height: Integer;
+        FWx_MinSize_Width: Integer;
+        FWx_MaxSize_Height: Integer;
+        FWx_MaxSize_Width: Integer;
+        FWx_Floating_Height: Integer;
+        FWx_Floating_Width: Integer;
+        FWx_Floating_X_Pos: Integer;
+        FWx_Floating_Y_Pos: Integer;
+        FWx_Layer: Integer;
+        FWx_Row: Integer;
+        FWx_Position: Integer;
 
     { Private methods of TWxSpinButton }
     { Method to set variable and property values and create objects }
-    procedure AutoInitialize;
+        Procedure AutoInitialize;
     { Method to free any objects created by AutoInitialize }
-    procedure AutoDestroy;
+        Procedure AutoDestroy;
 
-  protected
+    Protected
     { Protected fields of TWxSpinButton }
 
     { Protected methods of TWxSpinButton }
-    procedure Loaded; override;
+        Procedure Loaded; Override;
 
-  public
+    Public
     { Public fields and properties of TWxSpinButton }
-    defaultBGColor: TColor;
-    defaultFGColor: TColor;
+        defaultBGColor: TColor;
+        defaultFGColor: TColor;
     { Public methods of TWxSpinButton }
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    function GenerateControlIDs: string;
-    function GenerateEnumControlIDs: string;
-    function GenerateEventTableEntries(CurrClassName: string): string;
-    function GenerateGUIControlCreation: string;
-    function GenerateXRCControlCreation(IndentString: string): TStringList;
-    function GenerateGUIControlDeclaration: string;
-    function GenerateHeaderInclude: string;
-    function GenerateImageInclude: string;
-    function GetEventList: TStringList;
-    function GetIDName: string;
-    function GetIDValue: integer;
-    function GetParameterFromEventName(EventName: string): string;
-    function GetPropertyList: TStringList;
-    function GetTypeFromEventName(EventName: string): string;
-    function GetWxClassName: string;
-    procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
-    procedure SetIDName(IDName: string);
-    procedure SetIDValue(IDValue: integer);
-    procedure SetWxClassName(wxClassName: string);
+        Constructor Create(AOwner: TComponent); Override;
+        Destructor Destroy; Override;
+        Function GenerateControlIDs: String;
+        Function GenerateEnumControlIDs: String;
+        Function GenerateEventTableEntries(CurrClassName: String): String;
+        Function GenerateGUIControlCreation: String;
+        Function GenerateXRCControlCreation(IndentString: String): TStringList;
+        Function GenerateGUIControlDeclaration: String;
+        Function GenerateHeaderInclude: String;
+        Function GenerateImageInclude: String;
+        Function GetEventList: TStringList;
+        Function GetIDName: String;
+        Function GetIDValue: Integer;
+        Function GetParameterFromEventName(EventName: String): String;
+        Function GetPropertyList: TStringList;
+        Function GetTypeFromEventName(EventName: String): String;
+        Function GetWxClassName: String;
+        Procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
+        Procedure SetIDName(IDName: String);
+        Procedure SetIDValue(IDValue: Integer);
+        Procedure SetWxClassName(wxClassName: String);
 
-    function GetFGColor: string;
-    procedure SetFGColor(strValue: string);
-    function GetBGColor: string;
-    procedure SetBGColor(strValue: string);
+        Function GetFGColor: String;
+        Procedure SetFGColor(strValue: String);
+        Function GetBGColor: String;
+        Procedure SetBGColor(strValue: String);
 
-    function GetGenericColor(strVariableName:String): string;
-    procedure SetGenericColor(strVariableName,strValue: string);
+        Function GetGenericColor(strVariableName: String): String;
+        Procedure SetGenericColor(strVariableName, strValue: String);
 
-    function GetSpinButtonOrientation(Value: TWxsbtnOrientation): string;
+        Function GetSpinButtonOrientation(Value: TWxsbtnOrientation): String;
 
-    procedure SetProxyFGColorString(Value: string);
-    procedure SetProxyBGColorString(Value: string);
+        Procedure SetProxyFGColorString(Value: String);
+        Procedure SetProxyBGColorString(Value: String);
 
-    function GetBorderAlignment: TWxBorderAlignment;
-    procedure SetBorderAlignment(border: TWxBorderAlignment);
-    function GetBorderWidth: integer;
-    procedure SetBorderWidth(width: integer);
-    function GetStretchFactor: integer;
-    procedure SetStretchFactor(intValue: integer);
+        Function GetBorderAlignment: TWxBorderAlignment;
+        Procedure SetBorderAlignment(border: TWxBorderAlignment);
+        Function GetBorderWidth: Integer;
+        Procedure SetBorderWidth(width: Integer);
+        Function GetStretchFactor: Integer;
+        Procedure SetStretchFactor(intValue: Integer);
 
-  published
+    Published
     { Published properties of TWxSpinButton }
-    property EVT_SPIN: string Read FEVT_SPIN Write FEVT_SPIN;
-    property EVT_SPIN_DOWN: string Read FEVT_SPIN_DOWN Write FEVT_SPIN_DOWN;
-    property EVT_SPIN_UP: string Read FEVT_SPIN_UP Write FEVT_SPIN_UP;
-    property EVT_UPDATE_UI: string Read FEVT_UPDATE_UI Write FEVT_UPDATE_UI;
-    property Wx_BGColor: TColor Read FWx_BGColor Write FWx_BGColor;
-    property Wx_Class: string Read FWx_Class Write FWx_Class;
-    property Wx_ControlOrientation: TWxControlOrientation
-      Read FWx_ControlOrientation Write FWx_ControlOrientation;
-    property Wx_Enabled: boolean Read FWx_Enabled Write FWx_Enabled default True;
-    property Wx_FGColor: TColor Read FWx_FGColor Write FWx_FGColor;
-    property Wx_GeneralStyle: TWxStdStyleSet
-      Read FWx_GeneralStyle Write FWx_GeneralStyle;
-    property Wx_HelpText: string Read FWx_HelpText Write FWx_HelpText;
-    property Wx_Hidden: boolean Read FWx_Hidden Write FWx_Hidden default False;
-    property Wx_IDName: string Read FWx_IDName Write FWx_IDName;
-    property Wx_IDValue: integer Read FWx_IDValue Write FWx_IDValue default -1;
-    property Wx_Max: integer Read FWx_Max Write FWx_Max;
+        Property EVT_SPIN: String Read FEVT_SPIN Write FEVT_SPIN;
+        Property EVT_SPIN_DOWN: String Read FEVT_SPIN_DOWN Write FEVT_SPIN_DOWN;
+        Property EVT_SPIN_UP: String Read FEVT_SPIN_UP Write FEVT_SPIN_UP;
+        Property EVT_UPDATE_UI: String Read FEVT_UPDATE_UI Write FEVT_UPDATE_UI;
+        Property Wx_BGColor: TColor Read FWx_BGColor Write FWx_BGColor;
+        Property Wx_Class: String Read FWx_Class Write FWx_Class;
+        Property Wx_ControlOrientation: TWxControlOrientation
+            Read FWx_ControlOrientation Write FWx_ControlOrientation;
+        Property Wx_Enabled: Boolean Read FWx_Enabled Write FWx_Enabled Default True;
+        Property Wx_FGColor: TColor Read FWx_FGColor Write FWx_FGColor;
+        Property Wx_GeneralStyle: TWxStdStyleSet
+            Read FWx_GeneralStyle Write FWx_GeneralStyle;
+        Property Wx_HelpText: String Read FWx_HelpText Write FWx_HelpText;
+        Property Wx_Hidden: Boolean Read FWx_Hidden Write FWx_Hidden Default False;
+        Property Wx_IDName: String Read FWx_IDName Write FWx_IDName;
+        Property Wx_IDValue: Integer Read FWx_IDValue Write FWx_IDValue Default -1;
+        Property Wx_Max: Integer Read FWx_Max Write FWx_Max;
 //    property Wx_Position: integer Read FWx_Position Write FWx_Position;
-    property Wx_SpinButtonStyle: TWxsbtnStyleSet
-      Read FWx_SpinButtonStyle Write FWx_SpinButtonStyle;
-    property Wx_SpinButtonOrientation: TWxsbtnOrientation
-      Read FWx_SpinButtonOrientation Write FWx_SpinButtonOrientation;
-    property Wx_ToolTip: string Read FWx_ToolTip Write FWx_ToolTip;
+        Property Wx_SpinButtonStyle: TWxsbtnStyleSet
+            Read FWx_SpinButtonStyle Write FWx_SpinButtonStyle;
+        Property Wx_SpinButtonOrientation: TWxsbtnOrientation
+            Read FWx_SpinButtonOrientation Write FWx_SpinButtonOrientation;
+        Property Wx_ToolTip: String Read FWx_ToolTip Write FWx_ToolTip;
 
-    property Wx_ProxyBGColorString: TWxColorString Read FWx_ProxyBGColorString Write FWx_ProxyBGColorString;
-    property Wx_ProxyFGColorString: TWxColorString Read FWx_ProxyFGColorString Write FWx_ProxyFGColorString;
-    property InvisibleBGColorString: string Read FInvisibleBGColorString Write FInvisibleBGColorString;
-    property InvisibleFGColorString: string Read FInvisibleFGColorString Write FInvisibleFGColorString;
+        Property Wx_ProxyBGColorString: TWxColorString Read FWx_ProxyBGColorString Write FWx_ProxyBGColorString;
+        Property Wx_ProxyFGColorString: TWxColorString Read FWx_ProxyFGColorString Write FWx_ProxyFGColorString;
+        Property InvisibleBGColorString: String Read FInvisibleBGColorString Write FInvisibleBGColorString;
+        Property InvisibleFGColorString: String Read FInvisibleFGColorString Write FInvisibleFGColorString;
 
-    property Wx_Border: integer Read GetBorderWidth Write SetBorderWidth default 5;
-    property Wx_BorderAlignment: TWxBorderAlignment Read GetBorderAlignment Write SetBorderAlignment default [wxALL];
-    property Wx_Alignment: TWxSizerAlignmentSet Read FWx_Alignment Write FWx_Alignment default [wxALIGN_CENTER];
-    property Wx_StretchFactor: integer Read GetStretchFactor Write SetStretchFactor default 0;
+        Property Wx_Border: Integer Read GetBorderWidth Write SetBorderWidth Default 5;
+        Property Wx_BorderAlignment: TWxBorderAlignment Read GetBorderAlignment Write SetBorderAlignment Default [wxALL];
+        Property Wx_Alignment: TWxSizerAlignmentSet Read FWx_Alignment Write FWx_Alignment Default [wxALIGN_CENTER];
+        Property Wx_StretchFactor: Integer Read GetStretchFactor Write SetStretchFactor Default 0;
 
-    property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
+        Property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
 
 //Aui Properties
-    property Wx_AuiManaged: boolean read FWx_AuiManaged write FWx_AuiManaged default False;
-    property Wx_PaneCaption: string read FWx_PaneCaption write FWx_PaneCaption;
-    property Wx_PaneName: string read FWx_PaneName write FWx_PaneName;
-    property Wx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem read FWx_Aui_Dock_Direction write FWx_Aui_Dock_Direction;
-    property Wx_Aui_Dockable_Direction: TwxAuiPaneDockableDirectionSet read FWx_Aui_Dockable_Direction write FWx_Aui_Dockable_Direction;
-    property Wx_Aui_Pane_Style: TwxAuiPaneStyleSet read FWx_Aui_Pane_Style write FWx_Aui_Pane_Style;
-    property Wx_Aui_Pane_Buttons: TwxAuiPaneButtonSet read FWx_Aui_Pane_Buttons write FWx_Aui_Pane_Buttons;
-    property Wx_BestSize_Height: integer read FWx_BestSize_Height write FWx_BestSize_Height default -1;
-    property Wx_BestSize_Width: integer read FWx_BestSize_Width write FWx_BestSize_Width default -1;
-    property Wx_MinSize_Height: integer read FWx_MinSize_Height write FWx_MinSize_Height default -1;
-    property Wx_MinSize_Width: integer read FWx_MinSize_Width write FWx_MinSize_Width default -1;
-    property Wx_MaxSize_Height: integer read FWx_MaxSize_Height write FWx_MaxSize_Height default -1;
-    property Wx_MaxSize_Width: integer read FWx_MaxSize_Width write FWx_MaxSize_Width default -1;
-    property Wx_Floating_Height: integer read FWx_Floating_Height write FWx_Floating_Height default -1;
-    property Wx_Floating_Width: integer read FWx_Floating_Width write FWx_Floating_Width default -1;
-    property Wx_Floating_X_Pos: integer read FWx_Floating_X_Pos write FWx_Floating_X_Pos default -1;
-    property Wx_Floating_Y_Pos: integer read FWx_Floating_Y_Pos write FWx_Floating_Y_Pos default -1;
-    property Wx_Layer: integer read FWx_Layer write FWx_Layer default 0;
-    property Wx_Row: integer read FWx_Row write FWx_Row default 0;
-    property Wx_Position: integer read FWx_Position write FWx_Position default 0;
+        Property Wx_AuiManaged: Boolean Read FWx_AuiManaged Write FWx_AuiManaged Default False;
+        Property Wx_PaneCaption: String Read FWx_PaneCaption Write FWx_PaneCaption;
+        Property Wx_PaneName: String Read FWx_PaneName Write FWx_PaneName;
+        Property Wx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem Read FWx_Aui_Dock_Direction Write FWx_Aui_Dock_Direction;
+        Property Wx_Aui_Dockable_Direction: TwxAuiPaneDockableDirectionSet Read FWx_Aui_Dockable_Direction Write FWx_Aui_Dockable_Direction;
+        Property Wx_Aui_Pane_Style: TwxAuiPaneStyleSet Read FWx_Aui_Pane_Style Write FWx_Aui_Pane_Style;
+        Property Wx_Aui_Pane_Buttons: TwxAuiPaneButtonSet Read FWx_Aui_Pane_Buttons Write FWx_Aui_Pane_Buttons;
+        Property Wx_BestSize_Height: Integer Read FWx_BestSize_Height Write FWx_BestSize_Height Default -1;
+        Property Wx_BestSize_Width: Integer Read FWx_BestSize_Width Write FWx_BestSize_Width Default -1;
+        Property Wx_MinSize_Height: Integer Read FWx_MinSize_Height Write FWx_MinSize_Height Default -1;
+        Property Wx_MinSize_Width: Integer Read FWx_MinSize_Width Write FWx_MinSize_Width Default -1;
+        Property Wx_MaxSize_Height: Integer Read FWx_MaxSize_Height Write FWx_MaxSize_Height Default -1;
+        Property Wx_MaxSize_Width: Integer Read FWx_MaxSize_Width Write FWx_MaxSize_Width Default -1;
+        Property Wx_Floating_Height: Integer Read FWx_Floating_Height Write FWx_Floating_Height Default -1;
+        Property Wx_Floating_Width: Integer Read FWx_Floating_Width Write FWx_Floating_Width Default -1;
+        Property Wx_Floating_X_Pos: Integer Read FWx_Floating_X_Pos Write FWx_Floating_X_Pos Default -1;
+        Property Wx_Floating_Y_Pos: Integer Read FWx_Floating_Y_Pos Write FWx_Floating_Y_Pos Default -1;
+        Property Wx_Layer: Integer Read FWx_Layer Write FWx_Layer Default 0;
+        Property Wx_Row: Integer Read FWx_Row Write FWx_Row Default 0;
+        Property Wx_Position: Integer Read FWx_Position Write FWx_Position Default 0;
 
-  end;
+    End;
 
-procedure Register;
+Procedure Register;
 
-implementation
+Implementation
 
-procedure Register;
-begin
+Procedure Register;
+Begin
      { Register TWxSpinButton with wxWidgets as its
        default page on the Delphi component palette }
-  RegisterComponents('wxWidgets', [TWxSpinButton]);
-end;
+    RegisterComponents('wxWidgets', [TWxSpinButton]);
+End;
 
 { Method to set variable and property values and create objects }
-procedure TWxSpinButton.AutoInitialize;
-begin
-  FWx_Comments           := TStringList.Create;
-  FWx_EventList          := TStringList.Create;
-  FWx_PropertyList       := TStringList.Create;
-  FWx_Border             := 5;
-  FWx_Class              := 'wxSpinButton';
-  FWx_Enabled            := True;
-  FWx_Hidden             := False;
-  FWx_BorderAlignment    := [wxAll];
-  FWx_Alignment          := [wxALIGN_CENTER];
-  FWx_IDValue            := -1;
-  FWx_StretchFactor      := 0;
-  FWx_ProxyBGColorString := TWxColorString.Create;
-  FWx_ProxyFGColorString := TWxColorString.Create;
-  defaultBGColor         := self.color;
-  defaultFGColor         := self.font.color;
+Procedure TWxSpinButton.AutoInitialize;
+Begin
+    FWx_Comments := TStringList.Create;
+    FWx_EventList := TStringList.Create;
+    FWx_PropertyList := TStringList.Create;
+    FWx_Border := 5;
+    FWx_Class := 'wxSpinButton';
+    FWx_Enabled := True;
+    FWx_Hidden := False;
+    FWx_BorderAlignment := [wxAll];
+    FWx_Alignment := [wxALIGN_CENTER];
+    FWx_IDValue := -1;
+    FWx_StretchFactor := 0;
+    FWx_ProxyBGColorString := TWxColorString.Create;
+    FWx_ProxyFGColorString := TWxColorString.Create;
+    defaultBGColor := self.color;
+    defaultFGColor := self.font.color;
 
-end; { of AutoInitialize }
+End; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
-procedure TWxSpinButton.AutoDestroy;
-begin
-  FWx_EventList.Destroy;
-  FWx_PropertyList.Destroy;
-  FWx_Comments.Destroy;
-  FWx_ProxyBGColorString.Destroy;
-  FWx_ProxyFGColorString.Destroy;
-end; { of AutoDestroy }
+Procedure TWxSpinButton.AutoDestroy;
+Begin
+    FWx_EventList.Destroy;
+    FWx_PropertyList.Destroy;
+    FWx_Comments.Destroy;
+    FWx_ProxyBGColorString.Destroy;
+    FWx_ProxyFGColorString.Destroy;
+End; { of AutoDestroy }
 
-constructor TWxSpinButton.Create(AOwner: TComponent);
-begin
+Constructor TWxSpinButton.Create(AOwner: TComponent);
+Begin
   { Call the Create method of the parent class }
-  inherited Create(AOwner);
+    Inherited Create(AOwner);
 
   { AutoInitialize sets the initial values of variables and      }
   { properties; also, it creates objects for properties of       }
   { standard Delphi object types (e.g., TFont, TTimer,           }
   { TPicture) and for any variables marked as objects.           }
   { AutoInitialize method is generated by Component Create.      }
-  AutoInitialize;
+    AutoInitialize;
 
   { Code to perform other tasks when the component is created }
-  PopulateGenericProperties(FWx_PropertyList);
-  PopulateAuiGenericProperties(FWx_PropertyList);
+    PopulateGenericProperties(FWx_PropertyList);
+    PopulateAuiGenericProperties(FWx_PropertyList);
 
-  FWx_PropertyList.add('Wx_SpinButtonStyle:Spin Button Style');
-  FWx_PropertyList.add('Wx_SpinButtonOrientation:Orientation');
-  FWx_PropertyList.Add('wxSP_ARROW_KEYS:wxSP_ARROW_KEYS');
-  FWx_PropertyList.Add('wxSP_WRAP:wxSP_WRAP');
+    FWx_PropertyList.add('Wx_SpinButtonStyle:Spin Button Style');
+    FWx_PropertyList.add('Wx_SpinButtonOrientation:Orientation');
+    FWx_PropertyList.Add('wxSP_ARROW_KEYS:wxSP_ARROW_KEYS');
+    FWx_PropertyList.Add('wxSP_WRAP:wxSP_WRAP');
 
-  FWx_PropertyList.add('Max:Max');
-  FWx_PropertyList.add('Min:Min');
+    FWx_PropertyList.add('Max:Max');
+    FWx_PropertyList.add('Min:Min');
 
-  FWx_EventList.add('EVT_SPIN : OnUpdated');
-  FWx_EventList.add('EVT_SPIN_UP : OnUp');
-  FWx_EventList.add('EVT_SPIN_DOWN : OnDown');
-  FWx_EventList.add('EVT_UPDATE_UI : OnUpdateUI');
+    FWx_EventList.add('EVT_SPIN : OnUpdated');
+    FWx_EventList.add('EVT_SPIN_UP : OnUp');
+    FWx_EventList.add('EVT_SPIN_DOWN : OnDown');
+    FWx_EventList.add('EVT_UPDATE_UI : OnUpdateUI');
 
-end;
+End;
 
-destructor TWxSpinButton.Destroy;
-begin
+Destructor TWxSpinButton.Destroy;
+Begin
   { AutoDestroy, which is generated by Component Create, frees any   }
   { objects created by AutoInitialize.                               }
-  AutoDestroy;
+    AutoDestroy;
 
   { Here, free any other dynamic objects that the component methods  }
   { created but have not yet freed.  Also perform any other clean-up }
@@ -319,100 +319,100 @@ begin
 
   { Last, free the component by calling the Destroy method of the    }
   { parent class.                                                    }
-  inherited Destroy;
-end;
+    Inherited Destroy;
+End;
 
-function TWxSpinButton.GenerateEnumControlIDs: string;
-begin
-  Result := GetWxEnum(self.Wx_IDValue, self.Wx_IDName);
-end;
+Function TWxSpinButton.GenerateEnumControlIDs: String;
+Begin
+    Result := GetWxEnum(self.Wx_IDValue, self.Wx_IDName);
+End;
 
-function TWxSpinButton.GenerateControlIDs: string;
-begin
-  Result := '';
-  if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-    Result := Format('#define %s %d ', [Wx_IDName, Wx_IDValue]);
-end;
+Function TWxSpinButton.GenerateControlIDs: String;
+Begin
+    Result := '';
+    If (Wx_IDValue > 0) And (trim(Wx_IDName) <> '') Then
+        Result := Format('#define %s %d ', [Wx_IDName, Wx_IDValue]);
+End;
 
-function TWxSpinButton.GenerateEventTableEntries(CurrClassName: string): string;
-begin
-  Result := '';
+Function TWxSpinButton.GenerateEventTableEntries(CurrClassName: String): String;
+Begin
+    Result := '';
 
-if (XRCGEN) then
- begin//generate xrc loading code 
-  if trim(EVT_SPIN) <> '' then
-    Result := Format('EVT_SPIN(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName, EVT_SPIN]) + '';
+    If (XRCGEN) Then
+    Begin//generate xrc loading code 
+        If trim(EVT_SPIN) <> '' Then
+            Result := Format('EVT_SPIN(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName, EVT_SPIN]) + '';
 
-  if trim(EVT_SPIN_UP) <> '' then
-    Result := Result + #13 + Format('EVT_SPIN_UP(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_SPIN_UP]) + '';
-  if trim(EVT_SPIN_DOWN) <> '' then
-    Result := Result + #13 + Format('EVT_SPIN_DOWN (XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_SPIN_DOWN]) + '';
+        If trim(EVT_SPIN_UP) <> '' Then
+            Result := Result + #13 + Format('EVT_SPIN_UP(XRCID(%s("%s")),%s::%s)',
+                [StringFormat, self.Name, CurrClassName, EVT_SPIN_UP]) + '';
+        If trim(EVT_SPIN_DOWN) <> '' Then
+            Result := Result + #13 + Format('EVT_SPIN_DOWN (XRCID(%s("%s")),%s::%s)',
+                [StringFormat, self.Name, CurrClassName, EVT_SPIN_DOWN]) + '';
 
-  if trim(EVT_UPDATE_UI) <> '' then
-    Result := Result + #13 + Format('EVT_UPDATE_UI(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + '';
-end
-else
-begin
-  if trim(EVT_SPIN) <> '' then
-    Result := Format('EVT_SPIN(%s,%s::%s)', [WX_IDName, CurrClassName, EVT_SPIN]) + '';
+        If trim(EVT_UPDATE_UI) <> '' Then
+            Result := Result + #13 + Format('EVT_UPDATE_UI(XRCID(%s("%s")),%s::%s)',
+                [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + '';
+    End
+    Else
+    Begin
+        If trim(EVT_SPIN) <> '' Then
+            Result := Format('EVT_SPIN(%s,%s::%s)', [WX_IDName, CurrClassName, EVT_SPIN]) + '';
 
-  if trim(EVT_SPIN_UP) <> '' then
-    Result := Result + #13 + Format('EVT_SPIN_UP(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_SPIN_UP]) + '';
-  if trim(EVT_SPIN_DOWN) <> '' then
-    Result := Result + #13 + Format('EVT_SPIN_DOWN (%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_SPIN_DOWN]) + '';
+        If trim(EVT_SPIN_UP) <> '' Then
+            Result := Result + #13 + Format('EVT_SPIN_UP(%s,%s::%s)',
+                [WX_IDName, CurrClassName, EVT_SPIN_UP]) + '';
+        If trim(EVT_SPIN_DOWN) <> '' Then
+            Result := Result + #13 + Format('EVT_SPIN_DOWN (%s,%s::%s)',
+                [WX_IDName, CurrClassName, EVT_SPIN_DOWN]) + '';
 
-  if trim(EVT_UPDATE_UI) <> '' then
-    Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
-end;
+        If trim(EVT_UPDATE_UI) <> '' Then
+            Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
+                [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
+    End;
 
-end;
+End;
 
-function TWxSpinButton.GenerateXRCControlCreation(IndentString: string): TStringList;
-begin
+Function TWxSpinButton.GenerateXRCControlCreation(IndentString: String): TStringList;
+Begin
 
-  Result := TStringList.Create;
+    Result := TStringList.Create;
 
-  try
-    Result.Add(IndentString + Format('<object class="%s" name="%s">',
-      [self.Wx_Class, self.Name]));
-    Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
-    Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
+    Try
+        Result.Add(IndentString + Format('<object class="%s" name="%s">',
+            [self.Wx_Class, self.Name]));
+        Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
+        Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
 
-    if not(UseDefaultSize)then
-      Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
-    if not(UseDefaultPos) then
-      Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
+        If Not (UseDefaultSize) Then
+            Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
+        If Not (UseDefaultPos) Then
+            Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
 
-    Result.Add(IndentString + Format('  <min>%d</min>', [self.Min]));
-    Result.Add(IndentString + Format('  <max>%d</max>', [self.Max]));
-    Result.Add(IndentString + Format('  <value>%d</value>', [self.Position]));
+        Result.Add(IndentString + Format('  <min>%d</min>', [self.Min]));
+        Result.Add(IndentString + Format('  <max>%d</max>', [self.Max]));
+        Result.Add(IndentString + Format('  <value>%d</value>', [self.Position]));
 
-    Result.Add(IndentString + Format('  <orient>%s</orient>',
-      [GetSpinButtonOrientation(Wx_SpinButtonOrientation)]));
+        Result.Add(IndentString + Format('  <orient>%s</orient>',
+            [GetSpinButtonOrientation(Wx_SpinButtonOrientation)]));
 
-    Result.Add(IndentString + Format('  <style>%s</style>',
-      [GetSpinButtonSpecificStyle(self.Wx_GeneralStyle, Wx_SpinButtonStyle, [])]));
+        Result.Add(IndentString + Format('  <style>%s</style>',
+            [GetSpinButtonSpecificStyle(self.Wx_GeneralStyle, Wx_SpinButtonStyle, [])]));
 
-    Result.Add(IndentString + '</object>');
-  except
-    Result.Free;
-    raise;
-  end;
+        Result.Add(IndentString + '</object>');
+    Except
+        Result.Free;
+        Raise;
+    End;
 
-end;
+End;
 
-function TWxSpinButton.GenerateGUIControlCreation: string;
-var
-  strColorStr: string;
-  strStyle, parentName, strAlignment: string;
-begin
-  Result := '';
+Function TWxSpinButton.GenerateGUIControlCreation: String;
+Var
+    strColorStr: String;
+    strStyle, parentName, strAlignment: String;
+Begin
+    Result := '';
 
   {  if self.Orientation = udHorizontal then
         Wx_SpinButtonStyle:=Wx_SpinButtonStyle - [wxSP_VERTICAL  ] + [wxSP_HORIZONTAL]
@@ -420,335 +420,335 @@ begin
         Wx_SpinButtonStyle:=Wx_SpinButtonStyle - [wxSP_HORIZONTAL] + [wxSP_VERTICAL  ];
     }
 
-    if FWx_PaneCaption = '' then
-    FWx_PaneCaption := Self.Name;
-  if FWx_PaneName = '' then
-    FWx_PaneName := Self.Name + '_Pane';
+    If FWx_PaneCaption = '' Then
+        FWx_PaneCaption := Self.Name;
+    If FWx_PaneName = '' Then
+        FWx_PaneName := Self.Name + '_Pane';
 
-  parentName := GetWxWidgetParent(self, Wx_AuiManaged);
+    parentName := GetWxWidgetParent(self, Wx_AuiManaged);
 
-  strStyle := GetSpinButtonSpecificStyle(self.Wx_GeneralStyle, Wx_SpinButtonStyle, []);
-  if (trim(strStyle) <> '') then
-    strStyle := ', ' + GetSpinButtonOrientation(Wx_SpinButtonOrientation) +
-      ' | ' + strStyle
-  else
-    strStyle := ', ' + GetSpinButtonOrientation(Wx_SpinButtonOrientation);
+    strStyle := GetSpinButtonSpecificStyle(self.Wx_GeneralStyle, Wx_SpinButtonStyle, []);
+    If (trim(strStyle) <> '') Then
+        strStyle := ', ' + GetSpinButtonOrientation(Wx_SpinButtonOrientation) +
+            ' | ' + strStyle
+    Else
+        strStyle := ', ' + GetSpinButtonOrientation(Wx_SpinButtonOrientation);
 
-  strStyle := strStyle + ', ' + GetCppString(Name);
+    strStyle := strStyle + ', ' + GetCppString(Name);
 
-if (XRCGEN) then
- begin
-  Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
-    [self.Name, parentName, StringFormat, self.Name, self.wx_Class]);
- end
- else
- begin
-  Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s = new %s(%s, %s, %s, %s%s);',
-    [self.Name, self.Wx_Class, parentName, GetWxIDString(self.Wx_IDName,
-    self.Wx_IDValue),
-    GetWxPosition(self.Left, self.Top), GetWxSize(self.Width, self.Height), strStyle]);
- end;
+    If (XRCGEN) Then
+    Begin
+        Result := GetCommentString(self.FWx_Comments.Text) +
+            Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
+            [self.Name, parentName, StringFormat, self.Name, self.wx_Class]);
+    End
+    Else
+    Begin
+        Result := GetCommentString(self.FWx_Comments.Text) +
+            Format('%s = new %s(%s, %s, %s, %s%s);',
+            [self.Name, self.Wx_Class, parentName, GetWxIDString(self.Wx_IDName,
+            self.Wx_IDValue),
+            GetWxPosition(self.Left, self.Top), GetWxSize(self.Width, self.Height), strStyle]);
+    End;
 
-  if trim(self.Wx_ToolTip) <> '' then
-    Result := Result + #13 + Format('%s->SetToolTip(%s);',
-      [self.Name, GetCppString(self.Wx_ToolTip)]);
+    If trim(self.Wx_ToolTip) <> '' Then
+        Result := Result + #13 + Format('%s->SetToolTip(%s);',
+            [self.Name, GetCppString(self.Wx_ToolTip)]);
 
-  if self.Wx_Hidden then
-    Result := Result + #13 + Format('%s->Show(false);', [self.Name]);
+    If self.Wx_Hidden Then
+        Result := Result + #13 + Format('%s->Show(false);', [self.Name]);
 
-  if not Wx_Enabled then
-    Result := Result + #13 + Format('%s->Enable(false);', [self.Name]);
+    If Not Wx_Enabled Then
+        Result := Result + #13 + Format('%s->Enable(false);', [self.Name]);
 
-  if trim(self.Wx_HelpText) <> '' then
-    Result := Result + #13 + Format('%s->SetHelpText(%s);',
-      [self.Name, GetCppString(self.Wx_HelpText)]);
+    If trim(self.Wx_HelpText) <> '' Then
+        Result := Result + #13 + Format('%s->SetHelpText(%s);',
+            [self.Name, GetCppString(self.Wx_HelpText)]);
 
- if not (XRCGEN) then
- begin
-  Result := Result + #13 + Format('%s->SetRange(%d,%d);',
-    [self.Name, self.Min, self.Max]);
-  Result := Result + #13 + Format('%s->SetValue(%d);', [self.Name, self.Position]);
- end;
-  strColorStr := trim(GetwxColorFromString(InvisibleFGColorString));
-  if strColorStr <> '' then
-    Result := Result + #13 + Format('%s->SetForegroundColour(%s);',
-      [self.Name, strColorStr]);
+    If Not (XRCGEN) Then
+    Begin
+        Result := Result + #13 + Format('%s->SetRange(%d,%d);',
+            [self.Name, self.Min, self.Max]);
+        Result := Result + #13 + Format('%s->SetValue(%d);', [self.Name, self.Position]);
+    End;
+    strColorStr := trim(GetwxColorFromString(InvisibleFGColorString));
+    If strColorStr <> '' Then
+        Result := Result + #13 + Format('%s->SetForegroundColour(%s);',
+            [self.Name, strColorStr]);
 
-  strColorStr := trim(GetwxColorFromString(InvisibleBGColorString));
-  if strColorStr <> '' then
-    Result := Result + #13 + Format('%s->SetBackgroundColour(%s);',
-      [self.Name, strColorStr]);
+    strColorStr := trim(GetwxColorFromString(InvisibleBGColorString));
+    If strColorStr <> '' Then
+        Result := Result + #13 + Format('%s->SetBackgroundColour(%s);',
+            [self.Name, strColorStr]);
 
 
-  strColorStr := GetWxFontDeclaration(self.Font);
-  if strColorStr <> '' then
-    Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
-if not (XRCGEN) then //NUKLEAR ZELPH
-  begin
-    if (Wx_AuiManaged and FormHasAuiManager(self)) and not (self.Parent is TWxSizerPanel) then
-    begin
-      if HasToolbarPaneStyle(Self.Wx_Aui_Pane_Style) then
-      begin
-        Self.Wx_Aui_Pane_Style := Self.Wx_Aui_Pane_Style + [ToolbarPane]; //always make sure we are a toolbar
-        Self.Wx_Layer := 10;
-      end;
+    strColorStr := GetWxFontDeclaration(self.Font);
+    If strColorStr <> '' Then
+        Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
+    If Not (XRCGEN) Then //NUKLEAR ZELPH
+    Begin
+        If (Wx_AuiManaged And FormHasAuiManager(self)) And Not (self.Parent Is TWxSizerPanel) Then
+        Begin
+            If HasToolbarPaneStyle(Self.Wx_Aui_Pane_Style) Then
+            Begin
+                Self.Wx_Aui_Pane_Style := Self.Wx_Aui_Pane_Style + [ToolbarPane]; //always make sure we are a toolbar
+                Self.Wx_Layer := 10;
+            End;
 
-      if not HasToolbarPaneStyle(Self.Wx_Aui_Pane_Style) then
-      begin
-        if (self.Parent.ClassName = 'TWxPanel') then
-          if not (self.Parent.Parent is TForm) then
-            Result := Result + #13 + Format('%s->Reparent(this);', [parentName]);
-      end;
+            If Not HasToolbarPaneStyle(Self.Wx_Aui_Pane_Style) Then
+            Begin
+                If (self.Parent.ClassName = 'TWxPanel') Then
+                    If Not (self.Parent.Parent Is TForm) Then
+                        Result := Result + #13 + Format('%s->Reparent(this);', [parentName]);
+            End;
 
-      if (self.Parent is TWxAuiToolBar) then
-        Result := Result + #13 + Format('%s->AddControl(%s);',
-          [self.Parent.Name, self.Name])
-      else
-        Result := Result + #13 + Format('%s->AddPane(%s, wxAuiPaneInfo()%s%s%s%s%s%s%s%s%s%s%s%s);',
-          [GetAuiManagerName(self), self.Name,
-          GetAuiPaneName(Self.Wx_PaneName),
-            GetAuiPaneCaption(Self.Wx_PaneCaption),
-            GetAuiDockDirection(Self.Wx_Aui_Dock_Direction),
-            GetAuiDockableDirections(self.Wx_Aui_Dockable_Direction),
-            GetAui_Pane_Style(Self.Wx_Aui_Pane_Style),
-            GetAui_Pane_Buttons(Self.Wx_Aui_Pane_Buttons),
-            GetAuiRow(Self.Wx_Row),
-            GetAuiPosition(Self.Wx_Position),
-            GetAuiLayer(Self.Wx_Layer),
-            GetAuiPaneBestSize(Self.Wx_BestSize_Width, Self.Wx_BestSize_Height),
-            GetAuiPaneMinSize(Self.Wx_MinSize_Width, Self.Wx_MinSize_Height),
-            GetAuiPaneMaxSize(Self.Wx_MaxSize_Width, Self.Wx_MaxSize_Height)]);
+            If (self.Parent Is TWxAuiToolBar) Then
+                Result := Result + #13 + Format('%s->AddControl(%s);',
+                    [self.Parent.Name, self.Name])
+            Else
+                Result := Result + #13 + Format('%s->AddPane(%s, wxAuiPaneInfo()%s%s%s%s%s%s%s%s%s%s%s%s);',
+                    [GetAuiManagerName(self), self.Name,
+                    GetAuiPaneName(Self.Wx_PaneName),
+                    GetAuiPaneCaption(Self.Wx_PaneCaption),
+                    GetAuiDockDirection(Self.Wx_Aui_Dock_Direction),
+                    GetAuiDockableDirections(self.Wx_Aui_Dockable_Direction),
+                    GetAui_Pane_Style(Self.Wx_Aui_Pane_Style),
+                    GetAui_Pane_Buttons(Self.Wx_Aui_Pane_Buttons),
+                    GetAuiRow(Self.Wx_Row),
+                    GetAuiPosition(Self.Wx_Position),
+                    GetAuiLayer(Self.Wx_Layer),
+                    GetAuiPaneBestSize(Self.Wx_BestSize_Width, Self.Wx_BestSize_Height),
+                    GetAuiPaneMinSize(Self.Wx_MinSize_Width, Self.Wx_MinSize_Height),
+                    GetAuiPaneMaxSize(Self.Wx_MaxSize_Width, Self.Wx_MaxSize_Height)]);
 
-    end
-    else
-    begin
-  if (self.Parent is TWxSizerPanel) then
-  begin
-    strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
-    Result := Result + #13 + Format('%s->Add(%s, %d, %s, %d);',
-      [self.Parent.Name, self.Name, self.Wx_StretchFactor, strAlignment,
-      self.Wx_Border]);
-  end;
+        End
+        Else
+        Begin
+            If (self.Parent Is TWxSizerPanel) Then
+            Begin
+                strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
+                Result := Result + #13 + Format('%s->Add(%s, %d, %s, %d);',
+                    [self.Parent.Name, self.Name, self.Wx_StretchFactor, strAlignment,
+                    self.Wx_Border]);
+            End;
 
-      if (self.Parent is TWxAuiNotebookPage) then
-      begin
+            If (self.Parent Is TWxAuiNotebookPage) Then
+            Begin
         //        strParentLabel := TWxAuiNoteBookPage(Self.Parent).Caption;
-        Result := Result + #13 + Format('%s->AddPage(%s, %s);',
+                Result := Result + #13 + Format('%s->AddPage(%s, %s);',
           //          [self.Parent.Parent.Name, self.Name, GetCppString(strParentLabel)]);
-          [self.Parent.Parent.Name, self.Name, GetCppString(TWxAuiNoteBookPage(Self.Parent).Caption)]);
-      end;
+                    [self.Parent.Parent.Name, self.Name, GetCppString(TWxAuiNoteBookPage(Self.Parent).Caption)]);
+            End;
 
-      if (self.Parent is TWxAuiToolBar) or (self.Parent is TWxToolBar) then
-    Result := Result + #13 + Format('%s->AddControl(%s);',
-      [self.Parent.Name, self.Name]);
-    end;
-  end;
+            If (self.Parent Is TWxAuiToolBar) Or (self.Parent Is TWxToolBar) Then
+                Result := Result + #13 + Format('%s->AddControl(%s);',
+                    [self.Parent.Name, self.Name]);
+        End;
+    End;
 
-end;
+End;
 
-function TWxSpinButton.GenerateGUIControlDeclaration: string;
-begin
-  Result := '';
-  Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
-end;
+Function TWxSpinButton.GenerateGUIControlDeclaration: String;
+Begin
+    Result := '';
+    Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
+End;
 
-function TWxSpinButton.GenerateHeaderInclude: string;
-begin
-  Result := '';
-  Result := '#include <wx/spinbutt.h>';
-end;
+Function TWxSpinButton.GenerateHeaderInclude: String;
+Begin
+    Result := '';
+    Result := '#include <wx/spinbutt.h>';
+End;
 
-function TWxSpinButton.GenerateImageInclude: string;
-begin
+Function TWxSpinButton.GenerateImageInclude: String;
+Begin
 
-end;
+End;
 
-function TWxSpinButton.GetEventList: TStringList;
-begin
-  Result := FWx_EventList;
-end;
+Function TWxSpinButton.GetEventList: TStringList;
+Begin
+    Result := FWx_EventList;
+End;
 
-function TWxSpinButton.GetIDName: string;
-begin
-  Result := wx_IDName;
-end;
+Function TWxSpinButton.GetIDName: String;
+Begin
+    Result := wx_IDName;
+End;
 
-function TWxSpinButton.GetIDValue: integer;
-begin
-  Result := wx_IDValue;
-end;
+Function TWxSpinButton.GetIDValue: Integer;
+Begin
+    Result := wx_IDValue;
+End;
 
-function TWxSpinButton.GetParameterFromEventName(EventName: string): string;
-begin
-  if EventName = 'EVT_SPIN' then
-  begin
-    Result := 'wxSpinEvent& event';
-    exit;
-  end;
+Function TWxSpinButton.GetParameterFromEventName(EventName: String): String;
+Begin
+    If EventName = 'EVT_SPIN' Then
+    Begin
+        Result := 'wxSpinEvent& event';
+        exit;
+    End;
 
-  if EventName = 'EVT_SPIN_UP' then
-  begin
-    Result := 'wxSpinEvent& event';
-    exit;
-  end;
+    If EventName = 'EVT_SPIN_UP' Then
+    Begin
+        Result := 'wxSpinEvent& event';
+        exit;
+    End;
 
-  if EventName = 'EVT_SPIN_DOWN' then
-  begin
-    Result := 'wxSpinEvent& event';
-    exit;
-  end;
+    If EventName = 'EVT_SPIN_DOWN' Then
+    Begin
+        Result := 'wxSpinEvent& event';
+        exit;
+    End;
 
-  if EventName = 'EVT_UPDATE_UI' then
-  begin
-    Result := 'wxUpdateUIEvent& event';
-    exit;
-  end;
-end;
+    If EventName = 'EVT_UPDATE_UI' Then
+    Begin
+        Result := 'wxUpdateUIEvent& event';
+        exit;
+    End;
+End;
 
-function TWxSpinButton.GetPropertyList: TStringList;
-begin
-  Result := FWx_PropertyList;
-end;
+Function TWxSpinButton.GetPropertyList: TStringList;
+Begin
+    Result := FWx_PropertyList;
+End;
 
-function TWxSpinButton.GetStretchFactor: integer;
-begin
-  Result := FWx_StretchFactor;
-end;
+Function TWxSpinButton.GetStretchFactor: Integer;
+Begin
+    Result := FWx_StretchFactor;
+End;
 
-function TWxSpinButton.GetTypeFromEventName(EventName: string): string;
-begin
+Function TWxSpinButton.GetTypeFromEventName(EventName: String): String;
+Begin
 
-end;
+End;
 
-function TWxSpinButton.GetBorderAlignment: TWxBorderAlignment;
-begin
-  Result := FWx_BorderAlignment;
-end;
+Function TWxSpinButton.GetBorderAlignment: TWxBorderAlignment;
+Begin
+    Result := FWx_BorderAlignment;
+End;
 
-procedure TWxSpinButton.SetBorderAlignment(border: TWxBorderAlignment);
-begin
-  FWx_BorderAlignment := border;
-end;
+Procedure TWxSpinButton.SetBorderAlignment(border: TWxBorderAlignment);
+Begin
+    FWx_BorderAlignment := border;
+End;
 
-function TWxSpinButton.GetBorderWidth: integer;
-begin
-  Result := FWx_Border;
-end;
+Function TWxSpinButton.GetBorderWidth: Integer;
+Begin
+    Result := FWx_Border;
+End;
 
-procedure TWxSpinButton.SetBorderWidth(width: integer);
-begin
-  FWx_Border := width;
-end;
+Procedure TWxSpinButton.SetBorderWidth(width: Integer);
+Begin
+    FWx_Border := width;
+End;
 
-function TWxSpinButton.GetWxClassName: string;
-begin
-  if trim(wx_Class) = '' then
-    wx_Class := 'wxSpinButton';
-  Result := wx_Class;
-end;
+Function TWxSpinButton.GetWxClassName: String;
+Begin
+    If trim(wx_Class) = '' Then
+        wx_Class := 'wxSpinButton';
+    Result := wx_Class;
+End;
 
-procedure TWxSpinButton.Loaded;
-begin
-  inherited Loaded;
+Procedure TWxSpinButton.Loaded;
+Begin
+    Inherited Loaded;
 
      { Perform any component setup that depends on the property
        values having been set }
 
-end;
+End;
 
-procedure TWxSpinButton.SaveControlOrientation(ControlOrientation:
-  TWxControlOrientation);
-begin
-  wx_ControlOrientation := ControlOrientation;
-end;
+Procedure TWxSpinButton.SaveControlOrientation(ControlOrientation:
+    TWxControlOrientation);
+Begin
+    wx_ControlOrientation := ControlOrientation;
+End;
 
-procedure TWxSpinButton.SetIDName(IDName: string);
-begin
-  wx_IDName := IDName;
-end;
+Procedure TWxSpinButton.SetIDName(IDName: String);
+Begin
+    wx_IDName := IDName;
+End;
 
-procedure TWxSpinButton.SetIDValue(IDValue: integer);
-begin
-  Wx_IDValue := IDVAlue;
-end;
+Procedure TWxSpinButton.SetIDValue(IDValue: Integer);
+Begin
+    Wx_IDValue := IDVAlue;
+End;
 
-procedure TWxSpinButton.SetStretchFactor(intValue: integer);
-begin
-  FWx_StretchFactor := intValue;
-end;
+Procedure TWxSpinButton.SetStretchFactor(intValue: Integer);
+Begin
+    FWx_StretchFactor := intValue;
+End;
 
-procedure TWxSpinButton.SetWxClassName(wxClassName: string);
-begin
-  wx_Class := wxClassName;
-end;
+Procedure TWxSpinButton.SetWxClassName(wxClassName: String);
+Begin
+    wx_Class := wxClassName;
+End;
 
-function TWxSpinButton.GetGenericColor(strVariableName:String): string;
-begin
+Function TWxSpinButton.GetGenericColor(strVariableName: String): String;
+Begin
 
-end;
-procedure TWxSpinButton.SetGenericColor(strVariableName,strValue: string);
-begin
+End;
+Procedure TWxSpinButton.SetGenericColor(strVariableName, strValue: String);
+Begin
 
-end;
+End;
 
-function TWxSpinButton.GetFGColor: string;
-begin
-  Result := FInvisibleFGColorString;
-end;
+Function TWxSpinButton.GetFGColor: String;
+Begin
+    Result := FInvisibleFGColorString;
+End;
 
-procedure TWxSpinButton.SetFGColor(strValue: string);
-begin
-  FInvisibleFGColorString := strValue;
-  if IsDefaultColorStr(strValue) then
-    self.Font.Color := defaultFGColor
-  else
-    self.Font.Color := GetColorFromString(strValue);
-end;
+Procedure TWxSpinButton.SetFGColor(strValue: String);
+Begin
+    FInvisibleFGColorString := strValue;
+    If IsDefaultColorStr(strValue) Then
+        self.Font.Color := defaultFGColor
+    Else
+        self.Font.Color := GetColorFromString(strValue);
+End;
 
-function TWxSpinButton.GetBGColor: string;
-begin
-  Result := FInvisibleBGColorString;
-end;
+Function TWxSpinButton.GetBGColor: String;
+Begin
+    Result := FInvisibleBGColorString;
+End;
 
-procedure TWxSpinButton.SetBGColor(strValue: string);
-begin
-  FInvisibleBGColorString := strValue;
-  if IsDefaultColorStr(strValue) then
-    self.Color := defaultBGColor
-  else
-    self.Color := GetColorFromString(strValue);
-end;
+Procedure TWxSpinButton.SetBGColor(strValue: String);
+Begin
+    FInvisibleBGColorString := strValue;
+    If IsDefaultColorStr(strValue) Then
+        self.Color := defaultBGColor
+    Else
+        self.Color := GetColorFromString(strValue);
+End;
 
-procedure TWxSpinButton.SetProxyFGColorString(Value: string);
-begin
-  FInvisibleFGColorString := Value;
-  self.Color := GetColorFromString(Value);
-end;
+Procedure TWxSpinButton.SetProxyFGColorString(Value: String);
+Begin
+    FInvisibleFGColorString := Value;
+    self.Color := GetColorFromString(Value);
+End;
 
-procedure TWxSpinButton.SetProxyBGColorString(Value: string);
-begin
-  FInvisibleBGColorString := Value;
-  self.Font.Color := GetColorFromString(Value);
-end;
+Procedure TWxSpinButton.SetProxyBGColorString(Value: String);
+Begin
+    FInvisibleBGColorString := Value;
+    self.Font.Color := GetColorFromString(Value);
+End;
 
-function TWxSpinButton.GetSpinButtonOrientation(Value: TWxsbtnOrientation): string;
-begin
-  Result := '';
-  if Value = wxSP_VERTICAL then
-  begin
-    Result := 'wxSP_VERTICAL';
-    self.Orientation := udVertical;
-    exit;
-  end;
-  if Value = wxSP_HORIZONTAL then
-  begin
-    Result := 'wxSP_HORIZONTAL';
-    self.Orientation := udHorizontal;
-    exit;
-  end;
+Function TWxSpinButton.GetSpinButtonOrientation(Value: TWxsbtnOrientation): String;
+Begin
+    Result := '';
+    If Value = wxSP_VERTICAL Then
+    Begin
+        Result := 'wxSP_VERTICAL';
+        self.Orientation := udVertical;
+        exit;
+    End;
+    If Value = wxSP_HORIZONTAL Then
+    Begin
+        Result := 'wxSP_HORIZONTAL';
+        self.Orientation := udHorizontal;
+        exit;
+    End;
 
-end;
+End;
 
-end.
+End.

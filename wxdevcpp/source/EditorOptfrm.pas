@@ -17,12 +17,12 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-unit EditorOptfrm;
+Unit EditorOptfrm;
 
-interface
+Interface
 
-uses
-    //dbugintf,  EAB removed Gexperts debug stuff.
+Uses
+ //dbugintf,  EAB removed Gexperts debug stuff.
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Variants, Graphics, Controls, Forms,
     Dialogs, ComCtrls, devTabs, StdCtrls, ExtCtrls, Spin, ColorPickerButton,
@@ -36,8 +36,8 @@ uses
   QButtons, ClassBrowser, CppParser, CppTokenizer, StrUtils, Types;
 {$ENDIF}
 
-type
-    TEditorOptForm = class(TForm)
+Type
+    TEditorOptForm = Class(TForm)
         PagesMain: TPageControl;
         tabDisplay: TTabSheet;
         grpGutter: TGroupBox;
@@ -159,102 +159,102 @@ type
         cbDefaultintoprj: TCheckBox;
         edCompletionDelay: TSpinEdit;
         cbGutterGradient: TCheckBox;
-        procedure FormCreate(Sender: TObject);
-        procedure FormShow(Sender: TObject);
-        procedure FormActivate(Sender: TObject);
-        procedure ElementListClick(Sender: TObject);
-        procedure FontChange(Sender: TObject);
-        procedure FontSizeChange(Sender: TObject);
-        procedure cpMarginColorHint(Sender: TObject; Cell: Integer;
-            var Hint: String);
-        procedure cpMarginColorDefaultSelect(Sender: TObject);
-        procedure cppEditStatusChange(Sender: TObject; Changes: TSynStatusChanges);
-        procedure DefaultSelect(Sender: TObject);
-        procedure PickerHint(Sender: TObject; Cell: integer; var Hint: string);
-        procedure StyleChange(Sender: TObject);
-        procedure cbLineNumClick(Sender: TObject);
-        procedure cbSyntaxHighlightClick(Sender: TObject);
-        procedure cbGutterFntClick(Sender: TObject);
-        procedure btnAddClick(Sender: TObject);
-        procedure btnEditClick(Sender: TObject);
-        procedure btnRemoveClick(Sender: TObject);
-        procedure btnHelpClick(Sender: TObject);
-        procedure btnOkClick(Sender: TObject);
-        procedure btnCancelClick(Sender: TObject);
-        procedure lvCodeinsColumnClick(Sender: TObject; Column: TListColumn);
-        procedure lvCodeinsCompare(Sender: TObject; Item1, Item2: TListItem;
-            Data: Integer; var Compare: Integer);
-        procedure lvCodeinsSelectItem(Sender: TObject; Item: TListItem;
+        Procedure FormCreate(Sender: TObject);
+        Procedure FormShow(Sender: TObject);
+        Procedure FormActivate(Sender: TObject);
+        Procedure ElementListClick(Sender: TObject);
+        Procedure FontChange(Sender: TObject);
+        Procedure FontSizeChange(Sender: TObject);
+        Procedure cpMarginColorHint(Sender: TObject; Cell: Integer;
+            Var Hint: String);
+        Procedure cpMarginColorDefaultSelect(Sender: TObject);
+        Procedure cppEditStatusChange(Sender: TObject; Changes: TSynStatusChanges);
+        Procedure DefaultSelect(Sender: TObject);
+        Procedure PickerHint(Sender: TObject; Cell: Integer; Var Hint: String);
+        Procedure StyleChange(Sender: TObject);
+        Procedure cbLineNumClick(Sender: TObject);
+        Procedure cbSyntaxHighlightClick(Sender: TObject);
+        Procedure cbGutterFntClick(Sender: TObject);
+        Procedure btnAddClick(Sender: TObject);
+        Procedure btnEditClick(Sender: TObject);
+        Procedure btnRemoveClick(Sender: TObject);
+        Procedure btnHelpClick(Sender: TObject);
+        Procedure btnOkClick(Sender: TObject);
+        Procedure btnCancelClick(Sender: TObject);
+        Procedure lvCodeinsColumnClick(Sender: TObject; Column: TListColumn);
+        Procedure lvCodeinsCompare(Sender: TObject; Item1, Item2: TListItem;
+            Data: Integer; Var Compare: Integer);
+        Procedure lvCodeinsSelectItem(Sender: TObject; Item: TListItem;
             Selected: Boolean);
-        procedure CodeInsStatusChange(Sender: TObject;
+        Procedure CodeInsStatusChange(Sender: TObject;
             Changes: TSynStatusChanges);
-        function FormHelp(Command: Word; Data: Integer;
-            var CallHelp: Boolean): Boolean;
-        procedure FormKeyDown(Sender: TObject; var Key: Word;
+        Function FormHelp(Command: Word; Data: Integer;
+            Var CallHelp: Boolean): Boolean;
+        Procedure FormKeyDown(Sender: TObject; Var Key: Word;
             Shift: TShiftState);
-        procedure cboDblClick(Sender: TObject);
-        procedure cboQuickColorSelect(Sender: TObject);
-        procedure CppEditSpecialLineColors(Sender: TObject; Line: Integer;
-            var Special: Boolean; var FG, BG: TColor);
-        procedure chkEnableCompletionClick(Sender: TObject);
-        procedure chkEnableClassBrowserClick(Sender: TObject);
-        procedure btnSaveSyntaxClick(Sender: TObject);
-        procedure chkCBUseColorsClick(Sender: TObject);
-        procedure btnCCCnewClick(Sender: TObject);
-        procedure btnCCCdeleteClick(Sender: TObject);
-        procedure chkCCCacheClick(Sender: TObject);
-        procedure CppParser1StartParsing(Sender: TObject);
-        procedure CppParser1EndParsing(Sender: TObject);
-        procedure CppParser1StartSave(Sender: TObject);
-        procedure CppParser1EndSave(Sender: TObject);
-        procedure CppParser1TotalProgress(Sender: TObject; FileName: String;
+        Procedure cboDblClick(Sender: TObject);
+        Procedure cboQuickColorSelect(Sender: TObject);
+        Procedure CppEditSpecialLineColors(Sender: TObject; Line: Integer;
+            Var Special: Boolean; Var FG, BG: TColor);
+        Procedure chkEnableCompletionClick(Sender: TObject);
+        Procedure chkEnableClassBrowserClick(Sender: TObject);
+        Procedure btnSaveSyntaxClick(Sender: TObject);
+        Procedure chkCBUseColorsClick(Sender: TObject);
+        Procedure btnCCCnewClick(Sender: TObject);
+        Procedure btnCCCdeleteClick(Sender: TObject);
+        Procedure chkCCCacheClick(Sender: TObject);
+        Procedure CppParser1StartParsing(Sender: TObject);
+        Procedure CppParser1EndParsing(Sender: TObject);
+        Procedure CppParser1StartSave(Sender: TObject);
+        Procedure CppParser1EndSave(Sender: TObject);
+        Procedure CppParser1TotalProgress(Sender: TObject; FileName: String;
             Total, Current: Integer);
-        procedure CppParser1CacheProgress(Sender: TObject; FileName: String;
+        Procedure CppParser1CacheProgress(Sender: TObject; FileName: String;
             Total, Current: Integer);
-        procedure CppParser1SaveProgress(Sender: TObject; FileName: String;
+        Procedure CppParser1SaveProgress(Sender: TObject; FileName: String;
             Total, Current: Integer);
-        procedure devPages1Change(Sender: TObject);
-        procedure chkCBShowInheritedClick(Sender: TObject);
-        procedure OnGutterClick(Sender: TObject; Button: TMouseButton; X, Y,
+        Procedure devPages1Change(Sender: TObject);
+        Procedure chkCBShowInheritedClick(Sender: TObject);
+        Procedure OnGutterClick(Sender: TObject; Button: TMouseButton; X, Y,
             Line: Integer; Mark: TSynEditMark);
-        procedure cbHighCurrLineClick(Sender: TObject);
-        procedure seTabSizeChange(Sender: TObject);
-    private
+        Procedure cbHighCurrLineClick(Sender: TObject);
+        Procedure seTabSizeChange(Sender: TObject);
+    Private
         ffgColor: TColor;
         fbgColor: TColor;
-        fUpdate: boolean;
+        fUpdate: Boolean;
 
         fGutColor: TPoint;
         fBPColor: TPoint;
         fErrColor: TPoint;
         fABPColor: TPoint;
         fSelColor: TPoint;
-        HasProgressStarted: boolean;
+        HasProgressStarted: Boolean;
         //fBMColor : TPoint;
-        procedure LoadFontNames;
-        procedure LoadFontSize;
-        procedure LoadText;
-        procedure LoadCodeIns;
-        procedure LoadSampleText;
-        procedure GetOptions;
-        procedure SaveCodeIns;
-        procedure UpdateCIButtons;
-        procedure SetGutter;
-        procedure LoadSyntax(Value: string);
-        procedure FillSyntaxSets;
-        procedure FillCCC;
-        function CompactFilename(filename: string): string;
-    end;
+        Procedure LoadFontNames;
+        Procedure LoadFontSize;
+        Procedure LoadText;
+        Procedure LoadCodeIns;
+        Procedure LoadSampleText;
+        Procedure GetOptions;
+        Procedure SaveCodeIns;
+        Procedure UpdateCIButtons;
+        Procedure SetGutter;
+        Procedure LoadSyntax(Value: String);
+        Procedure FillSyntaxSets;
+        Procedure FillCCC;
+        Function CompactFilename(filename: String): String;
+    End;
 
-var
+Var
     EditorOptForm: TEditorOptForm;
-function PathCompactPath(hDC: HDC; lpszPath: PChar; dx: UINT): Boolean;
-    stdcall;
-    external 'shlwapi.dll' name 'PathCompactPathA';
+Function PathCompactPath(hDC: HDC; lpszPath: Pchar; dx: UINT): Boolean;
+    Stdcall;
+    External 'shlwapi.dll' Name 'PathCompactPathA';
 
-implementation
+Implementation
 
-uses
+Uses
 {$IFDEF WIN32}
     shlobj, MultiLangSupport, devcfg, version, utils, CodeIns, datamod,
     IniFiles, editor, main, hh;
@@ -265,8 +265,8 @@ uses
 {$ENDIF}
 
 {$R *.dfm}
-const
-    Help_Topic: array[0..5] of string =
+Const
+    Help_Topic: Array[0..5] Of String =
         ('html\editor_general.html',
         'html\editor_display.html',
         'html\editor_syntax.html',
@@ -278,56 +278,56 @@ const
     cABreakLine = 11;
     cErrorLine = 13;
     cSelection = 19;
-var
-    fUseDefaults: boolean; // use default array of font sizes
-    fGutter: boolean; // user is editing gutter font
+Var
+    fUseDefaults: Boolean; // use default array of font sizes
+    fGutter: Boolean; // user is editing gutter font
 
 { ---------- Form Events ---------- }
 
-procedure TEditorOptForm.FormCreate(Sender: TObject);
-begin
+Procedure TEditorOptForm.FormCreate(Sender: TObject);
+Begin
     LoadText;
     LoadCodeIns;
     LoadFontNames;
     LoadSampleText;
     cbLineNumClick(Self);
-end;
+End;
 
-procedure TEditorOptForm.FormShow(Sender: TObject);
-begin
+Procedure TEditorOptForm.FormShow(Sender: TObject);
+Begin
     PagesMain.ActivePageIndex := 0;
     CodePages.ActivePageIndex := 0;
-end;
+End;
 
-procedure TEditorOptForm.FormActivate(Sender: TObject);
-begin
+Procedure TEditorOptForm.FormActivate(Sender: TObject);
+Begin
     GetOptions;
     UpdateCIButtons;
-end;
+End;
 
-function TEditorOptForm.FormHelp(Command: Word; Data: Integer;
-    var CallHelp: Boolean): Boolean;
-begin
-    result := false;
+Function TEditorOptForm.FormHelp(Command: Word; Data: Integer;
+    Var CallHelp: Boolean): Boolean;
+Begin
+    result := False;
     // another debug message
     showmessage('Hello from FormHelp');
-end;
+End;
 
-procedure TEditorOptForm.FormKeyDown(Sender: TObject; var Key: Word;
+Procedure TEditorOptForm.FormKeyDown(Sender: TObject; Var Key: Word;
     Shift: TShiftState);
-begin
+Begin
 {$IFDEF WIN32}
-    if key = vk_F1 then
+    If key = vk_F1 Then
 {$ENDIF}
 {$IFDEF LINUX}
   if key = XK_F1 then
 {$ENDIF}
-    begin
+    Begin
         HelpFile := devDirs.Help + DEV_MAINHELP_FILE;
-        HtmlHelp(MainForm.handle, PChar(HelpFile), HH_DISPLAY_TOPIC,
-            DWORD(PChar(Help_Topic[PagesMain.ActivePageIndex])));
-    end;
-end;
+        HtmlHelp(MainForm.handle, Pchar(HelpFile), HH_DISPLAY_TOPIC,
+            DWORD(Pchar(Help_Topic[PagesMain.ActivePageIndex])));
+    End;
+End;
 
 { ---------- Font Methods ---------- }
 
@@ -336,29 +336,29 @@ end;
    adds a font to the list if it is of the Modern font family
    i.e. any font that is monospaced (same as delphi)
 *)
-function EnumFontFamilyProc(LogFont: PEnumLogFont;
-    var TextMetric: PNewTextMetric;
-    FontType: integer; LParam: integer): integer; stdcall;
-begin
-    if LogFont.elfLogFont.lfPitchAndFamily and FF_MODERN = FF_MODERN then
+Function EnumFontFamilyProc(LogFont: PEnumLogFont;
+    Var TextMetric: PNewTextMetric;
+    FontType: Integer; LParam: Integer): Integer; Stdcall;
+Begin
+    If LogFont.elfLogFont.lfPitchAndFamily And FF_MODERN = FF_MODERN Then
         TStrings(LParam).Add(LogFont.elfLogFont.lfFaceName);
     result := -1;
-end;
+End;
 
 // Fills combobox with font names.
 // editor and gutter both use same fonts
 
-procedure TEditorOptForm.LoadFontNames;
-var
+Procedure TEditorOptForm.LoadFontNames;
+Var
     DC: HDC;
-begin
+Begin
     DC := GetDC(0);
-    EnumFontFamilies(DC, nil, @EnumFontFamilyProc, integer(cboEditorFont.Items));
+    EnumFontFamilies(DC, Nil, @EnumFontFamilyProc, Integer(cboEditorFont.Items));
     ReleaseDC(0, DC);
-    cboEditorFont.Sorted := TRUE;
+    cboEditorFont.Sorted := True;
     cboGutterFont.Items := cboEditorFont.Items;
-    cboGutterFont.Sorted := TRUE;
-end;
+    cboGutterFont.Sorted := True;
+End;
 
 (*
   enum font families callback function for font sizes
@@ -366,116 +366,116 @@ end;
   uses default font sizes (7..30)
 *)
 
-function EnumFontSizeProc(LogFont: PEnumLogFont;
-    var TextMetric: PNewTextMetric;
-    FontType: integer; LParam: integer): integer; stdcall;
-var
-    size: string;
-begin
+Function EnumFontSizeProc(LogFont: PEnumLogFont;
+    Var TextMetric: PNewTextMetric;
+    FontType: Integer; LParam: Integer): Integer; Stdcall;
+Var
+    size: String;
+Begin
     result := 1;
-    if FontType and RASTER_FONTTYPE = RASTER_FONTTYPE then
-    begin
-        Size := inttostr(LogFont.elfLogFont.lfHeight * 72 div LOGPIXELSY);
-        if TStrings(LParam).IndexOf(Size) = -1 then
+    If FontType And RASTER_FONTTYPE = RASTER_FONTTYPE Then
+    Begin
+        Size := inttostr(LogFont.elfLogFont.lfHeight * 72 Div LOGPIXELSY);
+        If TStrings(LParam).IndexOf(Size) = -1 Then
             TStrings(LParam).Add(Size);
-    end
-    else
-    begin
-        fUseDefaults := TRUE;
+    End
+    Else
+    Begin
+        fUseDefaults := True;
         result := 0;
-    end;
-end;
+    End;
+End;
 
-procedure TEditorOptForm.LoadFontSize;
-var
-    idx, idx2: integer;
+Procedure TEditorOptForm.LoadFontSize;
+Var
+    idx, idx2: Integer;
     DC: HDC;
     Items: TStrings;
-    FontName: string;
-begin
-    fUseDefaults := FALSE;
+    FontName: String;
+Begin
+    fUseDefaults := False;
     DC := GetDC(0);
     Items := TStringList.Create;
-    try
-        if fGutter then
+    Try
+        If fGutter Then
             FontName := cboGutterFont.Text
-        else
+        Else
             FontName := cboEditorFont.Text;
 
-        EnumFontFamilies(DC, PChar(FontName), @EnumFontSizeProc, integer(Items));
-        if fUseDefaults then
-        begin
+        EnumFontFamilies(DC, Pchar(FontName), @EnumFontSizeProc, Integer(Items));
+        If fUseDefaults Then
+        Begin
             Items.Clear;
-            for idx := 7 to 30 do
+            For idx := 7 To 30 Do
                 Items.Append(inttostr(idx));
-        end
-        else // sort the returned sizes
-            for idx := 1 to 3 do
-                for idx2 := pred(Items.Count) downto 1 do
-                    if strtointdef(Items[idx2], 0) < strtointdef(Items[idx2 - 1], 0) then
+        End
+        Else // sort the returned sizes
+            For idx := 1 To 3 Do
+                For idx2 := pred(Items.Count) Downto 1 Do
+                    If strtointdef(Items[idx2], 0) < strtointdef(Items[idx2 - 1], 0) Then
                         Items.Exchange(idx2, idx2 - 1);
-        if fGutter then
-        begin
+        If fGutter Then
+        Begin
             cboGutterSize.Clear;
             cboGutterSize.Items.AddStrings(Items);
-        end
-        else
-        begin
+        End
+        Else
+        Begin
             cboEditorSize.Clear;
             cboEditorSize.Items.AddStrings(Items);
-        end;
-    finally
+        End;
+    Finally
         Items.Free;
         ReleaseDC(0, DC);
-    end;
-end;
+    End;
+End;
 
-procedure TEditorOptForm.FontSizeChange(Sender: TObject);
-    procedure UpdateSynEdits(ASynEdit: TSynEdit);
-    begin
-        if Sender = cboEditorSize then
-        begin
+Procedure TEditorOptForm.FontSizeChange(Sender: TObject);
+    Procedure UpdateSynEdits(ASynEdit: TSynEdit);
+    Begin
+        If Sender = cboEditorSize Then
+        Begin
             pnlEditorPreview.Font.Size := strtointdef(cboEditorsize.Text, 12);
             ASynEdit.Font.Size := strtointdef(cboEditorSize.Text, 12);
             ASynEdit.Refresh;
-        end
-        else
-        begin
+        End
+        Else
+        Begin
             pnlGutterPreview.Font.Size := strtointdef(cboGutterSize.Text, 12);
             CppEdit.Gutter.Font.Name := cboGutterFont.Text;
             ASynEdit.Gutter.Font.Size := strtointdef(cboGutterSize.Text, 12);
             ASynEdit.Gutter.Width := strtointdef(edGutterWidth.Text, 12);
             ASynEdit.Refresh;
-        end;
-    end;
-begin
-    try
+        End;
+    End;
+Begin
+    Try
         UpdateSynEdits(CppEdit);
         UpdateSynEdits(Self.seDefault);
         UpdateSynEdits(Self.CodeIns);
-    except
-        if Sender = cboEditorSize then
-        begin
+    Except
+        If Sender = cboEditorSize Then
+        Begin
             cboEditorSize.Text := '10';
             pnlEditorPreview.Font.Size := 10;
             CppEdit.Font.Size := 10;
             CppEdit.Refresh;
-        end
-        else
-        begin
+        End
+        Else
+        Begin
             pnlGutterPreview.Font.Size := 10;
             cboGutterSize.Text := '10';
-        end;
-    end;
-end;
+        End;
+    End;
+End;
 
-procedure TEditorOptForm.FontChange(Sender: TObject);
-var
-    Size: string;
-begin
+Procedure TEditorOptForm.FontChange(Sender: TObject);
+Var
+    Size: String;
+Begin
     fGutter := Sender = cboGutterFont;
-    if fGutter then
-    begin
+    If fGutter Then
+    Begin
         pnlGutterPreview.Font.Name := cboGutterFont.Text;
         CppEdit.Gutter.Font.Name := cboGutterFont.Text;
         Size := cboGutterSize.Text;
@@ -486,9 +486,9 @@ begin
         CppEdit.Gutter.Font.Size := strtointdef(cboGutterSize.Text, 12);
         CppEdit.Gutter.Width := strtointdef(edGutterWidth.Text, 12);
         CppEdit.Refresh;
-    end
-    else
-    begin
+    End
+    Else
+    Begin
         pnlEditorPreview.Font.Name := cboEditorFont.Text;
         Size := cboEditorSize.Text;
         LoadFontSize;
@@ -497,19 +497,19 @@ begin
         CppEdit.Font.Name := cboEditorFont.Text;
         CppEdit.Font.Size := strtointdef(cboEditorSize.Text, 12);
         CppEdit.Refresh;
-    end;
-end;
+    End;
+End;
 
-procedure TEditorOptForm.cbGutterFntClick(Sender: TObject);
-begin
+Procedure TEditorOptForm.cbGutterFntClick(Sender: TObject);
+Begin
     cboGutterFont.Enabled := cbGutterFnt.Checked;
     cboGutterSize.Enabled := cbGutterfnt.Checked;
-end;
+End;
 
 { ---------- Form Init/Done Methods ----------}
 
-procedure TEditorOptForm.LoadText;
-begin
+Procedure TEditorOptForm.LoadText;
+Begin
     DesktopFont := True;
     XPMenu.Active := devData.XPTheme;
     btnOk.Caption := Lang[ID_BTN_OK];
@@ -634,12 +634,12 @@ begin
     btnAdd.Caption := Lang[ID_BTN_ADD];
     btnEdit.Caption := Lang[ID_BTN_EDIT];
     btnRemove.Caption := Lang[ID_BTN_REMOVE];
-end;
+End;
 
-procedure TEditorOptForm.LoadSampleText;
-begin
-    with cppEdit.Lines do
-    begin
+Procedure TEditorOptForm.LoadSampleText;
+Begin
+    With cppEdit.Lines Do
+    Begin
         append('// Syntax Preview');
         append('#include <iostream>');
         append('#include <cstdio>');
@@ -668,18 +668,18 @@ begin
         append(#9'printf("\n\nPress any key...");');
         append(#9'getch();');
         append('}');
-    end;
-end;
+    End;
+End;
 
-procedure TEditorOptForm.GetOptions;
-var
-    aName: string;
+Procedure TEditorOptForm.GetOptions;
+Var
+    aName: String;
     attr: TSynHighlighterAttributes;
     a,
-    idx: integer;
-begin
-    with devEditor do
-    begin
+    idx: Integer;
+Begin
+    With devEditor Do
+    Begin
         cboEditorFont.ItemIndex := cboEditorFont.Items.IndexOf(Font.Name);
         cboEditorSize.Text := inttostr(Font.Size);
         FontSizeChange(cboEditorSize);
@@ -701,10 +701,10 @@ begin
 
         cbAutoIndent.Checked := AutoIndent;
         cbInsertMode.Checked := InsertMode;
-        cbTabtoSpaces.Checked := not TabToSpaces;
+        cbTabtoSpaces.Checked := Not TabToSpaces;
         cbSmartTabs.Checked := SmartTabs;
         cbSmartUnindent.Checked := SmartUnindent;
-        cbTrailingBlanks.Checked := not TrailBlank;
+        cbTrailingBlanks.Checked := Not TrailBlank;
         cbGroupUndo.Checked := GroupUndo;
         cbEHomeKey.Checked := EHomeKey;
         cbPastEOF.Checked := PastEOF;
@@ -746,72 +746,72 @@ begin
         StrtoPoint(fErrColor, Syntax.Values[cErr]);
         StrtoPoint(fABPColor, Syntax.Values[cABP]);
         StrtoPoint(fSelColor, Syntax.Values[cSel]);
-    end;
+    End;
 
-    for idx := 0 to pred(cpp.AttrCount) do
-    begin
+    For idx := 0 To pred(cpp.AttrCount) Do
+    Begin
         aName := cpp.Attribute[idx].Name;
         a := devEditor.Syntax.IndexOfName(aName);
-        if a <> -1 then
-        begin
+        If a <> -1 Then
+        Begin
             Attr := TSynHighlighterAttributes.Create(aName);
-            try
+            Try
                 StrtoAttr(Attr, devEditor.Syntax.Values[aName]);
                 cpp.Attribute[idx].Assign(attr);
-            finally
+            Finally
                 Attr.Free;
-            end;
-        end
-        else
+            End;
+        End
+        Else
             devEditor.Syntax.Append(aName);
-    end;
+    End;
     ElementList.Clear;
-    for idx := 0 to pred(cpp.AttrCount) do
+    For idx := 0 To pred(cpp.AttrCount) Do
         ElementList.Items.Append(cpp.Attribute[idx].Name);
 
     // selection color
-    if devEditor.Syntax.IndexofName(cSel) = -1 then
+    If devEditor.Syntax.IndexofName(cSel) = -1 Then
         devEditor.Syntax.Append(cSel);
     ElementList.Items.Append(cSel);
 
     // right margin
 
     // gutter colors
-    if devEditor.Syntax.IndexofName(cGut) = -1 then
+    If devEditor.Syntax.IndexofName(cGut) = -1 Then
         devEditor.Syntax.Append(cGut);
     ElementList.Items.Append(cGut);
 
     // breakpoint
-    if devEditor.Syntax.IndexOfName(cBP) = -1 then
+    If devEditor.Syntax.IndexOfName(cBP) = -1 Then
         devEditor.Syntax.Append(cBP);
     ElementList.Items.Append(cBP);
 
     // error line
-    if devEditor.Syntax.IndexOfName(cErr) = -1 then
+    If devEditor.Syntax.IndexOfName(cErr) = -1 Then
         devEditor.Syntax.Append(cErr);
     ElementList.Items.Append(cErr);
 
     // active breakpoint
-    if devEditor.Syntax.IndexOfName(cABP) = -1 then
+    If devEditor.Syntax.IndexOfName(cABP) = -1 Then
         devEditor.Syntax.Append(cABP);
     ElementList.Items.Append(cABP);
 
     ffgColor := cpp.WhitespaceAttribute.Foreground;
     fbgColor := cpp.WhitespaceAttribute.Background;
 
-    if ElementList.Items.Count > 0 then
-    begin
+    If ElementList.Items.Count > 0 Then
+    Begin
         ElementList.ItemIndex := 0;
-        ElementListClick(nil);
-    end;
+        ElementListClick(Nil);
+    End;
 
     // init gutter colors
     SetGutter;
-    if FileExists(devDirs.Config + DEV_DEFAULTCODE_FILE) then
+    If FileExists(devDirs.Config + DEV_DEFAULTCODE_FILE) Then
         seDefault.Lines.LoadFromFile(devDirs.Config + DEV_DEFAULTCODE_FILE);
 
     // CODE_COMPLETION //
-    chkEnableCompletion.OnClick := nil;
+    chkEnableCompletion.OnClick := Nil;
     chkEnableCompletion.Checked := devCodeCompletion.Enabled;
     chkEnableCompletion.OnClick := chkEnableCompletionClick;
     edCompletionDelay.Value := devCodeCompletion.Delay;
@@ -821,9 +821,9 @@ begin
     chkCCCache.Checked := devCodeCompletion.UseCacheFiles;
     chkCCCache.Tag := 0; // mark un-modified
     chkCCCache.Enabled := chkEnableCompletion.Checked;
-    lbCCC.Enabled := chkCCCache.Checked and chkEnableCompletion.Checked;
-    btnCCCnew.Enabled := chkCCCache.Checked and chkEnableCompletion.Checked;
-    btnCCCdelete.Enabled := chkCCCache.Checked and chkEnableCompletion.Checked;
+    lbCCC.Enabled := chkCCCache.Checked And chkEnableCompletion.Checked;
+    btnCCCnew.Enabled := chkCCCache.Checked And chkEnableCompletion.Checked;
+    btnCCCdelete.Enabled := chkCCCache.Checked And chkEnableCompletion.Checked;
 
     // CLASS_BROWSING //
     chkEnableClassBrowser.Checked := devClassBrowsing.Enabled;
@@ -841,26 +841,26 @@ begin
     chkEnableCompletion.Enabled := chkEnableClassBrowser.Checked;
     edCompletionDelay.Enabled := chkEnableClassBrowser.Checked;
     cpCompletionBackground.Enabled := chkEnableClassBrowser.Checked;
-end;
+End;
 
-procedure TEditorOptForm.btnOkClick(Sender: TObject);
-var
-    s, aName: string;
-    a, idx: integer;
+Procedure TEditorOptForm.btnOkClick(Sender: TObject);
+Var
+    s, aName: String;
+    a, idx: Integer;
     e: TEditor;
-begin
+Begin
 
     Screen.Cursor := crHourGlass;
-    btnOk.Enabled := false;
+    btnOk.Enabled := False;
 
-    with devEditor do
-    begin
+    With devEditor Do
+    Begin
         AutoIndent := cbAutoIndent.Checked;
         InsertMode := cbInsertMode.Checked;
-        TabToSpaces := not cbTabtoSpaces.Checked;
+        TabToSpaces := Not cbTabtoSpaces.Checked;
         SmartTabs := cbSmartTabs.Checked;
         SmartUnindent := cbSmartUnindent.Checked;
-        TrailBlank := not cbTrailingBlanks.Checked;
+        TrailBlank := Not cbTrailingBlanks.Checked;
         GroupUndo := cbGroupUndo.Checked;
         EHomeKey := cbEHomeKey.Checked;
         PastEOF := cbPastEOF.Checked;
@@ -907,67 +907,67 @@ begin
        // CodeFolding := cbCodeFolding.Checked;
 
         // load in attributes
-        for idx := 0 to pred(cpp.AttrCount) do
-        begin
+        For idx := 0 To pred(cpp.AttrCount) Do
+        Begin
             aName := cpp.Attribute[idx].Name;
             a := Syntax.IndexOfName(aName);
-            if a = -1 then
+            If a = -1 Then
                 Syntax.Append(format('%s=%s',
                     [aName, AttrtoStr(cpp.Attribute[idx])]))
-            else
+            Else
                 Syntax.Values[aName] := AttrtoStr(cpp.Attribute[idx]);
-        end;
+        End;
         ActiveSyntax := cboQuickColor.Text;
         // additional attributes
 
         //gutter
-        if fgutColor.x = clNone then
+        If fgutColor.x = clNone Then
             fgutColor.x := clBlack;
-        if fgutColor.y = clNone then
+        If fgutColor.y = clNone Then
             fgutColor.Y := clBtnFace;
 
         s := PointtoStr(fgutColor);
         a := Syntax.IndexofName(cGut);
-        if a = -1 then
+        If a = -1 Then
             Syntax.Append(format('%s=%s', [cGut, s]))
-        else
+        Else
             Syntax.Values[cGut] := s;
 
         // selected text
         s := PointtoStr(fSelColor);
         a := Syntax.IndexofName(cSel);
-        if a = -1 then
+        If a = -1 Then
             Syntax.Append(format('%s=%s', [cSel, s]))
-        else
+        Else
             Syntax.Values[cSel] := s;
 
         // breakpoints
         s := PointtoStr(fbpColor);
         a := Syntax.IndexofName(cBP);
-        if a = -1 then
+        If a = -1 Then
             Syntax.Append(format('%s=%s', [cBP, s]))
-        else
+        Else
             Syntax.Values[cBP] := s;
 
         // active breakpoint
         s := PointtoStr(fAbpColor);
         a := Syntax.IndexofName(cABP);
-        if a = -1 then
+        If a = -1 Then
             Syntax.Append(format('%s=%s', [cABP, s]))
-        else
+        Else
             Syntax.Values[cABP] := s;
 
         // error line
         s := PointtoStr(fErrColor);
         a := Syntax.IndexofName(cErr);
-        if a = -1 then
+        If a = -1 Then
             Syntax.Append(format('%s=%s', [cErr, s]))
-        else
+        Else
             Syntax.Values[cErr] := s;
 
         // Insert default code in Empty project files
         DefaulttoPrj := cbDefaultintoprj.Checked;
-    end;
+    End;
 
     seDefault.Lines.SavetoFile(devDirs.Config + DEV_DEFAULTCODE_FILE);
 
@@ -978,8 +978,8 @@ begin
     devCodeCompletion.Delay := edCompletionDelay.Value;
     devCodeCompletion.BackColor := cpCompletionBackground.SelectionColor;
     devCodeCompletion.UseCacheFiles := chkCCCache.Checked;
-    if chkCCCache.Tag = 1 then
-    begin
+    If chkCCCache.Tag = 1 Then
+    Begin
         Screen.Cursor := crHourGlass;
         Application.ProcessMessages;
         CppParser1.OnStartParsing := CppParser1StartParsing;
@@ -987,7 +987,7 @@ begin
         CppParser1.OnTotalProgress := CppParser1TotalProgress;
         CppParser1.Save(devDirs.Config + DEV_COMPLETION_CACHE);
         Screen.Cursor := crDefault;
-    end;
+    End;
 
     // CLASS_BROWSING //
     devClassBrowsing.Enabled := chkEnableClassBrowser.Checked;
@@ -998,96 +998,96 @@ begin
 
     SaveOptions;
     dmMain.LoadDataMod;
-    if not devEditor.Match then
-    begin
+    If Not devEditor.Match Then
+    Begin
         e := MainForm.GetEditor;
-        if assigned(e) then
+        If assigned(e) Then
             e.PaintMatchingBrackets(ttBefore);
-    end;
+    End;
 
     e := MainForm.GetEditor;
-    if Assigned(e) then
-        if cbHighCurrLine.Checked then
+    If Assigned(e) Then
+        If cbHighCurrLine.Checked Then
             e.Text.ActiveLineColor := cpHighColor.SelectionColor
-        else
+        Else
             e.Text.ActiveLineColor := clNone;
 
     Screen.Cursor := crDefault;
-    btnOk.Enabled := true;
+    btnOk.Enabled := True;
 
-end;
+End;
 
-procedure TEditorOptForm.btnHelpClick(Sender: TObject);
-begin
+Procedure TEditorOptForm.btnHelpClick(Sender: TObject);
+Begin
     HelpFile := devDirs.Help + DEV_MAINHELP_FILE;
-    HtmlHelp(self.handle, PChar(HelpFile), HH_DISPLAY_TOPIC,
-        DWORD(PChar('html\editor_options.html')));;
+    HtmlHelp(self.handle, Pchar(HelpFile), HH_DISPLAY_TOPIC,
+        DWORD(Pchar('html\editor_options.html')));;
     //Application.HelpJump('ID_EDITORSETTINGS');
-end;
+End;
 
-procedure TEditorOptForm.btnCancelClick(Sender: TObject);
-begin
+Procedure TEditorOptForm.btnCancelClick(Sender: TObject);
+Begin
     Close;
-end;
+End;
 
-procedure TEditorOptForm.cboDblClick(Sender: TObject);
-var
-    idx: integer;
-begin
-    with Sender as TComboBox do
-    begin
+Procedure TEditorOptForm.cboDblClick(Sender: TObject);
+Var
+    idx: Integer;
+Begin
+    With Sender As TComboBox Do
+    Begin
         idx := ItemIndex + 1;
-        if idx >= Items.Count then
+        If idx >= Items.Count Then
             idx := 0;
         ItemIndex := idx;
-    end;
-    if (Sender = cboGutterFont) or (Sender = cboEditorFont) then
+    End;
+    If (Sender = cboGutterFont) Or (Sender = cboEditorFont) Then
         FontChange(Sender)
-    else
-    if (Sender = cboEditorSize) or (Sender = cboGutterSize) then
+    Else
+    If (Sender = cboEditorSize) Or (Sender = cboGutterSize) Then
         FontSizeChange(Sender);
-end;
+End;
 
 { ---------- Syntax Style Methods ---------- }
 
-procedure TEditorOptForm.SetGutter;
-begin
+Procedure TEditorOptForm.SetGutter;
+Begin
     // if gutter background = clnone set to button face
-    if fgutcolor.x = clnone then
+    If fgutcolor.x = clnone Then
         fgutcolor.x := clBtnFace;
 
     // if gutter foreground = clnone set to black
-    if fgutcolor.y = clnone then
+    If fgutcolor.y = clnone Then
         fgutcolor.y := clBlack;
 
     // update preview
     cppedit.Gutter.Color := fgutColor.x;
     cppedit.Gutter.Font.Color := fgutColor.y;
-end;
+End;
 
-procedure TEditorOptForm.ElementListClick(Sender: TObject);
-var
+Procedure TEditorOptForm.ElementListClick(Sender: TObject);
+Var
     pt: TPoint;
-begin
-    if ElementList.ItemIndex > pred(cpp.AttrCount) then
-    begin
-        fUpdate := FALSE;
-        if AnsiCompareText(ElementList.Items[ElementList.ItemIndex], cSel) = 0 then
+Begin
+    If ElementList.ItemIndex > pred(cpp.AttrCount) Then
+    Begin
+        fUpdate := False;
+        If AnsiCompareText(ElementList.Items[ElementList.ItemIndex], cSel) = 0 Then
             pt := fSelColor
-        else
-        if AnsiCompareText(ElementList.Items[ElementList.ItemIndex], cBP) = 0 then
+        Else
+        If AnsiCompareText(ElementList.Items[ElementList.ItemIndex], cBP) = 0 Then
             pt := fBPColor
-        else
-        if AnsiCompareText(ElementList.Items[ElementList.ItemIndex],
-            cErr) = 0 then
+        Else
+        If AnsiCompareText(ElementList.Items[ElementList.ItemIndex],
+            cErr) = 0 Then
             pt := fErrColor
-        else
-        if AnsiCompareText(ElementList.Items[ElementList.ItemIndex],
-            cABP) = 0 then
+        Else
+        If AnsiCompareText(ElementList.Items[ElementList.ItemIndex],
+            cABP) = 0 Then
             pt := fABPColor
-        else
-        if AnsiCompareText(ElementList.Items[ElementList.ItemIndex],
-            cGut) = 0 then
+        Else
+        If AnsiCompareText(ElementList.Items[ElementList.ItemIndex],
+            cGut) = 0 Then
             pt := fGutColor;
 
         cpBackground.SelectionColor := pt.x;
@@ -1101,117 +1101,117 @@ begin
         cbItalic.Enabled := False;
         cbUnderlined.Enabled := False;
 
-        fUpdate := TRUE;
-    end
-    else
-    if ElementList.ItemIndex > -1 then
-        with Cpp.Attribute[ElementList.ItemIndex] do
-        begin
-            fUpdate := FALSE;
-            if Foreground = clNone then
+        fUpdate := True;
+    End
+    Else
+    If ElementList.ItemIndex > -1 Then
+        With Cpp.Attribute[ElementList.ItemIndex] Do
+        Begin
+            fUpdate := False;
+            If Foreground = clNone Then
                 cpForeground.SelectionColor := clWindowText //clNone
-            else
+            Else
                 cpForeground.SelectionColor := Foreground;
-            if Background = clNone then
+            If Background = clNone Then
                 cpBackground.SelectionColor := clWindow //clNone
-            else
+            Else
                 cpBackground.SelectionColor := Background;
 
             cbBold.Enabled := True;
             cbItalic.Enabled := True;
             cbUnderlined.Enabled := True;
 
-            cbBold.Checked := fsBold in Style;
-            cbItalic.Checked := fsItalic in Style;
-            cbUnderlined.Checked := fsUnderline in Style;
-            fUpdate := TRUE;
-        end;
-end;
+            cbBold.Checked := fsBold In Style;
+            cbItalic.Checked := fsItalic In Style;
+            cbUnderlined.Checked := fsUnderline In Style;
+            fUpdate := True;
+        End;
+End;
 
-procedure TEditorOptForm.DefaultSelect(Sender: TObject);
-begin
-    with (Sender as TColorPickerButton) do
+Procedure TEditorOptForm.DefaultSelect(Sender: TObject);
+Begin
+    With (Sender As TColorPickerButton) Do
         SelectionColor := clNone;
-end;
+End;
 
-procedure TEditorOptForm.PickerHint(Sender: TObject; Cell: integer;
-    var Hint: string);
-begin
-    if Cell = DEFAULTCELL then
+Procedure TEditorOptForm.PickerHint(Sender: TObject; Cell: Integer;
+    Var Hint: String);
+Begin
+    If Cell = DEFAULTCELL Then
         Hint := Lang[ID_EOPT_HINTWHITESPACE];
-end;
+End;
 
-procedure TEditorOptForm.StyleChange(Sender: TObject);
-var
+Procedure TEditorOptForm.StyleChange(Sender: TObject);
+Var
     attr: TSynHighlighterAttributes;
     pt: TPoint;
-    s: string;
-begin
-    if (not fUpdate) or (ElementList.ItemIndex < 0) then
+    s: String;
+Begin
+    If (Not fUpdate) Or (ElementList.ItemIndex < 0) Then
         Exit;
 
-    if ElementList.ItemIndex > pred(cpp.AttrCount) then
-    begin
+    If ElementList.ItemIndex > pred(cpp.AttrCount) Then
+    Begin
         pt.x := cpBackground.SelectionColor;
         pt.y := cpForeground.SelectionColor;
         // check for gutter before changing default colors
-        if AnsiCompareText(ElementList.Items[ElementList.ItemIndex], cGut) = 0 then
-        begin
+        If AnsiCompareText(ElementList.Items[ElementList.ItemIndex], cGut) = 0 Then
+        Begin
             fGutColor := pt;
             SetGutter;
-        end
-        else
-        begin
+        End
+        Else
+        Begin
             // use local string just to ease readability
             s := ElementList.Items[ElementList.ItemIndex];
 
             // if either value is clnone set to Whitespace color values
-            if pt.x = clNone then
+            If pt.x = clNone Then
                 pt.x := fbgColor;
-            if pt.y = clNone then
+            If pt.y = clNone Then
                 pt.y := ffgColor;
 
-            if AnsiCompareText(s, cSel) = 0 then
+            If AnsiCompareText(s, cSel) = 0 Then
                 fSelColor := pt
-            else
-            if AnsiCompareText(s, cBP) = 0 then
+            Else
+            If AnsiCompareText(s, cBP) = 0 Then
                 fBPColor := pt
-            else
-            if AnsiCompareText(s, cABP) = 0 then
+            Else
+            If AnsiCompareText(s, cABP) = 0 Then
                 fABPColor := pt
-            else
-            if AnsiCompareText(s, cerr) = 0 then
+            Else
+            If AnsiCompareText(s, cerr) = 0 Then
                 fErrColor := pt;
-        end
-    end
-    else
-    begin
+        End;
+    End
+    Else
+    Begin
         Attr := TSynHighlighterAttributes.Create(
             ElementList.Items[ElementList.ItemIndex]);
         Attr.Assign(cpp.Attribute[ElementList.ItemIndex]);
-        with Attr do
-            try
+        With Attr Do
+            Try
                 Foreground := cpForeground.SelectionColor;
-                if Sender = cpBackground then
+                If Sender = cpBackground Then
                     Background := cpBackground.SelectionColor;
-                if AnsiCompareText(Name, 'WhiteSpace') = 0 then
-                begin
+                If AnsiCompareText(Name, 'WhiteSpace') = 0 Then
+                Begin
                     ffgColor := Foreground;
                     fbgColor := Background;
-                end;
+                End;
 
                 Style := [];
-                if cbBold.checked then
+                If cbBold.checked Then
                     Style := Style + [fsBold];
-                if cbItalic.Checked then
+                If cbItalic.Checked Then
                     Style := Style + [fsItalic];
-                if cbUnderlined.Checked then
+                If cbUnderlined.Checked Then
                     Style := Style + [fsUnderline];
                 cpp.Attribute[ElementList.ItemIndex].Assign(Attr);
-            finally
+            Finally
                 Free;
-            end;
-    end;
+            End;
+    End;
 
     // invalidate special lines
     cppEdit.InvalidateLine(cSelection);
@@ -1220,137 +1220,137 @@ begin
     cppEdit.InvalidateLine(cErrorLine);
     cppEdit.Highlighter := cpp;
     cboQuickColor.ItemIndex := -1;
-end;
+End;
 
-procedure TEditorOptForm.cppEditStatusChange(Sender: TObject;
+Procedure TEditorOptForm.cppEditStatusChange(Sender: TObject;
     Changes: TSynStatusChanges);
-var
-    Token: string;
+Var
+    Token: String;
     attr: TSynHighlighterAttributes;
-begin
-    if assigned(cppEdit.Highlighter) and
-        (Changes * [scAll, scCaretX, scCaretY] <> []) then
-        case cppEdit.CaretY of
+Begin
+    If assigned(cppEdit.Highlighter) And
+        (Changes * [scAll, scCaretX, scCaretY] <> []) Then
+        Case cppEdit.CaretY Of
             cSelection:
-            begin
+            Begin
                 ElementList.ItemIndex := ElementList.Items.Indexof(cSel);
                 ElementListClick(Self);
-            end;
+            End;
             cBreakLine:
-            begin
+            Begin
                 ElementList.ItemIndex := ElementList.Items.Indexof(cBP);
                 ElementListClick(Self);
-            end;
+            End;
             cABreakLine:
-            begin
+            Begin
                 ElementList.ItemIndex := ElementList.Items.Indexof(cABP);
                 ElementListClick(Self);
-            end;
+            End;
             cErrorLine:
-            begin
+            Begin
                 ElementList.ItemIndex := ElementList.Items.Indexof(cErr);
                 ElementListClick(Self);
-            end;
-        else
-        begin
-            if not cppEdit.GetHighlighterAttriAtRowCol(cppEdit.CaretXY,
-                Token, Attr) then
+            End;
+        Else
+        Begin
+            If Not cppEdit.GetHighlighterAttriAtRowCol(cppEdit.CaretXY,
+                Token, Attr) Then
                 Attr := cppEdit.Highlighter.WhiteSpaceAttribute;
-            if assigned(Attr) then
-            begin
+            If assigned(Attr) Then
+            Begin
                 ElementList.ItemIndex := ElementList.Items.Indexof(Attr.Name);
                 ElementListClick(Self);
-            end;
-        end;
-        end;
-end;
+            End;
+        End;
+        End;
+End;
 
-procedure TEditorOptForm.CppEditSpecialLineColors(Sender: TObject;
-    Line: Integer; var Special: Boolean; var FG, BG: TColor);
-begin
-    case Line of
+Procedure TEditorOptForm.CppEditSpecialLineColors(Sender: TObject;
+    Line: Integer; Var Special: Boolean; Var FG, BG: TColor);
+Begin
+    Case Line Of
         cSelection:
-        begin
-            if fSelColor.x <> clNone then
+        Begin
+            If fSelColor.x <> clNone Then
                 BG := fSelColor.x;
-            if fSelColor.y <> clNone then
+            If fSelColor.y <> clNone Then
                 FG := fSelColor.y;
-            Special := TRUE;
-        end;
+            Special := True;
+        End;
         cBreakLine:
-        begin
-            if fBPColor.x <> clNone then
+        Begin
+            If fBPColor.x <> clNone Then
                 BG := fBPColor.x;
-            if fBPColor.y <> clNone then
+            If fBPColor.y <> clNone Then
                 FG := fBPColor.y;
-            Special := TRUE;
-        end;
+            Special := True;
+        End;
         cABreakLine:
-        begin
-            if fABPColor.x <> clNone then
+        Begin
+            If fABPColor.x <> clNone Then
                 BG := fABPColor.X;
-            if fABPColor.y <> clNone then
+            If fABPColor.y <> clNone Then
                 FG := fABPColor.y;
-            Special := TRUE;
-        end;
+            Special := True;
+        End;
         cErrorLine:
-        begin
-            if fErrColor.x <> clNone then
+        Begin
+            If fErrColor.x <> clNone Then
                 BG := fErrColor.x;
-            if fErrColor.y <> clNone then
+            If fErrColor.y <> clNone Then
                 FG := fErrColor.y;
-            Special := TRUE;
-        end;
-    end;
-end;
+            Special := True;
+        End;
+    End;
+End;
 
-procedure TEditorOptForm.cpMarginColorHint(Sender: TObject; Cell: Integer;
-    var Hint: String);
-begin
-    if Cell = DEFAULTCELL then
+Procedure TEditorOptForm.cpMarginColorHint(Sender: TObject; Cell: Integer;
+    Var Hint: String);
+Begin
+    If Cell = DEFAULTCELL Then
         Hint := Lang[ID_EOPT_HINTHIGHLIGHT];
-end;
+End;
 
-procedure TEditorOptForm.cpMarginColorDefaultSelect(Sender: TObject);
-begin
+Procedure TEditorOptForm.cpMarginColorDefaultSelect(Sender: TObject);
+Begin
     cpMarginColor.SelectionColor := clHighlightText;
-end;
+End;
 
-procedure TEditorOptForm.cbLineNumClick(Sender: TObject);
-begin
+Procedure TEditorOptForm.cbLineNumClick(Sender: TObject);
+Begin
     cbLeadZero.Enabled := cbLineNum.Checked;
     cbFirstZero.Enabled := cbLineNum.Checked;
-end;
+End;
 
-procedure TEditorOptForm.cbSyntaxHighlightClick(Sender: TObject);
-begin
+Procedure TEditorOptForm.cbSyntaxHighlightClick(Sender: TObject);
+Begin
     edSyntaxExt.Enabled := cbSyntaxHighlight.Checked;
-end;
+End;
 
-procedure TEditorOptForm.cboQuickColorSelect(Sender: TObject);
-var
-    offset: integer;
-    i: integer;
+Procedure TEditorOptForm.cboQuickColorSelect(Sender: TObject);
+Var
+    offset: Integer;
+    i: Integer;
     attr: TSynHighlighterAttributes;
-begin
-    if cboQuickColor.ItemIndex > 5 then
-    begin
+Begin
+    If cboQuickColor.ItemIndex > 5 Then
+    Begin
         // custom style; load from disk
         LoadSyntax(cboQuickColor.Items[cboQuickColor.ItemIndex]);
         Exit;
-    end;
+    End;
 
     offset := cboQuickColor.ItemIndex * 1000;
-    for i := 0 to pred(cpp.AttrCount) do
-    begin
+    For i := 0 To pred(cpp.AttrCount) Do
+    Begin
         attr := TSynHighlighterAttributes.Create(cpp.Attribute[i].Name);
-        try
+        Try
             StrtoAttr(Attr, LoadStr(i + offset + 1));
             cpp.Attribute[i].Assign(Attr);
-        finally
+        Finally
             Attr.Free;
-        end;
-    end;
+        End;
+    End;
 
     StrtoPoint(fBPColor, LoadStr(offset + 17)); // breakpoints
     StrtoPoint(fErrColor, LoadStr(offset + 18)); // error line
@@ -1366,169 +1366,169 @@ begin
 
     //update gutter
     setgutter;
-end;
+End;
 
 { ---------- Code insert's methods ---------- }
 
-procedure TEditorOptForm.btnAddClick(Sender: TObject);
-var
+Procedure TEditorOptForm.btnAddClick(Sender: TObject);
+Var
     NewItem: PCodeIns;
     Item: TListItem;
-begin
-    with TfrmCodeEdit.Create(Self) do
-        try
+Begin
+    With TfrmCodeEdit.Create(Self) Do
+        Try
             CodeIns.ClearAll;
-            Edit := FALSE;
+            Edit := False;
             New(NewItem);
             NewItem^.Sep := 0;
             Entry := NewItem;
-            if ShowModal = mrOk then
-            begin
+            If ShowModal = mrOk Then
+            Begin
                 Item := lvCodeIns.Items.Add;
                 Item.Caption := edMenuText.Text;
                 Item.SubItems.Add(inttostr(seSection.Value));
                 Item.SubItems.Add(edDesc.Text);
                 Item.SubItems.Add('');
                 lvCodeIns.Selected := Item;
-            end
-            else
+            End
+            Else
                 dispose(NewItem);
-        finally
+        Finally
             Free;
             UpdateCIButtons;
-        end;
-end;
+        End;
+End;
 
-procedure TEditorOptForm.btnEditClick(Sender: TObject);
-begin
-    with TfrmCodeEdit.Create(Self) do
-        try
-            Edit := TRUE;
+Procedure TEditorOptForm.btnEditClick(Sender: TObject);
+Begin
+    With TfrmCodeEdit.Create(Self) Do
+        Try
+            Edit := True;
             edMenuText.Text := lvCodeIns.Selected.Caption;
             seSection.Value := strtointdef(lvCodeIns.Selected.SubItems[0], 12);
             edDesc.Text := lvCodeIns.Selected.SubItems[1];
-            if ShowModal = mrOk then
-            begin
+            If ShowModal = mrOk Then
+            Begin
                 lvCodeIns.Selected.Caption := edMenuText.Text;
                 lvCodeIns.Selected.SubItems[0] := inttostr(seSection.Value);
                 lvCodeIns.Selected.SubItems[1] := edDesc.Text;
-            end;
-        finally
+            End;
+        Finally
             Free;
             UpdateCIButtons;
-        end;
-end;
+        End;
+End;
 
-procedure TEditorOptForm.btnRemoveClick(Sender: TObject);
-begin
+Procedure TEditorOptForm.btnRemoveClick(Sender: TObject);
+Begin
     dmMain.CodeInserts.Delete(lvCodeIns.Selected.Index);
     lvCodeIns.Selected.Delete;
     CodeIns.ClearAll;
     UpdateCIButtons;
-end;
+End;
 
-procedure TEditorOptForm.UpdateCIButtons;
-begin
-    btnAdd.Enabled := TRUE;
+Procedure TEditorOptForm.UpdateCIButtons;
+Begin
+    btnAdd.Enabled := True;
     btnEdit.Enabled := assigned(lvCodeIns.Selected);
     btnRemove.Enabled := assigned(lvCodeIns.Selected);
-end;
+End;
 
-procedure TEditorOptForm.lvCodeinsColumnClick(Sender: TObject;
+Procedure TEditorOptForm.lvCodeinsColumnClick(Sender: TObject;
     Column: TListColumn);
-begin
+Begin
     lvCodeIns.AlphaSort;
-end;
+End;
 
-procedure TEditorOptForm.lvCodeinsCompare(Sender: TObject; Item1,
-    Item2: TListItem; Data: Integer; var Compare: Integer);
-var
-    i1, i2: integer;
-begin
+Procedure TEditorOptForm.lvCodeinsCompare(Sender: TObject; Item1,
+    Item2: TListItem; Data: Integer; Var Compare: Integer);
+Var
+    i1, i2: Integer;
+Begin
     i1 := strtointdef(Item1.SubItems[0], 0);
     i2 := strtointdef(Item2.SubItems[0], 0);
-    if i1 > i2 then
+    If i1 > i2 Then
         Compare := 1
-    else
-    if i1 = i2 then
+    Else
+    If i1 = i2 Then
         Compare := 0
-    else
+    Else
         Compare := -1;
-end;
+End;
 
-procedure TEditorOptForm.lvCodeinsSelectItem(Sender: TObject;
+Procedure TEditorOptForm.lvCodeinsSelectItem(Sender: TObject;
     Item: TListItem; Selected: Boolean);
-begin
+Begin
     Codeins.ClearAll;
     CodeIns.Text := StrtoCodeIns(Item.SubItems[2]);
     UpdateCIButtons;
-end;
+End;
 
-procedure TEditorOptForm.CodeInsStatusChange(Sender: TObject;
+Procedure TEditorOptForm.CodeInsStatusChange(Sender: TObject;
     Changes: TSynStatusChanges);
-begin
-    if assigned(lvCodeIns.Selected) then
-        if (Changes * [scModified] <> []) then
-        begin
+Begin
+    If assigned(lvCodeIns.Selected) Then
+        If (Changes * [scModified] <> []) Then
+        Begin
             lvCodeIns.Selected.SubItems[2] := CodeInstoStr(CodeIns.Text);
-            CodeIns.Modified := false;
-        end;
-end;
+            CodeIns.Modified := False;
+        End;
+End;
 
-procedure TEditorOptForm.LoadCodeIns;
-var
-    idx: integer;
+Procedure TEditorOptForm.LoadCodeIns;
+Var
+    idx: Integer;
     Item: TListItem;
     Ins: PCodeIns;
-begin
-    for idx := 0 to pred(dmMain.CodeInserts.Count) do
-    begin
+Begin
+    For idx := 0 To pred(dmMain.CodeInserts.Count) Do
+    Begin
         Item := lvCodeIns.Items.Add;
         ins := dmMain.CodeInserts[idx];
         Item.Caption := ins.Caption;
         Item.SubItems.Add(inttostr(ins.Sep));
         Item.SubItems.Add(ins.Desc);
         Item.SubItems.Add(ins.Line);
-    end;
-    if lvCodeIns.Items.Count > 0 then
+    End;
+    If lvCodeIns.Items.Count > 0 Then
         lvCodeIns.ItemIndex := 0;
-end;
+End;
 
-procedure TEditorOptForm.SaveCodeIns;
-var
-    idx: integer;
+Procedure TEditorOptForm.SaveCodeIns;
+Var
+    idx: Integer;
     Item: PCodeIns;
-begin
+Begin
     lvCodeIns.AlphaSort;
-    for idx := 0 to dmMain.CodeInserts.Count - 1 do
+    For idx := 0 To dmMain.CodeInserts.Count - 1 Do
         Dispose(dmMain.CodeInserts.Items[idx]);
     dmMain.CodeInserts.Clear;
-    for idx := 0 to pred(lvCodeIns.Items.Count) do
-    begin
+    For idx := 0 To pred(lvCodeIns.Items.Count) Do
+    Begin
         new(Item);
         Item.Caption := lvCodeIns.Items[idx].Caption;
         Item.Sep := strtointdef(lvCodeIns.Items[idx].SubItems[0], 0);
         Item.Desc := lvcodeIns.Items[idx].SubItems[1];
         Item.Line := lvCodeIns.Items[idx].SubItems[2];
         dmMain.CodeInserts.AddItem(Item);
-    end;
+    End;
     dmMain.Codeinserts.SaveCode;
-end;
+End;
 
-procedure TEditorOptForm.chkEnableCompletionClick(Sender: TObject);
-begin
-    with chkEnableCompletion do
-    begin
+Procedure TEditorOptForm.chkEnableCompletionClick(Sender: TObject);
+Begin
+    With chkEnableCompletion Do
+    Begin
         edCompletionDelay.Enabled := Checked;
         cpCompletionBackground.Enabled := Checked;
-        chkCCCache.Checked := chkCCCache.Checked and Checked;
+        chkCCCache.Checked := chkCCCache.Checked And Checked;
         chkCCCache.Enabled := Checked;
         chkCCCacheClick(Self);
-    end;
-end;
+    End;
+End;
 
-procedure TEditorOptForm.chkEnableClassBrowserClick(Sender: TObject);
-begin
+Procedure TEditorOptForm.chkEnableClassBrowserClick(Sender: TObject);
+Begin
     // browser
     ClassBrowser1.Enabled := chkEnableClassBrowser.Checked;
     chkCBParseLocalH.Enabled := chkEnableClassBrowser.Checked;
@@ -1538,126 +1538,126 @@ begin
     chkEnableCompletion.Enabled := chkEnableClassBrowser.Checked;
     edCompletionDelay.Enabled := chkEnableClassBrowser.Checked;
     cpCompletionBackground.Enabled := chkEnableClassBrowser.Checked;
-end;
+End;
 
-procedure TEditorOptForm.btnSaveSyntaxClick(Sender: TObject);
-var
-    idx: integer;
+Procedure TEditorOptForm.btnSaveSyntaxClick(Sender: TObject);
+Var
+    idx: Integer;
     fINI: TIniFile;
-    S: string;
+    S: String;
     pt: TPoint;
-begin
+Begin
     s := 'New syntax';
-    if not InputQuery(Lang[ID_EOPT_SAVESYNTAX], Lang[ID_EOPT_SAVESYNTAXQUESTION],
-        s) or (s = '') then
+    If Not InputQuery(Lang[ID_EOPT_SAVESYNTAX], Lang[ID_EOPT_SAVESYNTAXQUESTION],
+        s) Or (s = '') Then
         Exit;
 
     fINI := TIniFile.Create(devDirs.Config + s + SYNTAX_EXT);
-    try
-        for idx := 0 to pred(Cpp.AttrCount) do
+    Try
+        For idx := 0 To pred(Cpp.AttrCount) Do
             fINI.WriteString('Editor.Custom', Cpp.Attribute[idx].Name,
                 AttrtoStr(Cpp.Attribute[idx]));
 
-        for idx := Cpp.AttrCount to pred(ElementList.Items.Count) do
-        begin
-            if AnsiCompareText(ElementList.Items[idx], cSel) = 0 then
+        For idx := Cpp.AttrCount To pred(ElementList.Items.Count) Do
+        Begin
+            If AnsiCompareText(ElementList.Items[idx], cSel) = 0 Then
                 pt := fSelColor
-            else
-            if AnsiCompareText(ElementList.Items[idx], cBP) = 0 then
+            Else
+            If AnsiCompareText(ElementList.Items[idx], cBP) = 0 Then
                 pt := fBPColor
-            else
-            if AnsiCompareText(ElementList.Items[idx], cErr) = 0 then
+            Else
+            If AnsiCompareText(ElementList.Items[idx], cErr) = 0 Then
                 pt := fErrColor
-            else
-            if AnsiCompareText(ElementList.Items[idx], cABP) = 0 then
+            Else
+            If AnsiCompareText(ElementList.Items[idx], cABP) = 0 Then
                 pt := fABPColor
-            else
-            if AnsiCompareText(ElementList.Items[idx], cGut) = 0 then
+            Else
+            If AnsiCompareText(ElementList.Items[idx], cGut) = 0 Then
                 pt := fGutColor;
             fINI.WriteString('Editor.Custom', ElementList.Items[idx],
                 PointtoStr(pt));
-        end;
-    finally
+        End;
+    Finally
         fINI.Free;
-    end;
-    if cboQuickColor.Items.IndexOf(S) = -1 then
+    End;
+    If cboQuickColor.Items.IndexOf(S) = -1 Then
         cboQuickColor.Items.Add(S);
     cboQuickColor.ItemIndex := cboQuickColor.Items.IndexOf(S);
-end;
+End;
 
-procedure TEditorOptForm.LoadSyntax(Value: string);
-var
-    idx: integer;
+Procedure TEditorOptForm.LoadSyntax(Value: String);
+Var
+    idx: Integer;
     fINI: TIniFile;
     Attr: TSynHighlighterAttributes;
     pt: TPoint;
-begin
+Begin
     fINI := TIniFile.Create(devDirs.Config + Value + SYNTAX_EXT);
-    try
-        for idx := 0 to pred(Cpp.AttrCount) do
-        begin
+    Try
+        For idx := 0 To pred(Cpp.AttrCount) Do
+        Begin
             Attr := TSynHighlighterAttributes.Create(Cpp.Attribute[idx].Name);
-            try
+            Try
                 StrToAttr(Attr, fINI.ReadString('Editor.Custom',
                     Cpp.Attribute[idx].Name, devEditor.Syntax.Values[Cpp.Attribute[idx].Name]));
                 Cpp.Attribute[idx].Assign(Attr);
-            finally
+            Finally
                 Attr.Free;
-            end;
-        end;
+            End;
+        End;
 
-        for idx := Cpp.AttrCount to pred(ElementList.Items.Count) do
-        begin
+        For idx := Cpp.AttrCount To pred(ElementList.Items.Count) Do
+        Begin
             StrToPoint(pt, fINI.ReadString('Editor.Custom',
                 ElementList.Items[idx], PointToStr(Point(clNone, clNone))));
-            if AnsiCompareText(ElementList.Items[idx], cSel) = 0 then
+            If AnsiCompareText(ElementList.Items[idx], cSel) = 0 Then
                 fSelColor := pt
-            else
-            if AnsiCompareText(ElementList.Items[idx], cBP) = 0 then
+            Else
+            If AnsiCompareText(ElementList.Items[idx], cBP) = 0 Then
                 fBPColor := pt
-            else
-            if AnsiCompareText(ElementList.Items[idx], cErr) = 0 then
+            Else
+            If AnsiCompareText(ElementList.Items[idx], cErr) = 0 Then
                 fErrColor := pt
-            else
-            if AnsiCompareText(ElementList.Items[idx], cABP) = 0 then
+            Else
+            If AnsiCompareText(ElementList.Items[idx], cABP) = 0 Then
                 fABPColor := pt
-            else
-            if AnsiCompareText(ElementList.Items[idx], cGut) = 0 then
-            begin
+            Else
+            If AnsiCompareText(ElementList.Items[idx], cGut) = 0 Then
+            Begin
                 fGutColor := pt;
                 SetGutter;
-            end;
-        end;
-    finally
+            End;
+        End;
+    Finally
         fINI.Free;
-    end;
-    ElementListClick(nil);
-end;
+    End;
+    ElementListClick(Nil);
+End;
 
-procedure TEditorOptForm.FillSyntaxSets;
-var
+Procedure TEditorOptForm.FillSyntaxSets;
+Var
     SR: TSearchRec;
-begin
-    if FindFirst(devDirs.Config + '*' + SYNTAX_EXT, faAnyFile, SR) = 0 then
-        repeat
+Begin
+    If FindFirst(devDirs.Config + '*' + SYNTAX_EXT, faAnyFile, SR) = 0 Then
+        Repeat
             cboQuickColor.Items.Add(ChangeFileExt(ExtractFileName(SR.Name), ''));
-        until FindNext(SR) <> 0;
-end;
+        Until FindNext(SR) <> 0;
+End;
 
-procedure TEditorOptForm.chkCBUseColorsClick(Sender: TObject);
-begin
+Procedure TEditorOptForm.chkCBUseColorsClick(Sender: TObject);
+Begin
     ClassBrowser1.UseColors := chkCBUseColors.Checked;
     ClassBrowser1.Refresh;
-end;
+End;
 
-procedure TEditorOptForm.btnCCCnewClick(Sender: TObject);
-var
-    I, I1: integer;
-    Hits: integer;
-    MaxHits, MaxIndex: integer;
+Procedure TEditorOptForm.btnCCCnewClick(Sender: TObject);
+Var
+    I, I1: Integer;
+    Hits: Integer;
+    MaxHits, MaxIndex: Integer;
     sl: TStrings;
-    flt: string;
-begin
+    flt: String;
+Begin
     // the following piece of code is a quick'n'dirty way to find the base
     // compiler's include dir (if we 're lucky).
     // we search through devDirs.C and try to locate the base dir that is
@@ -1670,69 +1670,69 @@ begin
     //
     // PS: is there a better way to do it???
     sl := TStringList.Create;
-    try
+    Try
         sl.Delimiter := ';';
         sl.DelimitedText := devDirs.C;
-        if sl.Count > 1 then
-        begin
+        If sl.Count > 1 Then
+        Begin
             MaxHits := 0;
             MaxIndex := 0;
-            for I1 := 0 to sl.Count - 1 do
-            begin
+            For I1 := 0 To sl.Count - 1 Do
+            Begin
                 Hits := 0;
-                for I := 0 to sl.Count - 1 do
-                    if AnsiStartsText(sl[I1], sl[I]) then
+                For I := 0 To sl.Count - 1 Do
+                    If AnsiStartsText(sl[I1], sl[I]) Then
                         Inc(Hits);
-                if Hits > MaxHits then
-                begin
+                If Hits > MaxHits Then
+                Begin
                     MaxHits := Hits;
                     MaxIndex := I1;
-                end;
-            end;
+                End;
+            End;
             CppParser1.ProjectDir := IncludeTrailingPathDelimiter(sl[MaxIndex]);
-        end
-        else
+        End
+        Else
             CppParser1.ProjectDir := IncludeTrailingPathDelimiter(devDirs.C);
-    finally
+    Finally
         sl.Free;
-    end;
+    End;
 
-    with dmMain do
-    begin
+    With dmMain Do
+    Begin
         BuildFilter(flt, [FLT_HEADS]);
         OpenDialog.Filter := flt;
-        if OpenDialog.Execute then
-        begin
+        If OpenDialog.Execute Then
+        Begin
             Application.ProcessMessages;
             Screen.Cursor := crHourglass;
 
             //Track the cache parse progress
-            HasProgressStarted := false;
+            HasProgressStarted := False;
             CppParser1.OnStartParsing := CppParser1StartParsing;
             CppParser1.OnEndParsing := CppParser1EndParsing;
             CppParser1.OnTotalProgress := CppParser1TotalProgress;
 
             //Add the files to scan and then parse the list
-            for I := 0 to OpenDialog.Files.Count - 1 do
+            For I := 0 To OpenDialog.Files.Count - 1 Do
                 CppParser1.AddFileToScan(OpenDialog.Files[I]);
             CppParser1.ParseList;
             Screen.Cursor := crDefault;
             chkCCCache.Tag := 1; // mark modified
 
             //Finally append the new items unto the listbox
-            for I := 0 to OpenDialog.Files.Count - 1 do
+            For I := 0 To OpenDialog.Files.Count - 1 Do
                 lbCCC.Items.Add(CompactFilename(OpenDialog.Files[I]));
-        end;
-    end;
-end;
+        End;
+    End;
+End;
 
-procedure TEditorOptForm.btnCCCdeleteClick(Sender: TObject);
-begin
-    if lbCCC.Items.Count = 0 then
+Procedure TEditorOptForm.btnCCCdeleteClick(Sender: TObject);
+Begin
+    If lbCCC.Items.Count = 0 Then
         Exit;
-    if MessageDlg('Are you sure you want to clear the cache?',
-        mtConfirmation, [mbYes, mbNo], 0) = mrYes then
-    begin
+    If MessageDlg('Are you sure you want to clear the cache?',
+        mtConfirmation, [mbYes, mbNo], 0) = mrYes Then
+    Begin
         DeleteFile(devDirs.Config + DEV_COMPLETION_CACHE);
         FreeAndNil(CppParser1);
         CppParser1 := TCppParser.Create(Self);
@@ -1744,135 +1744,135 @@ begin
         CppParser1.OnTotalProgress := CppParser1TotalProgress;
         lbCCC.Items.Clear;
         chkCCCache.Tag := 1; // mark modified
-    end;
-end;
+    End;
+End;
 
-procedure TEditorOptForm.FillCCC;
-var
+Procedure TEditorOptForm.FillCCC;
+Var
     I: Integer;
-begin
+Begin
     Screen.Cursor := crHourglass;
     CppParser1.OnStartParsing := CppParser1StartParsing;
-    CppParser1.OnEndParsing := nil; //We will call it ourselves
+    CppParser1.OnEndParsing := Nil; //We will call it ourselves
     CppParser1.OnCacheProgress := CppParser1CacheProgress;
     CppParser1.Load(devDirs.Config + DEV_COMPLETION_CACHE);
 
-    for I := 0 to CppParser1.CacheContents.Count - 1 do
+    For I := 0 To CppParser1.CacheContents.Count - 1 Do
         lbCCC.Items.Add(CompactFilename(CppParser1.CacheContents[I]));
 
     CppParser1EndParsing(Self);
     Screen.Cursor := crDefault;
-end;
+End;
 
-procedure TEditorOptForm.chkCCCacheClick(Sender: TObject);
-begin
+Procedure TEditorOptForm.chkCCCacheClick(Sender: TObject);
+Begin
     lbCCC.Enabled := chkCCCache.Checked;
     btnCCCnew.Enabled := chkCCCache.Checked;
     btnCCCdelete.Enabled := chkCCCache.Checked;
-end;
+End;
 
-function TEditorOptForm.CompactFilename(filename: string): string;
-var
+Function TEditorOptForm.CompactFilename(filename: String): String;
+Var
     DC: HDC;
-begin
+Begin
     //Get a handle to the DC
     DC := lbCCC.Canvas.Handle;
-    PathCompactPath(DC, PChar(filename), lbCCC.ClientWidth);
+    PathCompactPath(DC, Pchar(filename), lbCCC.ClientWidth);
     Result := filename;
-end;
+End;
 
-procedure TEditorOptForm.CppParser1StartParsing(Sender: TObject);
-begin
+Procedure TEditorOptForm.CppParser1StartParsing(Sender: TObject);
+Begin
     chkCCCache.Enabled := False;
     btnCCCnew.Enabled := False;
     btnCCCdelete.Enabled := False;
     btnOk.Enabled := False;
     btnCancel.Enabled := False;
     pbCCCache.Visible := True;
-end;
+End;
 
-procedure TEditorOptForm.CppParser1EndParsing(Sender: TObject);
-begin
+Procedure TEditorOptForm.CppParser1EndParsing(Sender: TObject);
+Begin
     chkCCCache.Enabled := True;
     btnCCCnew.Enabled := True;
     btnCCCdelete.Enabled := True;
     btnOk.Enabled := True;
     btnCancel.Enabled := True;
     pbCCCache.Visible := False;
-end;
+End;
 
-procedure TEditorOptForm.CppParser1TotalProgress(Sender: TObject;
+Procedure TEditorOptForm.CppParser1TotalProgress(Sender: TObject;
     FileName: String; Total, Current: Integer);
-begin
-    if not HasProgressStarted then
-    begin
+Begin
+    If Not HasProgressStarted Then
+    Begin
         pbCCCache.Max := Total;
-        HasProgressStarted := true;
-    end;
+        HasProgressStarted := True;
+    End;
 
     pbCCCache.Position := pbCCCache.Position + Current;
     Application.ProcessMessages;
-end;
+End;
 
-procedure TEditorOptForm.CppParser1StartSave(Sender: TObject);
-begin
+Procedure TEditorOptForm.CppParser1StartSave(Sender: TObject);
+Begin
     SendMessage(Handle, WM_SETREDRAW, 0, 0);
-end;
+End;
 
-procedure TEditorOptForm.CppParser1EndSave(Sender: TObject);
-begin
+Procedure TEditorOptForm.CppParser1EndSave(Sender: TObject);
+Begin
     SendMessage(Handle, WM_SETREDRAW, 1, 0);
-end;
+End;
 
-procedure TEditorOptForm.CppParser1SaveProgress(Sender: TObject;
+Procedure TEditorOptForm.CppParser1SaveProgress(Sender: TObject;
     FileName: String; Total, Current: Integer);
-begin
+Begin
     Application.ProcessMessages;
-end;
+End;
 
-procedure TEditorOptForm.CppParser1CacheProgress(Sender: TObject;
+Procedure TEditorOptForm.CppParser1CacheProgress(Sender: TObject;
     FileName: String;
     Total, Current: Integer);
-begin
+Begin
     pbCCCache.Max := Total;
     pbCCCache.Position := Current;
     pbCCCache.Update;
-end;
+End;
 
-procedure TEditorOptForm.devPages1Change(Sender: TObject);
-begin
-    if (devPages1.ActivePage = tabCBCompletion) and
-        (CppParser1.Statements.Count = 0) then
+Procedure TEditorOptForm.devPages1Change(Sender: TObject);
+Begin
+    If (devPages1.ActivePage = tabCBCompletion) And
+        (CppParser1.Statements.Count = 0) Then
         FillCCC;
-end;
+End;
 
-procedure TEditorOptForm.chkCBShowInheritedClick(Sender: TObject);
-begin
+Procedure TEditorOptForm.chkCBShowInheritedClick(Sender: TObject);
+Begin
     ClassBrowser1.ShowInheritedMembers := chkCBShowInherited.Checked;
     ClassBrowser1.Refresh;
-end;
+End;
 
-procedure TEditorOptForm.OnGutterClick(Sender: TObject;
+Procedure TEditorOptForm.OnGutterClick(Sender: TObject;
     Button: TMouseButton; X, Y, Line: Integer; Mark: TSynEditMark);
-var
-    idx: integer;
-begin
+Var
+    idx: Integer;
+Begin
     idx := ElementList.Items.IndexOf(cGut);
-    if idx <> -1 then
-    begin
+    If idx <> -1 Then
+    Begin
         ElementList.ItemIndex := idx;
         ElementListClick(Self);
-    end;
-end;
+    End;
+End;
 
-procedure TEditorOptForm.cbHighCurrLineClick(Sender: TObject);
-begin
+Procedure TEditorOptForm.cbHighCurrLineClick(Sender: TObject);
+Begin
     cpHighColor.Enabled := cbHighCurrLine.Checked;
-end;
+End;
 
-procedure TEditorOptForm.seTabSizeChange(Sender: TObject);
-begin
+Procedure TEditorOptForm.seTabSizeChange(Sender: TObject);
+Begin
     CppEdit.TabWidth := seTabSize.Value;
-end;
+End;
 
-end.
+End.

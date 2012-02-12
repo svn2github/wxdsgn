@@ -1,4 +1,4 @@
-unit Hashes;
+Unit Hashes;
 
 {** Hash Library
 
@@ -98,755 +98,787 @@ unit Hashes;
       inefficient.
 }
 
-interface
+Interface
 
-  uses SysUtils;
+Uses SysUtils;
 
-  const
+Const
     {** This constant controls the initial size of the hash. }
     c_HashInitialItemShift = 7;
 
     {** How inefficient do we have to be before we automatically Compact? }
-    c_HashCompactR         = 2;   { This many spaces per item. }
-    c_HashCompactM         = 100; { Never for less than this number of spaces. }
+    c_HashCompactR = 2;   { This many spaces per item. }
+    c_HashCompactM = 100; { Never for less than this number of spaces. }
 
-  type
+Type
     {** General exception classes. }
-    EHashError = class(Exception);
-    EHashErrorClass = class of EHashError;
+    EHashError = Class(Exception);
+    EHashErrorClass = Class Of EHashError;
 
     {** Exception for when an item is not found. }
-    EHashFindError = class(EHashError);
+    EHashFindError = Class(EHashError);
 
     {** Exception for invalid Next op. }
-    EHashIterateError = class(EHashError);
+    EHashIterateError = Class(EHashError);
 
     {** Exception for invalid keys. }
-    EHashInvalidKeyError = class(EHashError);
+    EHashInvalidKeyError = Class(EHashError);
 
     {** Record, should really be private but OP won't let us... }
-    THashRecord = record
-      Hash: Cardinal;
-      ItemIndex: integer;
-      Key: string;
-    end;
+    THashRecord = Record
+        Hash: Cardinal;
+        ItemIndex: Integer;
+        Key: String;
+    End;
 
     {** Iterator Record. This should also be private. This makes me almost like
         the way Java does things. Almost. Maybe. }
-    THashIterator = record
-      ck, cx: integer;
-    end;
+    THashIterator = Record
+        ck, cx: Integer;
+    End;
 
     {** Base Hash class. Don't use this directly. }
-    THash = class
-      protected
+    THash = Class
+    Protected
         {** The keys. }
-        f_Keys: array of array of THashRecord;
+        f_Keys: Array Of Array Of THashRecord;
 
         {** Current bucket shift. }
-        f_CurrentItemShift: integer;
+        f_CurrentItemShift: Integer;
 
         {** These are calculated from f_CurrentItemShift. }
-        f_CurrentItemCount: integer;
-        f_CurrentItemMask: integer;
-        f_CurrentItemMaxIdx: integer;
+        f_CurrentItemCount: Integer;
+        f_CurrentItemMask: Integer;
+        f_CurrentItemMaxIdx: Integer;
 
         {** Spare items. }
-        f_SpareItems: array of integer;
+        f_SpareItems: Array Of Integer;
 
         {** Whether Next is allowed. }
-        f_NextAllowed: boolean;
+        f_NextAllowed: Boolean;
 
         {** Current key. }
-        f_CurrentKey: string;
+        f_CurrentKey: String;
 
         {** Can we compact? }
-        f_AllowCompact: boolean;
+        f_AllowCompact: Boolean;
 
         {** Our current iterator. }
         f_CurrentIterator: THashIterator;
 
         {** Update the masks. }
-        procedure FUpdateMasks;
+        Procedure FUpdateMasks;
 
         {** Update the buckets. }
-        procedure FUpdateBuckets;
+        Procedure FUpdateBuckets;
 
         {** Find a key's location. }
-        function FFindKey(const Key: string; var k, x: integer): boolean;
+        Function FFindKey(Const Key: String; Var k, x: Integer): Boolean;
 
         {** Add a new key, or change an existing one. Don't call this directly. }
-        procedure FSetOrAddKey(const Key: string; ItemIndex: integer);
+        Procedure FSetOrAddKey(Const Key: String; ItemIndex: Integer);
 
         {** Abstract method, delete value with a given index. Override this. }
-        procedure FDeleteIndex(i: integer); virtual; abstract;
+        Procedure FDeleteIndex(i: Integer); Virtual; Abstract;
 
         {** Get the number of items. }
-        function FGetItemCount: integer;
+        Function FGetItemCount: Integer;
 
         {** Allocate an item index. }
-        function FAllocItemIndex: integer;
+        Function FAllocItemIndex: Integer;
 
         {** Abstract method, move an item with index OldIndex to NewIndex.
             Override this. }
-        procedure FMoveIndex(oldIndex, newIndex: integer); virtual; abstract;
+        Procedure FMoveIndex(oldIndex, newIndex: Integer); Virtual; Abstract;
 
         {** Abstract method, trim the indexes down to count items. Override
             this. }
-        procedure FTrimIndexes(count: integer); virtual; abstract;
+        Procedure FTrimIndexes(count: Integer); Virtual; Abstract;
 
         {** Abstract method, clear all items. Override this. }
-        procedure FClearItems; virtual; abstract;
+        Procedure FClearItems; Virtual; Abstract;
 
         {** Tell us where to start our compact count from. Override this. }
-        function FIndexMax: integer; virtual; abstract;
+        Function FIndexMax: Integer; Virtual; Abstract;
 
         {** Compact, but only if we're inefficient. }
-        procedure FAutoCompact;
+        Procedure FAutoCompact;
 
-      public
+    Public
         {** Our own constructor. }
-        constructor Create; reintroduce; virtual;
+        Constructor Create; Reintroduce; Virtual;
 
         {** Does a key exist? }
-        function Exists(const Key: string): boolean;
+        Function Exists(Const Key: String): Boolean;
 
         {** Rename a key. }
-        procedure Rename(const Key, NewName: string);
+        Procedure Rename(Const Key, NewName: String);
 
         {** Delete a key. }
-        procedure Delete(const Key: string);
+        Procedure Delete(Const Key: String);
 
         {** Reset iterator. }
-        procedure Restart;
+        Procedure Restart;
 
         {** Next key. }
-        function Next: boolean;
+        Function Next: Boolean;
 
         {** Previous key. }
-        function Previous: boolean;
+        Function Previous: Boolean;
 
         {** Current key. }
-        function CurrentKey: string;
+        Function CurrentKey: String;
 
         {** The number of items. }
-        property ItemCount: integer read FGetItemCount;
+        Property ItemCount: Integer Read FGetItemCount;
 
         {** Compact the hash. }
-        procedure Compact;
+        Procedure Compact;
 
         {** Clear the hash. }
-        procedure Clear;
+        Procedure Clear;
 
         {** Allow compacting? }
-        property AllowCompact: boolean read f_AllowCompact write f_AllowCompact;
+        Property AllowCompact: Boolean Read f_AllowCompact Write f_AllowCompact;
 
         {** Current iterator. }
-        property CurrentIterator: THashIterator read f_CurrentIterator write
-          f_CurrentIterator;
+        Property CurrentIterator: THashIterator Read f_CurrentIterator Write
+            f_CurrentIterator;
 
         {** Create a new iterator. }
-        function NewIterator: THashIterator;
+        Function NewIterator: THashIterator;
 
-    end;
+    End;
 
     {** Hash of strings. }
-    TStringHash = class(THash)
-      protected
+    TStringHash = Class(THash)
+    Protected
         {** The index items. }
-        f_Items: array of string;
+        f_Items: Array Of String;
 
         {** Override FDeleteIndex abstract method. }
-        procedure FDeleteIndex(i: integer); override;
+        Procedure FDeleteIndex(i: Integer); Override;
 
         {** Get an item or raise an exception. }
-        function FGetItem(const Key: string): string;
+        Function FGetItem(Const Key: String): String;
 
         {** Set or add an item. }
-        procedure FSetItem(const Key, Value: string);
+        Procedure FSetItem(Const Key, Value: String);
 
         {** Move an index. }
-        procedure FMoveIndex(oldIndex, newIndex: integer); override;
+        Procedure FMoveIndex(oldIndex, newIndex: Integer); Override;
 
         {** Trim. }
-        procedure FTrimIndexes(count: integer); override;
+        Procedure FTrimIndexes(count: Integer); Override;
 
         {** Clear all items. }
-        procedure FClearItems; override;
+        Procedure FClearItems; Override;
 
         {** Where to start our compact count from. }
-        function FIndexMax: integer; override;
+        Function FIndexMax: Integer; Override;
 
-      public
+    Public
         {** Items property. }
-        property Items[const Key: string]: string read FGetItem
-          write FSetItem; default;
-    end;
+        Property Items[Const Key: String]: String Read FGetItem
+            Write FSetItem; Default;
+    End;
 
     {** Hash of integers. }
-    TIntegerHash = class(THash)
-      protected
+    TIntegerHash = Class(THash)
+    Protected
         {** The index items. }
-        f_Items: array of integer;
+        f_Items: Array Of Integer;
 
         {** Override FDeleteIndex abstract method. }
-        procedure FDeleteIndex(i: integer); override;
+        Procedure FDeleteIndex(i: Integer); Override;
 
         {** Get an item or raise an exception. }
-        function FGetItem(const Key: string): integer;
+        Function FGetItem(Const Key: String): Integer;
 
         {** Set or add an item. }
-        procedure FSetItem(const Key: string; Value: integer);
+        Procedure FSetItem(Const Key: String; Value: Integer);
 
         {** Move an index. }
-        procedure FMoveIndex(oldIndex, newIndex: integer); override;
+        Procedure FMoveIndex(oldIndex, newIndex: Integer); Override;
 
         {** Trim. }
-        procedure FTrimIndexes(count: integer); override;
+        Procedure FTrimIndexes(count: Integer); Override;
 
         {** Clear all items. }
-        procedure FClearItems; override;
+        Procedure FClearItems; Override;
 
         {** Where to start our compact count from. }
-        function FIndexMax: integer; override;
+        Function FIndexMax: Integer; Override;
 
-      public
+    Public
         {** Items property. }
-        property Items[const Key: string]: integer read FGetItem
-          write FSetItem; default;
-    end;
+        Property Items[Const Key: String]: Integer Read FGetItem
+            Write FSetItem; Default;
+    End;
 
     {** Hash of objects. }
-    TObjectHash = class(THash)
-      protected
+    TObjectHash = Class(THash)
+    Protected
         {** The index items. }
-        f_Items: array of TObject;
+        f_Items: Array Of TObject;
 
         {** Override FDeleteIndex abstract method. }
-        procedure FDeleteIndex(i: integer); override;
+        Procedure FDeleteIndex(i: Integer); Override;
 
         {** Get an item or raise an exception. }
-        function FGetItem(const Key: string): TObject;
+        Function FGetItem(Const Key: String): TObject;
 
         {** Set or add an item. }
-        procedure FSetItem(const Key: string; Value: TObject);
+        Procedure FSetItem(Const Key: String; Value: TObject);
 
         {** Move an index. }
-        procedure FMoveIndex(oldIndex, newIndex: integer); override;
+        Procedure FMoveIndex(oldIndex, newIndex: Integer); Override;
 
         {** Trim. }
-        procedure FTrimIndexes(count: integer); override;
+        Procedure FTrimIndexes(count: Integer); Override;
 
         {** Clear all items. }
-        procedure FClearItems; override;
+        Procedure FClearItems; Override;
 
         {** Where to start our compact count from. }
-        function FIndexMax: integer; override;
+        Function FIndexMax: Integer; Override;
 
-      public
+    Public
         {** Items property. }
-        property Items[const Key: string]: TObject read FGetItem
-          write FSetItem; default;
+        Property Items[Const Key: String]: TObject Read FGetItem
+            Write FSetItem; Default;
 
         {** Destructor must destroy all items. }
-        destructor Destroy; override;
+        Destructor Destroy; Override;
 
-    end;
+    End;
 
-implementation
+Implementation
 
   {** A basic hash function. This is pretty fast, and fairly good general
       purpose, but you may want to swap in a specialised version. }
-  function HashThis(const s: string): cardinal;
-  var
-    h, g, i: cardinal;
-  begin
-    if (s = '') then
-      raise EHashInvalidKeyError.Create('Key cannot be an empty string');
+Function HashThis(Const s: String): Cardinal;
+Var
+    h, g, i: Cardinal;
+Begin
+    If (s = '') Then
+        Raise EHashInvalidKeyError.Create('Key cannot be an empty string');
     h := $12345670;
-    for i := 1 to Length(s) do begin
-      h := (h shl 4) + ord(s[i]);
-      g := h and $f0000000;
-      if (g > 0) then
-        h := h or (g shr 24) or g;
-    end;
+    For i := 1 To Length(s) Do
+    Begin
+        h := (h Shl 4) + ord(s[i]);
+        g := h And $f0000000;
+        If (g > 0) Then
+            h := h Or (g Shr 24) Or g;
+    End;
     result := h;
-  end;
+End;
 
 { THash }
 
-constructor THash.Create;
-begin
-  inherited Create;
-  self.f_CurrentIterator.ck := -1;
-  self.f_CurrentIterator.cx := 0;
-  self.f_CurrentItemShift := c_HashInitialItemShift;
-  self.FUpdateMasks;
-  self.FUpdateBuckets;
-  self.f_AllowCompact := true;
-end;
-
-procedure THash.Delete(const Key: string);
-var
-  k, x, i: integer;
-begin
-  { Hash has been modified, so disallow Next. }
-  self.f_NextAllowed := false;
-  if (self.FFindKey(Key, k, x)) then begin
-    { Delete the Index entry. }
-    i := self.f_Keys[k][x].ItemIndex;
-    self.FDeleteIndex(i);
-    { Add the index to the Spares list. }
-    SetLength(self.f_SpareItems, Length(self.f_SpareItems) + 1);
-    self.f_SpareItems[High(self.f_SpareItems)] := i;
-    { Overwrite key with the last in the list. }
-    self.f_Keys[k][x] := self.f_Keys[k][High(self.f_Keys[k])];
-    { Delete the last in the list. }
-    SetLength(self.f_Keys[k], Length(self.f_Keys[k]) - 1);
-  end else
-    raise EHashFindError.CreateFmt('Key "%s" not found', [Key]);
-
-  self.FAutoCompact;
-end;
-
-function THash.Exists(const Key: string): boolean;
-var
-  dummy1, dummy2: integer;
-begin
-  result := FFindKey(Key, dummy1, dummy2);
-end;
-
-procedure THash.FSetOrAddKey(const Key: string; ItemIndex: integer);
-var
-  k, x, i: integer;
-begin
-  { Exists already? }
-  if (self.FFindKey(Key, k, x)) then begin
-    { Yep. Delete the old stuff and set the new value. }
-    i := self.f_Keys[k][x].ItemIndex;
-    self.FDeleteIndex(i);
-    self.f_Keys[k][x].ItemIndex := ItemIndex;
-    { Add the index to the spares list. }
-    SetLength(self.f_SpareItems, Length(self.f_SpareItems) + 1);
-    self.f_SpareItems[High(self.f_SpareItems)] := i;
-  end else begin
-    { No, create a new one. }
-    SetLength(self.f_Keys[k], Length(self.f_Keys[k]) + 1);
-    self.f_Keys[k][High(self.f_Keys[k])].Key := Key;
-    self.f_Keys[k][High(self.f_Keys[k])].ItemIndex := ItemIndex;
-    self.f_Keys[k][High(self.f_Keys[k])].Hash := HashThis(Key);
-  end;
-end;
-
-function THash.FFindKey(const Key: string; var k, x: integer): boolean;
-var
-  i: integer;
-  h: cardinal;
-begin
-  { Which bucket? }
-  h := HashThis(Key);
-  k := h and f_CurrentItemMask;
-  result := false;
-  { Look for it. }
-  for i := 0 to High(self.f_Keys[k]) do
-    if (self.f_Keys[k][i].Hash = h) or true then
-      if (self.f_Keys[k][i].Key = Key) then begin
-        { Found it! }
-        result := true;
-        x := i;
-        break;
-      end;
-end;
-
-procedure THash.Rename(const Key, NewName: string);
-var
-  k, x, i: integer;
-begin
-  { Hash has been modified, so disallow Next. }
-  self.f_NextAllowed := false;
-  if (self.FFindKey(Key, k, x)) then begin
-    { Remember the ItemIndex. }
-    i := self.f_Keys[k][x].ItemIndex;
-    { Overwrite key with the last in the list. }
-    self.f_Keys[k][x] := self.f_Keys[k][High(self.f_Keys[k])];
-    { Delete the last in the list. }
-    SetLength(self.f_Keys[k], Length(self.f_Keys[k]) - 1);
-    { Create the new item. }
-    self.FSetOrAddKey(NewName, i);
-  end else
-    raise EHashFindError.CreateFmt('Key "%s" not found', [Key]);
-
-  self.FAutoCompact;
-end;
-
-function THash.CurrentKey: string;
-begin
-  if (not (self.f_NextAllowed)) then
-    raise EHashIterateError.Create('Cannot find CurrentKey as the hash has '
-      + 'been modified since Restart was called')
-  else if (self.f_CurrentKey = '') then
-    raise EHashIterateError.Create('Cannot find CurrentKey as Next has not yet '
-      + 'been called after Restart')
-  else
-    result := self.f_CurrentKey;
-end;
-
-function THash.Next: boolean;
-begin
-  if (not (self.f_NextAllowed)) then
-    raise EHashIterateError.Create('Cannot get Next as the hash has '
-      + 'been modified since Restart was called');
-  result := false;
-  if (self.f_CurrentIterator.ck = -1) then begin
-    self.f_CurrentIterator.ck := 0;
+Constructor THash.Create;
+Begin
+    Inherited Create;
+    self.f_CurrentIterator.ck := -1;
     self.f_CurrentIterator.cx := 0;
-  end;
-  while ((not result) and (self.f_CurrentIterator.ck <= f_CurrentItemMaxIdx)) do begin
-    if (self.f_CurrentIterator.cx < Length(self.f_Keys[self.f_CurrentIterator.ck])) then begin
-      result := true;
-      self.f_CurrentKey := self.f_Keys[self.f_CurrentIterator.ck][self.f_CurrentIterator.cx].Key;
-      inc(self.f_CurrentIterator.cx);
-    end else begin
-      inc(self.f_CurrentIterator.ck);
-      self.f_CurrentIterator.cx := 0;
-    end;
-  end;
-end;
+    self.f_CurrentItemShift := c_HashInitialItemShift;
+    self.FUpdateMasks;
+    self.FUpdateBuckets;
+    self.f_AllowCompact := True;
+End;
 
-procedure THash.Restart;
-begin
-  self.f_CurrentIterator.ck := -1;
-  self.f_CurrentIterator.cx := 0;
-  self.f_NextAllowed := true;
-end;
+Procedure THash.Delete(Const Key: String);
+Var
+    k, x, i: Integer;
+Begin
+  { Hash has been modified, so disallow Next. }
+    self.f_NextAllowed := False;
+    If (self.FFindKey(Key, k, x)) Then
+    Begin
+    { Delete the Index entry. }
+        i := self.f_Keys[k][x].ItemIndex;
+        self.FDeleteIndex(i);
+    { Add the index to the Spares list. }
+        SetLength(self.f_SpareItems, Length(self.f_SpareItems) + 1);
+        self.f_SpareItems[High(self.f_SpareItems)] := i;
+    { Overwrite key with the last in the list. }
+        self.f_Keys[k][x] := self.f_Keys[k][High(self.f_Keys[k])];
+    { Delete the last in the list. }
+        SetLength(self.f_Keys[k], Length(self.f_Keys[k]) - 1);
+    End
+    Else
+        Raise EHashFindError.CreateFmt('Key "%s" not found', [Key]);
 
-function THash.FGetItemCount: integer;
-var
-  i: integer;
-begin
+    self.FAutoCompact;
+End;
+
+Function THash.Exists(Const Key: String): Boolean;
+Var
+    dummy1, dummy2: Integer;
+Begin
+    result := FFindKey(Key, dummy1, dummy2);
+End;
+
+Procedure THash.FSetOrAddKey(Const Key: String; ItemIndex: Integer);
+Var
+    k, x, i: Integer;
+Begin
+  { Exists already? }
+    If (self.FFindKey(Key, k, x)) Then
+    Begin
+    { Yep. Delete the old stuff and set the new value. }
+        i := self.f_Keys[k][x].ItemIndex;
+        self.FDeleteIndex(i);
+        self.f_Keys[k][x].ItemIndex := ItemIndex;
+    { Add the index to the spares list. }
+        SetLength(self.f_SpareItems, Length(self.f_SpareItems) + 1);
+        self.f_SpareItems[High(self.f_SpareItems)] := i;
+    End
+    Else
+    Begin
+    { No, create a new one. }
+        SetLength(self.f_Keys[k], Length(self.f_Keys[k]) + 1);
+        self.f_Keys[k][High(self.f_Keys[k])].Key := Key;
+        self.f_Keys[k][High(self.f_Keys[k])].ItemIndex := ItemIndex;
+        self.f_Keys[k][High(self.f_Keys[k])].Hash := HashThis(Key);
+    End;
+End;
+
+Function THash.FFindKey(Const Key: String; Var k, x: Integer): Boolean;
+Var
+    i: Integer;
+    h: Cardinal;
+Begin
+  { Which bucket? }
+    h := HashThis(Key);
+    k := h And f_CurrentItemMask;
+    result := False;
+  { Look for it. }
+    For i := 0 To High(self.f_Keys[k]) Do
+        If (self.f_Keys[k][i].Hash = h) Or True Then
+            If (self.f_Keys[k][i].Key = Key) Then
+            Begin
+        { Found it! }
+                result := True;
+                x := i;
+                break;
+            End;
+End;
+
+Procedure THash.Rename(Const Key, NewName: String);
+Var
+    k, x, i: Integer;
+Begin
+  { Hash has been modified, so disallow Next. }
+    self.f_NextAllowed := False;
+    If (self.FFindKey(Key, k, x)) Then
+    Begin
+    { Remember the ItemIndex. }
+        i := self.f_Keys[k][x].ItemIndex;
+    { Overwrite key with the last in the list. }
+        self.f_Keys[k][x] := self.f_Keys[k][High(self.f_Keys[k])];
+    { Delete the last in the list. }
+        SetLength(self.f_Keys[k], Length(self.f_Keys[k]) - 1);
+    { Create the new item. }
+        self.FSetOrAddKey(NewName, i);
+    End
+    Else
+        Raise EHashFindError.CreateFmt('Key "%s" not found', [Key]);
+
+    self.FAutoCompact;
+End;
+
+Function THash.CurrentKey: String;
+Begin
+    If (Not (self.f_NextAllowed)) Then
+        Raise EHashIterateError.Create('Cannot find CurrentKey as the hash has '
+            + 'been modified since Restart was called')
+    Else
+    If (self.f_CurrentKey = '') Then
+        Raise EHashIterateError.Create('Cannot find CurrentKey as Next has not yet '
+            + 'been called after Restart')
+    Else
+        result := self.f_CurrentKey;
+End;
+
+Function THash.Next: Boolean;
+Begin
+    If (Not (self.f_NextAllowed)) Then
+        Raise EHashIterateError.Create('Cannot get Next as the hash has '
+            + 'been modified since Restart was called');
+    result := False;
+    If (self.f_CurrentIterator.ck = -1) Then
+    Begin
+        self.f_CurrentIterator.ck := 0;
+        self.f_CurrentIterator.cx := 0;
+    End;
+    While ((Not result) And (self.f_CurrentIterator.ck <= f_CurrentItemMaxIdx)) Do
+    Begin
+        If (self.f_CurrentIterator.cx < Length(self.f_Keys[self.f_CurrentIterator.ck])) Then
+        Begin
+            result := True;
+            self.f_CurrentKey := self.f_Keys[self.f_CurrentIterator.ck][self.f_CurrentIterator.cx].Key;
+            inc(self.f_CurrentIterator.cx);
+        End
+        Else
+        Begin
+            inc(self.f_CurrentIterator.ck);
+            self.f_CurrentIterator.cx := 0;
+        End;
+    End;
+End;
+
+Procedure THash.Restart;
+Begin
+    self.f_CurrentIterator.ck := -1;
+    self.f_CurrentIterator.cx := 0;
+    self.f_NextAllowed := True;
+End;
+
+Function THash.FGetItemCount: Integer;
+Var
+    i: Integer;
+Begin
   { Calculate our item count. }
-  result := 0;
-  for i := 0 to f_CurrentItemMaxIdx do
-    inc(result, Length(self.f_Keys[i]));
-end;
+    result := 0;
+    For i := 0 To f_CurrentItemMaxIdx Do
+        inc(result, Length(self.f_Keys[i]));
+End;
 
-function THash.FAllocItemIndex: integer;
-begin
-  if (Length(self.f_SpareItems) > 0) then begin
+Function THash.FAllocItemIndex: Integer;
+Begin
+    If (Length(self.f_SpareItems) > 0) Then
+    Begin
     { Use the top SpareItem. }
-    result := self.f_SpareItems[High(self.f_SpareItems)];
-    SetLength(self.f_SpareItems, Length(self.f_SpareItems) - 1);
-  end else begin
-    result := self.FIndexMax + 1;
-  end;
-end;
+        result := self.f_SpareItems[High(self.f_SpareItems)];
+        SetLength(self.f_SpareItems, Length(self.f_SpareItems) - 1);
+    End
+    Else
+    Begin
+        result := self.FIndexMax + 1;
+    End;
+End;
 
-procedure THash.Compact;
-var
-  aSpaces: array of boolean;
-  aMapping: array of integer;
-  i, j: integer;
-begin
+Procedure THash.Compact;
+Var
+    aSpaces: Array Of Boolean;
+    aMapping: Array Of Integer;
+    i, j: Integer;
+Begin
   { Find out where the gaps are. We could do this by sorting, but that's at
     least O(n log n), and sometimes O(n^2), so we'll go for the O(n) method,
     even though it involves multiple passes. Note that this is a lot faster
     than it looks. Disabling this saves about 3% in my benchmarks, but uses a
     lot more memory. }
-  if (self.AllowCompact) then begin
-    SetLength(aSpaces, self.FIndexMax + 1);
-    SetLength(aMapping, self.FIndexMax + 1);
-    for i := 0 to High(aSpaces) do
-      aSpaces[i] := false;
-    for i := 0 to High(aMapping) do
-      aMapping[i] := i;
-    for i := 0 to High(self.f_SpareItems) do
-      aSpaces[self.f_SpareItems[i]] := true;
+    If (self.AllowCompact) Then
+    Begin
+        SetLength(aSpaces, self.FIndexMax + 1);
+        SetLength(aMapping, self.FIndexMax + 1);
+        For i := 0 To High(aSpaces) Do
+            aSpaces[i] := False;
+        For i := 0 To High(aMapping) Do
+            aMapping[i] := i;
+        For i := 0 To High(self.f_SpareItems) Do
+            aSpaces[self.f_SpareItems[i]] := True;
 
     { Starting at the low indexes, fill empty ones from the high indexes. }
-    i := 0;
-    j := self.FIndexMax;
-    while (i < j) do begin
-      if (aSpaces[i]) then begin
-        while ((i < j) and (aSpaces[j])) do
-          dec(j);
-        if (i < j) then begin
-          aSpaces[i] := false;
-          aSpaces[j] := true;
-          self.FMoveIndex(j, i);
-          aMapping[j] := i
-        end;
-      end else
-        inc(i);
-    end;
+        i := 0;
+        j := self.FIndexMax;
+        While (i < j) Do
+        Begin
+            If (aSpaces[i]) Then
+            Begin
+                While ((i < j) And (aSpaces[j])) Do
+                    dec(j);
+                If (i < j) Then
+                Begin
+                    aSpaces[i] := False;
+                    aSpaces[j] := True;
+                    self.FMoveIndex(j, i);
+                    aMapping[j] := i;
+                End;
+            End
+            Else
+                inc(i);
+        End;
 
-    j := self.FIndexMax;
-    while (aSpaces[j]) do
-      dec(j);
+        j := self.FIndexMax;
+        While (aSpaces[j]) Do
+            dec(j);
 
     { Trim the items array down to size. }
-    self.FTrimIndexes(j + 1);
+        self.FTrimIndexes(j + 1);
 
     { Clear the spaces. }
-    SetLength(self.f_SpareItems, 0);
+        SetLength(self.f_SpareItems, 0);
 
     { Update our buckets. }
-    for i := 0 to f_CurrentItemMaxIdx do
-      for j := 0 to High(self.f_Keys[i]) do
-        self.f_Keys[i][j].ItemIndex := aMapping[self.f_Keys[i][j].ItemIndex];
-  end;
-end;
+        For i := 0 To f_CurrentItemMaxIdx Do
+            For j := 0 To High(self.f_Keys[i]) Do
+                self.f_Keys[i][j].ItemIndex := aMapping[self.f_Keys[i][j].ItemIndex];
+    End;
+End;
 
-procedure THash.FAutoCompact;
-begin
-  if (self.AllowCompact) then
-    if (Length(self.f_SpareItems) >= c_HashCompactM) then
-      if (self.FIndexMax * c_HashCompactR > Length(self.f_SpareItems)) then
-        self.Compact;
-end;
+Procedure THash.FAutoCompact;
+Begin
+    If (self.AllowCompact) Then
+        If (Length(self.f_SpareItems) >= c_HashCompactM) Then
+            If (self.FIndexMax * c_HashCompactR > Length(self.f_SpareItems)) Then
+                self.Compact;
+End;
 
-procedure THash.Clear;
-var
-  i: integer;
-begin
-  self.FClearItems;
-  SetLength(self.f_SpareItems, 0);
-  for i := 0 to f_CurrentItemMaxIdx do
-    SetLength(self.f_Keys[i], 0);
-end;
+Procedure THash.Clear;
+Var
+    i: Integer;
+Begin
+    self.FClearItems;
+    SetLength(self.f_SpareItems, 0);
+    For i := 0 To f_CurrentItemMaxIdx Do
+        SetLength(self.f_Keys[i], 0);
+End;
 
-procedure THash.FUpdateMasks;
-begin
-  f_CurrentItemMask := (1 shl f_CurrentItemShift) - 1;
-  f_CurrentItemMaxIdx := (1 shl f_CurrentItemShift) - 1;
-  f_CurrentItemCount := (1 shl f_CurrentItemShift);
-end;
+Procedure THash.FUpdateMasks;
+Begin
+    f_CurrentItemMask := (1 Shl f_CurrentItemShift) - 1;
+    f_CurrentItemMaxIdx := (1 Shl f_CurrentItemShift) - 1;
+    f_CurrentItemCount := (1 Shl f_CurrentItemShift);
+End;
 
-procedure THash.FUpdateBuckets;
-begin
+Procedure THash.FUpdateBuckets;
+Begin
   { This is just a temporary thing. }
-  SetLength(self.f_Keys, self.f_CurrentItemCount);
-end;
+    SetLength(self.f_Keys, self.f_CurrentItemCount);
+End;
 
-function THash.NewIterator: THashIterator;
-begin
-  result.ck := -1;
-  result.cx := 0;
-end;
+Function THash.NewIterator: THashIterator;
+Begin
+    result.ck := -1;
+    result.cx := 0;
+End;
 
-function THash.Previous: boolean;
-begin
-  if (not (self.f_NextAllowed)) then
-    raise EHashIterateError.Create('Cannot get Next as the hash has '
-      + 'been modified since Restart was called');
-  result := false;
-  if (self.f_CurrentIterator.ck >= 0) then begin
-    while ((not result) and (self.f_CurrentIterator.ck >= 0)) do begin
-      dec(self.f_CurrentIterator.cx);
-      if (self.f_CurrentIterator.cx >= 0) then begin
-        result := true;
-        self.f_CurrentKey := self.f_Keys[self.f_CurrentIterator.ck][self.f_CurrentIterator.cx].Key;
-      end else begin
-        dec(self.f_CurrentIterator.ck);
-        if (self.f_CurrentIterator.ck >= 0) then
-          self.f_CurrentIterator.cx := Length(self.f_Keys[self.f_CurrentIterator.ck]);
-      end;
-    end;
-  end;
-end;
+Function THash.Previous: Boolean;
+Begin
+    If (Not (self.f_NextAllowed)) Then
+        Raise EHashIterateError.Create('Cannot get Next as the hash has '
+            + 'been modified since Restart was called');
+    result := False;
+    If (self.f_CurrentIterator.ck >= 0) Then
+    Begin
+        While ((Not result) And (self.f_CurrentIterator.ck >= 0)) Do
+        Begin
+            dec(self.f_CurrentIterator.cx);
+            If (self.f_CurrentIterator.cx >= 0) Then
+            Begin
+                result := True;
+                self.f_CurrentKey := self.f_Keys[self.f_CurrentIterator.ck][self.f_CurrentIterator.cx].Key;
+            End
+            Else
+            Begin
+                dec(self.f_CurrentIterator.ck);
+                If (self.f_CurrentIterator.ck >= 0) Then
+                    self.f_CurrentIterator.cx := Length(self.f_Keys[self.f_CurrentIterator.ck]);
+            End;
+        End;
+    End;
+End;
 
 { TStringHash }
 
-procedure TStringHash.FDeleteIndex(i: integer);
-begin
-  self.f_Items[i] := '';
-end;
+Procedure TStringHash.FDeleteIndex(i: Integer);
+Begin
+    self.f_Items[i] := '';
+End;
 
-function TStringHash.FGetItem(const Key: string): string;
-var
-  k, x: integer;
-begin
-  if (self.FFindKey(Key, k, x)) then
-    result := self.f_Items[self.f_Keys[k][x].ItemIndex]
-  else
-    raise EHashFindError.CreateFmt('Key "%s" not found', [Key]);
-end;
+Function TStringHash.FGetItem(Const Key: String): String;
+Var
+    k, x: Integer;
+Begin
+    If (self.FFindKey(Key, k, x)) Then
+        result := self.f_Items[self.f_Keys[k][x].ItemIndex]
+    Else
+        Raise EHashFindError.CreateFmt('Key "%s" not found', [Key]);
+End;
 
-procedure TStringHash.FMoveIndex(oldIndex, newIndex: integer);
-begin
-  self.f_Items[newIndex] := self.f_Items[oldIndex];
-end;
+Procedure TStringHash.FMoveIndex(oldIndex, newIndex: Integer);
+Begin
+    self.f_Items[newIndex] := self.f_Items[oldIndex];
+End;
 
-procedure TStringHash.FSetItem(const Key, Value: string);
-var
-  k, x, i: integer;
-begin
-  if (self.FFindKey(Key, k, x)) then
-    self.f_Items[self.f_Keys[k][x].ItemIndex] := Value
-  else begin
+Procedure TStringHash.FSetItem(Const Key, Value: String);
+Var
+    k, x, i: Integer;
+Begin
+    If (self.FFindKey(Key, k, x)) Then
+        self.f_Items[self.f_Keys[k][x].ItemIndex] := Value
+    Else
+    Begin
     { New index entry, or recycle an old one. }
-    i := self.FAllocItemIndex;
-    if (i > High(self.f_Items)) then
-      SetLength(self.f_Items, i + 1);
-    self.f_Items[i] := Value;
+        i := self.FAllocItemIndex;
+        If (i > High(self.f_Items)) Then
+            SetLength(self.f_Items, i + 1);
+        self.f_Items[i] := Value;
     { Add it to the hash. }
-    SetLength(self.f_Keys[k], Length(self.f_Keys[k]) + 1);
-    self.f_Keys[k][High(self.f_Keys[k])].Key := Key;
-    self.f_Keys[k][High(self.f_Keys[k])].ItemIndex := i;
-    self.f_Keys[k][High(self.f_Keys[k])].Hash := HashThis(Key);
+        SetLength(self.f_Keys[k], Length(self.f_Keys[k]) + 1);
+        self.f_Keys[k][High(self.f_Keys[k])].Key := Key;
+        self.f_Keys[k][High(self.f_Keys[k])].ItemIndex := i;
+        self.f_Keys[k][High(self.f_Keys[k])].Hash := HashThis(Key);
     { Hash has been modified, so disallow Next. }
-    self.f_NextAllowed := false;
-  end;
-end;
+        self.f_NextAllowed := False;
+    End;
+End;
 
-function TStringHash.FIndexMax: integer;
-begin
-  result := High(self.f_Items);
-end;
+Function TStringHash.FIndexMax: Integer;
+Begin
+    result := High(self.f_Items);
+End;
 
-procedure TStringHash.FTrimIndexes(count: integer);
-begin
-  SetLength(self.f_Items, count);
-end;
+Procedure TStringHash.FTrimIndexes(count: Integer);
+Begin
+    SetLength(self.f_Items, count);
+End;
 
-procedure TStringHash.FClearItems;
-begin
-  SetLength(self.f_Items, 0);
-end;
+Procedure TStringHash.FClearItems;
+Begin
+    SetLength(self.f_Items, 0);
+End;
 
 { TIntegerHash }
 
-procedure TIntegerHash.FDeleteIndex(i: integer);
-begin
-  self.f_Items[i] := 0;
-end;
+Procedure TIntegerHash.FDeleteIndex(i: Integer);
+Begin
+    self.f_Items[i] := 0;
+End;
 
-function TIntegerHash.FGetItem(const Key: string): integer;
-var
-  k, x: integer;
-begin
-  if (self.FFindKey(Key, k, x)) then
-    result := self.f_Items[self.f_Keys[k][x].ItemIndex]
-  else
-    raise EHashFindError.CreateFmt('Key "%s" not found', [Key]);
-end;
+Function TIntegerHash.FGetItem(Const Key: String): Integer;
+Var
+    k, x: Integer;
+Begin
+    If (self.FFindKey(Key, k, x)) Then
+        result := self.f_Items[self.f_Keys[k][x].ItemIndex]
+    Else
+        Raise EHashFindError.CreateFmt('Key "%s" not found', [Key]);
+End;
 
-procedure TIntegerHash.FMoveIndex(oldIndex, newIndex: integer);
-begin
-  self.f_Items[newIndex] := self.f_Items[oldIndex];
-end;
+Procedure TIntegerHash.FMoveIndex(oldIndex, newIndex: Integer);
+Begin
+    self.f_Items[newIndex] := self.f_Items[oldIndex];
+End;
 
-procedure TIntegerHash.FSetItem(const Key: string; Value: integer);
-var
-  k, x, i: integer;
-begin
-  if (self.FFindKey(Key, k, x)) then
-    self.f_Items[self.f_Keys[k][x].ItemIndex] := Value
-  else begin
+Procedure TIntegerHash.FSetItem(Const Key: String; Value: Integer);
+Var
+    k, x, i: Integer;
+Begin
+    If (self.FFindKey(Key, k, x)) Then
+        self.f_Items[self.f_Keys[k][x].ItemIndex] := Value
+    Else
+    Begin
     { New index entry, or recycle an old one. }
-    i := self.FAllocItemIndex;
-    if (i > High(self.f_Items)) then
-      SetLength(self.f_Items, i + 1);
-    self.f_Items[i] := Value;
+        i := self.FAllocItemIndex;
+        If (i > High(self.f_Items)) Then
+            SetLength(self.f_Items, i + 1);
+        self.f_Items[i] := Value;
     { Add it to the hash. }
-    SetLength(self.f_Keys[k], Length(self.f_Keys[k]) + 1);
-    self.f_Keys[k][High(self.f_Keys[k])].Key := Key;
-    self.f_Keys[k][High(self.f_Keys[k])].ItemIndex := i;
-    self.f_Keys[k][High(self.f_Keys[k])].Hash := HashThis(Key);
+        SetLength(self.f_Keys[k], Length(self.f_Keys[k]) + 1);
+        self.f_Keys[k][High(self.f_Keys[k])].Key := Key;
+        self.f_Keys[k][High(self.f_Keys[k])].ItemIndex := i;
+        self.f_Keys[k][High(self.f_Keys[k])].Hash := HashThis(Key);
     { Hash has been modified, so disallow Next. }
-    self.f_NextAllowed := false;
-  end;
-end;
+        self.f_NextAllowed := False;
+    End;
+End;
 
-function TIntegerHash.FIndexMax: integer;
-begin
-  result := High(self.f_Items);
-end;
+Function TIntegerHash.FIndexMax: Integer;
+Begin
+    result := High(self.f_Items);
+End;
 
-procedure TIntegerHash.FTrimIndexes(count: integer);
-begin
-  SetLength(self.f_Items, count);
-end;
+Procedure TIntegerHash.FTrimIndexes(count: Integer);
+Begin
+    SetLength(self.f_Items, count);
+End;
 
-procedure TIntegerHash.FClearItems;
-begin
-  SetLength(self.f_Items, 0);
-end;
+Procedure TIntegerHash.FClearItems;
+Begin
+    SetLength(self.f_Items, 0);
+End;
 
 { TObjectHash }
 
-procedure TObjectHash.FDeleteIndex(i: integer);
-begin
-  self.f_Items[i].Free;
-  self.f_Items[i] := nil;
-end;
+Procedure TObjectHash.FDeleteIndex(i: Integer);
+Begin
+    self.f_Items[i].Free;
+    self.f_Items[i] := Nil;
+End;
 
-function TObjectHash.FGetItem(const Key: string): TObject;
-var
-  k, x: integer;
-begin
-  if (self.FFindKey(Key, k, x)) then
-    result := self.f_Items[self.f_Keys[k][x].ItemIndex]
-  else
-    raise EHashFindError.CreateFmt('Key "%s" not found', [Key]);
-end;
+Function TObjectHash.FGetItem(Const Key: String): TObject;
+Var
+    k, x: Integer;
+Begin
+    If (self.FFindKey(Key, k, x)) Then
+        result := self.f_Items[self.f_Keys[k][x].ItemIndex]
+    Else
+        Raise EHashFindError.CreateFmt('Key "%s" not found', [Key]);
+End;
 
-procedure TObjectHash.FMoveIndex(oldIndex, newIndex: integer);
-begin
-  self.f_Items[newIndex] := self.f_Items[oldIndex];
-end;
+Procedure TObjectHash.FMoveIndex(oldIndex, newIndex: Integer);
+Begin
+    self.f_Items[newIndex] := self.f_Items[oldIndex];
+End;
 
-procedure TObjectHash.FSetItem(const Key: string; Value: TObject);
-var
-  k, x, i: integer;
-begin
-  if (self.FFindKey(Key, k, x)) then begin
-    self.f_Items[self.f_Keys[k][x].ItemIndex].Free;
-    self.f_Items[self.f_Keys[k][x].ItemIndex] := Value;
-  end else begin
+Procedure TObjectHash.FSetItem(Const Key: String; Value: TObject);
+Var
+    k, x, i: Integer;
+Begin
+    If (self.FFindKey(Key, k, x)) Then
+    Begin
+        self.f_Items[self.f_Keys[k][x].ItemIndex].Free;
+        self.f_Items[self.f_Keys[k][x].ItemIndex] := Value;
+    End
+    Else
+    Begin
     { New index entry, or recycle an old one. }
-    i := self.FAllocItemIndex;
-    if (i > High(self.f_Items)) then
-      SetLength(self.f_Items, i + 1);
-    self.f_Items[i] := Value;
+        i := self.FAllocItemIndex;
+        If (i > High(self.f_Items)) Then
+            SetLength(self.f_Items, i + 1);
+        self.f_Items[i] := Value;
     { Add it to the hash. }
-    SetLength(self.f_Keys[k], Length(self.f_Keys[k]) + 1);
-    self.f_Keys[k][High(self.f_Keys[k])].Key := Key;
-    self.f_Keys[k][High(self.f_Keys[k])].ItemIndex := i;
-    self.f_Keys[k][High(self.f_Keys[k])].Hash := HashThis(Key);
+        SetLength(self.f_Keys[k], Length(self.f_Keys[k]) + 1);
+        self.f_Keys[k][High(self.f_Keys[k])].Key := Key;
+        self.f_Keys[k][High(self.f_Keys[k])].ItemIndex := i;
+        self.f_Keys[k][High(self.f_Keys[k])].Hash := HashThis(Key);
     { Hash has been modified, so disallow Next. }
-    self.f_NextAllowed := false;
-  end;
-end;
+        self.f_NextAllowed := False;
+    End;
+End;
 
-function TObjectHash.FIndexMax: integer;
-begin
-  result := High(self.f_Items);
-end;
+Function TObjectHash.FIndexMax: Integer;
+Begin
+    result := High(self.f_Items);
+End;
 
-procedure TObjectHash.FTrimIndexes(count: integer);
-begin
-  SetLength(self.f_Items, count);
-end;
+Procedure TObjectHash.FTrimIndexes(count: Integer);
+Begin
+    SetLength(self.f_Items, count);
+End;
 
-procedure TObjectHash.FClearItems;
-var
-  i: integer;
-begin
-  for i := 0 to High(self.f_Items) do
-    if (Assigned(self.f_Items[i])) then
-      self.f_Items[i].Free;
-  SetLength(self.f_Items, 0);
-end;
+Procedure TObjectHash.FClearItems;
+Var
+    i: Integer;
+Begin
+    For i := 0 To High(self.f_Items) Do
+        If (Assigned(self.f_Items[i])) Then
+            self.f_Items[i].Free;
+    SetLength(self.f_Items, 0);
+End;
 
-destructor TObjectHash.Destroy;
-var
-  i: integer;
-begin
-  for i := 0 to High(self.f_Items) do
-    if (Assigned(self.f_Items[i])) then
-      self.f_Items[i].Free;
-  inherited;
-end;
+Destructor TObjectHash.Destroy;
+Var
+    i: Integer;
+Begin
+    For i := 0 To High(self.f_Items) Do
+        If (Assigned(self.f_Items[i])) Then
+            self.f_Items[i].Free;
+    Inherited;
+End;
 
-end.
-
+End.

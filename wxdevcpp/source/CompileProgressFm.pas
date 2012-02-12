@@ -17,11 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-unit CompileProgressFm;
+Unit CompileProgressFm;
 
-interface
+Interface
 
-uses
+Uses
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
     Dialogs, StdCtrls, ExtCtrls, ComCtrls, XPMenu, devcfg;
@@ -31,8 +31,8 @@ uses
   QDialogs, QStdCtrls, QExtCtrls, QComCtrls;
 {$ENDIF}
 
-type
-    TCompileProgressForm = class(TForm)
+Type
+    TCompileProgressForm = Class(TForm)
         btnClose: TButton;
         PageControl1: TPageControl;
         TabSheet1: TTabSheet;
@@ -60,79 +60,79 @@ type
         lblElapsed: TLabel;
         timeTimer: TTimer;
         chkSelfClose: TCheckBox;
-        procedure FormShow(Sender: TObject);
-        procedure FormClose(Sender: TObject; var Action: TCloseAction);
-        procedure timeTimerTimer(Sender: TObject);
-        procedure chkSelfCloseClick(Sender: TObject);
-    private
+        Procedure FormShow(Sender: TObject);
+        Procedure FormClose(Sender: TObject; Var Action: TCloseAction);
+        Procedure timeTimerTimer(Sender: TObject);
+        Procedure chkSelfCloseClick(Sender: TObject);
+    Private
         { Private declarations }
         StartTime: Cardinal;
-    public
+    Public
         { Public declarations }
-        class function FormatTime(Seconds: Integer): string;
-    end;
+        Class Function FormatTime(Seconds: Integer): String;
+    End;
 
-var
+Var
     CompileProgressForm: TCompileProgressForm;
 
-implementation
+Implementation
 
 {$R *.dfm}
 
-procedure TCompileProgressForm.FormShow(Sender: TObject);
-begin
-    StartTime := GetTickCount div 1000;
+Procedure TCompileProgressForm.FormShow(Sender: TObject);
+Begin
+    StartTime := GetTickCount Div 1000;
     DesktopFont := True;
     lblFile.Font.Style := [fsBold];
     PageControl1.ActivePageIndex := 0;
     XPMenu.Active := devData.XPTheme;
     chkSelfClose.Checked := devData.AutoCloseProgress;
     timeTimer.OnTimer(timeTimer);
-end;
+End;
 
-procedure TCompileProgressForm.FormClose(Sender: TObject;
-    var Action: TCloseAction);
-begin
+Procedure TCompileProgressForm.FormClose(Sender: TObject;
+    Var Action: TCloseAction);
+Begin
     Action := caFree;
-end;
+End;
 
-procedure TCompileProgressForm.timeTimerTimer(Sender: TObject);
-begin
-    lblElapsed.Caption := FormatTime((GetTickCount div 1000) - StartTime);
-end;
+Procedure TCompileProgressForm.timeTimerTimer(Sender: TObject);
+Begin
+    lblElapsed.Caption := FormatTime((GetTickCount Div 1000) - StartTime);
+End;
 
-class function TCompileProgressForm.FormatTime(Seconds: Integer): string;
-    function GetPlural(amount: Integer): string;
-    begin
-        if amount <> 1 then
+Class Function TCompileProgressForm.FormatTime(Seconds: Integer): String;
+    Function GetPlural(amount: Integer): String;
+    Begin
+        If amount <> 1 Then
             Result := 's'
-        else
+        Else
             Result := '';
-    end;
-var
+    End;
+Var
     Hours, Minutes: Integer;
-begin
+Begin
     //Format the string
-    Hours := Seconds div 3600;
-    Seconds := Seconds mod 3600;
-    Minutes := Seconds div 60;
-    Seconds := Seconds mod 60;
+    Hours := Seconds Div 3600;
+    Seconds := Seconds Mod 3600;
+    Minutes := Seconds Div 60;
+    Seconds := Seconds Mod 60;
 
-    if Hours <> 0 then
+    If Hours <> 0 Then
         Result := Format('%d hour%s %d minute%s %d second%s',
             [Hours, GetPlural(Hours), Minutes,
             GetPlural(Minutes), Seconds, GetPlural(Seconds)])
-    else
-    if Minutes <> 0 then
+    Else
+    If Minutes <> 0 Then
         Result := Format('%d minute%s %d second%s',
             [Minutes, GetPlural(Minutes), Seconds, GetPlural(Seconds)])
-    else
+    Else
         Result := Format('%d second%s', [Seconds, GetPlural(Seconds)]);
-end;
+End;
 
-procedure TCompileProgressForm.chkSelfCloseClick(Sender: TObject);
-begin
+Procedure TCompileProgressForm.chkSelfCloseClick(Sender: TObject);
+Begin
     devData.AutoCloseProgress := chkSelfClose.Checked;
-end;
+End;
 
-end.
+End.

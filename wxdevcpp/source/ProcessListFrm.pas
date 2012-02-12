@@ -17,11 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-unit ProcessListFrm;
+Unit ProcessListFrm;
 
-interface
+Interface
 
-uses
+Uses
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
     Dialogs, StdCtrls, Buttons, ExtCtrls, MultiLangSupport, XPMenu;
@@ -31,63 +31,63 @@ uses
   QDialogs, QStdCtrls, QButtons, QExtCtrls, MultiLangSupport;
 {$ENDIF}
 
-type
-    TProcessListForm = class(TForm)
+Type
+    TProcessListForm = Class(TForm)
         OKBtn: TBitBtn;
         CancelBtn: TBitBtn;
         XPMenu: TXPMenu;
         MainLabel: TLabel;
         ProcessCombo: TComboBox;
-        procedure FormCreate(Sender: TObject);
-        procedure FormDestroy(Sender: TObject);
-    private
-        procedure LoadText;
+        Procedure FormCreate(Sender: TObject);
+        Procedure FormDestroy(Sender: TObject);
+    Private
+        Procedure LoadText;
         { Private declarations }
-    public
+    Public
         ProcessList: TList;
         { Public declarations }
-    end;
+    End;
 
-var
+Var
     ProcessListForm: TProcessListForm;
 
-implementation
+Implementation
 
-uses
+Uses
     tlhelp32, devcfg;
 
 {$R *.dfm}
 
-procedure TProcessListForm.FormCreate(Sender: TObject);
-var
+Procedure TProcessListForm.FormCreate(Sender: TObject);
+Var
     t: THandle;
     pe: TProcessEntry32;
-    HasProcess: boolean;
-begin
+    HasProcess: Boolean;
+Begin
     LoadText;
     ProcessList := TList.Create;
     t := CreateToolhelp32Snapshot(TH32CS_SNAPALL, 0);
-    try
+    Try
         pe.dwSize := SizeOf(pe);
         HasProcess := Process32First(t, pe);
-        while HasProcess do
-        begin
+        While HasProcess Do
+        Begin
             ProcessCombo.Items.Add(pe.szExeFile);
             ProcessList.Add(pointer(pe.th32ProcessId));
             HasProcess := Process32Next(t, pe);
-        end;
-    finally
+        End;
+    Finally
         CloseHandle(t);
-    end;
-end;
+    End;
+End;
 
-procedure TProcessListForm.FormDestroy(Sender: TObject);
-begin
+Procedure TProcessListForm.FormDestroy(Sender: TObject);
+Begin
     ProcessList.Free;
-end;
+End;
 
-procedure TProcessListForm.LoadText;
-begin
+Procedure TProcessListForm.LoadText;
+Begin
     DesktopFont := True;
     XPMenu.Active := devData.XPTheme;
     Caption := Lang[ID_ITEM_ATTACHPROCESS];
@@ -95,6 +95,6 @@ begin
     MainLabel.Width := 360;
     OKBtn.Caption := Lang[ID_BTN_OK];
     CancelBtn.Caption := Lang[ID_BTN_CANCEL];
-end;
+End;
 
-end.
+End.

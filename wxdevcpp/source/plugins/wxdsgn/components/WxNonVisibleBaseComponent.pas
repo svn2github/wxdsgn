@@ -24,46 +24,46 @@
 { ****************************************************************** }
 
 
-unit WxNonVisibleBaseComponent;
+Unit WxNonVisibleBaseComponent;
 
-interface
+Interface
 
-uses
-  Windows, Messages, SysUtils, Classes, Controls, StdCtrls, Buttons;
+Uses
+    Windows, Messages, SysUtils, Classes, Controls, StdCtrls, Buttons;
 
-type
-  TWxNonVisibleBaseComponent = class(TBitBtn)
-  private
+Type
+    TWxNonVisibleBaseComponent = Class(TBitBtn)
+    Private
     { Private declarations }
-  protected
+    Protected
     { Protected declarations }
-  public
+    Public
     { Public declarations }
-    procedure WMPaint(var messageV: TWMPaint); message WM_PAINT;
-  published
-    property Glyph;
+        Procedure WMPaint(Var messageV: TWMPaint); Message WM_PAINT;
+    Published
+        Property Glyph;
     { Published declarations }
-  end;
+    End;
 
-procedure Register;
+Procedure Register;
 
-implementation
+Implementation
 
-procedure Register;
-begin
-  RegisterComponents('wxWidgets', [TWxNonVisibleBaseComponent]);
-end;
+Procedure Register;
+Begin
+    RegisterComponents('wxWidgets', [TWxNonVisibleBaseComponent]);
+End;
 
-procedure TWxNonVisibleBaseComponent.WMPaint(var messageV: TWMPaint);
-begin
-  self.Caption := '';
-  self.Height  := 27;
-  self.Width   := 28;
-  self.BringToFront;
-  SetWindowPos(self.Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOACTIVATE or
-    SWP_NOMOVE or SWP_NOSIZE);
-  inherited;
-end;
+Procedure TWxNonVisibleBaseComponent.WMPaint(Var messageV: TWMPaint);
+Begin
+    self.Caption := '';
+    self.Height := 27;
+    self.Width := 28;
+    self.BringToFront;
+    SetWindowPos(self.Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOACTIVATE Or
+        SWP_NOMOVE Or SWP_NOSIZE);
+    Inherited;
+End;
 
 
-end.
+End.

@@ -22,61 +22,61 @@
 {Contact gururamnath@yahoo.com for details                           }
 { ****************************************************************** }
 
-unit UStrings;
+Unit UStrings;
 
-interface
+Interface
 
-uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Buttons, ExtCtrls, XPMenu;
+Uses
+    Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+    StdCtrls, Buttons, ExtCtrls, XPMenu;
 
-type
-  TStringsForm = class(TForm)
-    btnOK: TBitBtn;
-    btnCancel: TBitBtn;
-    btnHelp: TBitBtn;
-    grpMemo: TGroupBox;
-    Memo: TMemo;
-    XPMenu: TXPMenu;
+Type
+    TStringsForm = Class(TForm)
+        btnOK: TBitBtn;
+        btnCancel: TBitBtn;
+        btnHelp: TBitBtn;
+        grpMemo: TGroupBox;
+        Memo: TMemo;
+        XPMenu: TXPMenu;
 
-    procedure MemoChange(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
-  private
+        Procedure MemoChange(Sender: TObject);
+        Procedure FormCreate(Sender: TObject);
+    Private
     { Private declarations }
-  public
+    Public
     { Public declarations }
-    OnContentsChanged: TNotifyEvent;
-  end;
+        OnContentsChanged: TNotifyEvent;
+    End;
 
-var
-  StringsForm: TStringsForm;
+Var
+    StringsForm: TStringsForm;
 
-implementation
+Implementation
 {uses
   devCfg;} // EAB TODO: Fix this
 
 {$R *.DFM}
 
-procedure TStringsForm.MemoChange(Sender: TObject);
-var
-  lbl: string;
-begin
-    if Memo.Lines.Count = 1 then
+Procedure TStringsForm.MemoChange(Sender: TObject);
+Var
+    lbl: String;
+Begin
+    If Memo.Lines.Count = 1 Then
         lbl := ' Line'
-    else
+    Else
         lbl := ' Lines';
-    
+
     grpMemo.Caption := IntToStr(Memo.Lines.Count) + lbl;
 
     //Broadcast the event
-    if Assigned(OnContentsChanged) then
+    If Assigned(OnContentsChanged) Then
         OnContentsChanged(Sender);
-end;
+End;
 
-procedure TStringsForm.FormCreate(Sender: TObject);
-begin
+Procedure TStringsForm.FormCreate(Sender: TObject);
+Begin
     DesktopFont := True;
     //XPMenu.Active := devData.XPTheme      EAB TODO: fix
-end;
+End;
 
-end.
+End.

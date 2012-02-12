@@ -23,249 +23,249 @@
 {Contact gururamnath@yahoo.com for details                           }
 { ****************************************************************** }
 
-unit wxAuiNoteBookPage;
+Unit wxAuiNoteBookPage;
 
-interface
+Interface
 
-uses
-  Windows, Messages, SysUtils, Graphics, Classes, Controls, ComCtrls,
-  WxUtils, Forms, WxSizerPanel;
+Uses
+    Windows, Messages, SysUtils, Graphics, Classes, Controls, ComCtrls,
+    WxUtils, Forms, WxSizerPanel;
 
-type
-  TWxAuiNoteBookPage =  class (TTabSheet, IWxComponentInterface, IWxContainerInterface)
+Type
+    TWxAuiNoteBookPage = Class(TTabSheet, IWxComponentInterface, IWxContainerInterface)
 //class(TBitmapTabControl, IWxComponentInterface, IWxContainerInterface)
-private
+    Private
     { Private declarations }
-    FEVT_UPDATE_UI: string;
-    FWx_BKColor: TColor;
-    FWx_Border: integer;
-    FWx_Class: string;
-    FWx_ControlOrientation: TWxControlOrientation;
-    FWx_Default: boolean;
-    FWx_Enabled: boolean;
-    FWx_EventList: TStringList;
-    FWx_FGColor: TColor;
-    FWx_GeneralStyle: TWxStdStyleSet;
-    FWx_HelpText: string;
-    FWx_Hidden: boolean;
-    FWx_IDName: string;
-    FWx_IDValue: integer;
-    FWx_ProxyBGColorString: TWxColorString;
-    FWx_ProxyFGColorString: TWxColorString;
-    FWx_StretchFactor: integer;
-    FWx_ToolTip: string;
-    FWx_PropertyList: TStringList;
-    FInvisibleBGColorString: string;
-    FInvisibleFGColorString: string;
-    FWx_Comments: TStrings;
-    FWx_Alignment: TWxSizerAlignmentSet;
-    FWx_BorderAlignment: TWxBorderAlignment;
+        FEVT_UPDATE_UI: String;
+        FWx_BKColor: TColor;
+        FWx_Border: Integer;
+        FWx_Class: String;
+        FWx_ControlOrientation: TWxControlOrientation;
+        FWx_Default: Boolean;
+        FWx_Enabled: Boolean;
+        FWx_EventList: TStringList;
+        FWx_FGColor: TColor;
+        FWx_GeneralStyle: TWxStdStyleSet;
+        FWx_HelpText: String;
+        FWx_Hidden: Boolean;
+        FWx_IDName: String;
+        FWx_IDValue: Integer;
+        FWx_ProxyBGColorString: TWxColorString;
+        FWx_ProxyFGColorString: TWxColorString;
+        FWx_StretchFactor: Integer;
+        FWx_ToolTip: String;
+        FWx_PropertyList: TStringList;
+        FInvisibleBGColorString: String;
+        FInvisibleFGColorString: String;
+        FWx_Comments: TStrings;
+        FWx_Alignment: TWxSizerAlignmentSet;
+        FWx_BorderAlignment: TWxBorderAlignment;
 
-  protected
+    Protected
     { Protected declarations }
-  public
-    defaultBGColor: TColor;
-    defaultFGColor: TColor;
-    procedure AutoInitialize;
-    procedure AutoDestroy;
+    Public
+        defaultBGColor: TColor;
+        defaultFGColor: TColor;
+        Procedure AutoInitialize;
+        Procedure AutoDestroy;
 
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    function GenerateControlIDs: string;
-    function GenerateEnumControlIDs: string;
-    function GenerateEventTableEntries(CurrClassName: string): string;
-    function GenerateGUIControlCreation: string;
-    function GenerateXRCControlCreation(IndentString: string): TStringList;
-    function GenerateGUIControlDeclaration: string;
-    function GenerateHeaderInclude: string;
-    function GenerateImageInclude: string;
-    function GetEventList: TStringList;
-    function GetIDName: string;
-    function GetIDValue: integer;
-    function GetParameterFromEventName(EventName: string): string;
-    function GetPropertyList: TStringList;
-    function GetTypeFromEventName(EventName: string): string;
-    function GetWxClassName: string;
-    procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
-    procedure SetIDName(IDName: string);
-    procedure SetIDValue(IDValue: integer);
-    procedure SetWxClassName(wxClassName: string);
-    function GetFGColor: string;
-    procedure SetFGColor(strValue: string);
-    function GetBGColor: string;
-    procedure SetBGColor(strValue: string);
+        Constructor Create(AOwner: TComponent); Override;
+        Destructor Destroy; Override;
+        Function GenerateControlIDs: String;
+        Function GenerateEnumControlIDs: String;
+        Function GenerateEventTableEntries(CurrClassName: String): String;
+        Function GenerateGUIControlCreation: String;
+        Function GenerateXRCControlCreation(IndentString: String): TStringList;
+        Function GenerateGUIControlDeclaration: String;
+        Function GenerateHeaderInclude: String;
+        Function GenerateImageInclude: String;
+        Function GetEventList: TStringList;
+        Function GetIDName: String;
+        Function GetIDValue: Integer;
+        Function GetParameterFromEventName(EventName: String): String;
+        Function GetPropertyList: TStringList;
+        Function GetTypeFromEventName(EventName: String): String;
+        Function GetWxClassName: String;
+        Procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
+        Procedure SetIDName(IDName: String);
+        Procedure SetIDValue(IDValue: Integer);
+        Procedure SetWxClassName(wxClassName: String);
+        Function GetFGColor: String;
+        Procedure SetFGColor(strValue: String);
+        Function GetBGColor: String;
+        Procedure SetBGColor(strValue: String);
 
-    function GetGenericColor(strVariableName: string): string;
-    procedure SetGenericColor(strVariableName, strValue: string);
+        Function GetGenericColor(strVariableName: String): String;
+        Procedure SetGenericColor(strVariableName, strValue: String);
 
-    procedure SetProxyFGColorString(Value: string);
-    procedure SetProxyBGColorString(Value: string);
+        Procedure SetProxyFGColorString(Value: String);
+        Procedure SetProxyBGColorString(Value: String);
 
-    function GetBorderAlignment: TWxBorderAlignment;
-    procedure SetBorderAlignment(border: TWxBorderAlignment);
-    function GetBorderWidth: integer;
-    procedure SetBorderWidth(width: integer);
-    function GetStretchFactor: integer;
-    procedure SetStretchFactor(intValue: integer);
+        Function GetBorderAlignment: TWxBorderAlignment;
+        Procedure SetBorderAlignment(border: TWxBorderAlignment);
+        Function GetBorderWidth: Integer;
+        Procedure SetBorderWidth(width: Integer);
+        Function GetStretchFactor: Integer;
+        Procedure SetStretchFactor(intValue: Integer);
 
-  published
+    Published
     { Published declarations }
-    property EVT_UPDATE_UI: string read FEVT_UPDATE_UI write FEVT_UPDATE_UI;
-    property Wx_BKColor: TColor read FWx_BKColor write FWx_BKColor;
-    property Wx_Class: string read FWx_Class write FWx_Class;
-    property Wx_ControlOrientation: TWxControlOrientation
-      read FWx_ControlOrientation write FWx_ControlOrientation;
-    property Wx_Default: boolean read FWx_Default write FWx_Default;
-    property Wx_Enabled: boolean read FWx_Enabled write FWx_Enabled default True;
-    property Wx_EventList: TStringList read FWx_EventList write FWx_EventList;
-    property Wx_FGColor: TColor read FWx_FGColor write FWx_FGColor;
-    property Wx_GeneralStyle: TWxStdStyleSet
-      read FWx_GeneralStyle write FWx_GeneralStyle;
-    property Wx_HelpText: string read FWx_HelpText write FWx_HelpText;
-    property Wx_Hidden: boolean read FWx_Hidden write FWx_Hidden;
-    property Wx_IDName: string read FWx_IDName write FWx_IDName;
-    property Wx_IDValue: integer read FWx_IDValue write FWx_IDValue default -1;
-    property Wx_ToolTip: string read FWx_ToolTip write FWx_ToolTip;
+        Property EVT_UPDATE_UI: String Read FEVT_UPDATE_UI Write FEVT_UPDATE_UI;
+        Property Wx_BKColor: TColor Read FWx_BKColor Write FWx_BKColor;
+        Property Wx_Class: String Read FWx_Class Write FWx_Class;
+        Property Wx_ControlOrientation: TWxControlOrientation
+            Read FWx_ControlOrientation Write FWx_ControlOrientation;
+        Property Wx_Default: Boolean Read FWx_Default Write FWx_Default;
+        Property Wx_Enabled: Boolean Read FWx_Enabled Write FWx_Enabled Default True;
+        Property Wx_EventList: TStringList Read FWx_EventList Write FWx_EventList;
+        Property Wx_FGColor: TColor Read FWx_FGColor Write FWx_FGColor;
+        Property Wx_GeneralStyle: TWxStdStyleSet
+            Read FWx_GeneralStyle Write FWx_GeneralStyle;
+        Property Wx_HelpText: String Read FWx_HelpText Write FWx_HelpText;
+        Property Wx_Hidden: Boolean Read FWx_Hidden Write FWx_Hidden;
+        Property Wx_IDName: String Read FWx_IDName Write FWx_IDName;
+        Property Wx_IDValue: Integer Read FWx_IDValue Write FWx_IDValue Default -1;
+        Property Wx_ToolTip: String Read FWx_ToolTip Write FWx_ToolTip;
 
-    property Wx_ProxyBGColorString: TWxColorString read FWx_ProxyBGColorString write FWx_ProxyBGColorString;
-    property Wx_ProxyFGColorString: TWxColorString read FWx_ProxyFGColorString write FWx_ProxyFGColorString;
-    property InvisibleBGColorString: string read FInvisibleBGColorString write FInvisibleBGColorString;
-    property InvisibleFGColorString: string read FInvisibleFGColorString write FInvisibleFGColorString;
+        Property Wx_ProxyBGColorString: TWxColorString Read FWx_ProxyBGColorString Write FWx_ProxyBGColorString;
+        Property Wx_ProxyFGColorString: TWxColorString Read FWx_ProxyFGColorString Write FWx_ProxyFGColorString;
+        Property InvisibleBGColorString: String Read FInvisibleBGColorString Write FInvisibleBGColorString;
+        Property InvisibleFGColorString: String Read FInvisibleFGColorString Write FInvisibleFGColorString;
 
-    property Wx_Border: integer read GetBorderWidth write SetBorderWidth default 5;
-    property Wx_BorderAlignment: TWxBorderAlignment read GetBorderAlignment write SetBorderAlignment default [wxALL];
-    property Wx_Alignment: TWxSizerAlignmentSet read FWx_Alignment write FWx_Alignment default [wxALIGN_CENTER];
-    property Wx_StretchFactor: integer read GetStretchFactor write SetStretchFactor default 0;
+        Property Wx_Border: Integer Read GetBorderWidth Write SetBorderWidth Default 5;
+        Property Wx_BorderAlignment: TWxBorderAlignment Read GetBorderAlignment Write SetBorderAlignment Default [wxALL];
+        Property Wx_Alignment: TWxSizerAlignmentSet Read FWx_Alignment Write FWx_Alignment Default [wxALIGN_CENTER];
+        Property Wx_StretchFactor: Integer Read GetStretchFactor Write SetStretchFactor Default 0;
 
-    property Wx_Comments: TStrings read FWx_Comments write FWx_Comments;
+        Property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
 
-  end;
+    End;
 
-procedure Register;
+Procedure Register;
 
-implementation
+Implementation
 
-constructor TWxAuiNoteBookPage.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
+Constructor TWxAuiNoteBookPage.Create(AOwner: TComponent);
+Begin
+    Inherited Create(AOwner);
 
-  AutoInitialize;
+    AutoInitialize;
 
   { Code to perform other tasks when the component is created }
-  PopulateGenericProperties(FWx_PropertyList);
+    PopulateGenericProperties(FWx_PropertyList);
 
-  FWx_PropertyList.add('Caption:Label');
+    FWx_PropertyList.add('Caption:Label');
 
-  FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
+    FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
 
-end;
+End;
 
-destructor TWxAuiNoteBookPage.Destroy;
-begin
-  AutoDestroy;
-  inherited Destroy;
-end;
+Destructor TWxAuiNoteBookPage.Destroy;
+Begin
+    AutoDestroy;
+    Inherited Destroy;
+End;
 
 { Method to set variable and property values and create objects }
 
-procedure TWxAuiNoteBookPage.AutoInitialize;
-begin
-  FWx_PropertyList := TStringList.Create;
-  FWx_EventList := TStringList.Create;
-  FWx_Border := 5;
-  FWx_Class := 'wxPanel';
-  FWx_Enabled := True;
-  FWx_BorderAlignment := [wxAll];
-  FWx_Alignment := [wxALIGN_CENTER];
-  FWx_IDValue := -1;
-  FWx_StretchFactor := 0;
-  FWx_ProxyBGColorString := TWxColorString.Create;
-  FWx_ProxyFGColorString := TWxColorString.Create;
-  defaultBGColor := self.color;
-  defaultFGColor := self.font.color;
-  FWx_Comments := TStringList.Create;
+Procedure TWxAuiNoteBookPage.AutoInitialize;
+Begin
+    FWx_PropertyList := TStringList.Create;
+    FWx_EventList := TStringList.Create;
+    FWx_Border := 5;
+    FWx_Class := 'wxPanel';
+    FWx_Enabled := True;
+    FWx_BorderAlignment := [wxAll];
+    FWx_Alignment := [wxALIGN_CENTER];
+    FWx_IDValue := -1;
+    FWx_StretchFactor := 0;
+    FWx_ProxyBGColorString := TWxColorString.Create;
+    FWx_ProxyFGColorString := TWxColorString.Create;
+    defaultBGColor := self.color;
+    defaultFGColor := self.font.color;
+    FWx_Comments := TStringList.Create;
 
-end; { of AutoInitialize }
+End; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
 
-procedure TWxAuiNoteBookPage.AutoDestroy;
-begin
-  FWx_PropertyList.Destroy;
-  FWx_EventList.Destroy;
-  FWx_ProxyBGColorString.Destroy;
-  FWx_ProxyFGColorString.Destroy;
-  FWx_Comments.Destroy;
-end; { of AutoDestroy }
+Procedure TWxAuiNoteBookPage.AutoDestroy;
+Begin
+    FWx_PropertyList.Destroy;
+    FWx_EventList.Destroy;
+    FWx_ProxyBGColorString.Destroy;
+    FWx_ProxyFGColorString.Destroy;
+    FWx_Comments.Destroy;
+End; { of AutoDestroy }
 
-function TWxAuiNoteBookPage.GenerateEnumControlIDs: string;
-begin
-  Result := GetWxEnum(self.Wx_IDValue, self.Wx_IDName);
-end;
+Function TWxAuiNoteBookPage.GenerateEnumControlIDs: String;
+Begin
+    Result := GetWxEnum(self.Wx_IDValue, self.Wx_IDName);
+End;
 
-function TWxAuiNoteBookPage.GenerateControlIDs: string;
-begin
-  Result := '';
-  if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-    Result := Format('#define %s %d ', [Wx_IDName, Wx_IDValue]);
-end;
+Function TWxAuiNoteBookPage.GenerateControlIDs: String;
+Begin
+    Result := '';
+    If (Wx_IDValue > 0) And (trim(Wx_IDName) <> '') Then
+        Result := Format('#define %s %d ', [Wx_IDName, Wx_IDValue]);
+End;
 
-function TWxAuiNoteBookPage.GenerateEventTableEntries(CurrClassName: string): string;
-begin
-  Result := '';
-  if trim(EVT_UPDATE_UI) <> '' then
-    Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
-      [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
+Function TWxAuiNoteBookPage.GenerateEventTableEntries(CurrClassName: String): String;
+Begin
+    Result := '';
+    If trim(EVT_UPDATE_UI) <> '' Then
+        Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
+            [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
 
-end;
+End;
 
-function TWxAuiNoteBookPage.GenerateXRCControlCreation(IndentString: string): TStringList;
-var
-  i: integer;
-  wxcompInterface: IWxComponentInterface;
-  tempstring: TStringList;
-begin
+Function TWxAuiNoteBookPage.GenerateXRCControlCreation(IndentString: String): TStringList;
+Var
+    i: Integer;
+    wxcompInterface: IWxComponentInterface;
+    tempstring: TStringList;
+Begin
 
-  Result := TStringList.Create;
+    Result := TStringList.Create;
 
-  try
-    Result.Add(IndentString + Format('<object class="%s" name="%s">',
-      [self.Wx_Class, self.Name]));
-    Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
-    Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
-    Result.Add(IndentString + Format('  <label>%s</label>', [XML_Label(self.Caption)]));
+    Try
+        Result.Add(IndentString + Format('<object class="%s" name="%s">',
+            [self.Wx_Class, self.Name]));
+        Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
+        Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
+        Result.Add(IndentString + Format('  <label>%s</label>', [XML_Label(self.Caption)]));
 
-    for i := 0 to self.ControlCount - 1 do // Iterate
-      if self.Controls[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) then
+        For i := 0 To self.ControlCount - 1 Do // Iterate
+            If self.Controls[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) Then
         // Only add the XRC control if it is a child of the top-most parent (the form)
         //  If it is a child of a sizer, panel, or other object, then it's XRC code
         //  is created in GenerateXRCControlCreation of that control.
-        if (self.Controls[i].GetParentComponent.Name = self.Name) then
-        begin
-          tempstring := wxcompInterface.GenerateXRCControlCreation('    ' + IndentString);
-          try
-            Result.AddStrings(tempstring)
-          finally
-            tempstring.Free
-          end
-        end; // for
+                If (self.Controls[i].GetParentComponent.Name = self.Name) Then
+                Begin
+                    tempstring := wxcompInterface.GenerateXRCControlCreation('    ' + IndentString);
+                    Try
+                        Result.AddStrings(tempstring)
+                    Finally
+                        tempstring.Free
+                    End;
+                End; // for
 
-    Result.Add(IndentString + '</object>');
+        Result.Add(IndentString + '</object>');
 
-  except
-    Result.Free;
-    raise;
-  end;
+    Except
+        Result.Free;
+        Raise;
+    End;
 
-end;
+End;
 
-function TWxAuiNoteBookPage.GenerateGUIControlCreation: string;
-var
-  strColorStr: string;
-  strStyle: string;
-  parentName, strAlignment: string;
+Function TWxAuiNoteBookPage.GenerateGUIControlCreation: String;
+Var
+    strColorStr: String;
+    strStyle: String;
+    parentName, strAlignment: String;
 
-begin
+Begin
 {  Result := '';
   strStyle := GetStdStyleString(self.Wx_GeneralStyle);
   if trim(strStyle) <> '' then
@@ -284,7 +284,7 @@ begin
     if Wx_Bitmap.Bitmap.Handle <> 0 then
       strBitmap := 'wxBitmap ' + self.Name + '_BITMAP' + ' (' + GetDesignerFormName(self) + '_' + self.Name + '_XPM' + ');';
 }
-  Result := GetCommentString(self.FWx_Comments.Text);
+    Result := GetCommentString(self.FWx_Comments.Text);
 
 {  if (XRCGEN) then
   begin //generate xrc loading code
@@ -340,169 +340,168 @@ begin
     Result := Result + #13 + Format('%s->AddPage(%s, %s, false, %s);',
       [parentName, self.Name, GetCppString(self.Caption), strBitmap]);
 }
-end;
+End;
 
-function TWxAuiNoteBookPage.GenerateGUIControlDeclaration: string;
-begin
-  Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
-end;
+Function TWxAuiNoteBookPage.GenerateGUIControlDeclaration: String;
+Begin
+    Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
+End;
 
-function TWxAuiNoteBookPage.GenerateHeaderInclude: string;
-begin
-  Result := '#include <wx/panel.h>';
-end;
+Function TWxAuiNoteBookPage.GenerateHeaderInclude: String;
+Begin
+    Result := '#include <wx/panel.h>';
+End;
 
-function TWxAuiNoteBookPage.GenerateImageInclude: string;
-begin
+Function TWxAuiNoteBookPage.GenerateImageInclude: String;
+Begin
 
-end;
+End;
 
-function TWxAuiNoteBookPage.GetEventList: TStringList;
-begin
-  Result := Wx_EventList;
-end;
+Function TWxAuiNoteBookPage.GetEventList: TStringList;
+Begin
+    Result := Wx_EventList;
+End;
 
-function TWxAuiNoteBookPage.GetIDName: string;
-begin
-  Result := wx_IDName;
-end;
+Function TWxAuiNoteBookPage.GetIDName: String;
+Begin
+    Result := wx_IDName;
+End;
 
-function TWxAuiNoteBookPage.GetIDValue: integer;
-begin
-  Result := wx_IDValue;
-end;
+Function TWxAuiNoteBookPage.GetIDValue: Integer;
+Begin
+    Result := wx_IDValue;
+End;
 
-function TWxAuiNoteBookPage.GetParameterFromEventName(EventName: string): string;
-begin
-  if EventName = 'EVT_UPDATE_UI' then
-  begin
-    Result := 'wxUpdateUIEvent& event';
-    exit;
-  end;
-end;
+Function TWxAuiNoteBookPage.GetParameterFromEventName(EventName: String): String;
+Begin
+    If EventName = 'EVT_UPDATE_UI' Then
+    Begin
+        Result := 'wxUpdateUIEvent& event';
+        exit;
+    End;
+End;
 
-function TWxAuiNoteBookPage.GetPropertyList: TStringList;
-begin
-  Result := FWx_PropertyList;
-end;
+Function TWxAuiNoteBookPage.GetPropertyList: TStringList;
+Begin
+    Result := FWx_PropertyList;
+End;
 
-function TWxAuiNoteBookPage.GetStretchFactor: integer;
-begin
-  Result := FWx_StretchFactor;
-end;
+Function TWxAuiNoteBookPage.GetStretchFactor: Integer;
+Begin
+    Result := FWx_StretchFactor;
+End;
 
-function TWxAuiNoteBookPage.GetTypeFromEventName(EventName: string): string;
-begin
+Function TWxAuiNoteBookPage.GetTypeFromEventName(EventName: String): String;
+Begin
 
-end;
+End;
 
-function TWxAuiNoteBookPage.GetBorderAlignment: TWxBorderAlignment;
-begin
-  Result := FWx_BorderAlignment;
-end;
+Function TWxAuiNoteBookPage.GetBorderAlignment: TWxBorderAlignment;
+Begin
+    Result := FWx_BorderAlignment;
+End;
 
-procedure TWxAuiNoteBookPage.SetBorderAlignment(border: TWxBorderAlignment);
-begin
-  FWx_BorderAlignment := border;
-end;
+Procedure TWxAuiNoteBookPage.SetBorderAlignment(border: TWxBorderAlignment);
+Begin
+    FWx_BorderAlignment := border;
+End;
 
-function TWxAuiNoteBookPage.GetBorderWidth: integer;
-begin
-  Result := FWx_Border;
-end;
+Function TWxAuiNoteBookPage.GetBorderWidth: Integer;
+Begin
+    Result := FWx_Border;
+End;
 
-procedure TWxAuiNoteBookPage.SetBorderWidth(width: integer);
-begin
-  FWx_Border := width;
-end;
+Procedure TWxAuiNoteBookPage.SetBorderWidth(width: Integer);
+Begin
+    FWx_Border := width;
+End;
 
-function TWxAuiNoteBookPage.GetWxClassName: string;
-begin
-  if trim(wx_Class) = '' then
-    wx_Class := 'wxPanel';
-  Result := wx_Class;
-end;
+Function TWxAuiNoteBookPage.GetWxClassName: String;
+Begin
+    If trim(wx_Class) = '' Then
+        wx_Class := 'wxPanel';
+    Result := wx_Class;
+End;
 
-procedure TWxAuiNoteBookPage.SaveControlOrientation(
-  ControlOrientation: TWxControlOrientation);
-begin
-  wx_ControlOrientation := ControlOrientation;
-end;
+Procedure TWxAuiNoteBookPage.SaveControlOrientation(
+    ControlOrientation: TWxControlOrientation);
+Begin
+    wx_ControlOrientation := ControlOrientation;
+End;
 
-procedure TWxAuiNoteBookPage.SetIDName(IDName: string);
-begin
-  wx_IDName := IDName;
-end;
+Procedure TWxAuiNoteBookPage.SetIDName(IDName: String);
+Begin
+    wx_IDName := IDName;
+End;
 
-procedure TWxAuiNoteBookPage.SetIDValue(IDValue: integer);
-begin
-  Wx_IDValue := IDVAlue;
-end;
+Procedure TWxAuiNoteBookPage.SetIDValue(IDValue: Integer);
+Begin
+    Wx_IDValue := IDVAlue;
+End;
 
-procedure TWxAuiNoteBookPage.SetStretchFactor(intValue: integer);
-begin
-  FWx_StretchFactor := intValue;
-end;
+Procedure TWxAuiNoteBookPage.SetStretchFactor(intValue: Integer);
+Begin
+    FWx_StretchFactor := intValue;
+End;
 
-procedure TWxAuiNoteBookPage.SetWxClassName(wxClassName: string);
-begin
-  wx_Class := wxClassName;
-end;
+Procedure TWxAuiNoteBookPage.SetWxClassName(wxClassName: String);
+Begin
+    wx_Class := wxClassName;
+End;
 
-function TWxAuiNoteBookPage.GetGenericColor(strVariableName: string): string;
-begin
+Function TWxAuiNoteBookPage.GetGenericColor(strVariableName: String): String;
+Begin
 
-end;
+End;
 
-procedure TWxAuiNoteBookPage.SetGenericColor(strVariableName, strValue: string);
-begin
+Procedure TWxAuiNoteBookPage.SetGenericColor(strVariableName, strValue: String);
+Begin
 
-end;
+End;
 
-function TWxAuiNoteBookPage.GetFGColor: string;
-begin
-  Result := FInvisibleFGColorString;
-end;
+Function TWxAuiNoteBookPage.GetFGColor: String;
+Begin
+    Result := FInvisibleFGColorString;
+End;
 
-procedure TWxAuiNoteBookPage.SetFGColor(strValue: string);
-begin
-  FInvisibleFGColorString := strValue;
-  if IsDefaultColorStr(strValue) then
-    self.Font.Color := defaultFGColor
-  else
-    self.Font.Color := GetColorFromString(strValue);
-end;
+Procedure TWxAuiNoteBookPage.SetFGColor(strValue: String);
+Begin
+    FInvisibleFGColorString := strValue;
+    If IsDefaultColorStr(strValue) Then
+        self.Font.Color := defaultFGColor
+    Else
+        self.Font.Color := GetColorFromString(strValue);
+End;
 
-function TWxAuiNoteBookPage.GetBGColor: string;
-begin
-  Result := FInvisibleBGColorString;
-end;
+Function TWxAuiNoteBookPage.GetBGColor: String;
+Begin
+    Result := FInvisibleBGColorString;
+End;
 
-procedure TWxAuiNoteBookPage.SetBGColor(strValue: string);
-begin
-  FInvisibleBGColorString := strValue;
-  if IsDefaultColorStr(strValue) then
-    self.Color := defaultBGColor
-  else
-    self.Color := GetColorFromString(strValue);
-end;
+Procedure TWxAuiNoteBookPage.SetBGColor(strValue: String);
+Begin
+    FInvisibleBGColorString := strValue;
+    If IsDefaultColorStr(strValue) Then
+        self.Color := defaultBGColor
+    Else
+        self.Color := GetColorFromString(strValue);
+End;
 
-procedure TWxAuiNoteBookPage.SetProxyFGColorString(Value: string);
-begin
-  FInvisibleFGColorString := Value;
-  self.Color := GetColorFromString(Value);
-end;
+Procedure TWxAuiNoteBookPage.SetProxyFGColorString(Value: String);
+Begin
+    FInvisibleFGColorString := Value;
+    self.Color := GetColorFromString(Value);
+End;
 
-procedure TWxAuiNoteBookPage.SetProxyBGColorString(Value: string);
-begin
-  FInvisibleBGColorString := Value;
-  self.Font.Color := GetColorFromString(Value);
-end;
+Procedure TWxAuiNoteBookPage.SetProxyBGColorString(Value: String);
+Begin
+    FInvisibleBGColorString := Value;
+    self.Font.Color := GetColorFromString(Value);
+End;
 
-procedure Register;
-begin
-  RegisterComponents('wxWidgets', [TWxAuiNoteBookPage]);
-end;
+Procedure Register;
+Begin
+    RegisterComponents('wxWidgets', [TWxAuiNoteBookPage]);
+End;
 
-end.
-
+End.

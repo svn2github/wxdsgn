@@ -17,11 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-unit prjtypes;
+Unit prjtypes;
 
-interface
+Interface
 
-uses
+Uses
 {$IFDEF WIN32}
     Classes, editor, ComCtrls, datamod
 {$ENDIF}
@@ -32,101 +32,101 @@ uses
     , SysUtils, Contnrs
 {$ENDIF}
     ;
-const
+Const
     dptGUI = 0;
     dptCon = 1;
     dptStat = 2;
     dptDyn = 3;
 
-type
-    TProjType = byte;
-    TProjTypeSet = set of TProjType;
+Type
+    TProjType = Byte;
+    TProjTypeSet = Set Of TProjType;
 
-    TProjVersionInfo = record
-        Major: integer;
-        Minor: integer;
-        Release: integer;
-        Build: integer;
-        LanguageID: integer;
-        CharsetID: integer;
-        CompanyName: string;
-        FileVersion: string;
-        FileDescription: string;
-        InternalName: string;
-        LegalCopyright: string;
-        LegalTrademarks: string;
-        OriginalFilename: string;
-        ProductName: string;
-        ProductVersion: string;
-        AutoIncBuildNrOnCompile: boolean;
-        AutoIncBuildNrOnRebuild: boolean;
-    end;
+    TProjVersionInfo = Record
+        Major: Integer;
+        Minor: Integer;
+        Release: Integer;
+        Build: Integer;
+        LanguageID: Integer;
+        CharsetID: Integer;
+        CompanyName: String;
+        FileVersion: String;
+        FileDescription: String;
+        InternalName: String;
+        LegalCopyright: String;
+        LegalTrademarks: String;
+        OriginalFilename: String;
+        ProductName: String;
+        ProductVersion: String;
+        AutoIncBuildNrOnCompile: Boolean;
+        AutoIncBuildNrOnRebuild: Boolean;
+    End;
 
-    TProjProfile = class
-    public
+    TProjProfile = Class
+    Public
         ProfileName: String;
         typ: TProjType;
-        compilerType: integer;
+        compilerType: Integer;
         Objfiles: TStringList;
-        Compiler: string;
-        CppCompiler: string;
-        Linker: string;
+        Compiler: String;
+        CppCompiler: String;
+        Linker: String;
         Includes: TStringList;
         Libs: TStringList;
         PrivateResource: String; // Dev-C++ will overwrite this file
         ResourceIncludes: TStringList;
         MakeIncludes: TStringList;
-        Icon: string;
+        Icon: String;
         ExeOutput: String;
         ImagesOutput: String;
         ObjectOutput: String;
-        OverrideOutput: boolean;
-        OverridenOutput: string;
-        HostApplication: string;
-        IncludeVersionInfo: boolean;
-        SupportXPThemes: boolean;
-        CompilerSet: integer;
-        CompilerOptions: string;
-        PreprocDefines: string;
+        OverrideOutput: Boolean;
+        OverridenOutput: String;
+        HostApplication: String;
+        IncludeVersionInfo: Boolean;
+        SupportXPThemes: Boolean;
+        CompilerSet: Integer;
+        CompilerOptions: String;
+        PreprocDefines: String;
         //New Items From Project
-        UseCustomMakefile: boolean;
-        CustomMakefile: string;
+        UseCustomMakefile: Boolean;
+        CustomMakefile: String;
 
-        constructor Create;
-        destructor Destroy; override;
-        procedure CopyProfileFrom(R1: TProjProfile);
-    end;
+        Constructor Create;
+        Destructor Destroy; Override;
+        Procedure CopyProfileFrom(R1: TProjProfile);
+    End;
 
-    TProjectProfileList = class
-    private
+    TProjectProfileList = Class
+    Private
         fList: TObjectList;
         fVer: Integer;
         fuseGpp: Boolean;
-        function GetCount: integer;
-        function GetItem(index: integer): TProjProfile;
-        procedure SetItem(index: integer; value: TProjProfile);
-    public
-        constructor Create;
-        destructor Destroy; override;
-        procedure CopyDataFrom(ProfileList: TProjectProfileList);
-        function Add(aprofile: TProjProfile): integer;
-        procedure Remove(index: integer);
-        procedure Clear;
+        Function GetCount: Integer;
+        Function GetItem(index: Integer): TProjProfile;
+        Procedure SetItem(index: Integer; value: TProjProfile);
+    Public
+        Constructor Create;
+        Destructor Destroy; Override;
+        Procedure CopyDataFrom(ProfileList: TProjectProfileList);
+        Function Add(aprofile: TProjProfile): Integer;
+        Procedure Remove(index: Integer);
+        Procedure Clear;
 
-        property Items[index: integer]: TProjProfile read GetItem write SetItem;
-            default;
-        property Count: integer read GetCount;
-        property Ver: Integer read fVer write fVer;
-        property useGpp: Boolean read fuseGpp write fuseGpp;
-    end;
+        Property Items[index: Integer]: TProjProfile Read GetItem Write SetItem;
+            Default;
+        Property Count: Integer Read GetCount;
+        Property Ver: Integer Read fVer Write fVer;
+        Property useGpp: Boolean Read fuseGpp Write fuseGpp;
+    End;
 
-implementation
+Implementation
 
-uses
+Uses
     devcfg;
 
-constructor TProjProfile.Create;
-begin
+Constructor TProjProfile.Create;
+Begin
     Objfiles := TStringList.Create;
     Includes := TStringList.Create;
     Libs := TStringList.Create;
@@ -161,25 +161,25 @@ begin
     ResourceIncludes.DelimitedText := '';
     MakeIncludes.DelimitedText := '';
     Icon := '';
-    OverrideOutput := false;
+    OverrideOutput := False;
     OverridenOutput := '';
     HostApplication := '';
-    IncludeVersionInfo := false;
-    SupportXPThemes := false;
+    IncludeVersionInfo := False;
+    SupportXPThemes := False;
     PreprocDefines := '';
-end;
+End;
 
-destructor TProjProfile.Destroy;
-begin
+Destructor TProjProfile.Destroy;
+Begin
     Objfiles.Free;
     Includes.Free;
     Libs.Free;
     ResourceIncludes.Free;
     MakeIncludes.Free;
-end;
+End;
 
-procedure TProjProfile.CopyProfileFrom(R1: TProjProfile);
-begin
+Procedure TProjProfile.CopyProfileFrom(R1: TProjProfile);
+Begin
     ProfileName := R1.ProfileName;
     typ := R1.typ;
     Objfiles.Text := r1.ObjFiles.Text;
@@ -214,77 +214,77 @@ begin
     compilerType := R1.compilerType;
     UseCustomMakefile := R1.UseCustomMakefile;
     CustomMakefile := R1.CustomMakefile;
-end;
+End;
 
 { TProjectProfileList }
-constructor TProjectProfileList.Create;
-begin
-    inherited Create;
+Constructor TProjectProfileList.Create;
+Begin
+    Inherited Create;
     fList := TObjectList.Create;
-end;
+End;
 
-destructor TProjectProfileList.Destroy;
-var
-    idx: integer;
-begin
-    for idx := pred(fList.Count) downto 0 do
+Destructor TProjectProfileList.Destroy;
+Var
+    idx: Integer;
+Begin
+    For idx := pred(fList.Count) Downto 0 Do
         Remove(0);
     fList.Free;
-    inherited;
-end;
+    Inherited;
+End;
 
-function TProjectProfileList.Add(aprofile: TProjProfile): integer;
-begin
+Function TProjectProfileList.Add(aprofile: TProjProfile): Integer;
+Begin
     result := fList.Add(aprofile);
-end;
+End;
 
-procedure TProjectProfileList.Remove(index: integer);
-begin
+Procedure TProjectProfileList.Remove(index: Integer);
+Begin
     fList.Delete(index);
     fList.Pack;
     fList.Capacity := fList.Count;
-end;
+End;
 
-procedure TProjectProfileList.Clear;
-var
+Procedure TProjectProfileList.Clear;
+Var
     i: Integer;
-begin
-    for i := Count - 1 downto 0 do
+Begin
+    For i := Count - 1 Downto 0 Do
         Remove(i);
     // Self[i].Destroy;  EAB Comment: This change merged from JOEL's 1007 revision breaks new project creation. Reverted.
     //fList.Clear;
-end;
+End;
 
-function TProjectProfileList.GetCount: integer;
-begin
+Function TProjectProfileList.GetCount: Integer;
+Begin
     result := fList.Count;
-end;
+End;
 
-function TProjectProfileList.GetItem(index: integer): TProjProfile;
-begin
+Function TProjectProfileList.GetItem(index: Integer): TProjProfile;
+Begin
     result := TProjProfile(fList[index]);
-end;
+End;
 
-procedure TProjectProfileList.SetItem(index: integer; value: TProjProfile);
-begin
+Procedure TProjectProfileList.SetItem(index: Integer; value: TProjProfile);
+Begin
     fList[index] := value;
-end;
+End;
 
-procedure TProjectProfileList.CopyDataFrom(ProfileList: TProjectProfileList);
-var
+Procedure TProjectProfileList.CopyDataFrom(ProfileList: TProjectProfileList);
+Var
     i: Integer;
     NewProfile: TProjProfile;
-begin
+Begin
     self.Clear;
 
     Ver := ProfileList.ver;
     useGpp := ProfileList.useGpp;
-    for i := 0 to ProfileList.Count - 1 Do
+    For i := 0 To ProfileList.Count - 1 Do
     Begin
         NewProfile := TProjProfile.Create;
         NewProfile.CopyProfileFrom(ProfileList[i]);
         Self.Add(NewProfile);
     End;
-end;
+End;
 
-end.
+End.

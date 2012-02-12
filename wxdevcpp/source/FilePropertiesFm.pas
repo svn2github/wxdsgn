@@ -20,11 +20,11 @@
 }
 
 {$WARN UNIT_PLATFORM OFF}
-unit FilePropertiesFm;
+Unit FilePropertiesFm;
 
-interface
+Interface
 
-uses
+Uses
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
     Dialogs, StrUtils, ExtCtrls, StdCtrls, SynEdit,
@@ -36,8 +36,8 @@ uses
   QSynEditTypes;
 {$ENDIF}
 
-type
-    TFilePropertiesForm = class(TForm)
+Type
+    TFilePropertiesForm = Class(TForm)
         btnOK: TButton;
         XPMenu: TXPMenu;
         GroupBox1: TGroupBox;
@@ -64,33 +64,33 @@ type
         lblIncludes: TLabel;
         lblSize: TLabel;
         lblEmpty: TLabel;
-        procedure FormCreate(Sender: TObject);
-        procedure FormClose(Sender: TObject; var Action: TCloseAction);
-        procedure btnOKClick(Sender: TObject);
-        procedure FormDestroy(Sender: TObject);
-        procedure FormShow(Sender: TObject);
-        procedure cmbFilesClick(Sender: TObject);
-    private
+        Procedure FormCreate(Sender: TObject);
+        Procedure FormClose(Sender: TObject; Var Action: TCloseAction);
+        Procedure btnOKClick(Sender: TObject);
+        Procedure FormDestroy(Sender: TObject);
+        Procedure FormShow(Sender: TObject);
+        Procedure cmbFilesClick(Sender: TObject);
+    Private
         { Private declarations }
-        fFilename: string;
+        fFilename: String;
         fEdit: TSynEdit;
-        procedure LoadText;
-        procedure CalculateFile(Filename: string);
-        procedure CalculateSize(Filename: string);
-        procedure ShowPropsFor(Filename: string);
-        procedure FillFiles;
-    public
+        Procedure LoadText;
+        Procedure CalculateFile(Filename: String);
+        Procedure CalculateSize(Filename: String);
+        Procedure ShowPropsFor(Filename: String);
+        Procedure FillFiles;
+    Public
         { Public declarations }
-        procedure SetFile(Filename: string);
-    end;
+        Procedure SetFile(Filename: String);
+    End;
 
-var
+Var
     FilePropertiesForm: TFilePropertiesForm;
-    Size, Stamp, Total, Code, Comments, Includes, Empty: integer;
+    Size, Stamp, Total, Code, Comments, Includes, Empty: Integer;
 
-implementation
+Implementation
 
-uses
+Uses
 {$IFDEF WIN32}
     SynEditHighlighter, main, MultiLangSupport, datamod, project, editor, devcfg;
 {$ENDIF}
@@ -102,31 +102,31 @@ uses
 
 { TFilePropertiesForm }
 
-procedure TFilePropertiesForm.CalculateSize(Filename: string);
-var
-    hFile: integer;
-begin
+Procedure TFilePropertiesForm.CalculateSize(Filename: String);
+Var
+    hFile: Integer;
+Begin
     hFile := FileOpen(Filename, fmOpenRead);
-    if hFile > 0 then
-    begin
+    If hFile > 0 Then
+    Begin
         Stamp := FileGetDate(hFile);
         Size := FileSeek(hFile, 0, 2);
         FileClose(hFile);
-    end
-    else
-    begin
+    End
+    Else
+    Begin
         Stamp := 0;
         Size := 0;
-    end;
-end;
+    End;
+End;
 
-procedure TFilePropertiesForm.CalculateFile(Filename: string);
-var
+Procedure TFilePropertiesForm.CalculateFile(Filename: String);
+Var
     Attri: TSynHighlighterAttributes;
-    Current, Token: string;
-    I, C: integer;
-begin
-    if not Assigned(fEdit) then
+    Current, Token: String;
+    I, C: Integer;
+Begin
+    If Not Assigned(fEdit) Then
         Exit;
 
     CalculateSize(FileName);
@@ -138,52 +138,52 @@ begin
     Comments := 0;
 
     // iterate through all lines of file
-    for I := 0 to fEdit.Lines.Count - 1 do
-    begin
+    For I := 0 To fEdit.Lines.Count - 1 Do
+    Begin
         Current := fEdit.Lines[I];
 
         // locate first non-space char in line
         C := 1;
-        while (C <= Length(Current)) and (Current[C] in [#9, ' ']) do
+        While (C <= Length(Current)) And (Current[C] In [#9, ' ']) Do
             Inc(C);
 
         // take the token type of the first word of the line
         fEdit.GetHighlighterAttriAtRowCol(BufferCoord(C, I + 1), Token, Attri);
 
         // if we get a token type...
-        if Assigned(Attri) then
-        begin
+        If Assigned(Attri) Then
+        Begin
             // if it is preprocessor...
-            if Attri.Name = 'Preprocessor' then
-            begin
+            If Attri.Name = 'Preprocessor' Then
+            Begin
                 // check for includes
-                if AnsiStartsStr('#include', Token) or
-                    AnsiStartsStr('# include', Token) then
+                If AnsiStartsStr('#include', Token) Or
+                    AnsiStartsStr('# include', Token) Then
                     Inc(Includes);
                 // preprocessor directives are considered as code
                 Inc(Code);
-            end
+            End
 
             // if it is a comment
-            else
-            if Attri.Name = 'Comment' then
+            Else
+            If Attri.Name = 'Comment' Then
                 Inc(Comments)
 
             // else it is code
-            else
+            Else
                 Inc(Code);
-        end
+        End
         // if we don't get a token type, this line is empty or contains only spaces
-        else
+        Else
             Inc(Empty);
-    end;
-end;
+    End;
+End;
 
-procedure TFilePropertiesForm.FormCreate(Sender: TObject);
-begin
+Procedure TFilePropertiesForm.FormCreate(Sender: TObject);
+Begin
     LoadText;
     fEdit := TSynEdit.Create(Application);
-    fEdit.Parent := nil;
+    fEdit.Parent := Nil;
     fEdit.Highlighter := dmMain.Cpp;
     fFilename := '';
 
@@ -194,21 +194,21 @@ begin
     lblSize.Font.Style := [fsBold];
     lblTimestamp.Font.Style := [fsBold];
     lblTotal.Font.Style := [fsBold];
-end;
+End;
 
-procedure TFilePropertiesForm.FormClose(Sender: TObject;
-    var Action: TCloseAction);
-begin
+Procedure TFilePropertiesForm.FormClose(Sender: TObject;
+    Var Action: TCloseAction);
+Begin
     Action := caFree;
-end;
+End;
 
-procedure TFilePropertiesForm.btnOKClick(Sender: TObject);
-begin
+Procedure TFilePropertiesForm.btnOKClick(Sender: TObject);
+Begin
     Close;
-end;
+End;
 
-procedure TFilePropertiesForm.LoadText;
-begin
+Procedure TFilePropertiesForm.LoadText;
+Begin
     DesktopFont := True;
     XPMenu.Active := devData.XPTheme;
     Caption := Lang[ID_ITEM_PROPERTIES];
@@ -224,27 +224,27 @@ begin
     Label9.Caption := Lang[ID_PROPS_ABSOLUTE] + ':';
     Label10.Caption := Lang[ID_PROPS_RELATIVE] + ':';
     Label11.Caption := Lang[ID_PROPS_TIMESTAMP] + ':';
-end;
+End;
 
-procedure TFilePropertiesForm.FormDestroy(Sender: TObject);
-begin
+Procedure TFilePropertiesForm.FormDestroy(Sender: TObject);
+Begin
     fEdit.Free;
-end;
+End;
 
-procedure TFilePropertiesForm.FormShow(Sender: TObject);
-begin
-    if fFilename = '' then
+Procedure TFilePropertiesForm.FormShow(Sender: TObject);
+Begin
+    If fFilename = '' Then
         fFilename := MainForm.GetEditor.FileName;
     FillFiles;
     ShowPropsFor(fFilename);
-end;
+End;
 
-procedure TFilePropertiesForm.ShowPropsFor(Filename: string);
-begin
-    try
+Procedure TFilePropertiesForm.ShowPropsFor(Filename: String);
+Begin
+    Try
         fEdit.Lines.LoadFromFile(Filename);
         CalculateFile(Filename);
-    except
+    Except
         // probably the file does not exist (isn't saved yet maybe?)
         Total := 0;
         Size := 0;
@@ -253,19 +253,19 @@ begin
         Empty := 0;
         Includes := 0;
         Comments := 0;
-    end;
+    End;
 
-    if Assigned(MainForm.fProject) then
-    begin
+    If Assigned(MainForm.fProject) Then
+    Begin
         lblProject.Caption := MainForm.fProject.Name;
         lblRelative.Caption :=
-            ExtractRelativePath(MainForm.fProject.Directory, Filename)
-    end
-    else
-    begin
+            ExtractRelativePath(MainForm.fProject.Directory, Filename);
+    End
+    Else
+    Begin
         lblProject.Caption := '-';
         lblRelative.Caption := '-';
-    end;
+    End;
     lblAbsolute.Caption := Filename;
     lblTotal.Caption := IntToStr(Total);
     lblSize.Caption := FormatFloat('#,###,##0', Size);
@@ -273,57 +273,57 @@ begin
     lblEmpty.Caption := IntToStr(Empty);
     lblIncludes.Caption := IntToStr(Includes);
     lblComments.Caption := IntToStr(Comments);
-    if Stamp = 0 then
+    If Stamp = 0 Then
         lblTimestamp.Caption := '-'
-    else
+    Else
         lblTimestamp.Caption :=
             FormatDateTime(ShortDateFormat + ' hh:nn:ss', FileDateToDateTime(Stamp));
-end;
+End;
 
-procedure TFilePropertiesForm.FillFiles;
-var
-    I: integer;
-    idx: integer;
+Procedure TFilePropertiesForm.FillFiles;
+Var
+    I: Integer;
+    idx: Integer;
     e: TEditor;
-begin
+Begin
     cmbFiles.Clear;
     // add all project files
-    if Assigned(MainForm.fProject) then
-    begin
-        for I := 0 to MainForm.fProject.Units.Count - 1 do
+    If Assigned(MainForm.fProject) Then
+    Begin
+        For I := 0 To MainForm.fProject.Units.Count - 1 Do
             cmbFiles.Items.AddObject(ExtractFileName(
                 MainForm.fProject.Units[I].FileName), Pointer(MainForm.fProject.Units[I]));
-    end;
+    End;
 
     // add all open editor files not in project
-    for I := 0 to MainForm.PageControl.PageCount - 1 do
-    begin
+    For I := 0 To MainForm.PageControl.PageCount - 1 Do
+    Begin
         e := MainForm.GetEditor(I);
-        if not e.InProject then
+        If Not e.InProject Then
             cmbFiles.Items.Add(e.FileName);
-    end;
+    End;
 
     idx := cmbFiles.Items.IndexOf(ExtractFileName(fFilename));
-    if idx = -1 then
+    If idx = -1 Then
         idx := cmbFiles.Items.IndexOf(fFilename);
-    if idx <> -1 then // just to be on the safe side
+    If idx <> -1 Then // just to be on the safe side
         cmbFiles.ItemIndex := idx;
-end;
+End;
 
-procedure TFilePropertiesForm.cmbFilesClick(Sender: TObject);
-begin
-    if Assigned(cmbFiles.Items.Objects[cmbFiles.ItemIndex]) then
-    begin
+Procedure TFilePropertiesForm.cmbFilesClick(Sender: TObject);
+Begin
+    If Assigned(cmbFiles.Items.Objects[cmbFiles.ItemIndex]) Then
+    Begin
         fFilename := TProjUnit(cmbFiles.Items.Objects[cmbFiles.ItemIndex]).FileName;
         ShowPropsFor(fFilename);
-    end
-    else
+    End
+    Else
         ShowPropsFor(cmbFiles.Items[cmbFiles.ItemIndex]);
-end;
+End;
 
-procedure TFilePropertiesForm.SetFile(Filename: string);
-begin
+Procedure TFilePropertiesForm.SetFile(Filename: String);
+Begin
     fFilename := Filename;
-end;
+End;
 
-end.
+End.

@@ -22,157 +22,157 @@
 {Contact gururamnath@yahoo.com for details                           }
 { ****************************************************************** }
 
-unit UPicEdit;
+Unit UPicEdit;
 
-interface
+Interface
 
-uses
-  GraphicEX, Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls, StdCtrls, Buttons, ExtDlgs,jpeg, XPMenu, StrUtils;
+Uses
+    GraphicEX, Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+    Dialogs, ExtCtrls, StdCtrls, Buttons, ExtDlgs, jpeg, XPMenu, StrUtils;
 
-type
-  TPictureEdit = class(TForm)
-    btnCancel: TBitBtn;
-    OpenDialog1: TOpenPictureDialog;
-    grpImage: TGroupBox;
-    btnLoad: TButton;
-    btnSave: TButton;
-    Panel1: TPanel;
-    Image1: TImage;
-    btnClear: TButton;
-    btnOK: TBitBtn;
-    XPMenu: TXPMenu;
-    KeepFormat: TCheckBox;
-    FileName: TEdit;
-    Label1: TLabel;
-    procedure btnLoadClick(Sender: TObject);
-    procedure btnClearClick(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
-  private
+Type
+    TPictureEdit = Class(TForm)
+        btnCancel: TBitBtn;
+        OpenDialog1: TOpenPictureDialog;
+        grpImage: TGroupBox;
+        btnLoad: TButton;
+        btnSave: TButton;
+        Panel1: TPanel;
+        Image1: TImage;
+        btnClear: TButton;
+        btnOK: TBitBtn;
+        XPMenu: TXPMenu;
+        KeepFormat: TCheckBox;
+        FileName: TEdit;
+        Label1: TLabel;
+        Procedure btnLoadClick(Sender: TObject);
+        Procedure btnClearClick(Sender: TObject);
+        Procedure FormCreate(Sender: TObject);
+    Private
     { Private declarations }
-  public
+    Public
     { Public declarations }
-  end;
+    End;
 
-var
-  PictureEdit: TPictureEdit;
+Var
+    PictureEdit: TPictureEdit;
 
-implementation
+Implementation
 
-uses wxutils, wxdesigner;
+Uses wxutils, wxdesigner;
 {$R *.DFM}
 
-procedure TPictureEdit.FormCreate(Sender: TObject);
-begin
+Procedure TPictureEdit.FormCreate(Sender: TObject);
+Begin
     DesktopFont := True;
-    XPMenu.Active := wx_designer.XPTheme
-end;
+    XPMenu.Active := wx_designer.XPTheme;
+End;
 
-procedure TPictureEdit.btnLoadClick(Sender: TObject);
-var
-    bmpObj:TBitMap;
+Procedure TPictureEdit.btnLoadClick(Sender: TObject);
+Var
+    bmpObj: TBitMap;
 
-Procedure SetBitMapFromFile(bmp:TBitMap;strFile:String);
-var
-    strExt:String;
-    mf:TMetafile;
-    jf:TJPEGImage;
-    ic:TIcon;
-    pngG:TPNGGraphic;
-begin
-    strExt:= ExtractFileExt(strFile);
-    if trim(strExt)='' then
-        exit;
+    Procedure SetBitMapFromFile(bmp: TBitMap; strFile: String);
+    Var
+        strExt: String;
+        mf: TMetafile;
+        jf: TJPEGImage;
+        ic: TIcon;
+        pngG: TPNGGraphic;
+    Begin
+        strExt := ExtractFileExt(strFile);
+        If trim(strExt) = '' Then
+            exit;
 
-    if UpperCase(trim(strExt))='.BMP' then
-    begin
-        bmp.LoadFromFile(strFile);
-    end;
+        If UpperCase(trim(strExt)) = '.BMP' Then
+        Begin
+            bmp.LoadFromFile(strFile);
+        End;
 
-    if UpperCase(trim(strExt))='.GIF' then
-    begin
+        If UpperCase(trim(strExt)) = '.GIF' Then
+        Begin
         //bmp.LoadFromFile(strFile);
-    end;
+        End;
 
-    if (UpperCase(trim(strExt))='.JPG') or (UpperCase(trim(strExt))='.JPEG') then
-    begin
-        jf:=TJPEGImage.Create;
-        jf.LoadFromFile(strFile);
+        If (UpperCase(trim(strExt)) = '.JPG') Or (UpperCase(trim(strExt)) = '.JPEG') Then
+        Begin
+            jf := TJPEGImage.Create;
+            jf.LoadFromFile(strFile);
         //jf.Transparent:=true;
 
         //bmp.Transparent:=true;
-        bmp.Width := jf.Width;
-        bmp.Height := jf.Height;
-        bmp.Canvas.Draw(0, 0, jf) ;
-        jf.Destroy;
-    end;
+            bmp.Width := jf.Width;
+            bmp.Height := jf.Height;
+            bmp.Canvas.Draw(0, 0, jf);
+            jf.Destroy;
+        End;
 
-    if (UpperCase(trim(strExt))='.WMF') or (UpperCase(trim(strExt))='.WMF') then
-    begin
-        mf:=TMetafile.Create;
-        mf.LoadFromFile(strFile);
+        If (UpperCase(trim(strExt)) = '.WMF') Or (UpperCase(trim(strExt)) = '.WMF') Then
+        Begin
+            mf := TMetafile.Create;
+            mf.LoadFromFile(strFile);
         //mf.Transparent:=true;
         //bmp.Transparent:=true;
-        bmp.Width := mf.Width;
-        bmp.Height := mf.Height;
-        bmp.Canvas.Draw(0, 0, mf) ;
-        mf.Destroy;
-    end;
+            bmp.Width := mf.Width;
+            bmp.Height := mf.Height;
+            bmp.Canvas.Draw(0, 0, mf);
+            mf.Destroy;
+        End;
 
-    if UpperCase(trim(strExt))='.ICO' then
-    begin
-        ic:=TIcon.Create;
-        ic.LoadFromFile(strFile);
+        If UpperCase(trim(strExt)) = '.ICO' Then
+        Begin
+            ic := TIcon.Create;
+            ic.LoadFromFile(strFile);
         //ic.Transparent:=true;
         //bmp.Transparent:=true;
-        bmp.Width := ic.Width;
-        bmp.Height := ic.Height;
-        bmp.Canvas.Draw(0, 0, ic) ;
-        ic.Destroy;
-    end;
+            bmp.Width := ic.Width;
+            bmp.Height := ic.Height;
+            bmp.Canvas.Draw(0, 0, ic);
+            ic.Destroy;
+        End;
 
-    if UpperCase(trim(strExt))='.PNG' then
-    begin
-        pngG:=TPNGGraphic.Create;
-        pngG.LoadFromFile(strFile);
+        If UpperCase(trim(strExt)) = '.PNG' Then
+        Begin
+            pngG := TPNGGraphic.Create;
+            pngG.LoadFromFile(strFile);
         //ic.Transparent:=true;
         //bmp.Transparent:=true;
-        bmp.Width := pngG.Width;
-        bmp.Height := pngG.Height;
-        bmp.Canvas.Draw(0, 0, pngG) ;
-        pngG.Destroy;
-    end;
+            bmp.Width := pngG.Width;
+            bmp.Height := pngG.Height;
+            bmp.Canvas.Draw(0, 0, pngG);
+            pngG.Destroy;
+        End;
 
-    if UpperCase(trim(strExt))='.XPM' then
-    begin
-        OpenXPMImage(bmp,strFile);
-    end;
+        If UpperCase(trim(strExt)) = '.XPM' Then
+        Begin
+            OpenXPMImage(bmp, strFile);
+        End;
 
-    bmp.Transparent:=true;
+        bmp.Transparent := True;
 
-end;
+    End;
 
-begin
-    if OpenDialog1.Execute then
-    begin
-        bmpObj:=TBitMap.Create;
+Begin
+    If OpenDialog1.Execute Then
+    Begin
+        bmpObj := TBitMap.Create;
         FileName.Text := OpenDialog1.FileName;
         SetBitMapFromFile(bmpObj, OpenDialog1.FileName);
 
         Image1.Picture.Bitmap.Assign(bmpObj);
         bmpObj.destroy;
-    end;
+    End;
 
-end;
+End;
 
-procedure TPictureEdit.btnClearClick(Sender: TObject);
-var
+Procedure TPictureEdit.btnClearClick(Sender: TObject);
+Var
     bmpObj: TBitmap;
-begin
+Begin
     bmpObj := TBitmap.Create;
     Image1.Picture.Bitmap.Assign(bmpObj);
     bmpObj.Destroy;
     FileName.Clear;
-end;
+End;
 
-end.
+End.

@@ -17,239 +17,244 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-unit devMonitorThread;
+Unit devMonitorThread;
 
-interface
+Interface
 
-uses
+Uses
 {$IFDEF WIN32}
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, devMonitorTypes, SyncObjs;
+    Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+    Dialogs, StdCtrls, devMonitorTypes, SyncObjs;
 {$ENDIF}
 {$IFDEF LINUX}
   SysUtils, Variants, Classes, QGraphics, QControls, QForms,
   QDialogs, QStdCtrls, devMonitorTypes, SyncObjs;
 {$ENDIF}
 
-const APPMSG_NOTIFYFILECHANGED = WM_USER + 2048;
+Const APPMSG_NOTIFYFILECHANGED = WM_USER + 2048;
 
-type
-  TdevMonitorThread = class(TThread)
-  private
-    fOwner: TComponent;
-    fFiles: TStrings;
-    fNewFiles: TStrings;
-    fDirs: TStringList;
-    fFileAttrs: TList;
-    fShouldQuit: THandle;
-    fShouldReload: THandle;
-    fReloaded: THandle;
-    fNewFilesLock: TCriticalSection;
-    hMonitors: array[0..MAXIMUM_WAIT_OBJECTS] of THandle;
-    nMonitors: integer;
-    procedure BuildDirs;
-    procedure Notify;
-    procedure CreateMonitors;
-    procedure DestroyMonitors;
-  public
-    constructor Create(AOwner: TComponent; Files: TStrings);
-    destructor Destroy; override;
-    procedure Execute; override;
-    procedure TellToQuit;
-    procedure ReloadList(fNewList: TStrings);
-  end;
+Type
+    TdevMonitorThread = Class(TThread)
+    Private
+        fOwner: TComponent;
+        fFiles: TStrings;
+        fNewFiles: TStrings;
+        fDirs: TStringList;
+        fFileAttrs: TList;
+        fShouldQuit: THandle;
+        fShouldReload: THandle;
+        fReloaded: THandle;
+        fNewFilesLock: TCriticalSection;
+        hMonitors: Array[0..MAXIMUM_WAIT_OBJECTS] Of THandle;
+        nMonitors: Integer;
+        Procedure BuildDirs;
+        Procedure Notify;
+        Procedure CreateMonitors;
+        Procedure DestroyMonitors;
+    Public
+        Constructor Create(AOwner: TComponent; Files: TStrings);
+        Destructor Destroy; Override;
+        Procedure Execute; Override;
+        Procedure TellToQuit;
+        Procedure ReloadList(fNewList: TStrings);
+    End;
 
-implementation
+Implementation
 
-uses
-  devFileMonitor;
+Uses
+    devFileMonitor;
 
-var
-  ChangeType: TdevMonitorChangeType;
-  Filename: string;
+Var
+    ChangeType: TdevMonitorChangeType;
+    Filename: String;
 
-procedure TdevMonitorThread.BuildDirs;
-var
-  I: integer;
-  SR: TSearchRec;
-  tmp: string;
-begin
-  I := 0;
-  fFileAttrs.Clear;
-  while I <= fFiles.Count - 1 do begin
-    if FindFirst(fFiles[I], faAnyFile, SR) = 0 then begin
-      fFileAttrs.Add(Pointer(SR.Time));
-      FindClose(SR);
-      Inc(I);
-    end
-    else
-      fFiles.Delete(I);
-  end;
+Procedure TdevMonitorThread.BuildDirs;
+Var
+    I: Integer;
+    SR: TSearchRec;
+    tmp: String;
+Begin
+    I := 0;
+    fFileAttrs.Clear;
+    While I <= fFiles.Count - 1 Do
+    Begin
+        If FindFirst(fFiles[I], faAnyFile, SR) = 0 Then
+        Begin
+            fFileAttrs.Add(Pointer(SR.Time));
+            FindClose(SR);
+            Inc(I);
+        End
+        Else
+            fFiles.Delete(I);
+    End;
 
-  fDirs.Clear;
-  for I := 0 to fFiles.Count - 1 do begin
-    tmp := ExtractFilePath(fFiles[I]);
+    fDirs.Clear;
+    For I := 0 To fFiles.Count - 1 Do
+    Begin
+        tmp := ExtractFilePath(fFiles[I]);
     // patch for freeze under Win95 by Frederic Marchal.
     // seems that FindFirstChangeNotification fails under win95
     // if the path ends with a slash...
-    if (tmp <> '') and (tmp[Length(tmp)] = '\') then
-      Delete(tmp, Length(tmp), 1);
-    fDirs.Add(tmp);
-  end;
-end;
+        If (tmp <> '') And (tmp[Length(tmp)] = '\') Then
+            Delete(tmp, Length(tmp), 1);
+        fDirs.Add(tmp);
+    End;
+End;
 
-constructor TdevMonitorThread.Create(AOwner: TComponent; Files: TStrings);
-begin
-  inherited Create(True);
+Constructor TdevMonitorThread.Create(AOwner: TComponent; Files: TStrings);
+Begin
+    Inherited Create(True);
 
-  FreeOnTerminate := False;
-  fOwner := AOwner;
-  fShouldQuit := CreateEvent(nil, false, false, '');
-  fShouldReload := CreateEvent(nil, false, false, '');
-  fReloaded := CreateEvent(nil, false, false, '');
-  fFiles := TStringList.Create;
-  fNewFiles := TStringList.Create;
-  fFileAttrs := TList.Create;
-  fDirs := TStringList.Create;
-  fDirs.Sorted := True;
-  fDirs.Duplicates := dupIgnore;
-  fFiles.Assign(Files);
-  fNewFilesLock := TCriticalSection.Create;
-  BuildDirs;
-end;
+    FreeOnTerminate := False;
+    fOwner := AOwner;
+    fShouldQuit := CreateEvent(Nil, False, False, '');
+    fShouldReload := CreateEvent(Nil, False, False, '');
+    fReloaded := CreateEvent(Nil, False, False, '');
+    fFiles := TStringList.Create;
+    fNewFiles := TStringList.Create;
+    fFileAttrs := TList.Create;
+    fDirs := TStringList.Create;
+    fDirs.Sorted := True;
+    fDirs.Duplicates := dupIgnore;
+    fFiles.Assign(Files);
+    fNewFilesLock := TCriticalSection.Create;
+    BuildDirs;
+End;
 
-destructor TdevMonitorThread.Destroy;
-begin
-  fDirs.Free;
-  fFileAttrs.Free;
-  fFiles.Free;
-  fNewFiles.Free;
-  fNewFilesLock.Free;
-  CloseHandle(fReloaded);
-  inherited;
-end;
+Destructor TdevMonitorThread.Destroy;
+Begin
+    fDirs.Free;
+    fFileAttrs.Free;
+    fFiles.Free;
+    fNewFiles.Free;
+    fNewFilesLock.Free;
+    CloseHandle(fReloaded);
+    Inherited;
+End;
 
-procedure TdevMonitorThread.TellToQuit;
-begin
-  SetEvent(fShouldQuit);
-end;
+Procedure TdevMonitorThread.TellToQuit;
+Begin
+    SetEvent(fShouldQuit);
+End;
 
-procedure TdevMonitorThread.ReloadList(fNewList: TStrings);
-begin
-  fNewFilesLock.Enter;
-  fNewFiles.Assign(fNewList);
-  fNewFilesLock.Leave;
+Procedure TdevMonitorThread.ReloadList(fNewList: TStrings);
+Begin
+    fNewFilesLock.Enter;
+    fNewFiles.Assign(fNewList);
+    fNewFilesLock.Leave;
 
-  SetEvent(fShouldReload);
-  WaitForSingleObject(fReloaded, INFINITE);
-end;
+    SetEvent(fShouldReload);
+    WaitForSingleObject(fReloaded, INFINITE);
+End;
 
-procedure TdevMonitorThread.CreateMonitors;
-var
-  I: integer;
-begin
-  fShouldQuit := CreateEvent(nil, false, false, '');
-  fShouldReload := CreateEvent(nil, false, false, '');
-  hMonitors[0] := fShouldQuit;
-  hMonitors[1] := fShouldReload;
-  nMonitors := 2;
+Procedure TdevMonitorThread.CreateMonitors;
+Var
+    I: Integer;
+Begin
+    fShouldQuit := CreateEvent(Nil, False, False, '');
+    fShouldReload := CreateEvent(Nil, False, False, '');
+    hMonitors[0] := fShouldQuit;
+    hMonitors[1] := fShouldReload;
+    nMonitors := 2;
 
-  for I := 0 to fDirs.Count - 1 do
-  begin
-    if (fDirs[I] = '') then continue; 
-    hMonitors[nMonitors] := FindFirstChangeNotification(
-      PChar(fDirs[I]), False,
-      FILE_NOTIFY_CHANGE_LAST_WRITE or FILE_NOTIFY_CHANGE_FILE_NAME
-      );
-    nMonitors := nMonitors + 1;
-  end;
-end;
+    For I := 0 To fDirs.Count - 1 Do
+    Begin
+        If (fDirs[I] = '') Then
+            continue;
+        hMonitors[nMonitors] := FindFirstChangeNotification(
+            Pchar(fDirs[I]), False,
+            FILE_NOTIFY_CHANGE_LAST_WRITE Or FILE_NOTIFY_CHANGE_FILE_NAME
+            );
+        nMonitors := nMonitors + 1;
+    End;
+End;
 
-procedure TdevMonitorThread.DestroyMonitors;
-var
-  I: integer;
-begin
-  for I := 2 to fDirs.Count + 1 do
-    FindCloseChangeNotification(hMonitors[I]);
+Procedure TdevMonitorThread.DestroyMonitors;
+Var
+    I: Integer;
+Begin
+    For I := 2 To fDirs.Count + 1 Do
+        FindCloseChangeNotification(hMonitors[I]);
 
 {$IFDEF RELEASE}
   CloseHandle(fShouldQuit);
   CloseHandle(fShouldReload);
 {$ENDIF}
-end;
+End;
 
-procedure TdevMonitorThread.Execute;
-var
-  SR: TSearchRec;
-  I: integer;
-  T: integer;
-  iState: UINT;
-  state: integer;
-begin
-  inherited;
-  CreateMonitors;
+Procedure TdevMonitorThread.Execute;
+Var
+    SR: TSearchRec;
+    I: Integer;
+    T: Integer;
+    iState: UINT;
+    state: Integer;
+Begin
+    Inherited;
+    CreateMonitors;
 
-  while True do
-  begin
-    iState := WaitForMultipleObjects(nMonitors, @hMonitors, False, INFINITE);
-    if iState = WAIT_FAILED then
-      Continue;
+    While True Do
+    Begin
+        iState := WaitForMultipleObjects(nMonitors, @hMonitors, False, INFINITE);
+        If iState = WAIT_FAILED Then
+            Continue;
 
-    iState := iState - WAIT_OBJECT_0;
-    State := Integer(iState);
-    if State = 0 then //asked to quit
-      Break
-    else if State = 1 then //asked to rebuild
-    begin
-      DestroyMonitors;
-      fNewFilesLock.Enter;
-      fFiles.Assign(fNewFiles);
-      fNewFilesLock.Leave;
+        iState := iState - WAIT_OBJECT_0;
+        State := Integer(iState);
+        If State = 0 Then //asked to quit
+            Break
+        Else
+        If State = 1 Then //asked to rebuild
+        Begin
+            DestroyMonitors;
+            fNewFilesLock.Enter;
+            fFiles.Assign(fNewFiles);
+            fNewFilesLock.Leave;
 
-      BuildDirs;
-      CreateMonitors;
-      SetEvent(fReloaded);
-      continue;
-    end
-    else
-      for I := 0 to fFiles.Count - 1 do
-      begin
-        if FindFirst(fFiles[I], faAnyFile, SR) = 0 then
-        begin
-          T := Integer(fFileAttrs[I]);
-          if (T <> -1) and (T < SR.Time) then begin
-            fFileAttrs[I] := Pointer(SR.Time);
-            ChangeType := mctChanged;
-            Filename := fFiles[I];
-            Notify;
-          end;
-          FindClose(SR);
-        end
-        else
-        begin
+            BuildDirs;
+            CreateMonitors;
+            SetEvent(fReloaded);
+            continue;
+        End
+        Else
+            For I := 0 To fFiles.Count - 1 Do
+            Begin
+                If FindFirst(fFiles[I], faAnyFile, SR) = 0 Then
+                Begin
+                    T := Integer(fFileAttrs[I]);
+                    If (T <> -1) And (T < SR.Time) Then
+                    Begin
+                        fFileAttrs[I] := Pointer(SR.Time);
+                        ChangeType := mctChanged;
+                        Filename := fFiles[I];
+                        Notify;
+                    End;
+                    FindClose(SR);
+                End
+                Else
+                Begin
           //Process the notification
-          ChangeType := mctDeleted;
-          Filename := fFiles[I];
-          Notify;
-        end;
-      end;
+                    ChangeType := mctDeleted;
+                    Filename := fFiles[I];
+                    Notify;
+                End;
+            End;
 
     //Refresh all the monitors
-    for I := 2 to fDirs.Count + 1 do
-      FindNextChangeNotification(hMonitors[I]);
-  end;
-  
-  DestroyMonitors;
-  Terminate;
-end;
+        For I := 2 To fDirs.Count + 1 Do
+            FindNextChangeNotification(hMonitors[I]);
+    End;
 
-procedure TdevMonitorThread.Notify;
-var
-  P: PChar;
-begin
-  P := StrNew(PChar(Filename));
-  PostMessage(TdevFileMonitor(fOwner).Handle, APPMSG_NOTIFYFILECHANGED, integer(ChangeType), LPARAM(P));
-end;
+    DestroyMonitors;
+    Terminate;
+End;
 
-end.
+Procedure TdevMonitorThread.Notify;
+Var
+    P: Pchar;
+Begin
+    P := StrNew(Pchar(Filename));
+    PostMessage(TdevFileMonitor(fOwner).Handle, APPMSG_NOTIFYFILECHANGED, Integer(ChangeType), LPARAM(P));
+End;
 
+End.

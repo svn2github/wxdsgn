@@ -24,112 +24,112 @@
 { ****************************************************************** }
 
 
-unit wxMessageDialog;
+Unit wxMessageDialog;
 
-interface
+Interface
 
-uses
-  Windows, Messages, SysUtils, Classes, wxUtils, WxNonVisibleBaseComponent;
+Uses
+    Windows, Messages, SysUtils, Classes, wxUtils, WxNonVisibleBaseComponent;
 
-type
-  TWxMessageDialog = class(TWxNonVisibleBaseComponent, IWxComponentInterface)
-  private
+Type
+    TWxMessageDialog = Class(TWxNonVisibleBaseComponent, IWxComponentInterface)
+    Private
     { Private declarations }
-    FWx_Class: string;
-    FWx_PropertyList: TStringList;
-    FWx_Message: string;
-    FWx_Caption: string;
-    FWx_Comments: TStrings;
+        FWx_Class: String;
+        FWx_PropertyList: TStringList;
+        FWx_Message: String;
+        FWx_Caption: String;
+        FWx_Comments: TStrings;
 
-    FWx_DialogStyle: TWxMessageDialogStyleSet;
-    procedure AutoInitialize;
-    procedure AutoDestroy;
+        FWx_DialogStyle: TWxMessageDialogStyleSet;
+        Procedure AutoInitialize;
+        Procedure AutoDestroy;
 
-  protected
+    Protected
 
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    function GenerateControlIDs: string;
-    function GenerateEnumControlIDs: string;
-    function GenerateEventTableEntries(CurrClassName: string): string;
-    function GenerateGUIControlCreation: string;
-    function GenerateXRCControlCreation(IndentString: string): TStringList;
-    function GenerateGUIControlDeclaration: string;
-    function GenerateHeaderInclude: string;
-    function GenerateImageInclude: string;
-    function GetEventList: TStringList;
-    function GetIDName: string;
-    function GetIDValue: integer;
-    function GetParameterFromEventName(EventName: string): string;
-    function GetPropertyList: TStringList;
-    function GetTypeFromEventName(EventName: string): string;
-    function GetWxClassName: string;
-    procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
-    procedure SetIDName(IDName: string);
-    procedure SetIDValue(IDValue: integer);
-    procedure SetWxClassName(wxClassName: string);
-    function GetFGColor: string;
-    procedure SetFGColor(strValue: string);
-    function GetBGColor: string;
-    procedure SetBGColor(strValue: string);
+    Public
+        Constructor Create(AOwner: TComponent); Override;
+        Destructor Destroy; Override;
+        Function GenerateControlIDs: String;
+        Function GenerateEnumControlIDs: String;
+        Function GenerateEventTableEntries(CurrClassName: String): String;
+        Function GenerateGUIControlCreation: String;
+        Function GenerateXRCControlCreation(IndentString: String): TStringList;
+        Function GenerateGUIControlDeclaration: String;
+        Function GenerateHeaderInclude: String;
+        Function GenerateImageInclude: String;
+        Function GetEventList: TStringList;
+        Function GetIDName: String;
+        Function GetIDValue: Integer;
+        Function GetParameterFromEventName(EventName: String): String;
+        Function GetPropertyList: TStringList;
+        Function GetTypeFromEventName(EventName: String): String;
+        Function GetWxClassName: String;
+        Procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
+        Procedure SetIDName(IDName: String);
+        Procedure SetIDValue(IDValue: Integer);
+        Procedure SetWxClassName(wxClassName: String);
+        Function GetFGColor: String;
+        Procedure SetFGColor(strValue: String);
+        Function GetBGColor: String;
+        Procedure SetBGColor(strValue: String);
 
-    function GetGenericColor(strVariableName:String): string;
-    procedure SetGenericColor(strVariableName,strValue: string);
+        Function GetGenericColor(strVariableName: String): String;
+        Procedure SetGenericColor(strVariableName, strValue: String);
 
-    procedure SetProxyFGColorString(Value: string);
-    procedure SetProxyBGColorString(Value: string);
+        Procedure SetProxyFGColorString(Value: String);
+        Procedure SetProxyBGColorString(Value: String);
 
-    function GetBorderAlignment: TWxBorderAlignment;
-    procedure SetBorderAlignment(border: TWxBorderAlignment);
-    function GetBorderWidth: integer;
-    procedure SetBorderWidth(width: integer);
-    function GetStretchFactor: integer;
-    procedure SetStretchFactor(intValue: integer);
+        Function GetBorderAlignment: TWxBorderAlignment;
+        Procedure SetBorderAlignment(border: TWxBorderAlignment);
+        Function GetBorderWidth: Integer;
+        Procedure SetBorderWidth(width: Integer);
+        Function GetStretchFactor: Integer;
+        Procedure SetStretchFactor(intValue: Integer);
 
-  published
+    Published
     { Published declarations }
-    property Wx_Class: string Read FWx_Class Write FWx_Class;
-    property Wx_Message: string Read FWx_Message Write FWx_Message;
-    property Wx_Caption: string Read FWx_Caption Write FWx_Caption;
-    property Wx_DialogStyle: TWxMessageDialogStyleSet
-      Read FWx_DialogStyle Write FWx_DialogStyle;
-    property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
+        Property Wx_Class: String Read FWx_Class Write FWx_Class;
+        Property Wx_Message: String Read FWx_Message Write FWx_Message;
+        Property Wx_Caption: String Read FWx_Caption Write FWx_Caption;
+        Property Wx_DialogStyle: TWxMessageDialogStyleSet
+            Read FWx_DialogStyle Write FWx_DialogStyle;
+        Property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
 
-  end;
+    End;
 
-procedure Register;
+Procedure Register;
 
-implementation
+Implementation
 
-procedure Register;
-begin
-  RegisterComponents('wxWidgets', [TWxMessageDialog]);
-end;
+Procedure Register;
+Begin
+    RegisterComponents('wxWidgets', [TWxMessageDialog]);
+End;
 
 { Method to set variable and property values and create objects }
-procedure TWxMessageDialog.AutoInitialize;
-begin
-  FWx_PropertyList := TStringList.Create;
-  FWx_Class    := 'wxMessageDialog';
-  Glyph.Handle := LoadBitmap(hInstance, 'TWxMessageDialog');
-  FWx_Caption  := 'Message box';
-  FWx_Comments := TStringList.Create;
+Procedure TWxMessageDialog.AutoInitialize;
+Begin
+    FWx_PropertyList := TStringList.Create;
+    FWx_Class := 'wxMessageDialog';
+    Glyph.Handle := LoadBitmap(hInstance, 'TWxMessageDialog');
+    FWx_Caption := 'Message box';
+    FWx_Comments := TStringList.Create;
 
-end; { of AutoInitialize }
+End; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
-procedure TWxMessageDialog.AutoDestroy;
-begin
-  FWx_PropertyList.Destroy;
-  FWx_Comments.Destroy;
-  Glyph.Assign(nil);
-end; { of AutoDestroy }
+Procedure TWxMessageDialog.AutoDestroy;
+Begin
+    FWx_PropertyList.Destroy;
+    FWx_Comments.Destroy;
+    Glyph.Assign(Nil);
+End; { of AutoDestroy }
 
-constructor TWxMessageDialog.Create(AOwner: TComponent);
-begin
+Constructor TWxMessageDialog.Create(AOwner: TComponent);
+Begin
   { Call the Create method of the container's parent class       }
-  inherited Create(AOwner);
+    Inherited Create(AOwner);
 
   { AutoInitialize sets the initial values of variables          }
   { (including subcomponent variables) and properties;           }
@@ -137,38 +137,38 @@ begin
   { Delphi object types (e.g., TFont, TTimer, TPicture)          }
   { and for any variables marked as objects.                     }
   { AutoInitialize method is generated by Component Create.      }
-  AutoInitialize;
+    AutoInitialize;
 
   { Code to perform other tasks when the component is created }
   { Code to perform other tasks when the component is created }
-  FWx_PropertyList.add('Wx_DialogStyle:Message Dialog Style');
+    FWx_PropertyList.add('Wx_DialogStyle:Message Dialog Style');
 
-  FWx_PropertyList.add('wxOK:wxOK');
-  FWx_PropertyList.add('wxCENTRE:wxCENTRE');
-  FWx_PropertyList.add('wxCANCEL:wxCANCEL');
-  FWx_PropertyList.add('wxYES_NO:wxYES_NO');
-  FWx_PropertyList.add('wxYES_DEFAULT:wxYES_DEFAULT');
-  FWx_PropertyList.add('wxNO_DEFAULT:wxNO_DEFAULT');
-  FWx_PropertyList.add('wxICON_EXCLAMATION:wxICON_EXCLAMATION');
-  FWx_PropertyList.add('wxICON_HAND:wxICON_HAND');
-  FWx_PropertyList.add('wxICON_ERROR:wxICON_ERROR');
-  FWx_PropertyList.add('wxICON_QUESTION:wxICON_QUESTION');
-  FWx_PropertyList.add('wxICON_INFORMATION:wxICON_INFORMATION');
-  FWx_PropertyList.add('wxSTAY_ON_TOP:wxSTAY_ON_TOP');
+    FWx_PropertyList.add('wxOK:wxOK');
+    FWx_PropertyList.add('wxCENTRE:wxCENTRE');
+    FWx_PropertyList.add('wxCANCEL:wxCANCEL');
+    FWx_PropertyList.add('wxYES_NO:wxYES_NO');
+    FWx_PropertyList.add('wxYES_DEFAULT:wxYES_DEFAULT');
+    FWx_PropertyList.add('wxNO_DEFAULT:wxNO_DEFAULT');
+    FWx_PropertyList.add('wxICON_EXCLAMATION:wxICON_EXCLAMATION');
+    FWx_PropertyList.add('wxICON_HAND:wxICON_HAND');
+    FWx_PropertyList.add('wxICON_ERROR:wxICON_ERROR');
+    FWx_PropertyList.add('wxICON_QUESTION:wxICON_QUESTION');
+    FWx_PropertyList.add('wxICON_INFORMATION:wxICON_INFORMATION');
+    FWx_PropertyList.add('wxSTAY_ON_TOP:wxSTAY_ON_TOP');
 
-  FWx_PropertyList.add('Wx_Message:Message');
-  FWx_PropertyList.add('Wx_Caption:Caption');
-  FWx_PropertyList.add('Name:Name');
-  FWx_PropertyList.add('Wx_Class:Base Class');
-  FWx_PropertyList.add('Wx_Comments:Comments');
+    FWx_PropertyList.add('Wx_Message:Message');
+    FWx_PropertyList.add('Wx_Caption:Caption');
+    FWx_PropertyList.add('Name:Name');
+    FWx_PropertyList.add('Wx_Class:Base Class');
+    FWx_PropertyList.add('Wx_Comments:Comments');
 
-end;
+End;
 
-destructor TWxMessageDialog.Destroy;
-begin
+Destructor TWxMessageDialog.Destroy;
+Begin
   { AutoDestroy, which is generated by Component Create, frees any   }
   { objects created by AutoInitialize.                               }
-  AutoDestroy;
+    AutoDestroy;
 
   { Here, free any other dynamic objects that the component methods  }
   { created but have not yet freed.  Also perform any other clean-up }
@@ -176,193 +176,193 @@ begin
 
   { Last, free the component by calling the Destroy method of the    }
   { parent class.                                                    }
-  inherited Destroy;
-end;
+    Inherited Destroy;
+End;
 
-function TWxMessageDialog.GenerateControlIDs: string;
-begin
-  Result := '';
-end;
-
-
-function TWxMessageDialog.GenerateEnumControlIDs: string;
-begin
-  Result := '';
-end;
-
-function TWxMessageDialog.GenerateEventTableEntries(CurrClassName: string): string;
-begin
-  Result := '';
-end;
-
-function TWxMessageDialog.GenerateXRCControlCreation(IndentString: string): TStringList;
-begin
-
-  Result := TStringList.Create;
-
-  try
-
-    Result.Add(IndentString + Format('<object class="%s" name="%s">',
-      [self.Wx_Class, self.Name]));
-    Result.Add(IndentString + '</object>');
-
-  except
-
-    Result.Free;
-    raise;
-
-  end;
-
-end;
-
-function TWxMessageDialog.GenerateGUIControlCreation: string;
-var
-  strStyle: string;
-begin
-  Result   := '';
-  strStyle := GetMessageDialogStyleString(self.Wx_DialogStyle,false);
-  Result   := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s =  new %s(this, %s, %s%s);', [self.Name, self.wx_Class,
-    GetCppString(wx_Message), GetCppString(wx_Caption), strStyle]);
-end;
-
-function TWxMessageDialog.GenerateGUIControlDeclaration: string;
-begin
-  Result := '';
-  Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
-end;
-
-function TWxMessageDialog.GenerateHeaderInclude: string;
-begin
-  Result := '';
-  Result := '#include <wx/msgdlg.h>';
-end;
-
-function TWxMessageDialog.GenerateImageInclude: string;
-begin
-
-end;
-
-function TWxMessageDialog.GetEventList: TStringList;
-begin
-  Result := nil;
-end;
-
-function TWxMessageDialog.GetIDName: string;
-begin
-
-end;
-
-function TWxMessageDialog.GetIDValue: integer;
-begin
-  Result := 0;
-end;
-
-function TWxMessageDialog.GetParameterFromEventName(EventName: string): string;
-begin
-
-end;
-
-function TWxMessageDialog.GetStretchFactor: integer;
-begin
-   Result := 1;
-end;
-
-function TWxMessageDialog.GetPropertyList: TStringList;
-begin
-  Result := FWx_PropertyList;
-end;
-
-function TWxMessageDialog.GetBorderAlignment: TWxBorderAlignment;
-begin
-  Result := [];
-end;
-
-procedure TWxMessageDialog.SetBorderAlignment(border: TWxBorderAlignment);
-begin
-end;
-
-function TWxMessageDialog.GetBorderWidth: integer;
-begin
-  Result := 0;
-end;
-
-procedure TWxMessageDialog.SetBorderWidth(width: integer);
-begin
-end;
-
-function TWxMessageDialog.GetTypeFromEventName(EventName: string): string;
-begin
-
-end;
-
-function TWxMessageDialog.GetWxClassName: string;
-begin
-  if trim(wx_Class) = '' then
-    wx_Class := 'wxMessageDialog';
-  Result := wx_Class;
-end;
-
-procedure TWxMessageDialog.SaveControlOrientation(
-  ControlOrientation: TWxControlOrientation);
-begin
-
-end;
-
-procedure TWxMessageDialog.SetIDName(IDName: string);
-begin
-
-end;
-
-procedure TWxMessageDialog.SetIDValue(IDValue: integer);
-begin
-
-end;
-
-procedure TWxMessageDialog.SetStretchFactor(intValue: integer);
-begin
-end;
-
-procedure TWxMessageDialog.SetWxClassName(wxClassName: string);
-begin
-  wx_Class := wxClassName;
-end;
-
-function TWxMessageDialog.GetGenericColor(strVariableName:String): string;
-begin
-
-end;
-procedure TWxMessageDialog.SetGenericColor(strVariableName,strValue: string);
-begin
-
-end;
+Function TWxMessageDialog.GenerateControlIDs: String;
+Begin
+    Result := '';
+End;
 
 
-function TWxMessageDialog.GetFGColor: string;
-begin
+Function TWxMessageDialog.GenerateEnumControlIDs: String;
+Begin
+    Result := '';
+End;
 
-end;
+Function TWxMessageDialog.GenerateEventTableEntries(CurrClassName: String): String;
+Begin
+    Result := '';
+End;
 
-procedure TWxMessageDialog.SetFGColor(strValue: string);
-begin
-end;
+Function TWxMessageDialog.GenerateXRCControlCreation(IndentString: String): TStringList;
+Begin
 
-function TWxMessageDialog.GetBGColor: string;
-begin
-end;
+    Result := TStringList.Create;
 
-procedure TWxMessageDialog.SetBGColor(strValue: string);
-begin
-end;
+    Try
 
-procedure TWxMessageDialog.SetProxyFGColorString(Value: string);
-begin
-end;
+        Result.Add(IndentString + Format('<object class="%s" name="%s">',
+            [self.Wx_Class, self.Name]));
+        Result.Add(IndentString + '</object>');
 
-procedure TWxMessageDialog.SetProxyBGColorString(Value: string);
-begin
+    Except
 
-end;
+        Result.Free;
+        Raise;
 
-end.
+    End;
+
+End;
+
+Function TWxMessageDialog.GenerateGUIControlCreation: String;
+Var
+    strStyle: String;
+Begin
+    Result := '';
+    strStyle := GetMessageDialogStyleString(self.Wx_DialogStyle, False);
+    Result := GetCommentString(self.FWx_Comments.Text) +
+        Format('%s =  new %s(this, %s, %s%s);', [self.Name, self.wx_Class,
+        GetCppString(wx_Message), GetCppString(wx_Caption), strStyle]);
+End;
+
+Function TWxMessageDialog.GenerateGUIControlDeclaration: String;
+Begin
+    Result := '';
+    Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
+End;
+
+Function TWxMessageDialog.GenerateHeaderInclude: String;
+Begin
+    Result := '';
+    Result := '#include <wx/msgdlg.h>';
+End;
+
+Function TWxMessageDialog.GenerateImageInclude: String;
+Begin
+
+End;
+
+Function TWxMessageDialog.GetEventList: TStringList;
+Begin
+    Result := Nil;
+End;
+
+Function TWxMessageDialog.GetIDName: String;
+Begin
+
+End;
+
+Function TWxMessageDialog.GetIDValue: Integer;
+Begin
+    Result := 0;
+End;
+
+Function TWxMessageDialog.GetParameterFromEventName(EventName: String): String;
+Begin
+
+End;
+
+Function TWxMessageDialog.GetStretchFactor: Integer;
+Begin
+    Result := 1;
+End;
+
+Function TWxMessageDialog.GetPropertyList: TStringList;
+Begin
+    Result := FWx_PropertyList;
+End;
+
+Function TWxMessageDialog.GetBorderAlignment: TWxBorderAlignment;
+Begin
+    Result := [];
+End;
+
+Procedure TWxMessageDialog.SetBorderAlignment(border: TWxBorderAlignment);
+Begin
+End;
+
+Function TWxMessageDialog.GetBorderWidth: Integer;
+Begin
+    Result := 0;
+End;
+
+Procedure TWxMessageDialog.SetBorderWidth(width: Integer);
+Begin
+End;
+
+Function TWxMessageDialog.GetTypeFromEventName(EventName: String): String;
+Begin
+
+End;
+
+Function TWxMessageDialog.GetWxClassName: String;
+Begin
+    If trim(wx_Class) = '' Then
+        wx_Class := 'wxMessageDialog';
+    Result := wx_Class;
+End;
+
+Procedure TWxMessageDialog.SaveControlOrientation(
+    ControlOrientation: TWxControlOrientation);
+Begin
+
+End;
+
+Procedure TWxMessageDialog.SetIDName(IDName: String);
+Begin
+
+End;
+
+Procedure TWxMessageDialog.SetIDValue(IDValue: Integer);
+Begin
+
+End;
+
+Procedure TWxMessageDialog.SetStretchFactor(intValue: Integer);
+Begin
+End;
+
+Procedure TWxMessageDialog.SetWxClassName(wxClassName: String);
+Begin
+    wx_Class := wxClassName;
+End;
+
+Function TWxMessageDialog.GetGenericColor(strVariableName: String): String;
+Begin
+
+End;
+Procedure TWxMessageDialog.SetGenericColor(strVariableName, strValue: String);
+Begin
+
+End;
+
+
+Function TWxMessageDialog.GetFGColor: String;
+Begin
+
+End;
+
+Procedure TWxMessageDialog.SetFGColor(strValue: String);
+Begin
+End;
+
+Function TWxMessageDialog.GetBGColor: String;
+Begin
+End;
+
+Procedure TWxMessageDialog.SetBGColor(strValue: String);
+Begin
+End;
+
+Procedure TWxMessageDialog.SetProxyFGColorString(Value: String);
+Begin
+End;
+
+Procedure TWxMessageDialog.SetProxyBGColorString(Value: String);
+Begin
+
+End;
+
+End.
  

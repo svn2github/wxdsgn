@@ -19,11 +19,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-unit datamod;
+Unit datamod;
 
-interface
+Interface
 
-uses
+Uses
 {$IFDEF PLUGIN_BUILD}
     SynHighlighterXML,
 {$ENDIF}
@@ -43,8 +43,8 @@ uses
   QSynEditMiscClasses, QSynEditSearch;
 {$ENDIF}
 
-type
-    TdmMain = class(TDataModule)
+Type
+    TdmMain = Class(TDataModule)
         Cpp: TSynCppSyn;
         Res: TSynRCSyn;
         XML: TSynXMLSyn;
@@ -74,68 +74,68 @@ type
         ProjectImage_Classic: TImageList;
         HelpImages_Classic: TImageList;
         SpecialImages_Classic: TImageList;
-        procedure DataModuleCreate(Sender: TObject);
-        procedure DataModuleDestroy(Sender: TObject);
-    private
-        fUnitCount: integer;
+        Procedure DataModuleCreate(Sender: TObject);
+        Procedure DataModuleDestroy(Sender: TObject);
+    Private
+        fUnitCount: Integer;
         { Code Inserts }
-    private
+    Private
         fCodeList: TCodeInsList;
         fCodeMenu: TMenuItem;
         fCodePop: TMenuItem;
         fCodeEvent: TNotifyEvent;
-        fCodeOffset: byte;
-        procedure LoadCodeIns;
-    public
-        function InsertList: TStrings;
-        property CodeMenu: TMenuItem read fCodeMenu write fCodeMenu;
-        property CodePop: TMenuItem read fCodePop write fCodePop;
-        property CodeClick: TNotifyEvent read fCodeEvent write fCodeEvent;
-        property CodeInserts: TCodeInsList read fCodeList write fCodeList;
-        property CodeOffset: byte read fCodeOffset write fCodeOffset;
+        fCodeOffset: Byte;
+        Procedure LoadCodeIns;
+    Public
+        Function InsertList: TStrings;
+        Property CodeMenu: TMenuItem Read fCodeMenu Write fCodeMenu;
+        Property CodePop: TMenuItem Read fCodePop Write fCodePop;
+        Property CodeClick: TNotifyEvent Read fCodeEvent Write fCodeEvent;
+        Property CodeInserts: TCodeInsList Read fCodeList Write fCodeList;
+        Property CodeOffset: Byte Read fCodeOffset Write fCodeOffset;
 
         { MRU List }
-    private
+    Private
         fMRU: ToysStringList;
         fMRUMenu: TMenuItem;
-        fMRUMax: byte;
-        fMRUOffset: integer;
+        fMRUMax: Byte;
+        fMRUOffset: Integer;
         fMRUClick: TNotifyEvent;
-        procedure LoadHistory;
-        procedure SaveHistory;
-        procedure RebuildMRU;
-        function GetMRU(index: integer): string;
-    public
-        fProjectCount: integer;
+        Procedure LoadHistory;
+        Procedure SaveHistory;
+        Procedure RebuildMRU;
+        Function GetMRU(index: Integer): String;
+    Public
+        fProjectCount: Integer;
         SaveDialog: TSaveDialogEx;
         OpenDialog: TOpenDialogEx;
-        procedure AddtoHistory(s: string);
-        procedure RemoveFromHistory(s: string);
-        procedure ClearHistory;
-        property MRU[index: integer]: string read GetMRU;
-        property MRUMenu: TMenuItem read fMRUMenu write fMRUMenu;
-        property MRUOffset: integer read fMRUOffset write fMRUOffset;
-        property MRUMax: byte read fMRUMax write fMRUMax;
-        property MRUClick: TNotifyEvent read fMRUClick write fMRUClick;
+        Procedure AddtoHistory(s: String);
+        Procedure RemoveFromHistory(s: String);
+        Procedure ClearHistory;
+        Property MRU[index: Integer]: String Read GetMRU;
+        Property MRUMenu: TMenuItem Read fMRUMenu Write fMRUMenu;
+        Property MRUOffset: Integer Read fMRUOffset Write fMRUOffset;
+        Property MRUMax: Byte Read fMRUMax Write fMRUMax;
+        Property MRUClick: TNotifyEvent Read fMRUClick Write fMRUClick;
 
-    public
-        procedure LoadDataMod;
-        function GetNumber: integer;
-        function GetNum: integer;
-        procedure InitHighlighterFirstTime;
-        procedure UpdateHighlighter;
-        function GetHighlighter(const FileName: string): TSynCustomHighlighter;
+    Public
+        Procedure LoadDataMod;
+        Function GetNumber: Integer;
+        Function GetNum: Integer;
+        Procedure InitHighlighterFirstTime;
+        Procedure UpdateHighlighter;
+        Function GetHighlighter(Const FileName: String): TSynCustomHighlighter;
 
-        procedure ExportToHtml(FileLines: TStrings; ExportFilename: string);
-        procedure ExportToRtf(FileLines: TStrings; ExportFilename: string);
-    end;
+        Procedure ExportToHtml(FileLines: TStrings; ExportFilename: String);
+        Procedure ExportToRtf(FileLines: TStrings; ExportFilename: String);
+    End;
 
-var
+Var
     dmMain: TdmMain;
 
-implementation
+Implementation
 
-uses
+Uses
     devcfg, IniFiles, utils, version, main, MultiLangSupport,
     windows, ShellAPI, ShlOBJ;
 
@@ -143,8 +143,8 @@ uses
 
 { TdmMain }
 
-procedure TdmMain.DataModuleCreate(Sender: TObject);
-begin
+Procedure TdmMain.DataModuleCreate(Sender: TObject);
+Begin
     fMRU := ToysStringList.Create;
     fCodeList := TCodeInsList.Create;
 
@@ -174,79 +174,79 @@ begin
     OpenDialog.Options := [ofHideReadOnly, ofNoChangeDir,
         ofAllowMultiSelect, ofPathMustExist, ofFileMustExist, ofEnableSizing];
     OpenDialog.Title := 'Open file';
-end;
+End;
 
-procedure TdmMain.DataModuleDestroy(Sender: TObject);
-begin
+Procedure TdmMain.DataModuleDestroy(Sender: TObject);
+Begin
     SaveHistory;
     fMRU.Free;
     fCodeList.Free;
-end;
+End;
 
-procedure TdmMain.InitHighlighterFirstTime;
-    procedure AddSpecial(AttrName: string; Offset: integer);
-    var
-        a: integer;
-    begin
+Procedure TdmMain.InitHighlighterFirstTime;
+    Procedure AddSpecial(AttrName: String; Offset: Integer);
+    Var
+        a: Integer;
+    Begin
         a := devEditor.Syntax.IndexofName(AttrName);
-        if a = -1 then
+        If a = -1 Then
             devEditor.Syntax.Append(format('%s=%s', [AttrName, LoadStr(offset)]))
-        else
+        Else
             devEditor.Syntax.Values[AttrName] := LoadStr(offset);
-    end;
-var
-    i, a, offset: integer;
+    End;
+Var
+    i, a, offset: Integer;
     Attr: TSynHighlighterAttributes;
-begin
+Begin
     offset := 0 * 1000; // default to style-set '0'
-    for i := 0 to pred(cpp.AttrCount) do
-    begin
+    For i := 0 To pred(cpp.AttrCount) Do
+    Begin
         attr := TSynHighlighterAttributes.Create(cpp.Attribute[i].Name);
-        try
+        Try
             StrtoAttr(Attr, LoadStr(i + offset + 1));
             cpp.Attribute[i].Assign(Attr);
             a := devEditor.Syntax.IndexOfName(cpp.Attribute[i].Name);
-            if a = -1 then
+            If a = -1 Then
                 devEditor.Syntax.Append(format('%s=%s',
                     [cpp.Attribute[i].Name, AttrtoStr(Attr)]))
-            else
+            Else
                 devEditor.Syntax.Values[cpp.Attribute[i].Name] := AttrtoStr(Attr);
-        finally
+        Finally
             Attr.Free;
-        end;
-    end;
+        End;
+    End;
     AddSpecial(cBP, offset + 17); // breakpoint
     AddSpecial(cErr, offset + 18); // error line
     AddSpecial(cABP, offset + 19); // active breakpoint
     AddSpecial(cGut, offset + 20); // gutter
     AddSpecial(cSel, offset + 21); // selected text
-end;
+End;
 
-procedure TdmMain.UpdateHighlighter;
-var
+Procedure TdmMain.UpdateHighlighter;
+Var
     Attr: TSynHighlighterAttributes;
-    aName: string;
+    aName: String;
     a,
-    idx: integer;
-begin
-    for idx := 0 to pred(cpp.AttrCount) do
-    begin
+    idx: Integer;
+Begin
+    For idx := 0 To pred(cpp.AttrCount) Do
+    Begin
         aName := cpp.Attribute[idx].Name;
         a := devEditor.Syntax.IndexOfName(aName);
-        if a <> -1 then
-        begin
+        If a <> -1 Then
+        Begin
             Attr := TSynHighlighterAttributes.Create(aName);
-            try
+            Try
                 StrtoAttr(Attr, devEditor.Syntax.Values[aname]);
                 cpp.Attribute[idx].Assign(attr);
-            finally
+            Finally
                 Attr.Free;
-            end;
-        end;
-    end;
+            End;
+        End;
+    End;
     // update res highlighter
-    with Res do
-    begin
+    With Res Do
+    Begin
         CommentAttri.Assign(cpp.CommentAttri);
         DirecAttri.Assign(cpp.DirecAttri);
         IdentifierAttri.Assign(cpp.IdentifierAttri);
@@ -255,9 +255,9 @@ begin
         SpaceAttri.Assign(cpp.SpaceAttri);
         StringAttri.Assign(cpp.StringAttri);
         SymbolAttri.Assign(cpp.SymbolAttri);
-    end;
-    with Assembly do
-    begin
+    End;
+    With Assembly Do
+    Begin
         CommentAttri.Assign(cpp.CommentAttri);
         IdentifierAttri.Assign(cpp.IdentifierAttri);
         KeyAttri.Assign(cpp.KeyAttri);
@@ -265,216 +265,216 @@ begin
         SpaceAttri.Assign(cpp.SpaceAttri);
         StringAttri.Assign(cpp.StringAttri);
         SymbolAttri.Assign(cpp.SymbolAttri);
-    end;
-end;
+    End;
+End;
 
-function TdmMain.GetHighlighter(const FileName: string): TSynCustomHighlighter;
-var
-    ext: string;
-    idx: integer;
+Function TdmMain.GetHighlighter(Const FileName: String): TSynCustomHighlighter;
+Var
+    ext: String;
+    idx: Integer;
     tmp: TStrings;
 {$IFDEF PLUGIN_BUILD}
     plugin_xml_ext: String;
     i: Integer;
     resultAssigned: Boolean;
 {$ENDIF}
-begin
+Begin
     UpdateHighlighter;
-    result := nil;
-    if devEditor.UseSyntax then
-    begin
-        if (FileName = '') or (AnsiPos(Lang[ID_UNTITLED], FileName) = 1) then
+    result := Nil;
+    If devEditor.UseSyntax Then
+    Begin
+        If (FileName = '') Or (AnsiPos(Lang[ID_UNTITLED], FileName) = 1) Then
             result := CppMultiSyn
-        else
-        begin
+        Else
+        Begin
             ext := ExtractFileExt(FileName);
-            if AnsiCompareText(ext, RC_EXT) = 0 then
+            If AnsiCompareText(ext, RC_EXT) = 0 Then
                 result := Res
-            else
-            if (AnsiCompareText(ext, '.s') = 0) or (AnsiCompareText(ext, '.asm') = 0) then
+            Else
+            If (AnsiCompareText(ext, '.s') = 0) Or (AnsiCompareText(ext, '.asm') = 0) Then
                 result := Assembly
 {$IFDEF PLUGIN_BUILD}
-            else
-            begin
-                resultAssigned := false;
-                for i := 0 to MainForm.pluginsCount - 1 do
-                begin
+            Else
+            Begin
+                resultAssigned := False;
+                For i := 0 To MainForm.pluginsCount - 1 Do
+                Begin
                     plugin_xml_ext := MainForm.plugins[i].GetXMLExtension();
                     // EAB TODO: Not elegant. Fix it.
-                    if (AnsiCompareText(ext, plugin_xml_ext) = 0) then
-                    begin
+                    If (AnsiCompareText(ext, plugin_xml_ext) = 0) Then
+                    Begin
                         result := Xml;
-                        resultAssigned := true;
-                    end;
-                end;
-            end;
-            if not resultAssigned then
+                        resultAssigned := True;
+                    End;
+                End;
+            End;
+            If Not resultAssigned Then
 {$ENDIF}
-            begin
+            Begin
                 tmp := TStringList.Create;
-                try
+                Try
                     delete(ext, 1, 1);
                     tmp.Delimiter := ';';
                     tmp.DelimitedText := devEditor.SyntaxExt;
-                    if tmp.Count > 0 then
-                        for idx := 0 to pred(tmp.Count) do
-                            if AnsiCompareText(Ext, tmp[idx]) = 0 then
-                            begin
+                    If tmp.Count > 0 Then
+                        For idx := 0 To pred(tmp.Count) Do
+                            If AnsiCompareText(Ext, tmp[idx]) = 0 Then
+                            Begin
                                 result := CppMultiSyn;
                                 Exit;
-                            end;
-                finally
+                            End;
+                Finally
                     tmp.Free;
-                end;
-            end;
-        end;
-    end;
-end;
+                End;
+            End;
+        End;
+    End;
+End;
 
-function TdmMain.GetNum: integer;
-begin
+Function TdmMain.GetNum: Integer;
+Begin
     inc(fUnitCount);
     result := fUnitCount;
-end;
+End;
 
-function TdmMain.GetNumber: integer;
-begin
+Function TdmMain.GetNumber: Integer;
+Begin
     inc(fProjectCount);
     result := fProjectCount;
-end;
+End;
 
-procedure TdmMain.LoadDataMod;
-begin
+Procedure TdmMain.LoadDataMod;
+Begin
     LoadHistory;
     LoadCodeIns;
     UpdateHighlighter;
-end;
+End;
 
 
 { ---------- MRU ---------- }
 
-procedure TdmMain.AddtoHistory(s: string);
-var
-    idx: integer;
-begin
-    if (s = '') then
+Procedure TdmMain.AddtoHistory(s: String);
+Var
+    idx: Integer;
+Begin
+    If (s = '') Then
         exit;
     idx := fMRU.IndexofValue(s);
-    if idx = -1 then
-    begin
+    If idx = -1 Then
+    Begin
         // insert always first
         fMRU.Insert(0, Format('%d=%s', [fMRU.Count, s]));
-        SHAddToRecentDocs(SHARD_PATH, PChar(s));
+        SHAddToRecentDocs(SHARD_PATH, Pchar(s));
         // EAB: Win7 MRU jumplist support.
-    end;
+    End;
     RebuildMRU;
-end;
+End;
 
-procedure TdmMain.RemoveFromHistory(s: string);
-var
-    idx: integer;
-begin
+Procedure TdmMain.RemoveFromHistory(s: String);
+Var
+    idx: Integer;
+Begin
     idx := fMRU.IndexofValue(s);
-    if idx > -1 then
+    If idx > -1 Then
         fMRU.Delete(idx);
     RebuildMRU;
-end;
+End;
 
-procedure TdmMain.ClearHistory;
-begin
+Procedure TdmMain.ClearHistory;
+Begin
     fMRU.Clear;
     RebuildMRU;
-end;
+End;
 
-function TdmMain.GetMRU(index: integer): string;
-begin
+Function TdmMain.GetMRU(index: Integer): String;
+Begin
     result := fMRU.Values[index];
-end;
+End;
 
-procedure TdmMain.LoadHistory;
-var
+Procedure TdmMain.LoadHistory;
+Var
     ini: TINIFile;
-    idx: integer;
-begin
+    idx: Integer;
+Begin
     ClearHistory;
     ini := TiniFile.Create(devData.iniFile);
-    with ini do
-        try
-            if not SectionExists('History') then
+    With ini Do
+        Try
+            If Not SectionExists('History') Then
                 exit;
             ReadSectionValues('History', fMRU);
-            if fMRU.Count = 0 then
+            If fMRU.Count = 0 Then
                 exit;
-            for idx := pred(fMRU.Count) downto 0 do
-                if not FileExists(fMRU.Values[idx]) then
+            For idx := pred(fMRU.Count) Downto 0 Do
+                If Not FileExists(fMRU.Values[idx]) Then
                     fMRU.Delete(idx);
-        finally
+        Finally
             Free;
-        end;
+        End;
     RebuildMRU;
-end;
+End;
 
-procedure TdmMain.SaveHistory;
-var
+Procedure TdmMain.SaveHistory;
+Var
     ini: TINIFile;
-    idx: integer;
-begin
-    if not assigned(fMRU) then
+    idx: Integer;
+Begin
+    If Not assigned(fMRU) Then
         exit;
 
     ini := TINIFile.Create(devData.INIFile);
-    with ini do
-        try
+    With ini Do
+        Try
             EraseSection('History');
-            if fMRU.Count = 0 then
+            If fMRU.Count = 0 Then
                 exit;
-            for idx := 0 to pred(fMRU.Count) do
+            For idx := 0 To pred(fMRU.Count) Do
                 WriteString('History', inttostr(idx), fMRU.Values[idx]);
-        finally
+        Finally
             Free;
-        end;
-end;
+        End;
+End;
 
-procedure TdmMain.RebuildMRU;
+Procedure TdmMain.RebuildMRU;
 // this function sorts the MRU by bringing the .dev files to the top of the list.
 // It doesn't alter the order in other ways... The return value is the Index of
 // the first non .dev file
-    function SortMRU: integer;
-    var
-        I, C: integer;
-        swp: string;
-        Done: boolean;
-    begin
+    Function SortMRU: Integer;
+    Var
+        I, C: Integer;
+        swp: String;
+        Done: Boolean;
+    Begin
         C := 0;
-        repeat
+        Repeat
             Done := True;
-            for I := 0 to fMRU.Count - 2 do
-                if (LowerCase(ExtractFileExt(fMRU[I])) <> '.dev') and
-                    (LowerCase(ExtractFileExt(fMRU[I + 1])) = '.dev') then
-                begin
+            For I := 0 To fMRU.Count - 2 Do
+                If (LowerCase(ExtractFileExt(fMRU[I])) <> '.dev') And
+                    (LowerCase(ExtractFileExt(fMRU[I + 1])) = '.dev') Then
+                Begin
                     swp := fMRU[I];
                     fMRU[I] := fMRU[I + 1];
                     fMRU[I + 1] := swp;
                     Done := False;
-                end;
-        until Done;
-        for I := 0 to fMRU.Count - 1 do
-            if LowerCase(ExtractFileExt(fMRU[I])) <> '.dev' then
-            begin
+                End;
+        Until Done;
+        For I := 0 To fMRU.Count - 1 Do
+            If LowerCase(ExtractFileExt(fMRU[I])) <> '.dev' Then
+            Begin
                 C := I;
                 Break;
-            end;
+            End;
         Result := C;
-    end;
-var
+    End;
+Var
     Item: TMenuItem;
-    NonDev: integer;
+    NonDev: Integer;
     UpdMRU: ToysStringList;
-    Stop, Counter, idx: integer;
-begin
-    if not assigned(fMRUMenu) then
+    Stop, Counter, idx: Integer;
+Begin
+    If Not assigned(fMRUMenu) Then
         exit;
-    for idx := pred(fMRUMenu.Count) downto fMRUOffset do
+    For idx := pred(fMRUMenu.Count) Downto fMRUOffset Do
         fMRUMenu[idx].Free;
 
     // Initialize a new MRU... We'll be adding in this *only* the entries that are
@@ -486,13 +486,13 @@ begin
     // Build the .dev recent files entries (*.dev)
     // TODO: Make the number of project files configurable?
     NonDev := SortMRU;
-    if NonDev > 4 then
+    If NonDev > 4 Then
         Stop := 4
-    else
+    Else
         Stop := NonDev;
 
-    for idx := 0 to pred(Stop) do
-    begin
+    For idx := 0 To pred(Stop) Do
+    Begin
         UpdMRU.Add(Format('%d=%s', [UpdMRU.Count, fMRU.Values[idx]]));
         Item := TMenuItem.Create(fMRUMenu);
         Item.Caption := format('&%1x %s', [Counter, fMRU.Values[idx]]);
@@ -500,19 +500,19 @@ begin
         Item.Tag := UpdMRU.Count - 1;
         fMRUMenu.Add(Item);
         Inc(Counter);
-    end;
+    End;
 
-    if (fMRUMenu.Count - fMRUOffset) > 0 then
+    If (fMRUMenu.Count - fMRUOffset) > 0 Then
         fMRUMenu.InsertNewLineAfter(fMRUMenu.Items[fMRUMenu.Count - 1]);
 
     // Now build the other recent files entries (*.cpp, *.h, etc)
-    if (fMRU.Count - NonDev) > fMRUMax then
+    If (fMRU.Count - NonDev) > fMRUMax Then
         Stop := NonDev + fMRUMax
-    else
+    Else
         Stop := fMRU.Count;
 
-    for idx := NonDev to pred(Stop) do
-    begin
+    For idx := NonDev To pred(Stop) Do
+    Begin
         UpdMRU.Add(Format('%d=%s', [UpdMRU.Count, fMRU.Values[idx]]));
         Item := TMenuItem.Create(fMRUMenu);
         Item.Caption := format('&%1x %s', [Counter, fMRU.Values[idx]]);
@@ -520,7 +520,7 @@ begin
         Item.Tag := UpdMRU.Count - 1;
         fMRUMenu.Add(Item);
         Inc(Counter);
-    end;
+    End;
     fMRUMenu.Enabled := (fMRUMenu.Count - fMRUOffset) > 0;
 
     // update MRU
@@ -528,74 +528,74 @@ begin
     UpdMRU.Free;
 
     // redraw the menu
-    if Assigned(fMRUMenu) then
+    If Assigned(fMRUMenu) Then
         MainForm.XPMenu.InitComponent(fMRUMenu);
-end;
+End;
 
 { ---------- Code Insert Methods ---------- }
 
-function TdmMain.InsertList: TStrings;
-var
-    idx: integer;
-    list1 : TStringList;
-begin
+Function TdmMain.InsertList: TStrings;
+Var
+    idx: Integer;
+    list1: TStringList;
+Begin
     list1 := TStringList.Create;
-    try
-        for idx := 0 to pred(fCodeList.Count) do
+    Try
+        For idx := 0 To pred(fCodeList.Count) Do
             list1.Append(fCodeList[idx].Caption);
-            
+
         Result := list1;
-    finally
+    Finally
         list1.Free;
-    end;
-end;
+    End;
+End;
 
 // Loads code inserts, when sep value changes a separator is
 // insert only if sep is a higher value then previous sep value.
-procedure TdmMain.LoadCodeIns;
-var
+Procedure TdmMain.LoadCodeIns;
+Var
     cdx,
-    idx: integer;
+    idx: Integer;
     Item: TMenuItem;
-begin
-    if not assigned(fCodeMenu) then
+Begin
+    If Not assigned(fCodeMenu) Then
         exit;
     fCodeList.LoadCode;
 
-    for idx := pred(fCodeMenu.Count) downto fCodeOffset do
+    For idx := pred(fCodeMenu.Count) Downto fCodeOffset Do
         fCodeMenu[idx].Free;
 
-    if assigned(fCodePop) then
+    If assigned(fCodePop) Then
         fCodePop.Clear;
 
     cdx := 0;
-    for idx := 0 to pred(fCodeList.Count) do
-    begin
+    For idx := 0 To pred(fCodeList.Count) Do
+    Begin
         Item := TMenuItem.Create(fCodeMenu);
         Item.Caption := fCodeList[idx]^.Caption;
         Item.OnClick := fCodeEvent;
         Item.Tag := idx;
-        if fCodeList[idx]^.Sep <= cdx then
+        If fCodeList[idx]^.Sep <= cdx Then
             fCodeMenu.Add(Item)
-        else
-        begin
+        Else
+        Begin
             cdx := fCodeList[idx]^.Sep;
             fCodeMenu.NewBottomLine;
             fCodeMenu.Add(Item);
-        end;
-    end;
+        End;
+    End;
     fCodeMenu.Visible := fCodeMenu.Count > 0;
-    if assigned(fCodePop) then
-    begin
+    If assigned(fCodePop) Then
+    Begin
         CloneMenu(fCodeMenu, fCodePop);
         MainForm.XPMenu.InitComponent(fCodePop);
-    end;
-end;
+    End;
+End;
 
-procedure TdmMain.ExportToHtml(FileLines: TStrings; ExportFilename: string);
-begin
-    if (not Assigned(FileLines)) or (FileLines.Count = 0) or
-        (ExportFilename = '') then
+Procedure TdmMain.ExportToHtml(FileLines: TStrings; ExportFilename: String);
+Begin
+    If (Not Assigned(FileLines)) Or (FileLines.Count = 0) Or
+        (ExportFilename = '') Then
         Exit;
     SynExporterHTML.Title := ExtractFileName(ExportFileName);
     SynExporterHTML.CreateHTMLFragment := False;
@@ -603,16 +603,16 @@ begin
     SynExporterHTML.Color := Cpp.SpaceAttri.Background;
     SynExporterHTML.ExportAll(FileLines);
     SynExporterHTML.SavetoFile(ExportFileName);
-end;
+End;
 
-procedure TdmMain.ExportToRtf(FileLines: TStrings; ExportFilename: string);
-begin
-    if (not Assigned(FileLines)) or (FileLines.Count = 0) or
-        (ExportFilename = '') then
+Procedure TdmMain.ExportToRtf(FileLines: TStrings; ExportFilename: String);
+Begin
+    If (Not Assigned(FileLines)) Or (FileLines.Count = 0) Or
+        (ExportFilename = '') Then
         Exit;
 
     SynExporterRTF.ExportAll(FileLines);
     SynExporterRTF.SavetoFile(ExportFileName);
-end;
+End;
 
-end.
+End.

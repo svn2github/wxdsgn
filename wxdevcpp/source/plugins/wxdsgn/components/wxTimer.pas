@@ -23,121 +23,121 @@
 {Contact gururamnath@yahoo.com for details                           }
 { ****************************************************************** }
 
-unit WxTimer;
+Unit WxTimer;
 
-interface
+Interface
 
-uses
-  Windows, Messages, SysUtils, Classes, wxUtils, WxNonVisibleBaseComponent;
+Uses
+    Windows, Messages, SysUtils, Classes, wxUtils, WxNonVisibleBaseComponent;
 
-type
-  TWxTimer = class(TWxNonVisibleBaseComponent, IWxComponentInterface)
-  private
+Type
+    TWxTimer = Class(TWxNonVisibleBaseComponent, IWxComponentInterface)
+    Private
     { Private declarations }
-    FWx_Class: string;
-    FWx_PropertyList: TStringList;
-    FWx_EventList: TStringList;
-    FWx_IDName: string;
-    FWx_IDValue: integer;
-    FWx_Interval: integer;
-    FWx_AutoStart: boolean;
-    FWx_Comments: TStrings;
+        FWx_Class: String;
+        FWx_PropertyList: TStringList;
+        FWx_EventList: TStringList;
+        FWx_IDName: String;
+        FWx_IDValue: Integer;
+        FWx_Interval: Integer;
+        FWx_AutoStart: Boolean;
+        FWx_Comments: TStrings;
 
-    FEVT_TIMER: string;
+        FEVT_TIMER: String;
 
-    procedure AutoInitialize;
-    procedure AutoDestroy;
+        Procedure AutoInitialize;
+        Procedure AutoDestroy;
 
-  protected
+    Protected
 
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    function GenerateControlIDs: string;
-    function GenerateEnumControlIDs: string;
-    function GenerateEventTableEntries(CurrClassName: string): string;
-    function GenerateGUIControlCreation: string;
-    function GenerateXRCControlCreation(IndentString: string): TStringList;
-    function GenerateGUIControlDeclaration: string;
-    function GenerateHeaderInclude: string;
-    function GenerateImageInclude: string;
-    function GetEventList: TStringList;
-    function GetIDName: string;
-    function GetIDValue: integer;
-    function GetParameterFromEventName(EventName: string): string;
-    function GetPropertyList: TStringList;
-    function GetTypeFromEventName(EventName: string): string;
-    function GetWxClassName: string;
-    procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
-    procedure SetIDName(IDName: string);
-    procedure SetIDValue(IDValue: integer);
-    procedure SetWxClassName(wxClassName: string);
-    function GetFGColor: string;
-    procedure SetFGColor(strValue: string);
-    function GetBGColor: string;
-    procedure SetBGColor(strValue: string);
+    Public
+        Constructor Create(AOwner: TComponent); Override;
+        Destructor Destroy; Override;
+        Function GenerateControlIDs: String;
+        Function GenerateEnumControlIDs: String;
+        Function GenerateEventTableEntries(CurrClassName: String): String;
+        Function GenerateGUIControlCreation: String;
+        Function GenerateXRCControlCreation(IndentString: String): TStringList;
+        Function GenerateGUIControlDeclaration: String;
+        Function GenerateHeaderInclude: String;
+        Function GenerateImageInclude: String;
+        Function GetEventList: TStringList;
+        Function GetIDName: String;
+        Function GetIDValue: Integer;
+        Function GetParameterFromEventName(EventName: String): String;
+        Function GetPropertyList: TStringList;
+        Function GetTypeFromEventName(EventName: String): String;
+        Function GetWxClassName: String;
+        Procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
+        Procedure SetIDName(IDName: String);
+        Procedure SetIDValue(IDValue: Integer);
+        Procedure SetWxClassName(wxClassName: String);
+        Function GetFGColor: String;
+        Procedure SetFGColor(strValue: String);
+        Function GetBGColor: String;
+        Procedure SetBGColor(strValue: String);
 
-    function GetGenericColor(strVariableName:String): string;
-    procedure SetGenericColor(strVariableName,strValue: string);
-    
-    procedure SetProxyFGColorString(Value: string);
-    procedure SetProxyBGColorString(Value: string);
+        Function GetGenericColor(strVariableName: String): String;
+        Procedure SetGenericColor(strVariableName, strValue: String);
 
-    function GetBorderAlignment: TWxBorderAlignment;
-    procedure SetBorderAlignment(border: TWxBorderAlignment);
-    function GetBorderWidth: integer;
-    procedure SetBorderWidth(width: integer);
-    function GetStretchFactor: integer;
-    procedure SetStretchFactor(intValue: integer);
-    
-  published
+        Procedure SetProxyFGColorString(Value: String);
+        Procedure SetProxyBGColorString(Value: String);
+
+        Function GetBorderAlignment: TWxBorderAlignment;
+        Procedure SetBorderAlignment(border: TWxBorderAlignment);
+        Function GetBorderWidth: Integer;
+        Procedure SetBorderWidth(width: Integer);
+        Function GetStretchFactor: Integer;
+        Procedure SetStretchFactor(intValue: Integer);
+
+    Published
     { Published declarations }
-    property Wx_Class: string Read FWx_Class Write FWx_Class;
-    property Wx_IDName: string Read FWx_IDName Write FWx_IDName;
-    property Wx_IDValue: integer Read FWx_IDValue Write FWx_IDValue;
-    property Wx_Interval: integer Read FWx_Interval Write FWx_Interval;
-    property Wx_AutoStart: boolean Read FWx_AutoStart Write FWx_AutoStart;
-    property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
+        Property Wx_Class: String Read FWx_Class Write FWx_Class;
+        Property Wx_IDName: String Read FWx_IDName Write FWx_IDName;
+        Property Wx_IDValue: Integer Read FWx_IDValue Write FWx_IDValue;
+        Property Wx_Interval: Integer Read FWx_Interval Write FWx_Interval;
+        Property Wx_AutoStart: Boolean Read FWx_AutoStart Write FWx_AutoStart;
+        Property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
 
-    property EVT_TIMER: string Read FEVT_TIMER Write FEVT_TIMER;
+        Property EVT_TIMER: String Read FEVT_TIMER Write FEVT_TIMER;
 
-  end;
+    End;
 
-procedure Register;
+Procedure Register;
 
-implementation
+Implementation
 
-procedure Register;
-begin
-  RegisterComponents('wxWidgets', [TWxTimer]);
-end;
+Procedure Register;
+Begin
+    RegisterComponents('wxWidgets', [TWxTimer]);
+End;
 
 { Method to set variable and property values and create objects }
-procedure TWxTimer.AutoInitialize;
-begin
-  FWx_PropertyList := TStringList.Create;
-  FWx_EventList := TStringList.Create;
-  FWx_Class     := 'wxTimer';
-  Glyph.Handle  := LoadBitmap(hInstance, 'TWxTimer');
-  FWx_Interval  := 100;
-  FWx_AutoStart := False;
-  FWx_Comments  := TStringList.Create;
+Procedure TWxTimer.AutoInitialize;
+Begin
+    FWx_PropertyList := TStringList.Create;
+    FWx_EventList := TStringList.Create;
+    FWx_Class := 'wxTimer';
+    Glyph.Handle := LoadBitmap(hInstance, 'TWxTimer');
+    FWx_Interval := 100;
+    FWx_AutoStart := False;
+    FWx_Comments := TStringList.Create;
 
-end; { of AutoInitialize }
+End; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
-procedure TWxTimer.AutoDestroy;
-begin
-  FWx_PropertyList.Destroy;
-  FWx_EventList.Destroy;
-  FWx_Comments.Destroy;
-  Glyph.Assign(nil);
-end; { of AutoDestroy }
+Procedure TWxTimer.AutoDestroy;
+Begin
+    FWx_PropertyList.Destroy;
+    FWx_EventList.Destroy;
+    FWx_Comments.Destroy;
+    Glyph.Assign(Nil);
+End; { of AutoDestroy }
 
-constructor TWxTimer.Create(AOwner: TComponent);
-begin
+Constructor TWxTimer.Create(AOwner: TComponent);
+Begin
   { Call the Create method of the container's parent class       }
-  inherited Create(AOwner);
+    Inherited Create(AOwner);
 
   { AutoInitialize sets the initial values of variables          }
   { (including subcomponent variables) and properties;           }
@@ -145,29 +145,29 @@ begin
   { Delphi object types (e.g., TFont, TTimer, TPicture)          }
   { and for any variables marked as objects.                     }
   { AutoInitialize method is generated by Component Create.      }
-  AutoInitialize;
+    AutoInitialize;
 
   { Code to perform other tasks when the component is created }
   { Code to perform other tasks when the component is created }
-  FWx_PropertyList.add('Wx_IDName:IDName');
-  FWx_PropertyList.add('Wx_IDValue:IDValue');
-  FWx_PropertyList.add('Wx_Interval:Interval');
-  FWx_PropertyList.add('Wx_AutoStart:AutoStart');
+    FWx_PropertyList.add('Wx_IDName:IDName');
+    FWx_PropertyList.add('Wx_IDValue:IDValue');
+    FWx_PropertyList.add('Wx_Interval:Interval');
+    FWx_PropertyList.add('Wx_AutoStart:AutoStart');
 
-  FWx_PropertyList.add('Name:Name');
-  FWx_PropertyList.add('Wx_Class:Base Class');
+    FWx_PropertyList.add('Name:Name');
+    FWx_PropertyList.add('Wx_Class:Base Class');
 
-  FWx_PropertyList.add('Wx_Comments:Comments');
+    FWx_PropertyList.add('Wx_Comments:Comments');
 
-  FWx_EventList.add('EVT_TIMER:OnTimer');
+    FWx_EventList.add('EVT_TIMER:OnTimer');
 
-end;
+End;
 
-destructor TWxTimer.Destroy;
-begin
+Destructor TWxTimer.Destroy;
+Begin
   { AutoDestroy, which is generated by Component Create, frees any   }
   { objects created by AutoInitialize.                               }
-  AutoDestroy;
+    AutoDestroy;
 
   { Here, free any other dynamic objects that the component methods  }
   { created but have not yet freed.  Also perform any other clean-up }
@@ -175,197 +175,197 @@ begin
 
   { Last, free the component by calling the Destroy method of the    }
   { parent class.                                                    }
-  inherited Destroy;
-end;
+    Inherited Destroy;
+End;
 
-function TWxTimer.GenerateEnumControlIDs: string;
-begin
-  Result := GetWxEnum(self.Wx_IDValue, self.Wx_IDName);
-end;
+Function TWxTimer.GenerateEnumControlIDs: String;
+Begin
+    Result := GetWxEnum(self.Wx_IDValue, self.Wx_IDName);
+End;
 
-function TWxTimer.GenerateControlIDs: string;
-begin
-  Result := '';
-  if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-    Result := Format('#define %s %d ', [Wx_IDName, Wx_IDValue]);
-end;
+Function TWxTimer.GenerateControlIDs: String;
+Begin
+    Result := '';
+    If (Wx_IDValue > 0) And (trim(Wx_IDName) <> '') Then
+        Result := Format('#define %s %d ', [Wx_IDName, Wx_IDValue]);
+End;
 
-function TWxTimer.GenerateEventTableEntries(CurrClassName: string): string;
-begin
-  Result := '';
-  if trim(EVT_TIMER) <> '' then
-    Result := Format('EVT_TIMER(%s,%s::%s)', [WX_IDName, CurrClassName, EVT_TIMER]) + '';
-end;
+Function TWxTimer.GenerateEventTableEntries(CurrClassName: String): String;
+Begin
+    Result := '';
+    If trim(EVT_TIMER) <> '' Then
+        Result := Format('EVT_TIMER(%s,%s::%s)', [WX_IDName, CurrClassName, EVT_TIMER]) + '';
+End;
 
-function TWxTimer.GenerateXRCControlCreation(IndentString: string): TStringList;
-begin
+Function TWxTimer.GenerateXRCControlCreation(IndentString: String): TStringList;
+Begin
 
-  Result := TStringList.Create;
+    Result := TStringList.Create;
 
-  try
-    Result.Add(IndentString + Format('<object class="%s" name="%s">',
-      [self.Wx_Class, self.Name]));
-    Result.Add(IndentString + Format('  <interval>%d</interval>', [self.Wx_Interval]));
-    Result.Add(IndentString + '</object>');
-  except
-    Result.Free;
-    raise;
-  end;
+    Try
+        Result.Add(IndentString + Format('<object class="%s" name="%s">',
+            [self.Wx_Class, self.Name]));
+        Result.Add(IndentString + Format('  <interval>%d</interval>', [self.Wx_Interval]));
+        Result.Add(IndentString + '</object>');
+    Except
+        Result.Free;
+        Raise;
+    End;
 
-end;
+End;
 
-function TWxTimer.GenerateGUIControlCreation: string;
-begin
-  Result := '';
-  Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s = new %s();', [self.Name, self.wx_Class]);
-  Result := Result + #13 + Format('%s->SetOwner(this, %s);', [self.Name, Wx_IDName]);
+Function TWxTimer.GenerateGUIControlCreation: String;
+Begin
+    Result := '';
+    Result := GetCommentString(self.FWx_Comments.Text) +
+        Format('%s = new %s();', [self.Name, self.wx_Class]);
+    Result := Result + #13 + Format('%s->SetOwner(this, %s);', [self.Name, Wx_IDName]);
 
-  if Wx_AutoStart = True then
-    Result := Result + #13 + Format('%s->Start(%d);', [self.Name, self.Wx_Interval]);
+    If Wx_AutoStart = True Then
+        Result := Result + #13 + Format('%s->Start(%d);', [self.Name, self.Wx_Interval]);
 
-end;
+End;
 
-function TWxTimer.GenerateGUIControlDeclaration: string;
-begin
-  Result := '';
-  Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
-end;
+Function TWxTimer.GenerateGUIControlDeclaration: String;
+Begin
+    Result := '';
+    Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
+End;
 
-function TWxTimer.GenerateHeaderInclude: string;
-begin
-  Result := '';
-  Result := '#include <wx/timer.h>';
-end;
+Function TWxTimer.GenerateHeaderInclude: String;
+Begin
+    Result := '';
+    Result := '#include <wx/timer.h>';
+End;
 
-function TWxTimer.GenerateImageInclude: string;
-begin
+Function TWxTimer.GenerateImageInclude: String;
+Begin
 
-end;
+End;
 
-function TWxTimer.GetEventList: TStringList;
-begin
-  Result := FWx_EventList;
-end;
+Function TWxTimer.GetEventList: TStringList;
+Begin
+    Result := FWx_EventList;
+End;
 
-function TWxTimer.GetIDName: string;
-begin
-  Result := wx_IDName;
-end;
+Function TWxTimer.GetIDName: String;
+Begin
+    Result := wx_IDName;
+End;
 
-function TWxTimer.GetIDValue: integer;
-begin
-  Result := wx_IDValue;
-end;
+Function TWxTimer.GetIDValue: Integer;
+Begin
+    Result := wx_IDValue;
+End;
 
-function TWxTimer.GetParameterFromEventName(EventName: string): string;
-begin
-  Result := '';
-  if EventName = 'EVT_TIMER' then
-  begin
-    Result := 'wxTimerEvent& event';
-    exit;
-  end;
-end;
+Function TWxTimer.GetParameterFromEventName(EventName: String): String;
+Begin
+    Result := '';
+    If EventName = 'EVT_TIMER' Then
+    Begin
+        Result := 'wxTimerEvent& event';
+        exit;
+    End;
+End;
 
-function TWxTimer.GetStretchFactor: Integer;
-begin
-   Result := 1;
-end;
+Function TWxTimer.GetStretchFactor: Integer;
+Begin
+    Result := 1;
+End;
 
-function TWxTimer.GetPropertyList: TStringList;
-begin
-  Result := FWx_PropertyList;
-end;
+Function TWxTimer.GetPropertyList: TStringList;
+Begin
+    Result := FWx_PropertyList;
+End;
 
-function TWxTimer.GetBorderAlignment: TWxBorderAlignment;
-begin
-  Result := [];
-end;
+Function TWxTimer.GetBorderAlignment: TWxBorderAlignment;
+Begin
+    Result := [];
+End;
 
-procedure TWxTimer.SetBorderAlignment(border: TWxBorderAlignment);
-begin
-end;
+Procedure TWxTimer.SetBorderAlignment(border: TWxBorderAlignment);
+Begin
+End;
 
-function TWxTimer.GetBorderWidth: integer;
-begin
-  Result := 0;
-end;
+Function TWxTimer.GetBorderWidth: Integer;
+Begin
+    Result := 0;
+End;
 
-procedure TWxTimer.SetBorderWidth(width: integer);
-begin
-end;
+Procedure TWxTimer.SetBorderWidth(width: Integer);
+Begin
+End;
 
-function TWxTimer.GetTypeFromEventName(EventName: string): string;
-begin
+Function TWxTimer.GetTypeFromEventName(EventName: String): String;
+Begin
 
-end;
+End;
 
-function TWxTimer.GetWxClassName: string;
-begin
-  if trim(wx_Class) = '' then
-    wx_Class := 'wxTimer';
-  Result := wx_Class;
-end;
+Function TWxTimer.GetWxClassName: String;
+Begin
+    If trim(wx_Class) = '' Then
+        wx_Class := 'wxTimer';
+    Result := wx_Class;
+End;
 
-procedure TWxTimer.SaveControlOrientation(ControlOrientation: TWxControlOrientation);
-begin
+Procedure TWxTimer.SaveControlOrientation(ControlOrientation: TWxControlOrientation);
+Begin
 
-end;
+End;
 
-procedure TWxTimer.SetIDName(IDName: string);
-begin
-  wx_IDName := IDName;
-end;
+Procedure TWxTimer.SetIDName(IDName: String);
+Begin
+    wx_IDName := IDName;
+End;
 
-procedure TWxTimer.SetIDValue(IDValue: integer);
-begin
-  Wx_IDValue := IDVAlue;
-end;
+Procedure TWxTimer.SetIDValue(IDValue: Integer);
+Begin
+    Wx_IDValue := IDVAlue;
+End;
 
-procedure TWxTimer.SetStretchFactor(intValue: integer);
-begin
-end;
+Procedure TWxTimer.SetStretchFactor(intValue: Integer);
+Begin
+End;
 
-procedure TWxTimer.SetWxClassName(wxClassName: string);
-begin
-  wx_Class := wxClassName;
-end;
+Procedure TWxTimer.SetWxClassName(wxClassName: String);
+Begin
+    wx_Class := wxClassName;
+End;
 
-function TWxTimer.GetGenericColor(strVariableName:String): string;
-begin
+Function TWxTimer.GetGenericColor(strVariableName: String): String;
+Begin
 
-end;
-procedure TWxTimer.SetGenericColor(strVariableName,strValue: string);
-begin
+End;
+Procedure TWxTimer.SetGenericColor(strVariableName, strValue: String);
+Begin
 
-end;
+End;
 
-function TWxTimer.GetFGColor: string;
-begin
+Function TWxTimer.GetFGColor: String;
+Begin
 
-end;
+End;
 
-procedure TWxTimer.SetFGColor(strValue: string);
-begin
-end;
+Procedure TWxTimer.SetFGColor(strValue: String);
+Begin
+End;
 
-function TWxTimer.GetBGColor: string;
-begin
-end;
+Function TWxTimer.GetBGColor: String;
+Begin
+End;
 
-procedure TWxTimer.SetBGColor(strValue: string);
-begin
-end;
+Procedure TWxTimer.SetBGColor(strValue: String);
+Begin
+End;
 
-procedure TWxTimer.SetProxyFGColorString(Value: string);
-begin
-end;
+Procedure TWxTimer.SetProxyFGColorString(Value: String);
+Begin
+End;
 
-procedure TWxTimer.SetProxyBGColorString(Value: string);
-begin
+Procedure TWxTimer.SetProxyBGColorString(Value: String);
+Begin
 
-end;
+End;
 
-end.
+End.
  

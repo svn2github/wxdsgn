@@ -17,11 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-unit WindowListFrm;
+Unit WindowListFrm;
 
-interface
+Interface
 
-uses
+Uses
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
     StdCtrls, Buttons, ExtCtrls, XPMenu;
@@ -31,8 +31,8 @@ uses
   QStdCtrls, QButtons, QExtCtrls;
 {$ENDIF}
 
-type
-    TWindowListForm = class(TForm)
+Type
+    TWindowListForm = Class(TForm)
         Panel: TPanel;
         OkBtn: TBitBtn;
         CancelBtn: TBitBtn;
@@ -42,18 +42,18 @@ type
         Label2: TLabel;
         Label3: TLabel;
         XPMenu: TXPMenu;
-        procedure FormCreate(Sender: TObject);
-        procedure UnitListDblClick(Sender: TObject);
-        procedure FormShow(Sender: TObject);
-        procedure UnitListKeyDown(Sender: TObject; var Key: Word;
+        Procedure FormCreate(Sender: TObject);
+        Procedure UnitListDblClick(Sender: TObject);
+        Procedure FormShow(Sender: TObject);
+        Procedure UnitListKeyDown(Sender: TObject; Var Key: Word;
             Shift: TShiftState);
-    protected
-        procedure CreateParams(var Params: TCreateParams); override;
-    end;
+    Protected
+        Procedure CreateParams(Var Params: TCreateParams); Override;
+    End;
 
-implementation
+Implementation
 
-uses
+Uses
 {$IFDEF WIN32}
     MultiLangSupport, devcfg;
 {$ENDIF}
@@ -63,54 +63,54 @@ uses
 
 {$R *.dfm}
 
-procedure TWindowListForm.FormCreate(Sender: TObject);
-begin
+Procedure TWindowListForm.FormCreate(Sender: TObject);
+Begin
     DesktopFont := True;
     XPMenu.Active := devData.XPTheme;
     Caption := Lang[ID_WL];
     GroupBox.Caption := Lang[ID_WL_SELECT];
     OkBtn.Caption := Lang[ID_BTN_OK];
     CancelBtn.Caption := Lang[ID_BTN_CANCEL];
-end;
+End;
 
-procedure TWindowListForm.UnitListDblClick(Sender: TObject);
-var a: TCloseAction;
-begin
-    if UnitList.ItemIndex > -1 then
-    begin
+Procedure TWindowListForm.UnitListDblClick(Sender: TObject);
+Var a: TCloseAction;
+Begin
+    If UnitList.ItemIndex > -1 Then
+    Begin
         ModalResult := mrOk;
         DoClose(a);
-    end;
-end;
+    End;
+End;
 
-procedure TWindowListForm.FormShow(Sender: TObject);
-begin
+Procedure TWindowListForm.FormShow(Sender: TObject);
+Begin
     UnitList.SetFocus;
-end;
+End;
 
-procedure TWindowListForm.UnitListKeyDown(Sender: TObject; var Key: Word;
+Procedure TWindowListForm.UnitListKeyDown(Sender: TObject; Var Key: Word;
     Shift: TShiftState);
-begin
+Begin
 {$IFDEF WIN32}
-    if Key = vk_Return then
+    If Key = vk_Return Then
 {$ENDIF}
 {$IFDEF LINUX}
   if Key = XK_RETURN then
 {$ENDIF}
         UnitListDblClick(Sender);
-end;
+End;
 
-procedure TWindowListForm.CreateParams(var Params: TCreateParams);
-begin
-    inherited;
-    if (Parent <> nil) or (ParentWindow <> 0) then
+Procedure TWindowListForm.CreateParams(Var Params: TCreateParams);
+Begin
+    Inherited;
+    If (Parent <> Nil) Or (ParentWindow <> 0) Then
         Exit;  // must not mess with wndparent if form is embedded
 
-    if Assigned(Owner) and (Owner is TWincontrol) then
+    If Assigned(Owner) And (Owner Is TWincontrol) Then
         Params.WndParent := TWinControl(Owner).handle
-    else
-    if Assigned(Screen.Activeform) then
+    Else
+    If Assigned(Screen.Activeform) Then
         Params.WndParent := Screen.Activeform.Handle;
-end;
+End;
 
-end.
+End.

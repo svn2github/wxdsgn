@@ -1,181 +1,181 @@
-unit debugCPU;
+Unit debugCPU;
 
-interface
+Interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, Menus, Grids, ValEdit, StdCtrls, ExtCtrls, ComCtrls;
+Uses
+    Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+    Dialogs, Menus, Grids, ValEdit, StdCtrls, ExtCtrls, ComCtrls;
 
 
-type
-  TDebugCPUFrm = class(TForm)
-    Panel1: TPanel;
-    Splitter1: TSplitter;
-    Splitter2: TSplitter;
-    Panel2: TPanel;
-    Panel3: TPanel;
-    Label1: TLabel;
-    Label2: TLabel;
-    Panel4: TPanel;
-    RegisterList: TValueListEditor;
-    DisassemblyRefreshButton: TButton;
-    MemoryRefreshButton: TButton;
-    RegistersRefreshButton: TButton;
-    MemoryAddressEdit: TEdit;
-    MemoryCountEdit: TEdit;
-    Label3: TLabel;
-    Label4: TLabel;
-    MemoryRichEdit: TRichEdit;
-    Label5: TLabel;
-    SrcFileName: TEdit;
-    DisassemblyRichEdit: TRichEdit;
-    Label6: TLabel;
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure DisassemblyRefreshButtonClick(Sender: TObject);
-    procedure MemoryRefreshButtonClick(Sender: TObject);
-    procedure RegistersRefreshButtonClick(Sender: TObject);
-    procedure RefreshAll(Sender: TObject);
-    procedure FormShow(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
-    procedure FormActivate(Sender: TObject);
+Type
+    TDebugCPUFrm = Class(TForm)
+        Panel1: TPanel;
+        Splitter1: TSplitter;
+        Splitter2: TSplitter;
+        Panel2: TPanel;
+        Panel3: TPanel;
+        Label1: TLabel;
+        Label2: TLabel;
+        Panel4: TPanel;
+        RegisterList: TValueListEditor;
+        DisassemblyRefreshButton: TButton;
+        MemoryRefreshButton: TButton;
+        RegistersRefreshButton: TButton;
+        MemoryAddressEdit: TEdit;
+        MemoryCountEdit: TEdit;
+        Label3: TLabel;
+        Label4: TLabel;
+        MemoryRichEdit: TRichEdit;
+        Label5: TLabel;
+        SrcFileName: TEdit;
+        DisassemblyRichEdit: TRichEdit;
+        Label6: TLabel;
+        Procedure FormClose(Sender: TObject; Var Action: TCloseAction);
+        Procedure DisassemblyRefreshButtonClick(Sender: TObject);
+        Procedure MemoryRefreshButtonClick(Sender: TObject);
+        Procedure RegistersRefreshButtonClick(Sender: TObject);
+        Procedure RefreshAll(Sender: TObject);
+        Procedure FormShow(Sender: TObject);
+        Procedure FormCreate(Sender: TObject);
+        Procedure FormActivate(Sender: TObject);
 
-  private
+    Private
     { Private declarations }
-    procedure RefreshCPUDisassembly;
-    procedure RefreshCPUMemory;
-    procedure RefreshCPURegisters;
+        Procedure RefreshCPUDisassembly;
+        Procedure RefreshCPUMemory;
+        Procedure RefreshCPURegisters;
 
-  public
+    Public
     { Public declarations }
-  end;
+    End;
 
-const
-  NoFile: String = '<Enter here the source file to disassemble>';
+Const
+    NoFile: String = '<Enter here the source file to disassemble>';
 
-  GDBDisassem: String = '-data-disassemble ';
-  const CPURegList: String = '0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15';
-const CPURegCount: Integer = 15;  // The number of values above - 1
+    GDBDisassem: String = '-data-disassemble ';
+Const CPURegList: String = '0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15';
+Const CPURegCount: Integer = 15;  // The number of values above - 1
 
-  
-var
-  DebugCPUFrm: TDebugCPUFrm;
 
-implementation
+Var
+    DebugCPUFrm: TDebugCPUFrm;
 
-uses main;
+Implementation
+
+Uses main;
 
 {$R *.dfm}
 
 //=================================================================
 
-procedure TDebugCPUFrm.FormClose(Sender: TObject;
-  var Action: TCloseAction);
-begin
-    MainForm.ViewCPUItem.Checked := false
-end;
+Procedure TDebugCPUFrm.FormClose(Sender: TObject;
+    Var Action: TCloseAction);
+Begin
+    MainForm.ViewCPUItem.Checked := False;
+End;
 
 //=================================================================
 
-procedure TDebugCPUFrm.DisassemblyRefreshButtonClick(Sender: TObject);
-begin
-  RefreshCPUDisassembly;
-end;
+Procedure TDebugCPUFrm.DisassemblyRefreshButtonClick(Sender: TObject);
+Begin
+    RefreshCPUDisassembly;
+End;
 
 //=================================================================
 
-procedure TDebugCPUFrm.MemoryRefreshButtonClick(Sender: TObject);
-begin
-  RefreshCPUMemory;
-end;
+Procedure TDebugCPUFrm.MemoryRefreshButtonClick(Sender: TObject);
+Begin
+    RefreshCPUMemory;
+End;
 
 //=================================================================
 
-procedure TDebugCPUFrm.RegistersRefreshButtonClick(Sender: TObject);
-begin
-  RefreshCPURegisters;
-end;
+Procedure TDebugCPUFrm.RegistersRefreshButtonClick(Sender: TObject);
+Begin
+    RefreshCPURegisters;
+End;
 
 //=================================================================
 
-procedure TDebugCPUFrm.RefreshAll(Sender: TObject);
-begin
-  RefreshCPUDisassembly;
-  RefreshCPUMemory;
-  RefreshCPURegisters;
-end;
+Procedure TDebugCPUFrm.RefreshAll(Sender: TObject);
+Begin
+    RefreshCPUDisassembly;
+    RefreshCPUMemory;
+    RefreshCPURegisters;
+End;
 
 //=================================================================
 
-procedure TDebugCPUFrm.RefreshCPUDisassembly;
-var
-  cmd: String;
+Procedure TDebugCPUFrm.RefreshCPUDisassembly;
+Var
+    cmd: String;
 
-begin
+Begin
 
-  if (not(MainForm.fDebugger = nil)) then
-  begin
-    DisassemblyRichEdit.Clear;
-    if (not ((SrcFileName.Text = NoFile) or (SrcFileName.Text = ''))) then
-    begin
-      cmd := format('%s -f %s -l 1 -- 1',[GDBDisassem, SrcFileName.Text]);
-      MainForm.fDebugger.WriteToPipe(cmd);
-    end;
-  end;
-end;
-
-//=================================================================
-
-procedure TDebugCPUFrm.RefreshCPUMemory;
-begin
-  if (not(MainForm.fDebugger = nil)) then
-  begin
-    MemoryRichEdit.Clear;
-    if (not ((MemoryAddressEdit.Text = '')
-         or (MemoryCountEdit.Text = '')
-         or (MemoryCountEdit.Text = '0'))) then
-    MainForm.fDebugger.WriteToPipe('-data-read-memory-bytes '
-      + MemoryAddressEdit.Text + ' ' + MemoryCountEdit.Text);
-  end;
-
-end;
+    If (Not (MainForm.fDebugger = Nil)) Then
+    Begin
+        DisassemblyRichEdit.Clear;
+        If (Not ((SrcFileName.Text = NoFile) Or (SrcFileName.Text = ''))) Then
+        Begin
+            cmd := format('%s -f %s -l 1 -- 1', [GDBDisassem, SrcFileName.Text]);
+            MainForm.fDebugger.WriteToPipe(cmd);
+        End;
+    End;
+End;
 
 //=================================================================
 
-procedure TDebugCPUFrm.RefreshCPURegisters;
-begin
+Procedure TDebugCPUFrm.RefreshCPUMemory;
+Begin
+    If (Not (MainForm.fDebugger = Nil)) Then
+    Begin
+        MemoryRichEdit.Clear;
+        If (Not ((MemoryAddressEdit.Text = '')
+            Or (MemoryCountEdit.Text = '')
+            Or (MemoryCountEdit.Text = '0'))) Then
+            MainForm.fDebugger.WriteToPipe('-data-read-memory-bytes '
+                + MemoryAddressEdit.Text + ' ' + MemoryCountEdit.Text);
+    End;
 
-  if (not(MainForm.fDebugger = nil)) then
-  begin
-    RegisterList.Strings.Clear;
-    MainForm.fDebugger.WriteToPipe('-data-list-register-names ' + CPURegList);
-  end;
-end;
-
-//=================================================================
-
-procedure TDebugCPUFrm.FormShow(Sender: TObject);
-begin
-
-  SrcFileName.Text := ExtractFileName(MainForm.GetActiveEditorName);
-  RefreshAll(Sender);
-end;
+End;
 
 //=================================================================
 
-procedure TDebugCPUFrm.FormCreate(Sender: TObject);
-begin
-  DebugCPUFrm.Visible := true;
-  DebugCPUFrm.BringToFront;
+Procedure TDebugCPUFrm.RefreshCPURegisters;
+Begin
 
-end;
-
-//=================================================================
-
-procedure TDebugCPUFrm.FormActivate(Sender: TObject);
-begin
-
-end;
+    If (Not (MainForm.fDebugger = Nil)) Then
+    Begin
+        RegisterList.Strings.Clear;
+        MainForm.fDebugger.WriteToPipe('-data-list-register-names ' + CPURegList);
+    End;
+End;
 
 //=================================================================
 
-end.
+Procedure TDebugCPUFrm.FormShow(Sender: TObject);
+Begin
+
+    SrcFileName.Text := ExtractFileName(MainForm.GetActiveEditorName);
+    RefreshAll(Sender);
+End;
+
+//=================================================================
+
+Procedure TDebugCPUFrm.FormCreate(Sender: TObject);
+Begin
+    DebugCPUFrm.Visible := True;
+    DebugCPUFrm.BringToFront;
+
+End;
+
+//=================================================================
+
+Procedure TDebugCPUFrm.FormActivate(Sender: TObject);
+Begin
+
+End;
+
+//=================================================================
+
+End.

@@ -22,221 +22,232 @@
 {Contact gururamnath@yahoo.com for details                           }
 { ****************************************************************** }
 
-unit dmListview;
+Unit dmListview;
 
-interface
+Interface
 
-uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ComCtrls, Buttons, ExtCtrls, XPMenu;
+Uses
+    Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+    StdCtrls, ComCtrls, Buttons, ExtCtrls, XPMenu;
 
-type
-  TListviewForm = class(TForm)
-    GroupBox1: TGroupBox;
-    GroupBox2: TGroupBox;
-    Label2: TLabel;
-    Label3: TLabel;
-    Label4: TLabel;
-    txtCaption: TEdit;
-    txtWidth: TEdit;
-    cbAlign: TComboBox;
-    btMoveDown: TButton;
-    btMoveUp: TButton;
-    btDelete: TButton;
-    btAdd: TButton;
-    lbxColumnNames: TListBox;
-    GroupBox3: TGroupBox;
-    LstViewObj: TListView;
-    XPMenu: TXPMenu;
-    btnOK: TBitBtn;
-    btnCancel: TBitBtn;
-    btUpdate: TButton;
-    procedure btAddClick(Sender: TObject);
-    procedure btDeleteClick(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
-    procedure lbxColumnNamesClick(Sender: TObject);
-    procedure btMoveUpClick(Sender: TObject);
-    procedure btMoveDownClick(Sender: TObject);
-    procedure btUpdateClick(Sender: TObject);
-  private
+Type
+    TListviewForm = Class(TForm)
+        GroupBox1: TGroupBox;
+        GroupBox2: TGroupBox;
+        Label2: TLabel;
+        Label3: TLabel;
+        Label4: TLabel;
+        txtCaption: TEdit;
+        txtWidth: TEdit;
+        cbAlign: TComboBox;
+        btMoveDown: TButton;
+        btMoveUp: TButton;
+        btDelete: TButton;
+        btAdd: TButton;
+        lbxColumnNames: TListBox;
+        GroupBox3: TGroupBox;
+        LstViewObj: TListView;
+        XPMenu: TXPMenu;
+        btnOK: TBitBtn;
+        btnCancel: TBitBtn;
+        btUpdate: TButton;
+        Procedure btAddClick(Sender: TObject);
+        Procedure btDeleteClick(Sender: TObject);
+        Procedure FormCreate(Sender: TObject);
+        Procedure lbxColumnNamesClick(Sender: TObject);
+        Procedure btMoveUpClick(Sender: TObject);
+        Procedure btMoveDownClick(Sender: TObject);
+        Procedure btUpdateClick(Sender: TObject);
+    Private
     { Private declarations }
-    lastidx: integer;
+        lastidx: Integer;
 
-  public
+    Public
     { Public declarations }
-    lstColumns: TListColumns;
-    procedure fillListInfo;
-  end;
+        lstColumns: TListColumns;
+        Procedure fillListInfo;
+    End;
 
-var
-  ListviewForm: TListviewForm;
+Var
+    ListviewForm: TListviewForm;
 
-implementation
+Implementation
 
-uses
-  wxdesigner;
+Uses
+    wxdesigner;
 
 {$R *.DFM}
 
-procedure TListviewForm.FormCreate(Sender: TObject);
-begin
-  DesktopFont := True;
-  XPMenu.Active := wx_designer.XPTheme;
-  cbAlign.ItemIndex := 0;
-  lastIdx := -1;
-end;
+Procedure TListviewForm.FormCreate(Sender: TObject);
+Begin
+    DesktopFont := True;
+    XPMenu.Active := wx_designer.XPTheme;
+    cbAlign.ItemIndex := 0;
+    lastIdx := -1;
+End;
 
-procedure TListviewForm.fillListInfo;
-var
-  I: Integer;
-begin
-  lbxColumnNames.Items.BeginUpdate;
-  lbxColumnNames.Items.Clear;
-  for I := 0 to LstViewObj.Columns.Count - 1 do // Iterate
-  begin
-    lbxColumnNames.Items.Add(LstViewObj.Columns[i].Caption);
-  end; // for
-  lbxColumnNames.Items.EndUpdate;
-end;
+Procedure TListviewForm.fillListInfo;
+Var
+    I: Integer;
+Begin
+    lbxColumnNames.Items.BeginUpdate;
+    lbxColumnNames.Items.Clear;
+    For I := 0 To LstViewObj.Columns.Count - 1 Do // Iterate
+    Begin
+        lbxColumnNames.Items.Add(LstViewObj.Columns[i].Caption);
+    End; // for
+    lbxColumnNames.Items.EndUpdate;
+End;
 
-procedure TListviewForm.btAddClick(Sender: TObject);
-var
-  lstColumn: TListColumn;
-begin
-  lstColumn := LstViewObj.Columns.Add;
-  lstColumn.Width := StrToInt(txtWidth.Text);
-  lstColumn.Caption := txtCaption.Text;
-  lstColumn.ImageIndex := -1;
-  case cbAlign.ItemIndex of
-    -1, 0: lstColumn.Alignment := taLeftJustify;
-    1: lstColumn.Alignment := taCenter;
-    2: lstColumn.Alignment := taRightJustify;
-  end; // case
-  fillListInfo;
-end;
+Procedure TListviewForm.btAddClick(Sender: TObject);
+Var
+    lstColumn: TListColumn;
+Begin
+    lstColumn := LstViewObj.Columns.Add;
+    lstColumn.Width := StrToInt(txtWidth.Text);
+    lstColumn.Caption := txtCaption.Text;
+    lstColumn.ImageIndex := -1;
+    Case cbAlign.ItemIndex Of
+        -1, 0:
+            lstColumn.Alignment := taLeftJustify;
+        1:
+            lstColumn.Alignment := taCenter;
+        2:
+            lstColumn.Alignment := taRightJustify;
+    End; // case
+    fillListInfo;
+End;
 
-procedure TListviewForm.btDeleteClick(Sender: TObject);
-var
-  intColPos: Integer;
-begin
-  intColPos := lbxColumnNames.ItemIndex;
-  if intColPos = -1 then
-    Exit;
+Procedure TListviewForm.btDeleteClick(Sender: TObject);
+Var
+    intColPos: Integer;
+Begin
+    intColPos := lbxColumnNames.ItemIndex;
+    If intColPos = -1 Then
+        Exit;
 
-  lbxColumnNames.DeleteSelected;
-  LstViewObj.Columns.Delete(intColPos);
+    lbxColumnNames.DeleteSelected;
+    LstViewObj.Columns.Delete(intColPos);
 
-  if lbxColumnNames.ItemIndex > lbxColumnNames.Items.Count then
-    lbxColumnNames.ItemIndex := 0
-  else
-    lbxColumnNames.ItemIndex := -1;
-  lbxColumnNamesClick(lbxColumnNames);
-end;
+    If lbxColumnNames.ItemIndex > lbxColumnNames.Items.Count Then
+        lbxColumnNames.ItemIndex := 0
+    Else
+        lbxColumnNames.ItemIndex := -1;
+    lbxColumnNamesClick(lbxColumnNames);
+End;
 
-procedure TListviewForm.lbxColumnNamesClick(Sender: TObject);
-begin
+Procedure TListviewForm.lbxColumnNamesClick(Sender: TObject);
+Begin
   //Should we enable the buttons?
-  btDelete.Enabled   := lbxColumnNames.ItemIndex <> -1;
-  btMoveUp.Enabled   := lbxColumnNames.ItemIndex > 0;
-  btMoveDown.Enabled := (lbxColumnNames.ItemIndex <> -1) and
-                        (lbxColumnNames.ItemIndex <> lbxColumnNames.Count - 1);
+    btDelete.Enabled := lbxColumnNames.ItemIndex <> -1;
+    btMoveUp.Enabled := lbxColumnNames.ItemIndex > 0;
+    btMoveDown.Enabled := (lbxColumnNames.ItemIndex <> -1) And
+        (lbxColumnNames.ItemIndex <> lbxColumnNames.Count - 1);
 
-  btUpdate.Enabled := lbxColumnNames.ItemIndex <> -1;
+    btUpdate.Enabled := lbxColumnNames.ItemIndex <> -1;
 
-  if lbxColumnNames.ItemIndex = -1 then
-  begin
-    lastidx := -1;
-    Exit;
-  end;
+    If lbxColumnNames.ItemIndex = -1 Then
+    Begin
+        lastidx := -1;
+        Exit;
+    End;
 
   //Save the old panel
-  if lastIdx <> -1 then
-  begin
-    lbxColumnNames.Items[lastIdx]       := txtCaption.Text;
-    LstViewObj.Columns[lastIdx].Caption := txtCaption.Text;
-    LstViewObj.Columns[lastIdx].Width   := StrToInt(txtWidth.Text);
-    case cbAlign.ItemIndex of
-      0: LstViewObj.Columns[lbxColumnNames.ItemIndex].Alignment := taLeftJustify;
-      1: LstViewObj.Columns[lbxColumnNames.ItemIndex].Alignment := taCenter;
-      2: LstViewObj.Columns[lbxColumnNames.ItemIndex].Alignment := taRightJustify;
-    end;
-  end;
+    If lastIdx <> -1 Then
+    Begin
+        lbxColumnNames.Items[lastIdx] := txtCaption.Text;
+        LstViewObj.Columns[lastIdx].Caption := txtCaption.Text;
+        LstViewObj.Columns[lastIdx].Width := StrToInt(txtWidth.Text);
+        Case cbAlign.ItemIndex Of
+            0:
+                LstViewObj.Columns[lbxColumnNames.ItemIndex].Alignment := taLeftJustify;
+            1:
+                LstViewObj.Columns[lbxColumnNames.ItemIndex].Alignment := taCenter;
+            2:
+                LstViewObj.Columns[lbxColumnNames.ItemIndex].Alignment := taRightJustify;
+        End;
+    End;
 
-  lastIdx := lbxColumnNames.ItemIndex;
-  txtCaption.Text := LstViewObj.Columns[lbxColumnNames.ItemIndex].Caption;
-  txtWidth.Text := IntToStr(LstViewObj.Columns[lbxColumnNames.ItemIndex].Width);
-  case LstViewObj.Columns[lbxColumnNames.ItemIndex].Alignment of //
-    taLeftJustify: cbAlign.ItemIndex := 0;
-    taCenter: cbAlign.ItemIndex := 1;
-    taRightJustify: cbAlign.ItemIndex := 2;
-  end; // case
+    lastIdx := lbxColumnNames.ItemIndex;
+    txtCaption.Text := LstViewObj.Columns[lbxColumnNames.ItemIndex].Caption;
+    txtWidth.Text := IntToStr(LstViewObj.Columns[lbxColumnNames.ItemIndex].Width);
+    Case LstViewObj.Columns[lbxColumnNames.ItemIndex].Alignment Of //
+        taLeftJustify:
+            cbAlign.ItemIndex := 0;
+        taCenter:
+            cbAlign.ItemIndex := 1;
+        taRightJustify:
+            cbAlign.ItemIndex := 2;
+    End; // case
 
-end;
+End;
 
-procedure TListviewForm.btMoveUpClick(Sender: TObject);
-var
-  idx: integer;
-begin
-  idx := lbxColumnNames.ItemIndex;
-  if idx = -1 then
-    Exit;
+Procedure TListviewForm.btMoveUpClick(Sender: TObject);
+Var
+    idx: Integer;
+Begin
+    idx := lbxColumnNames.ItemIndex;
+    If idx = -1 Then
+        Exit;
 
   //Perform a swap
-  LstViewObj.Columns[idx].Index := idx - 1;
+    LstViewObj.Columns[idx].Index := idx - 1;
 
   //Set the new listbox selection
-  lbxColumnNames.Items.Move(lastIdx, lastIdx - 1);
-  lbxColumnNames.ItemIndex := lastIdx - 1;
-  lastIdx := lastIdx - 1;
+    lbxColumnNames.Items.Move(lastIdx, lastIdx - 1);
+    lbxColumnNames.ItemIndex := lastIdx - 1;
+    lastIdx := lastIdx - 1;
 
   //Lastly, do the button enabling
-  btDelete.Enabled   := lastIdx <> -1;
-  btMoveUp.Enabled   := lastIdx > 0;
-  btMoveDown.Enabled := lastIdx < lbxColumnNames.Count - 1;
-end;
+    btDelete.Enabled := lastIdx <> -1;
+    btMoveUp.Enabled := lastIdx > 0;
+    btMoveDown.Enabled := lastIdx < lbxColumnNames.Count - 1;
+End;
 
-procedure TListviewForm.btMoveDownClick(Sender: TObject);
-var
-  idx: integer;
-begin
-  idx := lbxColumnNames.ItemIndex;
-  if idx = -1 then
-    Exit;
+Procedure TListviewForm.btMoveDownClick(Sender: TObject);
+Var
+    idx: Integer;
+Begin
+    idx := lbxColumnNames.ItemIndex;
+    If idx = -1 Then
+        Exit;
 
   //Perform a swap
-  LstViewObj.Columns[idx].Index := idx + 1;
+    LstViewObj.Columns[idx].Index := idx + 1;
 
   //set the new listbox selection
-  lbxColumnNames.Items.Move(lastIdx, lastIdx + 1);
-  lbxColumnNames.ItemIndex := lastIdx + 1;
-  lastIdx := lastIdx + 1;
+    lbxColumnNames.Items.Move(lastIdx, lastIdx + 1);
+    lbxColumnNames.ItemIndex := lastIdx + 1;
+    lastIdx := lastIdx + 1;
 
   //Lastly, do the button enabling
-  btDelete.Enabled   := lastIdx <> -1;
-  btMoveUp.Enabled   := lastIdx > 0;
-  btMoveDown.Enabled := lastIdx < lbxColumnNames.Count - 1;
-end;
+    btDelete.Enabled := lastIdx <> -1;
+    btMoveUp.Enabled := lastIdx > 0;
+    btMoveDown.Enabled := lastIdx < lbxColumnNames.Count - 1;
+End;
 
-procedure TListviewForm.btUpdateClick(Sender: TObject);
-var
-  idx: integer;
-begin
-  idx := lbxColumnNames.ItemIndex;
-  if idx = -1 then
-    Exit;
+Procedure TListviewForm.btUpdateClick(Sender: TObject);
+Var
+    idx: Integer;
+Begin
+    idx := lbxColumnNames.ItemIndex;
+    If idx = -1 Then
+        Exit;
 
-  if idx <> -1 then
-  begin
-    LstViewObj.Columns[idx].Caption := txtCaption.Text;
-    LstViewObj.Columns[idx].Width   := StrToInt(txtWidth.Text);
-    case cbAlign.ItemIndex of
-      0: LstViewObj.Columns[idx].Alignment := taLeftJustify;
-      1: LstViewObj.Columns[idx].Alignment := taCenter;
-      2: LstViewObj.Columns[idx].Alignment := taRightJustify;
-    end;
-  end;
+    If idx <> -1 Then
+    Begin
+        LstViewObj.Columns[idx].Caption := txtCaption.Text;
+        LstViewObj.Columns[idx].Width := StrToInt(txtWidth.Text);
+        Case cbAlign.ItemIndex Of
+            0:
+                LstViewObj.Columns[idx].Alignment := taLeftJustify;
+            1:
+                LstViewObj.Columns[idx].Alignment := taCenter;
+            2:
+                LstViewObj.Columns[idx].Alignment := taRightJustify;
+        End;
+    End;
 
-end;
+End;
 
-end.
-
+End.

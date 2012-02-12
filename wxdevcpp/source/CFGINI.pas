@@ -17,50 +17,50 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-unit CFGINI;
+Unit CFGINI;
 
-interface
+Interface
 
-uses
+Uses
     Classes, IniFiles, cfgTypes, TypInfo;
 
-type
-    TCFGINI = class(TObject)
-    private
+Type
+    TCFGINI = Class(TObject)
+    Private
         fOwner: TComponent; // assumes a TConfigData
         fini: Tinifile;
-        procedure ReadFrominifile(Obj: TPersistent; const Section: string);
-        procedure ReadObject(const Name: string; Obj: TPersistent);
-        function ReadSet(const Name: string; TypeInfo: PTypeInfo): integer;
-        procedure ReadStrings(const Name: string; value: TStrings);
-        procedure WriteObject(const Name: string; Obj: TPersistent);
-        procedure WriteSet(const Name: string; value: integer;
+        Procedure ReadFrominifile(Obj: TPersistent; Const Section: String);
+        Procedure ReadObject(Const Name: String; Obj: TPersistent);
+        Function ReadSet(Const Name: String; TypeInfo: PTypeInfo): Integer;
+        Procedure ReadStrings(Const Name: String; value: TStrings);
+        Procedure WriteObject(Const Name: String; Obj: TPersistent);
+        Procedure WriteSet(Const Name: String; value: Integer;
             TypeInfo: PTypeInfo);
-        procedure WriteStrings(const Name: string; value: TStrings);
-        procedure Writetoinifile(const Section: string; Obj: TPersistent);
-        procedure ClearSection(const Name: string);
-    public
-        constructor Create(aOwner: TComponent);
-        destructor Destroy; override;
+        Procedure WriteStrings(Const Name: String; value: TStrings);
+        Procedure Writetoinifile(Const Section: String; Obj: TPersistent);
+        Procedure ClearSection(Const Name: String);
+    Public
+        Constructor Create(aOwner: TComponent);
+        Destructor Destroy; Override;
 
-        procedure SetIniFile(s: string);
-        procedure ReadConfig;
-        procedure SaveConfig;
+        Procedure SetIniFile(s: String);
+        Procedure ReadConfig;
+        Procedure SaveConfig;
 
-        procedure LoadObject(var Obj: TCFGOptions);
-        procedure SaveObject(var Obj: TCFGOptions);
+        Procedure LoadObject(Var Obj: TCFGOptions);
+        Procedure SaveObject(Var Obj: TCFGOptions);
 
-        function LoadSetting(const key: string; const Entry: string): string;
-            overload;
-        function LoadSetting(val: boolean; const key, Entry: string): string;
-            overload;
-        procedure SaveSetting(const key: string; const entry: string;
-            const value: string);
-    end;
+        Function LoadSetting(Const key: String; Const Entry: String): String;
+            Overload;
+        Function LoadSetting(val: Boolean; Const key, Entry: String): String;
+            Overload;
+        Procedure SaveSetting(Const key: String; Const entry: String;
+            Const value: String);
+    End;
 
-implementation
+Implementation
 
-uses
+Uses
 {$IFDEF WIN32}
     CFGData, SysUtils, Graphics;
 {$ENDIF}
@@ -70,122 +70,122 @@ uses
 
 { TCFGINI }
 
-constructor TCFGINI.Create(aOwner: TComponent);
-begin
+Constructor TCFGINI.Create(aOwner: TComponent);
+Begin
     fOwner := aOwner;
-    fIni := nil;
-end;
+    fIni := Nil;
+End;
 
-destructor TCFGINI.Destroy;
-begin
-    if (assigned(fIni)) then
+Destructor TCFGINI.Destroy;
+Begin
+    If (assigned(fIni)) Then
         fini.free;
-    inherited;
-end;
+    Inherited;
+End;
 
-procedure TCFGIni.SetIniFile(s: string);
-begin
-    if (assigned(fIni)) then
+Procedure TCFGIni.SetIniFile(s: String);
+Begin
+    If (assigned(fIni)) Then
         fini.free;
     fini := TIniFile.Create(s);
-end;
+End;
 
-procedure TCFGINI.ReadConfig;
-var
-    section: string;
-begin
-    if not assigned(fIni) then
+Procedure TCFGINI.ReadConfig;
+Var
+    section: String;
+Begin
+    If Not assigned(fIni) Then
         exit;
     section := TConfigData(fOwner).INISection;
-    if section = '' then
-        raise EConfigDataError.Create('(ConfigData(INIReadCFG): Section not set');
-    try
+    If section = '' Then
+        Raise EConfigDataError.Create('(ConfigData(INIReadCFG): Section not set');
+    Try
         ReadFromINIFile(fOwner, Section);
-    except end;
-end;
+    Except End;
+End;
 
-procedure TCFGINI.SaveConfig;
-var
-    section: string;
-begin
-    if not assigned(fIni) then
+Procedure TCFGINI.SaveConfig;
+Var
+    section: String;
+Begin
+    If Not assigned(fIni) Then
         exit;
     section := TConfigData(fOwner).INISection;
-    if section = '' then
-        raise EConfigDataError.Create('(ConfigData(INISaveCFG): Section not set');
-    with fINI do
-        try
+    If section = '' Then
+        Raise EConfigDataError.Create('(ConfigData(INISaveCFG): Section not set');
+    With fINI Do
+        Try
             WritetoINIfile(Section, fOwner);
-        except end;
-end;
+        Except End;
+End;
 
 // Reading methods
 
-function TCFGINI.ReadSet(const Name: string; TypeInfo: PTypeInfo): integer;
-var
-    idx: integer;
-    value: integer;
-begin
+Function TCFGINI.ReadSet(Const Name: String; TypeInfo: PTypeInfo): Integer;
+Var
+    idx: Integer;
+    value: Integer;
+Begin
     result := 0;
-    if not assigned(fIni) then
+    If Not assigned(fIni) Then
         exit;
     TypeInfo := GetTypeData(TypeInfo).CompType^;
     value := 0;
-    if fINI.SectionExists(Name) then
-        with GetTypeData(TypeInfo)^ do
-            for idx := MinValue to MaxValue do
-                if ReadBoolString(fini.ReadString(Name, GetENumName(TypeInfo, idx),
-                    'FALSE')) then
+    If fINI.SectionExists(Name) Then
+        With GetTypeData(TypeInfo)^ Do
+            For idx := MinValue To MaxValue Do
+                If ReadBoolString(fini.ReadString(Name, GetENumName(TypeInfo, idx),
+                    'FALSE')) Then
                     include(TIntegerSet(value), idx);
     result := value;
-end;
+End;
 
-procedure TCFGINI.ReadStrings(const Name: string; value: TStrings);
-begin
+Procedure TCFGINI.ReadStrings(Const Name: String; value: TStrings);
+Begin
     Value.BeginUpdate;
-    try
+    Try
         Value.Clear;
-        if fini.SectionExists(Name) then
+        If fini.SectionExists(Name) Then
             fini.ReadSectionValues(Name, value);
-    finally
+    Finally
         Value.EndUpdate;
-    end;
-end;
+    End;
+End;
 
-procedure TCFGINI.ReadObject(const Name: string; Obj: TPersistent);
-begin
-    if fini.SectionExists(Name) then
+Procedure TCFGINI.ReadObject(Const Name: String; Obj: TPersistent);
+Begin
+    If fini.SectionExists(Name) Then
         ReadFromINIFile(Obj, Name);
-end;
+End;
 
-procedure TCFGINI.ReadFrominifile(Obj: TPersistent; const Section: string);
-var
-    idx, idx2: integer;
-    PropName: string;
+Procedure TCFGINI.ReadFrominifile(Obj: TPersistent; Const Section: String);
+Var
+    idx, idx2: Integer;
+    PropName: String;
     Cd: TConfigData;
-begin
+Begin
     CD := TConfigData(fOwner);
-    for idx := 0 to pred(GetPropCount(Obj)) do
-    begin
+    For idx := 0 To pred(GetPropCount(Obj)) Do
+    Begin
         PropName := GetPropName(Obj, idx);
-        if Obj is TFont then
-        begin
+        If Obj Is TFont Then
+        Begin
             idx2 := CD.IgnoreProperties.Indexof('Name');
-            if idx2 <> -1 then
+            If idx2 <> -1 Then
                 CD.IgnoreProperties[idx2] := 'Height';
-        end
-        else
-        begin
+        End
+        Else
+        Begin
             idx2 := CD.IgnoreProperties.Indexof('Height');
-            if idx2 <> -1 then
+            If idx2 <> -1 Then
                 CD.IgnoreProperties[idx2] := 'Name';
-        end;
-        if (CD.IgnoreProperties.Indexof(PropName) > -1) or
-            ((not fINI.ValueExists(Section, PropName)) and
-            (not fINI.SectionExists(Section + '.' + PropName))) then
+        End;
+        If (CD.IgnoreProperties.Indexof(PropName) > -1) Or
+            ((Not fINI.ValueExists(Section, PropName)) And
+            (Not fINI.SectionExists(Section + '.' + PropName))) Then
             continue;
 
-        case PropType(Obj, PropName) of
+        Case PropType(Obj, PropName) Of
             tkString,
             tkLString,
             tkWString:
@@ -208,104 +208,104 @@ begin
                     GetPropInfo(Obj, PropName, [tkSet])^.PropType^));
 
             tkClass:
-            begin
-                if TPersistent(GetOrdProp(Obj, PropName)) is TStrings then
+            Begin
+                If TPersistent(GetOrdProp(Obj, PropName)) Is TStrings Then
                     ReadStrings(Section + '.' + PropName,
                         TStrings(GetOrdProp(Obj, PropName)))
-                else
+                Else
                     ReadObject(Section + '.' + PropName,
                         TPersistent(GetOrdProp(Obj, PropName)));
-            end;
-        end;
-    end;
-end;
+            End;
+        End;
+    End;
+End;
 
 // Writing Methods
 
-procedure TCFGINI.WriteSet(const Name: string; value: integer;
+Procedure TCFGINI.WriteSet(Const Name: String; value: Integer;
     TypeInfo: PTypeInfo);
-var
-    idx: integer;
-    s: string;
-begin
+Var
+    idx: Integer;
+    s: String;
+Begin
     TypeInfo := GetTypeData(TypeInfo).CompType^;
     ClearSection(Name);
-    with GetTypeData(TypeInfo)^ do
-        for idx := MinValue to MaxValue do
-        begin
+    With GetTypeData(TypeInfo)^ Do
+        For idx := MinValue To MaxValue Do
+        Begin
             s := GetENumName(TypeInfo, idx);
-            if fINI.ValueExists(Name, s) then
+            If fINI.ValueExists(Name, s) Then
                 fini.DeleteKey(Name, s);
-            fINI.WriteString(Name, s, boolStr[idx in TIntegerSet(value)]);
-        end;
-end;
+            fINI.WriteString(Name, s, boolStr[idx In TIntegerSet(value)]);
+        End;
+End;
 
-procedure TCFGINI.WriteStrings(const Name: string; value: TStrings);
-var
-    idx: integer;
-begin
+Procedure TCFGINI.WriteStrings(Const Name: String; value: TStrings);
+Var
+    idx: Integer;
+Begin
     ClearSection(Name);
-    if value.count <= 0 then
+    If value.count <= 0 Then
         exit;
-    for idx := 0 to Pred(value.Count) do
-        if AnsiPos('=', value[idx]) <> 0 then
+    For idx := 0 To Pred(value.Count) Do
+        If AnsiPos('=', value[idx]) <> 0 Then
             fini.WriteString(Name, Value.Names[idx], value.Values[Value.Names[idx]])
-        else
+        Else
             fini.WriteString(Name, Value[idx], '');
-end;
+End;
 
-procedure TCFGINI.WriteObject(const Name: string; Obj: TPersistent);
+Procedure TCFGINI.WriteObject(Const Name: String; Obj: TPersistent);
 
-    function WritetheObject(Obj: TPersistent): boolean;
-    var
-        idx, c, Count: integer;
-    begin
-        result := FALSE;
+    Function WritetheObject(Obj: TPersistent): Boolean;
+    Var
+        idx, c, Count: Integer;
+    Begin
+        result := False;
         Count := GetPropCount(Obj);
-        if Count <= 0 then
+        If Count <= 0 Then
             exit;
         c := Count;
-        for idx := 0 to pred(Count) do
-        begin
-            if TConfigData(fOwner).IgnoreProperties.Indexof(
-                getPropName(Obj, idx)) <> -1 then
+        For idx := 0 To pred(Count) Do
+        Begin
+            If TConfigData(fOwner).IgnoreProperties.Indexof(
+                getPropName(Obj, idx)) <> -1 Then
                 dec(c);
-        end;
+        End;
         result := c > 0;
-    end;
-begin
-    if not WritetheObject(Obj) then
+    End;
+Begin
+    If Not WritetheObject(Obj) Then
         exit;
     ClearSection(Name);
     WritetoINIFile(Name, Obj);
-end;
+End;
 
-procedure TCFGINI.Writetoinifile(const Section: string; Obj: TPersistent);
-var
+Procedure TCFGINI.Writetoinifile(Const Section: String; Obj: TPersistent);
+Var
     idx,
-    idx2: integer;
-    PropName: string;
+    idx2: Integer;
+    PropName: String;
     CD: TConfigData;
-begin
+Begin
     CD := TConfigData(fOwner);
-    for idx := 0 to pred(GetPropCount(Obj)) do
-    begin
+    For idx := 0 To pred(GetPropCount(Obj)) Do
+    Begin
         PropName := GetPropName(Obj, idx);
-        if Obj is TFont then
-        begin
+        If Obj Is TFont Then
+        Begin
             idx2 := CD.IgnoreProperties.Indexof('Name');
-            if idx2 > -1 then
+            If idx2 > -1 Then
                 CD.IgnoreProperties[idx2] := 'Height';
-        end
-        else
-        begin
+        End
+        Else
+        Begin
             idx2 := CD.IgnoreProperties.Indexof('Height');
-            if idx2 > -1 then
+            If idx2 > -1 Then
                 CD.IgnoreProperties[idx2] := 'Name';
-        end;
-        if CD.IgnoreProperties.Indexof(PropName) >= 0 then
+        End;
+        If CD.IgnoreProperties.Indexof(PropName) >= 0 Then
             continue;
-        case PropType(Obj, PropName) of
+        Case PropType(Obj, PropName) Of
             tkString,
             tkLString,
             tkWString:
@@ -328,69 +328,69 @@ begin
                 WriteSet(Section + '.' + PropName, GetOrdProp(Obj, PropName),
                     GetPropInfo(Obj, PropName, [tkSet])^.PropType^);
             tkClass:
-            begin
-                if TPersistent(GetOrdProp(Obj, PropName)) is TStrings then
+            Begin
+                If TPersistent(GetOrdProp(Obj, PropName)) Is TStrings Then
                     WriteStrings(Section + '.' + PropName,
                         TStrings(GetOrdProp(Obj, PropName)))
-                else
+                Else
                     WritetoINIFile(Section + '.' + PropName,
                         TPersistent(GetOrdProp(Obj, PropName)));
-            end;
-        end;
-    end;
-end;
+            End;
+        End;
+    End;
+End;
 
-procedure TCFGINI.LoadObject(var Obj: TCFGOptions);
-begin
-    if not assigned(Obj) then
+Procedure TCFGINI.LoadObject(Var Obj: TCFGOptions);
+Begin
+    If Not assigned(Obj) Then
         exit;
-    try
+    Try
         ReadObject(Obj.Name, Obj);
-    except end;
-end;
+    Except End;
+End;
 
-function TCFGINI.LoadSetting(const key, Entry: string): string;
-begin
-    if Entry = '' then
+Function TCFGINI.LoadSetting(Const key, Entry: String): String;
+Begin
+    If Entry = '' Then
         exit;
     result := fini.ReadString(Key, Entry, '');
-end;
+End;
 
-function TCFGINI.LoadSetting(val: boolean; const key, Entry: string): string;
-begin
-    if Entry = '' then
+Function TCFGINI.LoadSetting(val: Boolean; Const key, Entry: String): String;
+Begin
+    If Entry = '' Then
         exit;
     result := fini.ReadString(Key, Entry, '');
-    if result = '' then
-    begin
-        if val then
+    If result = '' Then
+    Begin
+        If val Then
             result := '1'
-        else
+        Else
             result := '0';
-    end;
-end;
+    End;
+End;
 
-procedure TCFGINI.SaveObject(var Obj: TCFGOptions);
-begin
-    if not assigned(Obj) then
+Procedure TCFGINI.SaveObject(Var Obj: TCFGOptions);
+Begin
+    If Not assigned(Obj) Then
         exit;
     WriteObject(Obj.Name, Obj);
-end;
+End;
 
-procedure TCFGINI.SaveSetting(const key, entry, value: string);
-begin
-    if Entry = '' then
+Procedure TCFGINI.SaveSetting(Const key, entry, value: String);
+Begin
+    If Entry = '' Then
         exit;
     fini.WriteString(Key, Entry, Value);
-end;
+End;
 
-procedure TCFGINI.ClearSection(const Name: string);
+Procedure TCFGINI.ClearSection(Const Name: String);
 //var
 // tmp: TStrings;
 // idx: integer;
-begin
+Begin
     // This way it's much easier...
-    if fini.SectionExists(Name) then
+    If fini.SectionExists(Name) Then
         fini.EraseSection(Name);
     //  tmp:= TStringList.Create;
     //  try
@@ -401,6 +401,6 @@ begin
     //  finally
     //   tmp.Free;
     //  end;
-end;
+End;
 
-end.
+End.

@@ -23,235 +23,235 @@
 {Contact gururamnath@yahoo.com for details                           }
 { ****************************************************************** }
 
-unit wxAuiPaneInfo;
+Unit wxAuiPaneInfo;
 
-interface
+Interface
 
-uses
-  Windows, Messages, SysUtils, Classes, Forms, wxUtils, WxNonVisibleBaseComponent;
+Uses
+    Windows, Messages, SysUtils, Classes, Forms, wxUtils, WxNonVisibleBaseComponent;
 
-type
-  TWxAuiPaneInfo = class(TWxNonVisibleBaseComponent, IWxComponentInterface, IWxAuiPaneInfoInterface,
-      IWxToolBarInsertableInterface, IWxToolBarNonInsertableInterface)
-  private
+Type
+    TWxAuiPaneInfo = Class(TWxNonVisibleBaseComponent, IWxComponentInterface, IWxAuiPaneInfoInterface,
+        IWxToolBarInsertableInterface, IWxToolBarNonInsertableInterface)
+    Private
     { Private declarations }
-    FWx_Class: string;
-    FWx_PropertyList: TStringList;
-    FWx_Comments: TStrings;
-    FWx_EventList: TStringList;
-    FWx_Caption: string;
-    FWx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem;
-    FWx_Aui_Dockable_Direction: TwxAuiPaneDockableDirectionSet;
-    FWx_Aui_Pane_Style: TwxAuiPaneStyleSet;
-    FWx_Aui_Pane_Buttons: TwxAuiPaneButtonSet;
-    FWx_BestSize_Height: Integer;
-    FWx_BestSize_Width: Integer;
-    FWx_MinSize_Height: Integer;
-    FWx_MinSize_Width: Integer;
-    FWx_MaxSize_Height: Integer;
-    FWx_MaxSize_Width: Integer;
-    FWx_Row: Integer;
-    FWx_Position: Integer;
+        FWx_Class: String;
+        FWx_PropertyList: TStringList;
+        FWx_Comments: TStrings;
+        FWx_EventList: TStringList;
+        FWx_Caption: String;
+        FWx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem;
+        FWx_Aui_Dockable_Direction: TwxAuiPaneDockableDirectionSet;
+        FWx_Aui_Pane_Style: TwxAuiPaneStyleSet;
+        FWx_Aui_Pane_Buttons: TwxAuiPaneButtonSet;
+        FWx_BestSize_Height: Integer;
+        FWx_BestSize_Width: Integer;
+        FWx_MinSize_Height: Integer;
+        FWx_MinSize_Width: Integer;
+        FWx_MaxSize_Height: Integer;
+        FWx_MaxSize_Width: Integer;
+        FWx_Row: Integer;
+        FWx_Position: Integer;
 
-    procedure AutoInitialize;
-    procedure AutoDestroy;
+        Procedure AutoInitialize;
+        Procedure AutoDestroy;
 
-  protected
+    Protected
 
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    function GenerateControlIDs: string;
-    function GenerateEnumControlIDs: string;
-    function GenerateEventTableEntries(CurrClassName: string): string;
-    function GenerateGUIControlCreation: string;
-    function GenerateXRCControlCreation(IndentString: string): TStringList;
-    function GenerateGUIControlDeclaration: string;
-    function GenerateHeaderInclude: string;
-    function GenerateImageInclude: string;
-    function GetEventList: TStringList;
-    function GetIDName: string;
-    function GetIDValue: integer;
-    function GetParameterFromEventName(EventName: string): string;
-    function GetPropertyList: TStringList;
-    function GetTypeFromEventName(EventName: string): string;
-    function GetWxClassName: string;
-    procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
-    procedure SetIDName(IDName: string);
-    procedure SetIDValue(IDValue: integer);
-    procedure SetWxClassName(wxClassName: string);
-    function GetFGColor: string;
-    procedure SetFGColor(strValue: string);
-    function GetBGColor: string;
-    procedure SetBGColor(strValue: string);
-    procedure SetProxyFGColorString(Value: string);
-    procedure SetProxyBGColorString(Value: string);
+    Public
+        Constructor Create(AOwner: TComponent); Override;
+        Destructor Destroy; Override;
+        Function GenerateControlIDs: String;
+        Function GenerateEnumControlIDs: String;
+        Function GenerateEventTableEntries(CurrClassName: String): String;
+        Function GenerateGUIControlCreation: String;
+        Function GenerateXRCControlCreation(IndentString: String): TStringList;
+        Function GenerateGUIControlDeclaration: String;
+        Function GenerateHeaderInclude: String;
+        Function GenerateImageInclude: String;
+        Function GetEventList: TStringList;
+        Function GetIDName: String;
+        Function GetIDValue: Integer;
+        Function GetParameterFromEventName(EventName: String): String;
+        Function GetPropertyList: TStringList;
+        Function GetTypeFromEventName(EventName: String): String;
+        Function GetWxClassName: String;
+        Procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
+        Procedure SetIDName(IDName: String);
+        Procedure SetIDValue(IDValue: Integer);
+        Procedure SetWxClassName(wxClassName: String);
+        Function GetFGColor: String;
+        Procedure SetFGColor(strValue: String);
+        Function GetBGColor: String;
+        Procedure SetBGColor(strValue: String);
+        Procedure SetProxyFGColorString(Value: String);
+        Procedure SetProxyBGColorString(Value: String);
 
-    function GetGenericColor(strVariableName: string): string;
-    procedure SetGenericColor(strVariableName, strValue: string);
+        Function GetGenericColor(strVariableName: String): String;
+        Procedure SetGenericColor(strVariableName, strValue: String);
 
-    function GetBorderAlignment: TWxBorderAlignment;
-    procedure SetBorderAlignment(border: TWxBorderAlignment);
-    function GetBorderWidth: integer;
-    procedure SetBorderWidth(width: integer);
-    function GetStretchFactor: integer;
-    procedure SetStretchFactor(intValue: integer);
+        Function GetBorderAlignment: TWxBorderAlignment;
+        Procedure SetBorderAlignment(border: TWxBorderAlignment);
+        Function GetBorderWidth: Integer;
+        Procedure SetBorderWidth(width: Integer);
+        Function GetStretchFactor: Integer;
+        Procedure SetStretchFactor(intValue: Integer);
 
-    function GetAuiDockDirection(Wx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem): string;
-    function GetAuiDockableDirections(Wx_Aui_Dockable_Direction: TwxAuiPaneDockableDirectionSet): string;
-    function GetAui_Pane_Style(Wx_Aui_Pane_Style: TwxAuiPaneStyleSet): string;
-    function GetAui_Pane_Buttons(Wx_Aui_Pane_Buttons: TwxAuiPaneButtonSet): string;
-    function GetAuiRow(row: Integer): string;
-    function GetAuiPosition(position: Integer): string;
-    function GetAuiPaneBestSize: string;
-    function GetAuiPaneMinSize: string;
-    function GetAuiPaneMaxSize: string;
-    function GetAuiPaneCaption: string;
-    procedure SetAuiPaneCaption(Caption: string);
-    function GetAuiPaneName: string;
+        Function GetAuiDockDirection(Wx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem): String;
+        Function GetAuiDockableDirections(Wx_Aui_Dockable_Direction: TwxAuiPaneDockableDirectionSet): String;
+        Function GetAui_Pane_Style(Wx_Aui_Pane_Style: TwxAuiPaneStyleSet): String;
+        Function GetAui_Pane_Buttons(Wx_Aui_Pane_Buttons: TwxAuiPaneButtonSet): String;
+        Function GetAuiRow(row: Integer): String;
+        Function GetAuiPosition(position: Integer): String;
+        Function GetAuiPaneBestSize: String;
+        Function GetAuiPaneMinSize: String;
+        Function GetAuiPaneMaxSize: String;
+        Function GetAuiPaneCaption: String;
+        Procedure SetAuiPaneCaption(Caption: String);
+        Function GetAuiPaneName: String;
 
-    function GetWx_BestSize_Height: integer;
-    procedure SetWx_BestSize_Height(height: integer);
-    function GetWx_BestSize_Width: integer;
-    procedure SetWx_BestSize_Width(width: integer);
+        Function GetWx_BestSize_Height: Integer;
+        Procedure SetWx_BestSize_Height(height: Integer);
+        Function GetWx_BestSize_Width: Integer;
+        Procedure SetWx_BestSize_Width(width: Integer);
 
-    function GetWx_MinSize_Height: integer;
-    procedure SetWx_MinSize_Height(height: integer);
-    function GetWx_MinSize_Width: integer;
-    procedure SetWx_MinSize_Width(width: integer);
+        Function GetWx_MinSize_Height: Integer;
+        Procedure SetWx_MinSize_Height(height: Integer);
+        Function GetWx_MinSize_Width: Integer;
+        Procedure SetWx_MinSize_Width(width: Integer);
 
-    function GetWx_MaxSize_Height: integer;
-    procedure SetWx_MaxSize_Height(height: integer);
-    function GetWx_MaxSize_Width: integer;
-    procedure SetWx_MaxSize_Width(width: integer);
+        Function GetWx_MaxSize_Height: Integer;
+        Procedure SetWx_MaxSize_Height(height: Integer);
+        Function GetWx_MaxSize_Width: Integer;
+        Procedure SetWx_MaxSize_Width(width: Integer);
 
-    function GetWx_Row: integer;
-    procedure SetWx_Row(row: integer);
+        Function GetWx_Row: Integer;
+        Procedure SetWx_Row(row: Integer);
 
-    function GetWx_Position: integer;
-    procedure SetWx_Position(position: integer);
+        Function GetWx_Position: Integer;
+        Procedure SetWx_Position(position: Integer);
 
-    function HasToolbarPaneStyle(Wx_Aui_Pane_Style: TwxAuiPaneStyleSet): Boolean;
-  published
+        Function HasToolbarPaneStyle(Wx_Aui_Pane_Style: TwxAuiPaneStyleSet): Boolean;
+    Published
     { Published declarations }
-    property Wx_Class: string read FWx_Class write FWx_Class;
-    property Wx_Comments: TStrings read FWx_Comments write FWx_Comments;
-    property Wx_EventList: TStringList read FWx_EventList write FWx_EventList;
-    property Wx_Caption: string read FWx_Caption write FWx_Caption;
-    property Wx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem read FWx_Aui_Dock_Direction write FWx_Aui_Dock_Direction;
-    property Wx_Aui_Dockable_Direction: TwxAuiPaneDockableDirectionSet read FWx_Aui_Dockable_Direction write FWx_Aui_Dockable_Direction;
-    property Wx_Aui_Pane_Style: TwxAuiPaneStyleSet read FWx_Aui_Pane_Style write FWx_Aui_Pane_Style;
-    property Wx_Aui_Pane_Buttons: TwxAuiPaneButtonSet read FWx_Aui_Pane_Buttons write FWx_Aui_Pane_Buttons;
-    property Wx_BestSize_Height: integer read GetWx_BestSize_Height write SetWx_BestSize_Height default 0;
-    property Wx_BestSize_Width: integer read GetWx_BestSize_Width write SetWx_BestSize_Width default 0;
-    property Wx_MinSize_Height: integer read GetWx_MinSize_Height write SetWx_MinSize_Height default 0;
-    property Wx_MinSize_Width: integer read GetWx_MinSize_Width write SetWx_MinSize_Width default 0;
-    property Wx_MaxSize_Height: integer read GetWx_MaxSize_Height write SetWx_MaxSize_Height default 0;
-    property Wx_MaxSize_Width: integer read GetWx_MaxSize_Width write SetWx_MaxSize_Width default 0;
-    property Wx_Row: integer read GetWx_Row write SetWx_Row default 0;
-    property Wx_Position: integer read GetWx_Position write SetWx_Position default 0;
-  end;
+        Property Wx_Class: String Read FWx_Class Write FWx_Class;
+        Property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
+        Property Wx_EventList: TStringList Read FWx_EventList Write FWx_EventList;
+        Property Wx_Caption: String Read FWx_Caption Write FWx_Caption;
+        Property Wx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem Read FWx_Aui_Dock_Direction Write FWx_Aui_Dock_Direction;
+        Property Wx_Aui_Dockable_Direction: TwxAuiPaneDockableDirectionSet Read FWx_Aui_Dockable_Direction Write FWx_Aui_Dockable_Direction;
+        Property Wx_Aui_Pane_Style: TwxAuiPaneStyleSet Read FWx_Aui_Pane_Style Write FWx_Aui_Pane_Style;
+        Property Wx_Aui_Pane_Buttons: TwxAuiPaneButtonSet Read FWx_Aui_Pane_Buttons Write FWx_Aui_Pane_Buttons;
+        Property Wx_BestSize_Height: Integer Read GetWx_BestSize_Height Write SetWx_BestSize_Height Default 0;
+        Property Wx_BestSize_Width: Integer Read GetWx_BestSize_Width Write SetWx_BestSize_Width Default 0;
+        Property Wx_MinSize_Height: Integer Read GetWx_MinSize_Height Write SetWx_MinSize_Height Default 0;
+        Property Wx_MinSize_Width: Integer Read GetWx_MinSize_Width Write SetWx_MinSize_Width Default 0;
+        Property Wx_MaxSize_Height: Integer Read GetWx_MaxSize_Height Write SetWx_MaxSize_Height Default 0;
+        Property Wx_MaxSize_Width: Integer Read GetWx_MaxSize_Width Write SetWx_MaxSize_Width Default 0;
+        Property Wx_Row: Integer Read GetWx_Row Write SetWx_Row Default 0;
+        Property Wx_Position: Integer Read GetWx_Position Write SetWx_Position Default 0;
+    End;
 
-procedure Register;
+Procedure Register;
 
-implementation
+Implementation
 
-procedure Register;
-begin
-  RegisterComponents('wxWidgets', [TWxAuiPaneInfo]);
-end;
+Procedure Register;
+Begin
+    RegisterComponents('wxWidgets', [TWxAuiPaneInfo]);
+End;
 
 { Method to set variable and property values and create objects }
 
-procedure TWxAuiPaneInfo.AutoInitialize;
-begin
-  FWx_PropertyList := TStringList.Create;
-  FWx_Class := 'wxAuiPaneInfo';
-  FWx_Comments := TStringList.Create;
-  FWx_EventList := TStringList.Create;
-  Glyph.Handle := LoadBitmap(hInstance, 'TWxAuiPaneInfo');
-  FWx_BestSize_Height := 0;
-  FWx_BestSize_Width := 0;
-  FWx_MinSize_Height := 0;
-  FWx_MinSize_Width := 0;
-  FWx_MaxSize_Height := 0;
-  FWx_MaxSize_Width := 0;
-  FWx_Row := 0;
-  FWx_Position := 0;
-  FWx_Aui_Pane_Buttons := [CloseButton];
+Procedure TWxAuiPaneInfo.AutoInitialize;
+Begin
+    FWx_PropertyList := TStringList.Create;
+    FWx_Class := 'wxAuiPaneInfo';
+    FWx_Comments := TStringList.Create;
+    FWx_EventList := TStringList.Create;
+    Glyph.Handle := LoadBitmap(hInstance, 'TWxAuiPaneInfo');
+    FWx_BestSize_Height := 0;
+    FWx_BestSize_Width := 0;
+    FWx_MinSize_Height := 0;
+    FWx_MinSize_Width := 0;
+    FWx_MaxSize_Height := 0;
+    FWx_MaxSize_Width := 0;
+    FWx_Row := 0;
+    FWx_Position := 0;
+    FWx_Aui_Pane_Buttons := [CloseButton];
   //  Wx_Caption := '';
-end; { of AutoInitialize }
+End; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
 
-procedure TWxAuiPaneInfo.AutoDestroy;
-begin
-  FWx_PropertyList.Destroy;
-  FWx_Comments.Destroy;
-  FWx_EventList.Destroy;
-  Glyph.Assign(nil);
-end; { of AutoDestroy }
+Procedure TWxAuiPaneInfo.AutoDestroy;
+Begin
+    FWx_PropertyList.Destroy;
+    FWx_Comments.Destroy;
+    FWx_EventList.Destroy;
+    Glyph.Assign(Nil);
+End; { of AutoDestroy }
 
-constructor TWxAuiPaneInfo.Create(AOwner: TComponent);
-begin
+Constructor TWxAuiPaneInfo.Create(AOwner: TComponent);
+Begin
   { Call the Create method of the container's parent class       }
-  inherited Create(AOwner);
+    Inherited Create(AOwner);
 
   { AutoInitialize method is generated by Component Create.      }
-  AutoInitialize;
+    AutoInitialize;
 
   { Code to perform other tasks when the component is created }
   { Code to perform other tasks when the component is created }
-  FWx_PropertyList.add('Name:Name');
-  FWx_PropertyList.add('Wx_Class:Base Class');
-  FWx_PropertyList.add('Wx_Comments:Comments');
-  FWx_PropertyList.add('Wx_Caption:Caption');
-  FWx_PropertyList.add('Wx_Aui_Dock_Direction:Dock Direction');
-  FWx_PropertyList.add('wxAUI_DOCK_NONE:wxAUI_DOCK_NONE');
-  FWx_PropertyList.add('wxAUI_DOCK_TOP:wxAUI_DOCK_TOP');
-  FWx_PropertyList.add('wxAUI_DOCK_RIGHT:wxAUI_DOCK_RIGHT');
-  FWx_PropertyList.add('wxAUI_DOCK_BOTTOM:wxAUI_DOCK_BOTTOM');
-  FWx_PropertyList.add('wxAUI_DOCK_LEFT:wxAUI_DOCK_LEFT');
-  FWx_PropertyList.add('wxAUI_DOCK_CENTER:wxAUI_DOCK_CENTER');
-  FWx_PropertyList.add('Wx_Aui_Dockable_Direction:Dockable Direction');
-  FWx_PropertyList.add('Dockable:Dockable');
-  FWx_PropertyList.add('TopDockable:TopDockable');
-  FWx_PropertyList.add('RightDockable:RightDockable');
-  FWx_PropertyList.add('BottomDockable:BottomDockable');
-  FWx_PropertyList.add('LeftDockable:LeftDockable');
-  FWx_PropertyList.add('Wx_Aui_Pane_Style:Pane Style');
-  FWx_PropertyList.add('CaptionVisible:CaptionVisible');
-  FWx_PropertyList.add('DestroyOnClose:DestroyOnClose');
-  FWx_PropertyList.add('DockFixed:DockFixed');
-  FWx_PropertyList.add('Floatable:Floatable');
-  FWx_PropertyList.add('Gripper:Gripper');
-  FWx_PropertyList.add('GripperTop:GripperTop');
-  FWx_PropertyList.add('Movable:Movable');
-  FWx_PropertyList.add('PaneBorder:PaneBorder');
-  FWx_PropertyList.add('Resizable:Resizable');
-  FWx_PropertyList.add('ToolbarPane:ToolbarPane');
-  FWx_PropertyList.add('Wx_Aui_Pane_Buttons:Pane Buttons');
-  FWx_PropertyList.add('CloseButton:CloseButton');
-  FWx_PropertyList.add('MaximizeButton:MaximizeButton');
-  FWx_PropertyList.add('RightDockable:RightDockable');
-  FWx_PropertyList.add('MinimizeButton:MinimizeButton');
-  FWx_PropertyList.add('PinButton:PinButton');
-  FWx_PropertyList.add('Wx_BestSize_Height:Best Height');
-  FWx_PropertyList.add('Wx_BestSize_Width:Best Width');
-  FWx_PropertyList.add('Wx_MinSize_Height:Min Height');
-  FWx_PropertyList.add('Wx_MinSize_Width:Min Width');
-  FWx_PropertyList.add('Wx_MaxSize_Height:Max Height');
-  FWx_PropertyList.add('Wx_MaxSize_Width:Max Width');
-  FWx_PropertyList.add('Wx_Row:Row');
-  FWx_PropertyList.add('Wx_Position:Position');
+    FWx_PropertyList.add('Name:Name');
+    FWx_PropertyList.add('Wx_Class:Base Class');
+    FWx_PropertyList.add('Wx_Comments:Comments');
+    FWx_PropertyList.add('Wx_Caption:Caption');
+    FWx_PropertyList.add('Wx_Aui_Dock_Direction:Dock Direction');
+    FWx_PropertyList.add('wxAUI_DOCK_NONE:wxAUI_DOCK_NONE');
+    FWx_PropertyList.add('wxAUI_DOCK_TOP:wxAUI_DOCK_TOP');
+    FWx_PropertyList.add('wxAUI_DOCK_RIGHT:wxAUI_DOCK_RIGHT');
+    FWx_PropertyList.add('wxAUI_DOCK_BOTTOM:wxAUI_DOCK_BOTTOM');
+    FWx_PropertyList.add('wxAUI_DOCK_LEFT:wxAUI_DOCK_LEFT');
+    FWx_PropertyList.add('wxAUI_DOCK_CENTER:wxAUI_DOCK_CENTER');
+    FWx_PropertyList.add('Wx_Aui_Dockable_Direction:Dockable Direction');
+    FWx_PropertyList.add('Dockable:Dockable');
+    FWx_PropertyList.add('TopDockable:TopDockable');
+    FWx_PropertyList.add('RightDockable:RightDockable');
+    FWx_PropertyList.add('BottomDockable:BottomDockable');
+    FWx_PropertyList.add('LeftDockable:LeftDockable');
+    FWx_PropertyList.add('Wx_Aui_Pane_Style:Pane Style');
+    FWx_PropertyList.add('CaptionVisible:CaptionVisible');
+    FWx_PropertyList.add('DestroyOnClose:DestroyOnClose');
+    FWx_PropertyList.add('DockFixed:DockFixed');
+    FWx_PropertyList.add('Floatable:Floatable');
+    FWx_PropertyList.add('Gripper:Gripper');
+    FWx_PropertyList.add('GripperTop:GripperTop');
+    FWx_PropertyList.add('Movable:Movable');
+    FWx_PropertyList.add('PaneBorder:PaneBorder');
+    FWx_PropertyList.add('Resizable:Resizable');
+    FWx_PropertyList.add('ToolbarPane:ToolbarPane');
+    FWx_PropertyList.add('Wx_Aui_Pane_Buttons:Pane Buttons');
+    FWx_PropertyList.add('CloseButton:CloseButton');
+    FWx_PropertyList.add('MaximizeButton:MaximizeButton');
+    FWx_PropertyList.add('RightDockable:RightDockable');
+    FWx_PropertyList.add('MinimizeButton:MinimizeButton');
+    FWx_PropertyList.add('PinButton:PinButton');
+    FWx_PropertyList.add('Wx_BestSize_Height:Best Height');
+    FWx_PropertyList.add('Wx_BestSize_Width:Best Width');
+    FWx_PropertyList.add('Wx_MinSize_Height:Min Height');
+    FWx_PropertyList.add('Wx_MinSize_Width:Min Width');
+    FWx_PropertyList.add('Wx_MaxSize_Height:Max Height');
+    FWx_PropertyList.add('Wx_MaxSize_Width:Max Width');
+    FWx_PropertyList.add('Wx_Row:Row');
+    FWx_PropertyList.add('Wx_Position:Position');
 
-end;
+End;
 
-destructor TWxAuiPaneInfo.Destroy;
-begin
+Destructor TWxAuiPaneInfo.Destroy;
+Begin
   { AutoDestroy, which is generated by Component Create, frees any   }
   { objects created by AutoInitialize.                               }
-  AutoDestroy;
+    AutoDestroy;
 
   { Here, free any other dynamic objects that the component methods  }
   { created but have not yet freed.  Also perform any other clean-up }
@@ -259,467 +259,466 @@ begin
 
   { Last, free the component by calling the Destroy method of the    }
   { parent class.                                                    }
-  inherited Destroy;
-end;
+    Inherited Destroy;
+End;
 
-function TWxAuiPaneInfo.GenerateControlIDs: string;
-begin
-  Result := '';
-end;
-
-function TWxAuiPaneInfo.GenerateEnumControlIDs: string;
-begin
-  Result := '';
-end;
-
-function TWxAuiPaneInfo.GenerateEventTableEntries(CurrClassName: string): string;
-begin
-  Result := '';
-end;
-
-function TWxAuiPaneInfo.GenerateXRCControlCreation(IndentString: string): TStringList;
-begin
-
-  Result := TStringList.Create;
-
-  try
-    Result.Add(IndentString + Format('<object class="%s" name="%s">',
-      [self.Wx_Class, self.Name]));
-    Result.Add(IndentString + '</object>');
-
-  except
-    Result.Free;
-    raise;
-  end;
-
-end;
-
-function TWxAuiPaneInfo.GenerateGUIControlCreation: string;
-var
-  parentName, strAlignment: string;
-begin
-  parentName := GetWxWidgetParent(self);
-
-  Result := '';
-  Result := GetCommentString(self.FWx_Comments.Text);
-
-  if not HasToolbarPaneStyle(Self.Wx_Aui_Pane_Style) then
-  begin
-    if (self.Parent.ClassName = 'TWxPanel') then
-      if not (self.Parent.Parent is TForm) then
-        Result := Result + #13 + Format('%s->Reparent(this);', [parentName]);
-  end;
-
-  if HasToolbarPaneStyle(Self.Wx_Aui_Pane_Style) then
-  begin
-    Result := Result + #13 + Format('%s->Realize();', [parentName]);
-  end;
-
-  Result := Result + #13 + Format('WxAuiManager1->AddPane(%s, wxAuiPaneInfo()%s%s%s%s%s%s%s%s%s%s%s);',
-    [parentName, GetAuiPaneName, GetAuiPaneCaption, GetAuiDockDirection(Self.Wx_Aui_Dock_Direction), GetAuiDockableDirections(self.Wx_Aui_Dockable_Direction),
-    GetAui_Pane_Style(Self.Wx_Aui_Pane_Style), GetAui_Pane_Buttons(Self.Wx_Aui_Pane_Buttons), GetAuiRow(Self.Wx_Row), GetAuiPosition(Self.Wx_Position), GetAuiPaneBestSize, GetAuiPaneMinSize, GetAuiPaneMaxSize]);
-
-end;
-
-function TWxAuiPaneInfo.GenerateGUIControlDeclaration: string;
-begin
-  Result := '';
-end;
-
-function TWxAuiPaneInfo.GenerateHeaderInclude: string;
-begin
-  Result := '';
-  Result := '#include <wx/aui/aui.h>';
-end;
-
-function TWxAuiPaneInfo.GenerateImageInclude: string;
-begin
-
-end;
-
-function TWxAuiPaneInfo.GetEventList: TStringList;
-begin
-  Result := Wx_EventList;
-end;
-
-function TWxAuiPaneInfo.GetIDName: string;
-begin
-
-end;
-
-function TWxAuiPaneInfo.GetIDValue: integer;
-begin
-  Result := 0;
-end;
-
-function TWxAuiPaneInfo.GetParameterFromEventName(EventName: string): string;
-begin
-  Result := '';
-end;
-
-function TWxAuiPaneInfo.GetStretchFactor: integer;
-begin
-  Result := 1;
-end;
-
-function TWxAuiPaneInfo.GetPropertyList: TStringList;
-begin
-  Result := FWx_PropertyList;
-end;
-
-function TWxAuiPaneInfo.GetBorderAlignment: TWxBorderAlignment;
-begin
-  Result := [];
-end;
-
-procedure TWxAuiPaneInfo.SetBorderAlignment(border: TWxBorderAlignment);
-begin
-end;
-
-function TWxAuiPaneInfo.GetBorderWidth: integer;
-begin
-  Result := 0;
-end;
-
-procedure TWxAuiPaneInfo.SetBorderWidth(width: integer);
-begin
-end;
-
-function TWxAuiPaneInfo.GetTypeFromEventName(EventName: string): string;
-begin
-
-end;
-
-function TWxAuiPaneInfo.GetWxClassName: string;
-begin
-  if trim(wx_Class) = '' then
-    wx_Class := 'wxAuiPaneInfo';
-  Result := wx_Class;
-end;
-
-procedure TWxAuiPaneInfo.SaveControlOrientation(
-  ControlOrientation: TWxControlOrientation);
-begin
-
-end;
-
-procedure TWxAuiPaneInfo.SetIDName(IDName: string);
-begin
-
-end;
-
-procedure TWxAuiPaneInfo.SetIDValue(IDValue: integer);
-begin
-
-end;
-
-procedure TWxAuiPaneInfo.SetStretchFactor(intValue: integer);
-begin
-end;
-
-procedure TWxAuiPaneInfo.SetWxClassName(wxClassName: string);
-begin
-  wx_Class := wxClassName;
-end;
-
-function TWxAuiPaneInfo.GetFGColor: string;
-begin
-
-end;
-
-procedure TWxAuiPaneInfo.SetFGColor(strValue: string);
-begin
-end;
-
-function TWxAuiPaneInfo.GetBGColor: string;
-begin
-end;
-
-procedure TWxAuiPaneInfo.SetBGColor(strValue: string);
-begin
-end;
-
-procedure TWxAuiPaneInfo.SetProxyFGColorString(Value: string);
-begin
-end;
-
-procedure TWxAuiPaneInfo.SetProxyBGColorString(Value: string);
-begin
-end;
-
-function TWxAuiPaneInfo.GetGenericColor(strVariableName: string): string;
-begin
-end;
-
-procedure TWxAuiPaneInfo.SetGenericColor(strVariableName, strValue: string);
-begin
-
-end;
-
-function TWxAuiPaneInfo.GetAuiDockDirection(Wx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem): string;
-begin
-  Result := '';
-  if Wx_Aui_Dock_Direction = wxAUI_DOCK_NONE then
-  begin
+Function TWxAuiPaneInfo.GenerateControlIDs: String;
+Begin
     Result := '';
-    exit;
-  end;
-  if Wx_Aui_Dock_Direction = wxAUI_DOCK_TOP then
-  begin
-    Result := '.Top()';
-    exit;
-  end;
-  if Wx_Aui_Dock_Direction = wxAUI_DOCK_RIGHT then
-  begin
-    Result := '.Right()';
-    exit;
-  end;
-  if Wx_Aui_Dock_Direction = wxAUI_DOCK_BOTTOM then
-  begin
-    Result := '.Bottom()';
-    exit;
-  end;
-  if Wx_Aui_Dock_Direction = wxAUI_DOCK_LEFT then
-  begin
-    Result := '.Left()';
-    exit;
-  end;
-  if Wx_Aui_Dock_Direction = wxAUI_DOCK_CENTER then
-  begin
-    Result := '.Center()';
-    exit;
-  end;
-end;
+End;
 
-function TWxAuiPaneInfo.GetAui_Pane_Style(Wx_Aui_Pane_Style: TwxAuiPaneStyleSet): string;
-begin
-  Result := '';
-  if CaptionVisible in Wx_Aui_Pane_Style then
-    Result := Result + '.CaptionVisible()';
+Function TWxAuiPaneInfo.GenerateEnumControlIDs: String;
+Begin
+    Result := '';
+End;
 
-  if DestroyOnClose in Wx_Aui_Pane_Style then
-    Result := Result + '.DestroyOnClose()';
+Function TWxAuiPaneInfo.GenerateEventTableEntries(CurrClassName: String): String;
+Begin
+    Result := '';
+End;
 
-  if DockFixed in Wx_Aui_Pane_Style then
-    Result := Result + '.DockFixed()';
+Function TWxAuiPaneInfo.GenerateXRCControlCreation(IndentString: String): TStringList;
+Begin
 
-  if Floatable in Wx_Aui_Pane_Style then
-    Result := Result + '.Floatable()';
+    Result := TStringList.Create;
 
-  if Gripper in Wx_Aui_Pane_Style then
-    Result := Result + '.Gripper()';
+    Try
+        Result.Add(IndentString + Format('<object class="%s" name="%s">',
+            [self.Wx_Class, self.Name]));
+        Result.Add(IndentString + '</object>');
 
-  if GripperTop in Wx_Aui_Pane_Style then
-    Result := Result + '.GripperTop()';
+    Except
+        Result.Free;
+        Raise;
+    End;
 
-  if Movable in Wx_Aui_Pane_Style then
-    Result := Result + '.Movable()';
+End;
 
-  if PaneBorder in Wx_Aui_Pane_Style then
-    Result := Result + '.PaneBorder()';
+Function TWxAuiPaneInfo.GenerateGUIControlCreation: String;
+Var
+    parentName, strAlignment: String;
+Begin
+    parentName := GetWxWidgetParent(self);
 
-  if Resizable in Wx_Aui_Pane_Style then
-    Result := Result + '.Resizable()';
+    Result := '';
+    Result := GetCommentString(self.FWx_Comments.Text);
 
-  if ToolbarPane in Wx_Aui_Pane_Style then
-    Result := Result + '.ToolbarPane()';
+    If Not HasToolbarPaneStyle(Self.Wx_Aui_Pane_Style) Then
+    Begin
+        If (self.Parent.ClassName = 'TWxPanel') Then
+            If Not (self.Parent.Parent Is TForm) Then
+                Result := Result + #13 + Format('%s->Reparent(this);', [parentName]);
+    End;
 
-end;
+    If HasToolbarPaneStyle(Self.Wx_Aui_Pane_Style) Then
+    Begin
+        Result := Result + #13 + Format('%s->Realize();', [parentName]);
+    End;
 
-function TWxAuiPaneInfo.GetAuiDockableDirections(Wx_Aui_Dockable_Direction: TwxAuiPaneDockableDirectionSet): string;
-begin
-  Result := '';
-  if Dockable in Wx_Aui_Dockable_Direction then
-  begin
-    Result := Result + '.Dockable()';
-    Exit;
-  end;
+    Result := Result + #13 + Format('WxAuiManager1->AddPane(%s, wxAuiPaneInfo()%s%s%s%s%s%s%s%s%s%s%s);',
+        [parentName, GetAuiPaneName, GetAuiPaneCaption, GetAuiDockDirection(Self.Wx_Aui_Dock_Direction), GetAuiDockableDirections(self.Wx_Aui_Dockable_Direction),
+        GetAui_Pane_Style(Self.Wx_Aui_Pane_Style), GetAui_Pane_Buttons(Self.Wx_Aui_Pane_Buttons), GetAuiRow(Self.Wx_Row), GetAuiPosition(Self.Wx_Position), GetAuiPaneBestSize, GetAuiPaneMinSize, GetAuiPaneMaxSize]);
 
-  if LeftDockable in Wx_Aui_Dockable_Direction then
-    Result := Result + '.LeftDockable()';
+End;
 
-  if RightDockable in Wx_Aui_Dockable_Direction then
-    Result := Result + '.RightDockable()';
+Function TWxAuiPaneInfo.GenerateGUIControlDeclaration: String;
+Begin
+    Result := '';
+End;
 
-  if TopDockable in Wx_Aui_Dockable_Direction then
-    Result := Result + '.TopDockable()';
+Function TWxAuiPaneInfo.GenerateHeaderInclude: String;
+Begin
+    Result := '';
+    Result := '#include <wx/aui/aui.h>';
+End;
 
-  if BottomDockable in Wx_Aui_Dockable_Direction then
-    Result := Result + '.BottomDockable()';
-end;
+Function TWxAuiPaneInfo.GenerateImageInclude: String;
+Begin
 
-function TWxAuiPaneInfo.GetAui_Pane_Buttons(Wx_Aui_Pane_Buttons: TwxAuiPaneButtonSet): string;
-begin
-  Result := '';
+End;
 
-  if CloseButton in Wx_Aui_Pane_Buttons then
-    Result := Result + '.CloseButton()';
+Function TWxAuiPaneInfo.GetEventList: TStringList;
+Begin
+    Result := Wx_EventList;
+End;
 
-  if MaximizeButton in Wx_Aui_Pane_Buttons then
-    Result := Result + '.MaximizeButton()';
+Function TWxAuiPaneInfo.GetIDName: String;
+Begin
 
-  if MinimizeButton in Wx_Aui_Pane_Buttons then
-    Result := Result + '.MinimizeButton()';
+End;
 
-  if PinButton in Wx_Aui_Pane_Buttons then
-    Result := Result + '.PinButton()';
-end;
+Function TWxAuiPaneInfo.GetIDValue: Integer;
+Begin
+    Result := 0;
+End;
 
-function TWxAuiPaneInfo.GetAuiRow(row: Integer): string;
-begin
-  Result := '';
+Function TWxAuiPaneInfo.GetParameterFromEventName(EventName: String): String;
+Begin
+    Result := '';
+End;
 
-  if row > 0 then
-    Result := Format('.Row(%d)', [row]);
-end;
+Function TWxAuiPaneInfo.GetStretchFactor: Integer;
+Begin
+    Result := 1;
+End;
 
-function TWxAuiPaneInfo.GetAuiPosition(position: Integer): string;
-begin
-  Result := '';
+Function TWxAuiPaneInfo.GetPropertyList: TStringList;
+Begin
+    Result := FWx_PropertyList;
+End;
 
-  if position > 0 then
-    Result := Format('.Position(%d)', [position]);
-end;
+Function TWxAuiPaneInfo.GetBorderAlignment: TWxBorderAlignment;
+Begin
+    Result := [];
+End;
 
-function TWxAuiPaneInfo.GetAuiPaneBestSize: string;
-var
-  height: Integer;
-  width: Integer;
-begin
-  Result := '';
-  height := self.GetWx_BestSize_Height;
-  width := Self.GetWx_BestSize_Width;
-  if (height > 0) and (width > 0) then
-    Result := Format('.BestSize(wxSize(%d, %d))', [width, height]);
-end;
+Procedure TWxAuiPaneInfo.SetBorderAlignment(border: TWxBorderAlignment);
+Begin
+End;
 
-function TWxAuiPaneInfo.GetWx_BestSize_Height: integer;
-begin
-  Result := FWx_BestSize_Height;
-end;
+Function TWxAuiPaneInfo.GetBorderWidth: Integer;
+Begin
+    Result := 0;
+End;
 
-procedure TWxAuiPaneInfo.SetWx_BestSize_Height(height: integer);
-begin
-  FWx_BestSize_Height := height;
-end;
+Procedure TWxAuiPaneInfo.SetBorderWidth(width: Integer);
+Begin
+End;
 
-function TWxAuiPaneInfo.GetWx_BestSize_Width: integer;
-begin
-  Result := FWx_BestSize_Width;
-end;
+Function TWxAuiPaneInfo.GetTypeFromEventName(EventName: String): String;
+Begin
 
-procedure TWxAuiPaneInfo.SetWx_BestSize_Width(width: integer);
-begin
-  FWx_BestSize_Width := width;
-end;
+End;
 
-function TWxAuiPaneInfo.GetAuiPaneMinSize: string;
-var
-  height: Integer;
-  width: Integer;
-begin
-  Result := '';
-  height := self.GetWx_MinSize_Height;
-  width := Self.GetWx_MinSize_Width;
-  if (height > 0) and (width > 0) then
-    Result := Format('.MinSize(wxSize(%d, %d))', [width, height]);
-end;
+Function TWxAuiPaneInfo.GetWxClassName: String;
+Begin
+    If trim(wx_Class) = '' Then
+        wx_Class := 'wxAuiPaneInfo';
+    Result := wx_Class;
+End;
 
-function TWxAuiPaneInfo.GetWx_MinSize_Height: integer;
-begin
-  Result := FWx_MinSize_Height;
-end;
+Procedure TWxAuiPaneInfo.SaveControlOrientation(
+    ControlOrientation: TWxControlOrientation);
+Begin
 
-procedure TWxAuiPaneInfo.SetWx_MinSize_Height(height: integer);
-begin
-  FWx_MinSize_Height := height;
-end;
+End;
 
-function TWxAuiPaneInfo.GetWx_MinSize_Width: integer;
-begin
-  Result := FWx_MinSize_Width;
-end;
+Procedure TWxAuiPaneInfo.SetIDName(IDName: String);
+Begin
 
-procedure TWxAuiPaneInfo.SetWx_MinSize_Width(width: integer);
-begin
-  FWx_MinSize_Width := width;
-end;
+End;
 
-function TWxAuiPaneInfo.GetAuiPaneMaxSize: string;
-var
-  height: Integer;
-  width: Integer;
-begin
-  Result := '';
-  height := self.GetWx_MaxSize_Height;
-  width := Self.GetWx_MaxSize_Width;
-  if (height > 0) and (width > 0) then
-    Result := Format('.MaxSize(wxSize(%d, %d))', [width, height]);
-end;
+Procedure TWxAuiPaneInfo.SetIDValue(IDValue: Integer);
+Begin
 
-function TWxAuiPaneInfo.GetWx_MaxSize_Height: integer;
-begin
-  Result := FWx_MaxSize_Height;
-end;
+End;
 
-procedure TWxAuiPaneInfo.SetWx_MaxSize_Height(height: integer);
-begin
-  FWx_MaxSize_Height := height;
-end;
+Procedure TWxAuiPaneInfo.SetStretchFactor(intValue: Integer);
+Begin
+End;
 
-function TWxAuiPaneInfo.GetWx_MaxSize_Width: integer;
-begin
-  Result := FWx_MaxSize_Width;
-end;
+Procedure TWxAuiPaneInfo.SetWxClassName(wxClassName: String);
+Begin
+    wx_Class := wxClassName;
+End;
 
-procedure TWxAuiPaneInfo.SetWx_MaxSize_Width(width: integer);
-begin
-  FWx_MaxSize_Width := width;
-end;
+Function TWxAuiPaneInfo.GetFGColor: String;
+Begin
 
-function TWxAuiPaneInfo.GetAuiPaneCaption: string;
-begin
-  if trim(Wx_Caption) = '' then
-    Result := ''
-  else
-    Result := Format('.Caption(wxT("%s"))', [Self.FWx_Caption]);
-end;
+End;
 
-procedure TWxAuiPaneInfo.SetAuiPaneCaption(Caption: string);
-begin
-  Wx_Caption := Caption;
-end;
+Procedure TWxAuiPaneInfo.SetFGColor(strValue: String);
+Begin
+End;
 
-function TWxAuiPaneInfo.GetAuiPaneName: string;
-begin
-  Result := Format('.Name(wxT("%s"))', [self.Name]);
-end;
+Function TWxAuiPaneInfo.GetBGColor: String;
+Begin
+End;
 
-function TWxAuiPaneInfo.HasToolbarPaneStyle(Wx_Aui_Pane_Style: TwxAuiPaneStyleSet): Boolean;
-begin
-  Result := ToolbarPane in Wx_Aui_Pane_Style;
+Procedure TWxAuiPaneInfo.SetBGColor(strValue: String);
+Begin
+End;
 
-end;
+Procedure TWxAuiPaneInfo.SetProxyFGColorString(Value: String);
+Begin
+End;
 
-function TWxAuiPaneInfo.GetWx_Row: integer;
-begin
-  Result := FWx_Row;
-end;
+Procedure TWxAuiPaneInfo.SetProxyBGColorString(Value: String);
+Begin
+End;
 
-procedure TWxAuiPaneInfo.SetWx_Row(row: integer);
-begin
-  FWx_Row := row;
-end;
+Function TWxAuiPaneInfo.GetGenericColor(strVariableName: String): String;
+Begin
+End;
 
-function TWxAuiPaneInfo.GetWx_Position: integer;
-begin
-  Result := FWx_Position;
-end;
+Procedure TWxAuiPaneInfo.SetGenericColor(strVariableName, strValue: String);
+Begin
 
-procedure TWxAuiPaneInfo.SetWx_Position(position: integer);
-begin
-  FWx_Position := position;
-end;
+End;
 
-end.
+Function TWxAuiPaneInfo.GetAuiDockDirection(Wx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem): String;
+Begin
+    Result := '';
+    If Wx_Aui_Dock_Direction = wxAUI_DOCK_NONE Then
+    Begin
+        Result := '';
+        exit;
+    End;
+    If Wx_Aui_Dock_Direction = wxAUI_DOCK_TOP Then
+    Begin
+        Result := '.Top()';
+        exit;
+    End;
+    If Wx_Aui_Dock_Direction = wxAUI_DOCK_RIGHT Then
+    Begin
+        Result := '.Right()';
+        exit;
+    End;
+    If Wx_Aui_Dock_Direction = wxAUI_DOCK_BOTTOM Then
+    Begin
+        Result := '.Bottom()';
+        exit;
+    End;
+    If Wx_Aui_Dock_Direction = wxAUI_DOCK_LEFT Then
+    Begin
+        Result := '.Left()';
+        exit;
+    End;
+    If Wx_Aui_Dock_Direction = wxAUI_DOCK_CENTER Then
+    Begin
+        Result := '.Center()';
+        exit;
+    End;
+End;
 
+Function TWxAuiPaneInfo.GetAui_Pane_Style(Wx_Aui_Pane_Style: TwxAuiPaneStyleSet): String;
+Begin
+    Result := '';
+    If CaptionVisible In Wx_Aui_Pane_Style Then
+        Result := Result + '.CaptionVisible()';
+
+    If DestroyOnClose In Wx_Aui_Pane_Style Then
+        Result := Result + '.DestroyOnClose()';
+
+    If DockFixed In Wx_Aui_Pane_Style Then
+        Result := Result + '.DockFixed()';
+
+    If Floatable In Wx_Aui_Pane_Style Then
+        Result := Result + '.Floatable()';
+
+    If Gripper In Wx_Aui_Pane_Style Then
+        Result := Result + '.Gripper()';
+
+    If GripperTop In Wx_Aui_Pane_Style Then
+        Result := Result + '.GripperTop()';
+
+    If Movable In Wx_Aui_Pane_Style Then
+        Result := Result + '.Movable()';
+
+    If PaneBorder In Wx_Aui_Pane_Style Then
+        Result := Result + '.PaneBorder()';
+
+    If Resizable In Wx_Aui_Pane_Style Then
+        Result := Result + '.Resizable()';
+
+    If ToolbarPane In Wx_Aui_Pane_Style Then
+        Result := Result + '.ToolbarPane()';
+
+End;
+
+Function TWxAuiPaneInfo.GetAuiDockableDirections(Wx_Aui_Dockable_Direction: TwxAuiPaneDockableDirectionSet): String;
+Begin
+    Result := '';
+    If Dockable In Wx_Aui_Dockable_Direction Then
+    Begin
+        Result := Result + '.Dockable()';
+        Exit;
+    End;
+
+    If LeftDockable In Wx_Aui_Dockable_Direction Then
+        Result := Result + '.LeftDockable()';
+
+    If RightDockable In Wx_Aui_Dockable_Direction Then
+        Result := Result + '.RightDockable()';
+
+    If TopDockable In Wx_Aui_Dockable_Direction Then
+        Result := Result + '.TopDockable()';
+
+    If BottomDockable In Wx_Aui_Dockable_Direction Then
+        Result := Result + '.BottomDockable()';
+End;
+
+Function TWxAuiPaneInfo.GetAui_Pane_Buttons(Wx_Aui_Pane_Buttons: TwxAuiPaneButtonSet): String;
+Begin
+    Result := '';
+
+    If CloseButton In Wx_Aui_Pane_Buttons Then
+        Result := Result + '.CloseButton()';
+
+    If MaximizeButton In Wx_Aui_Pane_Buttons Then
+        Result := Result + '.MaximizeButton()';
+
+    If MinimizeButton In Wx_Aui_Pane_Buttons Then
+        Result := Result + '.MinimizeButton()';
+
+    If PinButton In Wx_Aui_Pane_Buttons Then
+        Result := Result + '.PinButton()';
+End;
+
+Function TWxAuiPaneInfo.GetAuiRow(row: Integer): String;
+Begin
+    Result := '';
+
+    If row > 0 Then
+        Result := Format('.Row(%d)', [row]);
+End;
+
+Function TWxAuiPaneInfo.GetAuiPosition(position: Integer): String;
+Begin
+    Result := '';
+
+    If position > 0 Then
+        Result := Format('.Position(%d)', [position]);
+End;
+
+Function TWxAuiPaneInfo.GetAuiPaneBestSize: String;
+Var
+    height: Integer;
+    width: Integer;
+Begin
+    Result := '';
+    height := self.GetWx_BestSize_Height;
+    width := Self.GetWx_BestSize_Width;
+    If (height > 0) And (width > 0) Then
+        Result := Format('.BestSize(wxSize(%d, %d))', [width, height]);
+End;
+
+Function TWxAuiPaneInfo.GetWx_BestSize_Height: Integer;
+Begin
+    Result := FWx_BestSize_Height;
+End;
+
+Procedure TWxAuiPaneInfo.SetWx_BestSize_Height(height: Integer);
+Begin
+    FWx_BestSize_Height := height;
+End;
+
+Function TWxAuiPaneInfo.GetWx_BestSize_Width: Integer;
+Begin
+    Result := FWx_BestSize_Width;
+End;
+
+Procedure TWxAuiPaneInfo.SetWx_BestSize_Width(width: Integer);
+Begin
+    FWx_BestSize_Width := width;
+End;
+
+Function TWxAuiPaneInfo.GetAuiPaneMinSize: String;
+Var
+    height: Integer;
+    width: Integer;
+Begin
+    Result := '';
+    height := self.GetWx_MinSize_Height;
+    width := Self.GetWx_MinSize_Width;
+    If (height > 0) And (width > 0) Then
+        Result := Format('.MinSize(wxSize(%d, %d))', [width, height]);
+End;
+
+Function TWxAuiPaneInfo.GetWx_MinSize_Height: Integer;
+Begin
+    Result := FWx_MinSize_Height;
+End;
+
+Procedure TWxAuiPaneInfo.SetWx_MinSize_Height(height: Integer);
+Begin
+    FWx_MinSize_Height := height;
+End;
+
+Function TWxAuiPaneInfo.GetWx_MinSize_Width: Integer;
+Begin
+    Result := FWx_MinSize_Width;
+End;
+
+Procedure TWxAuiPaneInfo.SetWx_MinSize_Width(width: Integer);
+Begin
+    FWx_MinSize_Width := width;
+End;
+
+Function TWxAuiPaneInfo.GetAuiPaneMaxSize: String;
+Var
+    height: Integer;
+    width: Integer;
+Begin
+    Result := '';
+    height := self.GetWx_MaxSize_Height;
+    width := Self.GetWx_MaxSize_Width;
+    If (height > 0) And (width > 0) Then
+        Result := Format('.MaxSize(wxSize(%d, %d))', [width, height]);
+End;
+
+Function TWxAuiPaneInfo.GetWx_MaxSize_Height: Integer;
+Begin
+    Result := FWx_MaxSize_Height;
+End;
+
+Procedure TWxAuiPaneInfo.SetWx_MaxSize_Height(height: Integer);
+Begin
+    FWx_MaxSize_Height := height;
+End;
+
+Function TWxAuiPaneInfo.GetWx_MaxSize_Width: Integer;
+Begin
+    Result := FWx_MaxSize_Width;
+End;
+
+Procedure TWxAuiPaneInfo.SetWx_MaxSize_Width(width: Integer);
+Begin
+    FWx_MaxSize_Width := width;
+End;
+
+Function TWxAuiPaneInfo.GetAuiPaneCaption: String;
+Begin
+    If trim(Wx_Caption) = '' Then
+        Result := ''
+    Else
+        Result := Format('.Caption(wxT("%s"))', [Self.FWx_Caption]);
+End;
+
+Procedure TWxAuiPaneInfo.SetAuiPaneCaption(Caption: String);
+Begin
+    Wx_Caption := Caption;
+End;
+
+Function TWxAuiPaneInfo.GetAuiPaneName: String;
+Begin
+    Result := Format('.Name(wxT("%s"))', [self.Name]);
+End;
+
+Function TWxAuiPaneInfo.HasToolbarPaneStyle(Wx_Aui_Pane_Style: TwxAuiPaneStyleSet): Boolean;
+Begin
+    Result := ToolbarPane In Wx_Aui_Pane_Style;
+
+End;
+
+Function TWxAuiPaneInfo.GetWx_Row: Integer;
+Begin
+    Result := FWx_Row;
+End;
+
+Procedure TWxAuiPaneInfo.SetWx_Row(row: Integer);
+Begin
+    FWx_Row := row;
+End;
+
+Function TWxAuiPaneInfo.GetWx_Position: Integer;
+Begin
+    Result := FWx_Position;
+End;
+
+Procedure TWxAuiPaneInfo.SetWx_Position(position: Integer);
+Begin
+    FWx_Position := position;
+End;
+
+End.

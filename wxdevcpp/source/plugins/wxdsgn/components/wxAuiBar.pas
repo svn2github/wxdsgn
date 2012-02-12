@@ -25,92 +25,92 @@
 {Contact gururamnath@yahoo.com for details                           }
 { ****************************************************************** }
 
-unit wxAuiBar;
+Unit wxAuiBar;
 
-interface
+Interface
 
-uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
-  Forms, Graphics, ExtCtrls, WxUtils, WxSizerPanel;
+Uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
+    Forms, Graphics, ExtCtrls, WxUtils, WxSizerPanel;
 
-type
-  TWxAuiBar = class(TControlBar, IWxComponentInterface, IWxWindowInterface,
-    IWxContainerInterface, IWxContainerAndSizerInterface)
-  private
+Type
+    TWxAuiBar = Class(TControlBar, IWxComponentInterface, IWxWindowInterface,
+        IWxContainerInterface, IWxContainerAndSizerInterface)
+    Private
     { Private fields of TWxAuiBar }
     {Property Listing}
-    FWx_Class: string;
-    FWx_PropertyList: TStringList;
-    FWx_EventList: TStringList;
-    FWx_Comments: TStrings;
-    FWx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem;
+        FWx_Class: String;
+        FWx_PropertyList: TStringList;
+        FWx_EventList: TStringList;
+        FWx_Comments: TStrings;
+        FWx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem;
 
     {Event Lisiting}
 
     { Private methods of TWxAuiBar }
-    procedure AutoInitialize;
-    procedure AutoDestroy;
+        Procedure AutoInitialize;
+        Procedure AutoDestroy;
 
-  protected
+    Protected
     { Protected fields of TWxAuiBar }
 
     { Protected methods of TWxAuiBar }
 
 
-  public
+    Public
     { Public fields and properties of TWxAuiBar }
 
     { Public methods of TWxAuiBar }
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    procedure Paint; override;
-    function GenerateControlIDs: string;
-    function GenerateEnumControlIDs: string;
-    function GenerateEventTableEntries(CurrClassName: string): string;
-    function GenerateGUIControlCreation: string;
-    function GenerateXRCControlCreation(IndentString: string): TStringList;
-    function GenerateGUIControlDeclaration: string;
-    function GenerateHeaderInclude: string;
-    function GenerateImageInclude: string;
-    function GetEventList: TStringList;
-    function GetIDName: string;
-    function GetIDValue: integer;
-    function GetParameterFromEventName(EventName: string): string;
-    function GetPropertyList: TStringList;
-    function GetTypeFromEventName(EventName: string): string;
-    function GetWxClassName: string;
-    procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
-    procedure SetIDName(IDName: string);
-    procedure SetIDValue(IDValue: integer);
-    procedure SetWxClassName(wxClassName: string);
-    function GetFGColor: string;
-    procedure SetFGColor(strValue: string);
-    function GetBGColor: string;
-    procedure SetBGColor(strValue: string);
-    procedure SetProxyFGColorString(Value: string);
-    procedure SetProxyBGColorString(Value: string);
-    function GenerateLastCreationCode: string;
+        Constructor Create(AOwner: TComponent); Override;
+        Destructor Destroy; Override;
+        Procedure Paint; Override;
+        Function GenerateControlIDs: String;
+        Function GenerateEnumControlIDs: String;
+        Function GenerateEventTableEntries(CurrClassName: String): String;
+        Function GenerateGUIControlCreation: String;
+        Function GenerateXRCControlCreation(IndentString: String): TStringList;
+        Function GenerateGUIControlDeclaration: String;
+        Function GenerateHeaderInclude: String;
+        Function GenerateImageInclude: String;
+        Function GetEventList: TStringList;
+        Function GetIDName: String;
+        Function GetIDValue: Integer;
+        Function GetParameterFromEventName(EventName: String): String;
+        Function GetPropertyList: TStringList;
+        Function GetTypeFromEventName(EventName: String): String;
+        Function GetWxClassName: String;
+        Procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
+        Procedure SetIDName(IDName: String);
+        Procedure SetIDValue(IDValue: Integer);
+        Procedure SetWxClassName(wxClassName: String);
+        Function GetFGColor: String;
+        Procedure SetFGColor(strValue: String);
+        Function GetBGColor: String;
+        Procedure SetBGColor(strValue: String);
+        Procedure SetProxyFGColorString(Value: String);
+        Procedure SetProxyBGColorString(Value: String);
+        Function GenerateLastCreationCode: String;
 
-    function GetBorderAlignment: TWxBorderAlignment;
-    procedure SetBorderAlignment(border: TWxBorderAlignment);
-    function GetBorderWidth: integer;
-    procedure SetBorderWidth(width: integer);
-    function GetStretchFactor: integer;
-    procedure SetStretchFactor(intValue: integer);
-function GetGenericColor(strVariableName:String): string;
-procedure SetGenericColor(strVariableName,strValue: string);
+        Function GetBorderAlignment: TWxBorderAlignment;
+        Procedure SetBorderAlignment(border: TWxBorderAlignment);
+        Function GetBorderWidth: Integer;
+        Procedure SetBorderWidth(width: Integer);
+        Function GetStretchFactor: Integer;
+        Procedure SetStretchFactor(intValue: Integer);
+        Function GetGenericColor(strVariableName: String): String;
+        Procedure SetGenericColor(strVariableName, strValue: String);
 
-    procedure GetAuiDockDirection(Wx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem);
-  published
+        Procedure GetAuiDockDirection(Wx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem);
+    Published
     { Published properties of TWxPanel }
-    property Wx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem read FWx_Aui_Dock_Direction write FWx_Aui_Dock_Direction;
+        Property Wx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem Read FWx_Aui_Dock_Direction Write FWx_Aui_Dock_Direction;
 //    property EVT_UPDATE_UI: string Read FEVT_UPDATE_UI Write FEVT_UPDATE_UI;
 //    property Wx_BKColor: TColor Read FWx_BKColor Write FWx_BKColor;
-    property Wx_Class: string Read FWx_Class Write FWx_Class;
+        Property Wx_Class: String Read FWx_Class Write FWx_Class;
 //    property Wx_ControlOrientation: TWxControlOrientation
 //      Read FWx_ControlOrientation Write FWx_ControlOrientation;
 //    property Wx_Default: boolean Read FWx_Default Write FWx_Default;
 //    property Wx_Enabled: boolean Read FWx_Enabled Write FWx_Enabled default True;
-    property Wx_EventList: TStringList Read FWx_EventList Write FWx_EventList;
+        Property Wx_EventList: TStringList Read FWx_EventList Write FWx_EventList;
 //    property Wx_FGColor: TColor Read FWx_FGColor Write FWx_FGColor;
 //    property Wx_GeneralStyle: TWxStdStyleSet
 //      Read FWx_GeneralStyle Write FWx_GeneralStyle;
@@ -124,32 +124,32 @@ procedure SetGenericColor(strVariableName,strValue: string);
 //    property Wx_BorderAlignment: TWxBorderAlignment Read GetBorderAlignment Write SetBorderAlignment default [wxALL];
 //    property Wx_Alignment: TWxSizerAlignmentSet Read FWx_Alignment Write FWx_Alignment default [wxALIGN_CENTER];
 //    property Wx_StretchFactor: integer Read GetStretchFactor Write SetStretchFactor default 0;
-    
+
 //    property Wx_ProxyBGColorString: TWxColorString Read FWx_ProxyBGColorString Write FWx_ProxyBGColorString;
 //    property Wx_ProxyFGColorString: TWxColorString Read FWx_ProxyFGColorString Write FWx_ProxyFGColorString;
 //    property InvisibleBGColorString: string Read FInvisibleBGColorString Write FInvisibleBGColorString;
 //    property InvisibleFGColorString: string Read FInvisibleFGColorString Write FInvisibleFGColorString;
 
-    property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
-  end;
+        Property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
+    End;
 
-procedure Register;
+Procedure Register;
 
-implementation
+Implementation
 
-procedure Register;
-begin
-  RegisterComponents('wxWidgets', [TWxAuiBar]);
-end;
+Procedure Register;
+Begin
+    RegisterComponents('wxWidgets', [TWxAuiBar]);
+End;
 
 
-procedure TWxAuiBar.AutoInitialize;
-begin
-  Caption                := '';
-  FWx_Class              := '';
-  FWx_PropertyList       := TStringList.Create;
-  FWx_EventList          := TStringList.Create;
-  FWx_Comments           := TStringList.Create;
+Procedure TWxAuiBar.AutoInitialize;
+Begin
+    Caption := '';
+    FWx_Class := '';
+    FWx_PropertyList := TStringList.Create;
+    FWx_EventList := TStringList.Create;
+    FWx_Comments := TStringList.Create;
 //  FWx_Border             := 5;
 //  FWx_Enabled            := True;
 // FWx_BorderAlignment    := [wxAll];
@@ -166,22 +166,22 @@ begin
   Self.ParentColor := False;
   Self.ParentBackground := False;
 {$ENDIF}
-end; { of AutoInitialize }
+End; { of AutoInitialize }
 
 
-procedure TWxAuiBar.AutoDestroy;
-begin
-  FWx_PropertyList.Destroy;
-  FWx_EventList.Destroy;
+Procedure TWxAuiBar.AutoDestroy;
+Begin
+    FWx_PropertyList.Destroy;
+    FWx_EventList.Destroy;
 //  FWx_ProxyBGColorString.Destroy;
 //  FWx_ProxyFGColorString.Destroy;
-  FWx_Comments.Destroy;
-end; { of AutoDestroy }
+    FWx_Comments.Destroy;
+End; { of AutoDestroy }
 
-constructor TWxAuiBar.Create(AOwner: TComponent);
-begin
+Constructor TWxAuiBar.Create(AOwner: TComponent);
+Begin
   { Call the Create method of the container's parent class       }
-  inherited Create(AOwner);
+    Inherited Create(AOwner);
 
   { AutoInitialize sets the initial values of variables          }
   { (including subcomponent variables) and properties;           }
@@ -189,80 +189,80 @@ begin
   { Delphi object types (e.g., TFont, TTimer, TPicture)          }
   { and for any variables marked as objects.                     }
   { AutoInitialize method is generated by Component Create.      }
-  AutoInitialize;
+    AutoInitialize;
 
   { Code to perform other tasks when the container is created    }
 //  PopulateGenericProperties(FWx_PropertyList);
-  FWx_PropertyList.add('Wx_Aui_Dock_Direction:Dock Direction');
-  FWx_PropertyList.add('wxAUI_DOCK_NONE:wxAUI_DOCK_NONE');
-  FWx_PropertyList.add('wxAUI_DOCK_TOP:wxAUI_DOCK_TOP');
-  FWx_PropertyList.add('wxAUI_DOCK_RIGHT:wxAUI_DOCK_RIGHT');
-  FWx_PropertyList.add('wxAUI_DOCK_BOTTOM:wxAUI_DOCK_BOTTOM');
-  FWx_PropertyList.add('wxAUI_DOCK_LEFT:wxAUI_DOCK_LEFT');
+    FWx_PropertyList.add('Wx_Aui_Dock_Direction:Dock Direction');
+    FWx_PropertyList.add('wxAUI_DOCK_NONE:wxAUI_DOCK_NONE');
+    FWx_PropertyList.add('wxAUI_DOCK_TOP:wxAUI_DOCK_TOP');
+    FWx_PropertyList.add('wxAUI_DOCK_RIGHT:wxAUI_DOCK_RIGHT');
+    FWx_PropertyList.add('wxAUI_DOCK_BOTTOM:wxAUI_DOCK_BOTTOM');
+    FWx_PropertyList.add('wxAUI_DOCK_LEFT:wxAUI_DOCK_LEFT');
 
 
 
-end;
+End;
 
-destructor TWxAuiBar.Destroy;
-begin
+Destructor TWxAuiBar.Destroy;
+Begin
   { AutoDestroy, which is generated by Component Create, frees any   }
   { objects created by AutoInitialize.                               }
-  AutoDestroy;
+    AutoDestroy;
 
   { Last, free the component by calling the Destroy method of the    }
   { parent class.                                                    }
-  inherited Destroy;
-end;
+    Inherited Destroy;
+End;
 
-procedure TWxAuiBar.Paint;
-begin
-  self.Caption := '';
+Procedure TWxAuiBar.Paint;
+Begin
+    self.Caption := '';
      { Make this component look like its parent component by calling
        its parent's Paint method. }
-  inherited Paint;
-end;
+    Inherited Paint;
+End;
 
 
-function TWxAuiBar.GenerateControlIDs: string;
-begin
-  Result := '';
-end;
+Function TWxAuiBar.GenerateControlIDs: String;
+Begin
+    Result := '';
+End;
 
-function TWxAuiBar.GenerateEnumControlIDs: string;
-begin
-  Result := '';
-end;
+Function TWxAuiBar.GenerateEnumControlIDs: String;
+Begin
+    Result := '';
+End;
 
-function TWxAuiBar.GenerateEventTableEntries(CurrClassName: string): string;
-begin
-  Result := '';
-end;
+Function TWxAuiBar.GenerateEventTableEntries(CurrClassName: String): String;
+Begin
+    Result := '';
+End;
 
-function TWxAuiBar.GenerateXRCControlCreation(IndentString: string): TStringList;
-begin
+Function TWxAuiBar.GenerateXRCControlCreation(IndentString: String): TStringList;
+Begin
 
-  Result := TStringList.Create;
-  try
-    Result.Add('');
-  except
-    Result.Free;
-    raise;
-  end;
+    Result := TStringList.Create;
+    Try
+        Result.Add('');
+    Except
+        Result.Free;
+        Raise;
+    End;
 
 
-end;
+End;
 
-function TWxAuiBar.GenerateGUIControlCreation: string;
-var
-  strColorStr: string;
-  strStyle, parentName, strAlignment: string;
-  xrctlpanel, kill: boolean; //is this panel a child of another panel
-  i: integer;
-  wxcompInterface: IWxComponentInterface;
-begin
-  Result := '';
-GetAuiDockDirection(Self.Wx_Aui_Dock_Direction)
+Function TWxAuiBar.GenerateGUIControlCreation: String;
+Var
+    strColorStr: String;
+    strStyle, parentName, strAlignment: String;
+    xrctlpanel, kill: Boolean; //is this panel a child of another panel
+    i: Integer;
+    wxcompInterface: IWxComponentInterface;
+Begin
+    Result := '';
+    GetAuiDockDirection(Self.Wx_Aui_Dock_Direction);
 {
   parentName := GetWxWidgetParent(self, false);
 
@@ -335,205 +335,205 @@ GetAuiDockDirection(Self.Wx_Aui_Dock_Direction)
       self.Wx_Border]);
   end;
 }
-end;
+End;
 
-function TWxAuiBar.GenerateGUIControlDeclaration: string;
-begin
-  Result := '';
+Function TWxAuiBar.GenerateGUIControlDeclaration: String;
+Begin
+    Result := '';
 //  Result := Format('%s *%s;', [Self.wx_Class, Self.Name]);
-end;
+End;
 
-function TWxAuiBar.GenerateHeaderInclude: string;
-begin
-  Result := '';
+Function TWxAuiBar.GenerateHeaderInclude: String;
+Begin
+    Result := '';
 //  Result := '#include <wx/panel.h>';
-end;
+End;
 
-function TWxAuiBar.GenerateImageInclude: string;
-begin
+Function TWxAuiBar.GenerateImageInclude: String;
+Begin
 
-end;
+End;
 
-function TWxAuiBar.GetEventList: TStringList;
-begin
-  Result := FWx_EventList;
-end;
+Function TWxAuiBar.GetEventList: TStringList;
+Begin
+    Result := FWx_EventList;
+End;
 
-function TWxAuiBar.GetIDName: string;
-begin
-  Result := '';
+Function TWxAuiBar.GetIDName: String;
+Begin
+    Result := '';
 //  Result := wx_IDName;
-end;
+End;
 
-function TWxAuiBar.GetIDValue: integer;
-begin
-  Result := 0;
-end;
+Function TWxAuiBar.GetIDValue: Integer;
+Begin
+    Result := 0;
+End;
 
-function TWxAuiBar.GetParameterFromEventName(EventName: string): string;
-begin
-  if EventName = 'EVT_UPDATE_UI' then
-  begin
-    Result := 'wxUpdateUIEvent& event';
-    exit;
-  end;
-end;
+Function TWxAuiBar.GetParameterFromEventName(EventName: String): String;
+Begin
+    If EventName = 'EVT_UPDATE_UI' Then
+    Begin
+        Result := 'wxUpdateUIEvent& event';
+        exit;
+    End;
+End;
 
-function TWxAuiBar.GetPropertyList: TStringList;
-begin
-  Result := FWx_PropertyList;
-end;
+Function TWxAuiBar.GetPropertyList: TStringList;
+Begin
+    Result := FWx_PropertyList;
+End;
 
-function TWxAuiBar.GetStretchFactor: integer;
-begin
-  Result := 0;//FWx_StretchFactor;
-end;
+Function TWxAuiBar.GetStretchFactor: Integer;
+Begin
+    Result := 0;//FWx_StretchFactor;
+End;
 
-function TWxAuiBar.GetTypeFromEventName(EventName: string): string;
-begin
+Function TWxAuiBar.GetTypeFromEventName(EventName: String): String;
+Begin
 
-end;
+End;
 
-function TWxAuiBar.GetBorderAlignment: TWxBorderAlignment;
-begin
-  Result := [wxAll];//FWx_BorderAlignment;
-end;
+Function TWxAuiBar.GetBorderAlignment: TWxBorderAlignment;
+Begin
+    Result := [wxAll];//FWx_BorderAlignment;
+End;
 
-procedure TWxAuiBar.SetBorderAlignment(border: TWxBorderAlignment);
-begin
+Procedure TWxAuiBar.SetBorderAlignment(border: TWxBorderAlignment);
+Begin
 //  FWx_BorderAlignment := border;
-end;
+End;
 
-function TWxAuiBar.GetBorderWidth: integer;
-begin
-  Result := 0;//FWx_Border;
-end;
+Function TWxAuiBar.GetBorderWidth: Integer;
+Begin
+    Result := 0;//FWx_Border;
+End;
 
-procedure TWxAuiBar.SetBorderWidth(width: integer);
-begin
+Procedure TWxAuiBar.SetBorderWidth(width: Integer);
+Begin
 //  FWx_Border := width;
-end;
+End;
 
-function TWxAuiBar.GetWxClassName: string;
-begin
-  if trim(wx_Class) = '' then
-    wx_Class := 'wxPanel';
-  Result := wx_Class;
-end;
+Function TWxAuiBar.GetWxClassName: String;
+Begin
+    If trim(wx_Class) = '' Then
+        wx_Class := 'wxPanel';
+    Result := wx_Class;
+End;
 
-procedure TWxAuiBar.SaveControlOrientation(ControlOrientation: TWxControlOrientation);
-begin
+Procedure TWxAuiBar.SaveControlOrientation(ControlOrientation: TWxControlOrientation);
+Begin
 //  wx_ControlOrientation := ControlOrientation;
-end;
+End;
 
-procedure TWxAuiBar.SetIDName(IDName: string);
-begin
+Procedure TWxAuiBar.SetIDName(IDName: String);
+Begin
 //  wx_IDName := IDName;
-end;
+End;
 
-procedure TWxAuiBar.SetIDValue(IDValue: integer);
-begin
+Procedure TWxAuiBar.SetIDValue(IDValue: Integer);
+Begin
 //  Wx_IDValue := IDVAlue;
-end;
+End;
 
-procedure TWxAuiBar.SetStretchFactor(intValue: integer);
-begin
+Procedure TWxAuiBar.SetStretchFactor(intValue: Integer);
+Begin
 //  FWx_StretchFactor := intValue;
-end;
+End;
 
-procedure TWxAuiBar.SetWxClassName(wxClassName: string);
-begin
-  wx_Class := wxClassName;
-end;
+Procedure TWxAuiBar.SetWxClassName(wxClassName: String);
+Begin
+    wx_Class := wxClassName;
+End;
 
-function TWxAuiBar.GetGenericColor(strVariableName:String): string;
-begin
+Function TWxAuiBar.GetGenericColor(strVariableName: String): String;
+Begin
 
-end;
+End;
 
-procedure TWxAuiBar.SetGenericColor(strVariableName,strValue: string);
-begin
+Procedure TWxAuiBar.SetGenericColor(strVariableName, strValue: String);
+Begin
 
-end;
+End;
 
 
-function TWxAuiBar.GetFGColor: string;
-begin
+Function TWxAuiBar.GetFGColor: String;
+Begin
 //  Result := FInvisibleFGColorString;
-end;
+End;
 
-procedure TWxAuiBar.SetFGColor(strValue: string);
-begin
+Procedure TWxAuiBar.SetFGColor(strValue: String);
+Begin
 {  FInvisibleFGColorString := strValue;
   if IsDefaultColorStr(strValue) then
     self.Font.Color := defaultFGColor
   else
     self.Font.Color := GetColorFromString(strValue);   }
-end;
+End;
 
-function TWxAuiBar.GetBGColor: string;
-begin
+Function TWxAuiBar.GetBGColor: String;
+Begin
 //  Result := FInvisibleBGColorString;
-end;
+End;
 
-procedure TWxAuiBar.SetBGColor(strValue: string);
-begin
+Procedure TWxAuiBar.SetBGColor(strValue: String);
+Begin
 {  FInvisibleBGColorString := strValue;
   if IsDefaultColorStr(strValue) then
     self.Color := defaultBGColor
   else
     self.Color := GetColorFromString(strValue);   }
-end;
+End;
 
-procedure TWxAuiBar.SetProxyFGColorString(Value: string);
-begin
+Procedure TWxAuiBar.SetProxyFGColorString(Value: String);
+Begin
  // FInvisibleFGColorString := Value;
 //  self.Color := GetColorFromString(Value);
-end;
+End;
 
-procedure TWxAuiBar.SetProxyBGColorString(Value: string);
-begin
+Procedure TWxAuiBar.SetProxyBGColorString(Value: String);
+Begin
 //  FInvisibleBGColorString := Value;
  // self.Font.Color := GetColorFromString(Value);
-end;
+End;
 
-function TWxAuiBar.GenerateLastCreationCode: string;
-begin
-  Result := '';
-end;
+Function TWxAuiBar.GenerateLastCreationCode: String;
+Begin
+    Result := '';
+End;
 
-procedure TWxAuiBar.GetAuiDockDirection(Wx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem);
-begin
-  if Wx_Aui_Dock_Direction = wxAUI_DOCK_NONE then
-  begin
-    Self.Align := alNone;
-    exit;
-  end;
-  if Wx_Aui_Dock_Direction = wxAUI_DOCK_TOP then
-  begin
-    Self.Align := alTop;
-    exit;
-  end;
-  if Wx_Aui_Dock_Direction = wxAUI_DOCK_RIGHT then
-  begin
-    Self.Align := alRight;
-    exit;
-  end;
-  if Wx_Aui_Dock_Direction = wxAUI_DOCK_BOTTOM then
-  begin
-    Self.Align := alBottom;
-    exit;
-  end;
-  if Wx_Aui_Dock_Direction = wxAUI_DOCK_LEFT then
-  begin
-    Self.Align := alLeft;
-    exit;
-  end;
-  if Wx_Aui_Dock_Direction = wxAUI_DOCK_CENTER then
-  begin
-    Self.Align := alNone;
-    exit;
-  end;
-end;
+Procedure TWxAuiBar.GetAuiDockDirection(Wx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem);
+Begin
+    If Wx_Aui_Dock_Direction = wxAUI_DOCK_NONE Then
+    Begin
+        Self.Align := alNone;
+        exit;
+    End;
+    If Wx_Aui_Dock_Direction = wxAUI_DOCK_TOP Then
+    Begin
+        Self.Align := alTop;
+        exit;
+    End;
+    If Wx_Aui_Dock_Direction = wxAUI_DOCK_RIGHT Then
+    Begin
+        Self.Align := alRight;
+        exit;
+    End;
+    If Wx_Aui_Dock_Direction = wxAUI_DOCK_BOTTOM Then
+    Begin
+        Self.Align := alBottom;
+        exit;
+    End;
+    If Wx_Aui_Dock_Direction = wxAUI_DOCK_LEFT Then
+    Begin
+        Self.Align := alLeft;
+        exit;
+    End;
+    If Wx_Aui_Dock_Direction = wxAUI_DOCK_CENTER Then
+    Begin
+        Self.Align := alNone;
+        exit;
+    End;
+End;
 
-end.
+End.

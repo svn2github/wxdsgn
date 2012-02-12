@@ -17,11 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-unit CVSPasswdFm;
+Unit CVSPasswdFm;
 
-interface
+Interface
 
-uses
+Uses
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
     Dialogs, StdCtrls, XPMenu;
@@ -31,38 +31,38 @@ uses
   QDialogs, QStdCtrls;
 {$ENDIF}
 
-type
-    TCVSPasswdForm = class(TForm)
+Type
+    TCVSPasswdForm = Class(TForm)
         Label1: TLabel;
         txtPass: TEdit;
         btnOK: TButton;
         Label2: TLabel;
         XPMenu: TXPMenu;
-        procedure FormShow(Sender: TObject);
-    private
+        Procedure FormShow(Sender: TObject);
+    Private
         { Private declarations }
-    public
+    Public
         { Public declarations }
-    end;
+    End;
 
-var
+Var
     CVSPasswdForm: TCVSPasswdForm;
 
-implementation
+Implementation
 
-uses
+Uses
     devcfg;
 
 {$R *.dfm}
 
-procedure TCVSPasswdForm.FormShow(Sender: TObject);
-begin
-    if devData.XPTheme then
-        XPMenu.Active := true
-    else
-        XPMenu.Active := false;
+Procedure TCVSPasswdForm.FormShow(Sender: TObject);
+Begin
+    If devData.XPTheme Then
+        XPMenu.Active := True
+    Else
+        XPMenu.Active := False;
     txtPass.Text := '';
     txtPass.SetFocus;
-end;
+End;
 
-end.
+End.

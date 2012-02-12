@@ -35,11 +35,11 @@
 
 
 
-unit hh;
+Unit hh;
 
-interface
+Interface
 
-uses
+Uses
     Windows,   //This line will not compile under Delphi 1 -- D1 is not supported
     SysUtils,
     dialogs,
@@ -65,45 +65,45 @@ uses
 
 
 
-var
+Var
     //0 if hhctrl.ocx could not be loaded
     HHCtrlHandle: THandle = 0;
 
     //You can set this to false to override the default load API load on module initialization
-    AutoLoadAPI: Boolean = TRUE;
+    AutoLoadAPI: Boolean = True;
 
-const
+Const
     hhctrlLib = 'hhctrl.ocx';
 
 {exports}
-function GetPathToHHCtrlOCX: string;
-procedure LoadHtmlHelp;
-procedure UnloadHtmlHelp;
+Function GetPathToHHCtrlOCX: String;
+Procedure LoadHtmlHelp;
+Procedure UnloadHtmlHelp;
 
 
 { Externals from HHCTRL.OCX }
 
-var                            //functions are invalid if HHCtrlHandle = 0
-    HtmlHelpA: function(hwndCaller: HWND; pszFile: PAnsiChar;
-    uCommand: UInt; dwData: DWORD): HWND; stdcall;
+Var                            //functions are invalid if HHCtrlHandle = 0
+    HtmlHelpA: Function(hwndCaller: HWND; pszFile: PAnsiChar;
+    uCommand: UInt; dwData: DWORD): HWND; Stdcall;
 
-    HtmlHelpW: function(hwndCaller: HWND; pszFile: PWideChar;
-    uCommand: UInt; dwData: DWORD): HWND; stdcall;
+    HtmlHelpW: Function(hwndCaller: HWND; pszFile: PWideChar;
+    uCommand: UInt; dwData: DWORD): HWND; Stdcall;
 
-    HtmlHelp: function(hwndCaller: HWND; pszFile: PChar;
-    uCommand: UInt; dwData: DWORD): HWND; stdcall;
+    HtmlHelp: Function(hwndCaller: HWND; pszFile: Pchar;
+    uCommand: UInt; dwData: DWORD): HWND; Stdcall;
 
 
 { Use the following for GetProcAddress to load from hhctrl.ocx }
 
-const
+Const
     ATOM_HTMLHELP_API_ANSI = 14;
     ATOM_HTMLHELP_API_UNICODE = 15;
 
 
 { Commands to pass to HtmlHelp() }
 
-const
+Const
     HH_DISPLAY_TOPIC = $0000;  {**}
     HH_HELP_FINDER = $0000;  // WinHelp equivalent
     HH_DISPLAY_TOC = $0001;  // not currently implemented
@@ -153,7 +153,7 @@ const
 
 { window properties }
 
-const
+Const
     HHWIN_PROP_TAB_AUTOHIDESHOW = $00000001;
     // (1 << 0)  Automatically hide/show tri-pane window
     HHWIN_PROP_ONTOP = $00000002;  // (1 << 1)  Top-most window
@@ -201,7 +201,7 @@ const
 
 { window parameters }
 
-const
+Const
     HHWIN_PARAM_PROPERTIES = $00000002;  // (1 << 1)  valid fsWinProperties
     HHWIN_PARAM_STYLES = $00000004;  // (1 << 2)  valid dwStyles
     HHWIN_PARAM_EXSTYLES = $00000008;  // (1 << 3)  valid dwExStyles
@@ -218,7 +218,7 @@ const
 
 { button constants }
 
-const
+Const
     HHWIN_BUTTON_EXPAND = $00000002;  // (1 << 1)  Expand/contract button
     HHWIN_BUTTON_BACK = $00000004;  // (1 << 2)  Back button
     HHWIN_BUTTON_FORWARD = $00000008;  // (1 << 3)  Forward button
@@ -243,14 +243,14 @@ const
     HHWIN_BUTTON_TOC_PREV = $00400000;  // (1 << 22)
 
     HHWIN_DEF_BUTTONS = (HHWIN_BUTTON_EXPAND
-        OR HHWIN_BUTTON_BACK
-        OR HHWIN_BUTTON_OPTIONS
-        OR HHWIN_BUTTON_PRINT);
+        Or HHWIN_BUTTON_BACK
+        Or HHWIN_BUTTON_OPTIONS
+        Or HHWIN_BUTTON_PRINT);
 
 
 { Button IDs }
 
-const
+Const
     IDTB_EXPAND = 200;
     IDTB_CONTRACT = 201;
     IDTB_STOP = 202;
@@ -279,7 +279,7 @@ const
 
 { Notification codes }
 
-const
+Const
     HHN_FIRST = (0 - 860);
     HHN_LAST = (0 - 879);
 
@@ -288,55 +288,55 @@ const
     HHN_WINDOW_CREATE = (HHN_FIRST - 2);
 
 
-type
+Type
     {*** Notify event info for HHN_NAVCOMPLETE, HHN_WINDOW_CREATE }
     PHHNNotify = ^THHNNotify;
-    tagHHN_NOTIFY = packed record
+    tagHHN_NOTIFY = Packed Record
         hdr: TNMHdr;
-        pszUrl: PChar;              //PCSTR: Multi-byte, null-terminated string
-    end;
+        pszUrl: Pchar;              //PCSTR: Multi-byte, null-terminated string
+    End;
     HHN_NOTIFY = tagHHN_NOTIFY;
     THHNNotify = tagHHN_NOTIFY;
 
     {** Use by command HH_DISPLAY_TEXT_POPUP}
     PHHPopup = ^THHPopup;
-    tagHH_POPUP = packed record
+    tagHH_POPUP = Packed Record
         cbStruct: Integer;     // sizeof this structure
         hinst: HINST;       // instance handle for string resource
-        idString: cardinal;
+        idString: Cardinal;
         // string resource id, or text id if pszFile is specified in HtmlHelp call
-        pszText: PChar;       // used if idString is zero
+        pszText: Pchar;       // used if idString is zero
         pt: TPOINT;      // top center of popup window
         clrForeground: COLORREF;    // use -1 for default
         clrBackground: COLORREF;    // use -1 for default
         rcMargins: TRect;
         // amount of space between edges of window and text, -1 for each member to ignore
-        pszFont: PChar;
+        pszFont: Pchar;
         // facename, point size, char set, BOLD ITALIC UNDERLINE
-    end;
+    End;
     HH_POPUP = tagHH_POPUP;
     THHPopup = tagHH_POPUP;
 
     {** Use by commands - HH_ALINK_LOOKUP, HH_KEYWORD_LOOKUP}
     PHHAKLink = ^THHAKLink;
-    tagHH_AKLINK = packed record
-        cbStruct: integer;     // sizeof this structure
+    tagHH_AKLINK = Packed Record
+        cbStruct: Integer;     // sizeof this structure
         fReserved: BOOL;        // must be FALSE (really!)
-        pszKeywords: PChar;       // semi-colon separated keywords
-        pszUrl: PChar;
+        pszKeywords: Pchar;       // semi-colon separated keywords
+        pszUrl: Pchar;
         // URL to jump to if no keywords found (may be NULL)
-        pszMsgText: PChar;
+        pszMsgText: Pchar;
         // Message text to display in MessageBox if pszUrl is NULL and no keyword match
-        pszMsgTitle: PChar;
+        pszMsgTitle: Pchar;
         // Message text to display in MessageBox if pszUrl is NULL and no keyword match
-        pszWindow: PChar;       // Window to display URL in
+        pszWindow: Pchar;       // Window to display URL in
         fIndexOnFail: BOOL;        // Displays index if keyword lookup fails.
-    end;
+    End;
     HH_AKLINK = tagHH_AKLINK;
     THHAKLink = tagHH_AKLINK;
 
 
-const
+Const
     HHWIN_NAVTYPE_TOC = 0;
     HHWIN_NAVTYPE_INDEX = 1;
     HHWIN_NAVTYPE_SEARCH = 2;
@@ -346,14 +346,14 @@ const
     HHWIN_NAVTYPE_CUSTOM_FIRST = 11;
 
 
-const
+Const
     IT_INCLUSIVE = 0;
     IT_EXCLUSIVE = 1;
     IT_HIDDEN = 2;
 
-type
+Type
     PHHEnumIT = ^THHEnumIT;
-    tagHH_ENUM_IT = packed record
+    tagHH_ENUM_IT = Packed Record
         //tagHH_ENUM_IT, HH_ENUM_IT, *PHH_ENUM_IT
         cbStruct: Integer;     // size of this structure
         iType: Integer;
@@ -364,49 +364,49 @@ type
         // volitile pointer to the name of the infotype. Allocated by call. Caller responsible for freeing
         pszITDescription: PAnsiChar;
         // volitile pointer to the description of the infotype.
-    end;
+    End;
     THHEnumIT = tagHH_ENUM_IT;
 
 
-type
+Type
     PHHEnumCat = ^THHEnumCat;
-    tagHH_ENUM_CAT = packed record
+    tagHH_ENUM_CAT = Packed Record
         //tagHH_ENUM_CAT, HH_ENUM_CAT, *PHH_ENUM_CAT
         cbStruct: Integer;     // size of this structure
         pszCatName: PAnsiChar;   // volitile pointer to the category name
         pszCatDescription: PAnsiChar;
         // volitile pointer to the category description
-    end;
+    End;
     THHEnumCat = tagHH_ENUM_CAT;
 
 
-type
+Type
     PHHSetInfoType = ^THHSetInfoType;
-    tagHH_SET_INFOTYPE = packed record
+    tagHH_SET_INFOTYPE = Packed Record
         //tagHH_SET_INFOTYPE, HH_SET_INFOTYPE, *PHH_SET_INFOTYPE
         cbStruct: Integer;     // the size of this structure
         pszCatName: PAnsiChar;
         // the name of the category, if any, the InfoType is a member of.
         pszInfoTypeName: PAnsiChar;
         // the name of the info type to add to the filter
-    end;
+    End;
     THHSetInfoType = tagHH_SET_INFOTYPE;
 
 
-type
+Type
     HH_INFOTYPE = DWORD;
     THHInfoType = HH_INFOTYPE;
     PHHInfoType = ^THHInfoType;        //PHH_INFOTYPE
 
 
-const
+Const
     HHWIN_NAVTAB_TOP = 0;
     HHWIN_NAVTAB_LEFT = 1;
     HHWIN_NAVTAB_BOTTOM = 2;
 
-const
+Const
     HH_MAX_TABS = 19;                 // maximum number of tabs
-const
+Const
     HH_TAB_CONTENTS = 0;
     HH_TAB_INDEX = 1;
     HH_TAB_SEARCH = 2;
@@ -422,43 +422,43 @@ const
 
 { HH_DISPLAY_SEARCH Command Related Structures and Constants }
 
-const
+Const
     HH_FTS_DEFAULT_PROXIMITY = (-1);
 
-type
+Type
     {** Used by command HH_DISPLAY_SEARCH}
     PHHFtsQuery = ^THHFtsQuery;
-    tagHH_FTS_QUERY = packed record          //tagHH_FTS_QUERY, HH_FTS_QUERY
-        cbStruct: integer;      // Sizeof structure in bytes.
+    tagHH_FTS_QUERY = Packed Record          //tagHH_FTS_QUERY, HH_FTS_QUERY
+        cbStruct: Integer;      // Sizeof structure in bytes.
         fUniCodeStrings: BOOL;         // TRUE if all strings are unicode.
-        pszSearchQuery: PChar;        // String containing the search query.
-        iProximity: LongInt;      // Word proximity.
+        pszSearchQuery: Pchar;        // String containing the search query.
+        iProximity: Longint;      // Word proximity.
         fStemmedSearch: Bool;         // TRUE for StemmedSearch only.
         fTitleOnly: Bool;         // TRUE for Title search only.
         fExecute: Bool;         // TRUE to initiate the search.
-        pszWindow: PChar;        // Window to display in
-    end;
+        pszWindow: Pchar;        // Window to display in
+    End;
     THHFtsQuery = tagHH_FTS_QUERY;
 
 
 { HH_WINTYPE Structure }
 
-type
+Type
     {** Used by commands HH_GET_WIN_TYPE, HH_SET_WIN_TYPE}
     PHHWinType = ^THHWinType;
-    tagHH_WINTYPE = packed record
+    tagHH_WINTYPE = Packed Record
         //tagHH_WINTYPE, HH_WINTYPE, *PHH_WINTYPE;
         cbStruct: Integer;
         // IN: size of this structure including all Information Types
         fUniCodeStrings: BOOL;
         // IN/OUT: TRUE if all strings are in UNICODE
-        pszType: PChar;        // IN/OUT: Name of a type of window
+        pszType: Pchar;        // IN/OUT: Name of a type of window
         fsValidMembers: DWORD;
         // IN: Bit flag of valid members (HHWIN_PARAM_)
         fsWinProperties: DWORD;
         // IN/OUT: Properties/attributes of the window (HHWIN_)
 
-        pszCaption: PChar;        // IN/OUT: Window title
+        pszCaption: Pchar;        // IN/OUT: Window title
         dwStyles: DWORD;        // IN/OUT: Window styles
         dwExStyles: DWORD;        // IN/OUT: Extended Window styles
         rcWindowPos: TRect;
@@ -481,11 +481,11 @@ type
         iNavWidth: Integer;      // IN/OUT: width of navigation window
         rcHTML: TRect;        // OUT: HTML window coordinates
 
-        pszToc: PChar;
+        pszToc: Pchar;
         // IN: Location of the table of contents file
-        pszIndex: PChar;        // IN: Location of the index file
-        pszFile: PChar;        // IN: Default location of the html file
-        pszHome: PChar;
+        pszIndex: Pchar;        // IN: Location of the index file
+        pszFile: Pchar;        // IN: Default location of the html file
+        pszHome: Pchar;
         // IN/OUT: html file to display when Home button is clicked
         fsToolBarFlags: DWORD;
         // IN: flags controling the appearance of the toolbar (HHWIN_BUTTON_)
@@ -496,24 +496,24 @@ type
         tabpos: Integer;
         // IN/OUT: HHWIN_NAVTAB_TOP, HHWIN_NAVTAB_LEFT, or HHWIN_NAVTAB_BOTTOM
         idNotify: Integer;      // IN: ID to use for WM_NOTIFY messages
-        tabOrder: packed array[0..HH_MAX_TABS] of Byte;
+        tabOrder: Packed Array[0..HH_MAX_TABS] Of Byte;
         // IN/OUT: tab order: Contents, Index, Search, History, Favorites, Reserved 1-5, Custom tabs
         cHistory: Integer;
         // IN/OUT: number of history items to keep (default is 30)
-        pszJump1: PChar;         // Text for HHWIN_BUTTON_JUMP1
-        pszJump2: PChar;         // Text for HHWIN_BUTTON_JUMP2
-        pszUrlJump1: PChar;         // URL for HHWIN_BUTTON_JUMP1
-        pszUrlJump2: PChar;         // URL for HHWIN_BUTTON_JUMP2
+        pszJump1: Pchar;         // Text for HHWIN_BUTTON_JUMP1
+        pszJump2: Pchar;         // Text for HHWIN_BUTTON_JUMP2
+        pszUrlJump1: Pchar;         // URL for HHWIN_BUTTON_JUMP1
+        pszUrlJump2: Pchar;         // URL for HHWIN_BUTTON_JUMP2
         rcMinSize: TRect;
         // Minimum size for window (ignored in version 1)
 
         cbInfoTypes: Integer;       // size of paInfoTypes;
-        pszCustomTabs: PChar;         // multiple zero-terminated strings
-    end;
+        pszCustomTabs: Pchar;         // multiple zero-terminated strings
+    End;
     HH_WINTYPE = tagHH_WINTYPE;
     THHWinType = tagHH_WINTYPE;
 
-const
+Const
     HHACT_TAB_CONTENTS = 0;
     HHACT_TAB_INDEX = 1;
     HHACT_TAB_SEARCH = 2;
@@ -542,16 +542,16 @@ const
     HHACT_LAST_ENUM = 23;
 
 
-type
+Type
     {*** Notify event info for HHN_TRACK }
     PHHNTrack = ^THHNTrack;
-    tagHHNTRACK = packed record                  //tagHHNTRACK, HHNTRACK;
+    tagHHNTRACK = Packed Record                  //tagHHNTRACK, HHNTRACK;
         hdr: TNMHdr;
-        pszCurUrl: PChar;
+        pszCurUrl: Pchar;
         // Multi-byte, null-terminated string  
         idAction: Integer;                // HHACT_ value
         phhWinType: PHHWinType;             // Current window type structure
-    end;
+    End;
     HHNTRACK = tagHHNTRACK;
     THHNTrack = tagHHNTRACK;
 
@@ -560,7 +560,7 @@ type
 //
 // Global Control Properties.
 //
-const
+Const
     HH_GPROPID_SINGLETHREAD = 1;      // VARIANT_BOOL: True for single thread
     HH_GPROPID_TOOLBAR_MARGIN = 2;
     // long: Provides a left/right margin around the toolbar.
@@ -568,7 +568,7 @@ const
     HH_GPROPID_CURRENT_SUBSET = 4;      // BSTR: Current subset.
     HH_GPROPID_CONTENT_LANGUAGE = 5;      // long: LandId for desired content.
 
-type
+Type
     tagHH_GPROPID = HH_GPROPID_SINGLETHREAD..HH_GPROPID_CONTENT_LANGUAGE;
     //tagHH_GPROPID, HH_GPROPID
     HH_GPROPID = tagHH_GPROPID;
@@ -578,15 +578,15 @@ type
 //
 // Global Property structure
 //
-type
+Type
     PHHGlobalProperty = ^THHGlobalProperty;
-    tagHH_GLOBAL_PROPERTY = record
+    tagHH_GLOBAL_PROPERTY = Record
         //tagHH_GLOBAL_PROPERTY, HH_GLOBAL_PROPERTY
         id: THHGPropID;
         Dummy: Integer;
         // Added to enforce 8-byte packing
-        var_: VARIANT;
-    end;
+        var_: Variant;
+    End;
     HH_GLOBAL_PROPERTY = tagHH_GLOBAL_PROPERTY;
     THHGlobalProperty = tagHH_GLOBAL_PROPERTY;
 
@@ -597,109 +597,109 @@ type
 
 { Translated from HHERROR.H }
 
-type
+Type
 
   { HH_LAST_ERROR Command Related structures and constants
     Used by command HH_GET_LAST_ERROR
     You must call SysFreeString(xx.description) to free BSTR
   }
-    tagHH_LAST_ERROR = packed record
+    tagHH_LAST_ERROR = Packed Record
         cbStruct: Integer;     // sizeof this structure
         hr: HRESULT;     // Specifies the last error code.
         description: PWideChar;
         // (BSTR) Specifies a Unicode string containing a description of the error.
-    end;
+    End;
     HH_LAST_ERROR = tagHH_LAST_ERROR;
     THHLastError = tagHH_LAST_ERROR;
 
 
 // Error codes
 // MAKE_HRESULT(sev,fac,code) \HRESULT) (((unsigned long)(sev)<<31) | ((unsigned long)(fac)<<16) | ((unsigned long)(code))) )
-const
+Const
     HH_E_FILENOTFOUND: HResult =
-        HResult(SEVERITY_ERROR shl 31) or (FACILITY_ITF shl 16) or $0201;
+        HResult(SEVERITY_ERROR Shl 31) Or (FACILITY_ITF Shl 16) Or $0201;
     // %1 could not be found.
     HH_E_TOPICDOESNOTEXIST: HResult =
-        HResult(SEVERITY_ERROR shl 31) or (FACILITY_ITF shl 16) or $0202;
+        HResult(SEVERITY_ERROR Shl 31) Or (FACILITY_ITF Shl 16) Or $0202;
     // The requested topic does not exist.
     HH_E_INVALIDHELPFILE: HResult =
-        HResult(SEVERITY_ERROR shl 31) or (FACILITY_ITF shl 16) or $0203;
+        HResult(SEVERITY_ERROR Shl 31) Or (FACILITY_ITF Shl 16) Or $0203;
     // %1 is not a valid help file.
     HH_E_NOCONTEXTIDS: HResult =
-        HResult(SEVERITY_ERROR shl 31) or (FACILITY_ITF shl 16) or $020A;
+        HResult(SEVERITY_ERROR Shl 31) Or (FACILITY_ITF Shl 16) Or $020A;
     // Help file does not contain context ids.
     HH_E_CONTEXTIDDOESNTEXIT: HResult =
-        HResult(SEVERITY_ERROR shl 31) or (FACILITY_ITF shl 16) or $020B;
+        HResult(SEVERITY_ERROR Shl 31) Or (FACILITY_ITF Shl 16) Or $020B;
     // The context id does not exist.
 
     // 0x0300 - 0x03FF reserved for keywords
     HH_E_KEYWORD_NOT_FOUND: HResult =
-        HResult(SEVERITY_ERROR shl 31) or (FACILITY_ITF shl 16) or $0300;
+        HResult(SEVERITY_ERROR Shl 31) Or (FACILITY_ITF Shl 16) Or $0300;
     // no hits found.
     HH_E_KEYWORD_IS_PLACEHOLDER: HResult =
-        HResult(SEVERITY_ERROR shl 31) or (FACILITY_ITF shl 16) or $0301;
+        HResult(SEVERITY_ERROR Shl 31) Or (FACILITY_ITF Shl 16) Or $0301;
     // keyword is a placeholder or a "runaway" see also.
     HH_E_KEYWORD_NOT_IN_SUBSET: HResult =
-        HResult(SEVERITY_ERROR shl 31) or (FACILITY_ITF shl 16) or $0302;
+        HResult(SEVERITY_ERROR Shl 31) Or (FACILITY_ITF Shl 16) Or $0302;
     // no hits found because of subset exclusion.
     HH_E_KEYWORD_NOT_IN_INFOTYPE: HResult =
-        HResult(SEVERITY_ERROR shl 31) or (FACILITY_ITF shl 16) or $0303;
+        HResult(SEVERITY_ERROR Shl 31) Or (FACILITY_ITF Shl 16) Or $0303;
     // no hits found because of infotype exclusion.
     HH_E_KEYWORD_EXCLUDED: HResult =
-        HResult(SEVERITY_ERROR shl 31) or (FACILITY_ITF shl 16) or $0304;
+        HResult(SEVERITY_ERROR Shl 31) Or (FACILITY_ITF Shl 16) Or $0304;
     // no hits found because of infotype and subset exclusion.
     HH_E_KEYWORD_NOT_SUPPORTED: HResult =
-        HResult(SEVERITY_ERROR shl 31) or (FACILITY_ITF shl 16) or $0305;
+        HResult(SEVERITY_ERROR Shl 31) Or (FACILITY_ITF Shl 16) Or $0305;
 // no hits found because of keywords not being supported in this mode.
 
 
-implementation
+Implementation
 
 
 {Return Windows System Dir - with no trailing slash}
-function GetWinSysDir: String;
-var path: array[0..260] of Char;
-begin
+Function GetWinSysDir: String;
+Var path: Array[0..260] Of Char;
+Begin
     GetSystemDirectory(path, SizeOf(path));
     result := path;
-    if result[length(result)] = '\' then
+    If result[length(result)] = '\' Then
         SetLength(result, length(result) - 1);
-end;
+End;
 
 {Return Windows Dir - with no trailing slash}
-function GetWinDir: String;
-var path: array[0..260] of Char;
-begin
+Function GetWinDir: String;
+Var path: Array[0..260] Of Char;
+Begin
     GetWindowsDirectory(path, SizeOf(path));
     result := path;
-    if result[length(result)] = '\' then
+    If result[length(result)] = '\' Then
         SetLength(result, length(result) - 1);
-end;
+End;
 
-const hhPathRegKey =
+Const hhPathRegKey =
         'CLSID\{adb880a6-d8ff-11cf-9377-00aa003b7a11}\InprocServer32';
 
 //Expand %SystemRoot% -> c:\windows
 //Fix for Windows Vista
-procedure ExpandSystemRoot(var s: String);
-var L: Integer;
-begin
+Procedure ExpandSystemRoot(Var s: String);
+Var L: Integer;
+Begin
     L := length('%SystemRoot%');
-    if (Length(s) >= L)
-        and (s[1] = '%')
-        and (s[2] in ['s', 'S'])
-        and (s[3] in ['y', 'Y'])
-        and (s[4] in ['s', 'S'])
-        and (s[5] in ['t', 'T'])
-        and (s[6] in ['e', 'E'])
-        and (s[7] in ['m', 'M'])
-        and (s[8] in ['r', 'R'])
-        and (s[9] in ['o', 'O'])
-        and (s[10] in ['o', 'O'])
-        and (s[11] in ['t', 'T'])
-        and (s[12] = '%') then
+    If (Length(s) >= L)
+        And (s[1] = '%')
+        And (s[2] In ['s', 'S'])
+        And (s[3] In ['y', 'Y'])
+        And (s[4] In ['s', 'S'])
+        And (s[5] In ['t', 'T'])
+        And (s[6] In ['e', 'E'])
+        And (s[7] In ['m', 'M'])
+        And (s[8] In ['r', 'R'])
+        And (s[9] In ['o', 'O'])
+        And (s[10] In ['o', 'O'])
+        And (s[11] In ['t', 'T'])
+        And (s[12] = '%') Then
         s := GetWinDir + Copy(s, L + 1, maxint);
-end;
+End;
 
 { Returns full path to hhctrl.ocx.
   Returns empty string if file or registry entry not found.
@@ -711,11 +711,11 @@ end;
         an access violation. Best to simply return the ocx path to system folder.
         In 99.9% of cases this will be correct.
 }
-function GetPathToHHCtrlOCX: string;
+Function GetPathToHHCtrlOCX: String;
 {$IFDEF D4PLUS} // -- Delphi >=4 ------------
 var Reg: TRegistry;
 {$ENDIF}
-begin
+Begin
     result := '';  //default return
 {$IFDEF D4PLUS} // -- Delphi >=4 ------------
   Reg := TRegistry.Create;
@@ -731,53 +731,53 @@ begin
   end;
   Reg.Free;
 {$ENDIF}
-    if result = '' then
+    If result = '' Then
         result := GetWinSysDir + '\' + hhctrlLib;
-end;
+End;
 
 
 {setup HTML Help API function interface
  sets HHCtrlHandle = 0 if API function not available }
-procedure LoadHtmlHelp;
-var OcxPath: string;
-begin
-    if HHCtrlHandle = 0 then
-    begin
+Procedure LoadHtmlHelp;
+Var OcxPath: String;
+Begin
+    If HHCtrlHandle = 0 Then
+    Begin
         // v1.9 -- Normally 'hhctrl.ocx' is in the Windows search path
         HHCtrlHandle := LoadLibrary(hhctrlLib);
 
         //Not found? Unlikely! Try looking it up in the registry
-        if (HHCtrlHandle = 0) then
-        begin
+        If (HHCtrlHandle = 0) Then
+        Begin
             OcxPath := GetPathToHHCtrlOCX;
-            if (OcxPath <> '') and FileExists(OcxPath) then
-                HHCtrlHandle := LoadLibrary(PChar(OcxPath));
-        end;
+            If (OcxPath <> '') And FileExists(OcxPath) Then
+                HHCtrlHandle := LoadLibrary(Pchar(OcxPath));
+        End;
 
-        if HHCtrlHandle <> 0 then
-        begin
+        If HHCtrlHandle <> 0 Then
+        Begin
             @HtmlHelpA := GetProcAddress(HHCtrlHandle, 'HtmlHelpA');
             @HtmlHelpW := GetProcAddress(HHCtrlHandle, 'HtmlHelpW');
             @HtmlHelp := GetProcAddress(HHCtrlHandle, 'HtmlHelpA');
-        end;
-    end;
-end;
+        End;
+    End;
+End;
 
-procedure UnloadHtmlHelp;
-begin
-    if HHCtrlHandle <> 0 then
-    begin
+Procedure UnloadHtmlHelp;
+Begin
+    If HHCtrlHandle <> 0 Then
+    Begin
         FreeLibrary(HHCtrlHandle);
-        @HtmlHelpA := nil;
-        @HtmlHelpW := nil;
-        @HtmlHelp := nil;
+        @HtmlHelpA := Nil;
+        @HtmlHelpW := Nil;
+        @HtmlHelp := Nil;
         HHCtrlHandle := 0;
-    end;
-end;
+    End;
+End;
 
-initialization
-    if AutoLoadAPI then
+Initialization
+    If AutoLoadAPI Then
         LoadHtmlHelp;
-finalization
+Finalization
     UnloadHtmlHelp;
-end.
+End.

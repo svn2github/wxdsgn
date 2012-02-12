@@ -22,151 +22,155 @@
 {Contact gururamnath@yahoo.com for details                           }
 { ****************************************************************** }
 
-unit UValidator;
+Unit UValidator;
 
-interface
+Interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Buttons, ExtCtrls, XPMenu;
+Uses
+    Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+    Dialogs, StdCtrls, Buttons, ExtCtrls, XPMenu;
 
-type
-  TwxValidator = class(TForm)
-    btnOK: TBitBtn;
-    btnCancel: TBitBtn;
-    Settings: TGroupBox;
-    ValidatorTypeLbl: TLabel;
-    ValidatorVariableLbl: TLabel;
-    FilterStyleLbl: TLabel;
-    ValidatorVariableOpt: TLabel;
-    ValidatorType: TComboBox;
-    ValidatorVariable: TEdit;
-    FilterStyle: TComboBox;
-    ValidatorCommand: TGroupBox;
-    ValidatorString: TEdit;
-    XPMenu: TXPMenu;
+Type
+    TwxValidator = Class(TForm)
+        btnOK: TBitBtn;
+        btnCancel: TBitBtn;
+        Settings: TGroupBox;
+        ValidatorTypeLbl: TLabel;
+        ValidatorVariableLbl: TLabel;
+        FilterStyleLbl: TLabel;
+        ValidatorVariableOpt: TLabel;
+        ValidatorType: TComboBox;
+        ValidatorVariable: TEdit;
+        FilterStyle: TComboBox;
+        ValidatorCommand: TGroupBox;
+        ValidatorString: TEdit;
+        XPMenu: TXPMenu;
 
-    procedure ValidatorTypeChange(Sender: TObject);
-    procedure OnChange(Sender: TObject);
-    procedure VariableChange(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
-  private
+        Procedure ValidatorTypeChange(Sender: TObject);
+        Procedure OnChange(Sender: TObject);
+        Procedure VariableChange(Sender: TObject);
+        Procedure FormCreate(Sender: TObject);
+    Private
     { Private declarations }
-    procedure GenerateCode;
-  public
+        Procedure GenerateCode;
+    Public
     { Public declarations }
-    function GetValidatorString: string;
-    procedure SetValidatorString(strValue: string);
+        Function GetValidatorString: String;
+        Procedure SetValidatorString(strValue: String);
 
-  end;
+    End;
 
-var
-  wxValidator: TwxValidator;
+Var
+    wxValidator: TwxValidator;
 
-implementation
+Implementation
 {uses
   devCfg;} // EAB TODO: fix this
 {$R *.dfm}
 
-function TwxValidator.GetValidatorString: string;
-begin
-  Result := '' + self.ValidatorString.Text;
-end;
+Function TwxValidator.GetValidatorString: String;
+Begin
+    Result := '' + self.ValidatorString.Text;
+End;
 
-procedure TwxValidator.SetValidatorString(strValue: string);
-var
-  Style: string;
-  Variable: string;
-begin
+Procedure TwxValidator.SetValidatorString(strValue: String);
+Var
+    Style: String;
+    Variable: String;
+Begin
   //Attempt to parse the string
-  strValue := Trim(strValue);
-  if Copy(strValue, 1, 16) = 'wxTextValidator(' then
-  begin
+    strValue := Trim(strValue);
+    If Copy(strValue, 1, 16) = 'wxTextValidator(' Then
+    Begin
     //OK, we have a TextValidator
-    ValidatorType.ItemIndex := 1;
+        ValidatorType.ItemIndex := 1;
 
     //See what styles we are using
-    Style := Copy(strValue, 17, Length(strValue));
-    if Pos(',', Style) <> 0 then
-      Style := Copy(Style, 1, Pos(',', Style) - 1)
-    else
-      Style := Copy(Style, 1, Length(Style) - 1);
+        Style := Copy(strValue, 17, Length(strValue));
+        If Pos(',', Style) <> 0 Then
+            Style := Copy(Style, 1, Pos(',', Style) - 1)
+        Else
+            Style := Copy(Style, 1, Length(Style) - 1);
 
     //Set the style
-    FilterStyle.ItemIndex := FilterStyle.Items.IndexOf(Style);
-    if FilterStyle.ItemIndex = -1 then
-      FilterStyle.ItemIndex := 0;
+        FilterStyle.ItemIndex := FilterStyle.Items.IndexOf(Style);
+        If FilterStyle.ItemIndex = -1 Then
+            FilterStyle.ItemIndex := 0;
 
     //And get the name of the validator variable
-    if Pos(',', strValue) <> 0 then
-    begin
-      Variable := Copy(strValue, 16, Length(strValue));
-      Variable := Copy(Variable, Pos(',', Variable) + 2, Length(Variable));
-      Variable := Copy(Variable, 0, Pos(Variable, ')'));
-      ValidatorVariable.Text := Variable;
-    end;
-  end
-  else if strValue <> '' then
-    ValidatorType.ItemIndex := 2
-  else
-    ValidatorType.ItemIndex := 0;
+        If Pos(',', strValue) <> 0 Then
+        Begin
+            Variable := Copy(strValue, 16, Length(strValue));
+            Variable := Copy(Variable, Pos(',', Variable) + 2, Length(Variable));
+            Variable := Copy(Variable, 0, Pos(Variable, ')'));
+            ValidatorVariable.Text := Variable;
+        End;
+    End
+    Else
+    If strValue <> '' Then
+        ValidatorType.ItemIndex := 2
+    Else
+        ValidatorType.ItemIndex := 0;
 
   //Set the text field
-  ValidatorTypeChange(nil);
-  GenerateCode;
-end;
+    ValidatorTypeChange(Nil);
+    GenerateCode;
+End;
 
-procedure TwxValidator.ValidatorTypeChange(Sender: TObject);
-begin
+Procedure TwxValidator.ValidatorTypeChange(Sender: TObject);
+Begin
   //Enable/disable the controls
-  FilterStyle.Enabled := ValidatorType.ItemIndex = 1; //Must be a wxTextValidator
-  ValidatorVariable.Enabled := ValidatorType.ItemIndex <> 0; //Must be a validator
-  ValidatorString.Enabled := ValidatorType.ItemIndex <> 0; //Must be a validator
-  ValidatorString.ReadOnly := ValidatorType.ItemIndex = 1; //TextValidator
+    FilterStyle.Enabled := ValidatorType.ItemIndex = 1; //Must be a wxTextValidator
+    ValidatorVariable.Enabled := ValidatorType.ItemIndex <> 0; //Must be a validator
+    ValidatorString.Enabled := ValidatorType.ItemIndex <> 0; //Must be a validator
+    ValidatorString.ReadOnly := ValidatorType.ItemIndex = 1; //TextValidator
 
   //Regenerate the code
-  GenerateCode;
-end;
+    GenerateCode;
+End;
 
-procedure TwxValidator.OnChange(Sender: TObject);
+Procedure TwxValidator.OnChange(Sender: TObject);
 Var
-    strVarValue:String;
-begin
-    if Trim(ValidatorVariable.Text) = '' then
+    strVarValue: String;
+Begin
+    If Trim(ValidatorVariable.Text) = '' Then
         strVarValue := 'NULL'
-    else
+    Else
         strVarValue := Trim(ValidatorVariable.Text);
     ValidatorString.Text := 'wxTextValidator(' + FilterStyle.Items[FilterStyle.ItemIndex] +
-                            ', ' + strVarValue + ')';
-end;
+        ', ' + strVarValue + ')';
+End;
 
-procedure TwxValidator.VariableChange(Sender: TObject);
-begin
-  GenerateCode;
-end;
+Procedure TwxValidator.VariableChange(Sender: TObject);
+Begin
+    GenerateCode;
+End;
 
-procedure TwxValidator.FormCreate(Sender: TObject);
-begin
-  ValidatorTypeChange(Sender);
-  DesktopFont := True;
+Procedure TwxValidator.FormCreate(Sender: TObject);
+Begin
+    ValidatorTypeChange(Sender);
+    DesktopFont := True;
   //XPMenu.Active := devData.XPTheme;
-end;
+End;
 
-procedure TwxValidator.GenerateCode;
-var
-  VarValue: string;
-begin
+Procedure TwxValidator.GenerateCode;
+Var
+    VarValue: String;
+Begin
   //Decide what to use for the validator variable
-  if Trim(ValidatorVariable.Text) = '' then
-    VarValue := 'NULL'
-  else
-    VarValue := Trim(ValidatorVariable.Text);
+    If Trim(ValidatorVariable.Text) = '' Then
+        VarValue := 'NULL'
+    Else
+        VarValue := Trim(ValidatorVariable.Text);
 
-  case ValidatorType.ItemIndex of
-    0: ValidatorString.Text := '';
-    1: ValidatorString.Text := 'wxTextValidator(' + FilterStyle.Text + ', ' + VarValue + ')';
-    2: ValidatorString.Text := 'wxGenericValidator(' + VarValue + ')';
-  end;
-end;
+    Case ValidatorType.ItemIndex Of
+        0:
+            ValidatorString.Text := '';
+        1:
+            ValidatorString.Text := 'wxTextValidator(' + FilterStyle.Text + ', ' + VarValue + ')';
+        2:
+            ValidatorString.Text := 'wxGenericValidator(' + VarValue + ')';
+    End;
+End;
 
-end.
+End.

@@ -17,11 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-unit ProfileAnalysisFm;
+Unit ProfileAnalysisFm;
 
-interface
+Interface
 
-uses
+Uses
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
     Dialogs, StdCtrls, ComCtrls, ExtCtrls, XPMenu;
@@ -31,8 +31,8 @@ uses
   QDialogs, QStdCtrls, QComCtrls, QExtCtrls;
 {$ENDIF}
 
-type
-    TProfileAnalysisForm = class(TForm)
+Type
+    TProfileAnalysisForm = Class(TForm)
         Panel1: TPanel;
         btnClose: TButton;
         Panel2: TPanel;
@@ -46,33 +46,33 @@ type
         memGraph: TMemo;
         lvGraph: TListView;
         XPMenu: TXPMenu;
-        procedure FormShow(Sender: TObject);
-        procedure FormClose(Sender: TObject; var Action: TCloseAction);
-        procedure btnCloseClick(Sender: TObject);
-        procedure FormPaint(Sender: TObject);
-        procedure lvGraphCustomDrawItem(Sender: TCustomListView;
-            Item: TListItem; State: TCustomDrawState; var DefaultDraw: Boolean);
-        procedure lvFlatCustomDrawItem(Sender: TCustomListView;
-            Item: TListItem; State: TCustomDrawState; var DefaultDraw: Boolean);
-        procedure lvFlatMouseMove(Sender: TObject; Shift: TShiftState; X,
+        Procedure FormShow(Sender: TObject);
+        Procedure FormClose(Sender: TObject; Var Action: TCloseAction);
+        Procedure btnCloseClick(Sender: TObject);
+        Procedure FormPaint(Sender: TObject);
+        Procedure lvGraphCustomDrawItem(Sender: TCustomListView;
+            Item: TListItem; State: TCustomDrawState; Var DefaultDraw: Boolean);
+        Procedure lvFlatCustomDrawItem(Sender: TCustomListView;
+            Item: TListItem; State: TCustomDrawState; Var DefaultDraw: Boolean);
+        Procedure lvFlatMouseMove(Sender: TObject; Shift: TShiftState; X,
             Y: Integer);
-        procedure lvFlatClick(Sender: TObject);
-        procedure PageControl1Change(Sender: TObject);
-    private
+        Procedure lvFlatClick(Sender: TObject);
+        Procedure PageControl1Change(Sender: TObject);
+    Private
         { Private declarations }
-        procedure LoadText;
-        procedure DoFlat;
-        procedure DoGraph;
-    public
+        Procedure LoadText;
+        Procedure DoFlat;
+        Procedure DoGraph;
+    Public
         { Public declarations }
-    end;
+    End;
 
-var
+Var
     ProfileAnalysisForm: TProfileAnalysisForm;
 
-implementation
+Implementation
 
-uses
+Uses
 {$IFDEF WIN32}
     devcfg, version, utils, main, ShellAPI, StrUtils,
     MultiLangSupport, CppParser,
@@ -85,90 +85,90 @@ uses
 
 {$R *.dfm}
 
-procedure TProfileAnalysisForm.FormShow(Sender: TObject);
-begin
+Procedure TProfileAnalysisForm.FormShow(Sender: TObject);
+Begin
     LoadText;
     PageControl1.Visible := False;
-end;
+End;
 
-procedure TProfileAnalysisForm.FormClose(Sender: TObject;
-    var Action: TCloseAction);
-begin
+Procedure TProfileAnalysisForm.FormClose(Sender: TObject;
+    Var Action: TCloseAction);
+Begin
     Action := caFree;
-    ProfileAnalysisForm := nil;
-end;
+    ProfileAnalysisForm := Nil;
+End;
 
-procedure TProfileAnalysisForm.btnCloseClick(Sender: TObject);
-begin
+Procedure TProfileAnalysisForm.btnCloseClick(Sender: TObject);
+Begin
     Close;
-end;
+End;
 
-procedure TProfileAnalysisForm.DoFlat;
-var
-    Cmd: string;
-    Params: string;
-    Dir: string;
-    I: integer;
-    Line: string;
-    Parsing: boolean;
-    Done: boolean;
-    BreakLine: integer;
-begin
-    if (devCompiler.gprofName <> '') then
+Procedure TProfileAnalysisForm.DoFlat;
+Var
+    Cmd: String;
+    Params: String;
+    Dir: String;
+    I: Integer;
+    Line: String;
+    Parsing: Boolean;
+    Done: Boolean;
+    BreakLine: Integer;
+Begin
+    If (devCompiler.gprofName <> '') Then
         Cmd := devCompiler.gprofName
-    else
+    Else
         Cmd := PROF_PROGRAM(0);
-    if Assigned(MainForm.fProject) then
-    begin
+    If Assigned(MainForm.fProject) Then
+    Begin
         Dir := ExtractFilePath(MainForm.fProject.Executable);
         Params := GPROF_CMD_GENFLAT + ' "' +
             ExtractFileName(MainForm.fProject.Executable) + '"';
-    end
-    else
-    begin
+    End
+    Else
+    Begin
         Dir := ExtractFilePath(MainForm.GetEditor.FileName);
         // GAR 10 Nov 2009
         // Hack for Wine/Linux
         // ProductName returns empty string for Wine/Linux
         // for Windows, it returns OS name (e.g. Windows Vista).
-        if (MainForm.JvComputerInfoEx1.OS.ProductName = '') then
+        If (MainForm.JvComputerInfoEx1.OS.ProductName = '') Then
             Params := GPROF_CMD_GENFLAT + ' "' +
                 ExtractFileName(ChangeFileExt(MainForm.GetEditor.FileName, '')) + '"'
-        else
+        Else
             Params := GPROF_CMD_GENFLAT + ' "' +
                 ExtractFileName(ChangeFileExt(MainForm.GetEditor.FileName, EXE_EXT)) + '"';
-    end;
+    End;
 
     memFlat.Lines.Text := RunAndGetOutput(Cmd + ' ' + Params,
-        Dir, nil, nil, nil, False);
+        Dir, Nil, Nil, Nil, False);
     memFlat.SelStart := 0;
 
     BreakLine := -1;
     I := 0;
     Parsing := False;
     Done := False;
-    while (I < memFlat.Lines.Count) and not Done do
-    begin
+    While (I < memFlat.Lines.Count) And Not Done Do
+    Begin
         Line := memFlat.Lines[I];
 
         // parse
-        if Parsing then
-        begin
-            if Trim(Line) = '' then
-            begin
+        If Parsing Then
+        Begin
+            If Trim(Line) = '' Then
+            Begin
                 BreakLine := I;
                 Break;
-            end;
+            End;
 
-            with lvFlat.Items.Add do
-            begin
+            With lvFlat.Items.Add Do
+            Begin
                 Caption := Trim(Copy(Line, 55, Length(Line) - 54));
 
                 // remove arguments - if exists
-                if AnsiPos('(', Caption) > 0 then
+                If AnsiPos('(', Caption) > 0 Then
                     Data := MainForm.CppParser1.Locate(Copy(Caption, 1,
                         AnsiPos('(', Caption) - 1), True)
-                else
+                Else
                     Data := MainForm.CppParser1.Locate(Caption, True);
 
                 SubItems.Add(Trim(Copy(Line, 1, 6)));
@@ -177,90 +177,90 @@ begin
                 SubItems.Add(Trim(Copy(Line, 30, 7)));
                 SubItems.Add(Trim(Copy(Line, 37, 9)));
                 SubItems.Add(Trim(Copy(Line, 46, 9)));
-            end;
-        end
-        else
-        begin
+            End;
+        End
+        Else
+        Begin
             Parsing := AnsiStartsText('%', Trim(Line));
-            if Parsing then
+            If Parsing Then
                 Inc(I); // skip over next line too
-        end;
+        End;
         Inc(I);
-    end;
-    for I := 0 to BreakLine do
+    End;
+    For I := 0 To BreakLine Do
         TStringList(memFlat.Lines).Delete(0);
-end;
+End;
 
-procedure TProfileAnalysisForm.DoGraph;
-var
-    Cmd: string;
-    Params: string;
-    Dir: string;
-    I: integer;
-    Line: string;
-    Parsing: boolean;
-    Done: boolean;
-    BreakLine: integer;
-begin
-    if (devCompiler.gprofName <> '') then
+Procedure TProfileAnalysisForm.DoGraph;
+Var
+    Cmd: String;
+    Params: String;
+    Dir: String;
+    I: Integer;
+    Line: String;
+    Parsing: Boolean;
+    Done: Boolean;
+    BreakLine: Integer;
+Begin
+    If (devCompiler.gprofName <> '') Then
         Cmd := devCompiler.gprofName
-    else
+    Else
         Cmd := PROF_PROGRAM(0);
 
-    if Assigned(MainForm.fProject) then
-    begin
+    If Assigned(MainForm.fProject) Then
+    Begin
         Dir := ExtractFilePath(MainForm.fProject.Executable);
         Params := GPROF_CMD_GENMAP + ' "' +
             ExtractFileName(MainForm.fProject.Executable) + '"';
-    end
-    else
-    begin
+    End
+    Else
+    Begin
         Dir := ExtractFilePath(MainForm.GetEditor.FileName);
 
         // GAR 10 Nov 2009
         // Hack for Wine/Linux
         // ProductName returns empty string for Wine/Linux
         // for Windows, it returns OS name (e.g. Windows Vista).
-        if (MainForm.JvComputerInfoEx1.OS.ProductName = '') then
+        If (MainForm.JvComputerInfoEx1.OS.ProductName = '') Then
             Params := GPROF_CMD_GENMAP + ' "' +
                 ExtractFileName(ChangeFileExt(MainForm.GetEditor.FileName, '')) + '"'
-        else
+        Else
             Params := GPROF_CMD_GENMAP + ' "' +
                 ExtractFileName(ChangeFileExt(MainForm.GetEditor.FileName, EXE_EXT)) + '"';
-    end;
+    End;
 
     memGraph.Lines.Text := RunAndGetOutput(Cmd + ' ' + Params,
-        Dir, nil, nil, nil, False);
+        Dir, Nil, Nil, Nil, False);
     memGraph.SelStart := 0;
 
     BreakLine := -1;
     I := 0;
     Parsing := False;
     Done := False;
-    while (I < memGraph.Lines.Count) and not Done do
-    begin
+    While (I < memGraph.Lines.Count) And Not Done Do
+    Begin
         Line := memGraph.Lines[I];
 
         // parse
-        if Parsing then
-        begin
-            if Trim(Line) = '' then
-            begin
+        If Parsing Then
+        Begin
+            If Trim(Line) = '' Then
+            Begin
                 BreakLine := I;
                 Break;
-            end;
+            End;
 
-            if not AnsiStartsText('---', Line) then
-            begin
-                with lvGraph.Items.Add do
-                begin
+            If Not AnsiStartsText('---', Line) Then
+            Begin
+                With lvGraph.Items.Add Do
+                Begin
                     Caption := Trim(Copy(Line, 46, Length(Line) - 45));
 
                     // remove arguments - if exists
-                    if AnsiPos('(', Caption) > 0 then
+                    If AnsiPos('(', Caption) > 0 Then
                         Data := MainForm.CppParser1.Locate(Copy(Caption,
                             1, AnsiPos('(', Caption) - 1), True)
-                    else
+                    Else
                         Data := MainForm.CppParser1.Locate(Caption, True);
 
                     SubItems.Add(Trim(Copy(Line, 1, 5)));
@@ -268,130 +268,130 @@ begin
                     SubItems.Add(Trim(Copy(Line, 17, 6)));
                     SubItems.Add(Trim(Copy(Line, 23, 11)));
                     SubItems.Add(Trim(Copy(Line, 34, 12)));
-                end;
-            end
-            else
+                End;
+            End
+            Else
                 lvGraph.Items.Add;
-        end
-        else
+        End
+        Else
             Parsing := AnsiStartsText('index %', Trim(Line));
         Inc(I);
-    end;
-    for I := 0 to BreakLine do
+    End;
+    For I := 0 To BreakLine Do
         TStringList(memGraph.Lines).Delete(0);
-end;
+End;
 
-procedure TProfileAnalysisForm.FormPaint(Sender: TObject);
-begin
-    inherited;
-    OnPaint := nil;
+Procedure TProfileAnalysisForm.FormPaint(Sender: TObject);
+Begin
+    Inherited;
+    OnPaint := Nil;
 
     Screen.Cursor := crHourglass;
     Application.ProcessMessages;
-    try
+    Try
         DoFlat;
-    except
+    Except
         lvFlat.Items.Add.Caption := '<Error parsing output>';
-    end;
+    End;
 
     Application.ProcessMessages;
-    try
+    Try
         DoGraph;
-    except
+    Except
         lvGraph.Items.Add.Caption := '<Error parsing output>';
-    end;
+    End;
 
     Screen.Cursor := crDefault;
     PageControl1.ActivePage := tabFlat;
     PageControl1.Visible := True;
     lvFlat.SetFocus;
-end;
+End;
 
-procedure TProfileAnalysisForm.lvFlatCustomDrawItem(
+Procedure TProfileAnalysisForm.lvFlatCustomDrawItem(
     Sender: TCustomListView; Item: TListItem; State: TCustomDrawState;
-    var DefaultDraw: Boolean);
-begin
-    if not (cdsSelected in State) then
-    begin
-        if Assigned(Item.Data) then
+    Var DefaultDraw: Boolean);
+Begin
+    If Not (cdsSelected In State) Then
+    Begin
+        If Assigned(Item.Data) Then
             Sender.Canvas.Font.Color := clBlue
-        else
+        Else
             Sender.Canvas.Font.Color := clWindowText;
-    end;
-end;
+    End;
+End;
 
-procedure TProfileAnalysisForm.lvGraphCustomDrawItem(
+Procedure TProfileAnalysisForm.lvGraphCustomDrawItem(
     Sender: TCustomListView; Item: TListItem; State: TCustomDrawState;
-    var DefaultDraw: Boolean);
-begin
-    if not (cdsSelected in State) then
-    begin
-        if (Item.SubItems.Count > 0) and (Item.SubItems[0] <> '') then
-        begin
-            if Assigned(Item.Data) then
+    Var DefaultDraw: Boolean);
+Begin
+    If Not (cdsSelected In State) Then
+    Begin
+        If (Item.SubItems.Count > 0) And (Item.SubItems[0] <> '') Then
+        Begin
+            If Assigned(Item.Data) Then
                 Sender.Canvas.Font.Color := clBlue
-            else
+            Else
                 Sender.Canvas.Font.Color := clWindowText;
-        end
-        else
+        End
+        Else
             Sender.Canvas.Font.Color := clGray;
-    end;
+    End;
 
     DefaultDraw := True;
-end;
+End;
 
-procedure TProfileAnalysisForm.LoadText;
-begin
+Procedure TProfileAnalysisForm.LoadText;
+Begin
     DesktopFont := True;
     XPMenu.Active := devData.XPTheme;
     Caption := Lang[ID_PROF_CAPTION];
     tabFlat.Caption := Lang[ID_PROF_TABFLAT];
     tabGraph.Caption := Lang[ID_PROF_TABGRAPH];
     btnClose.Caption := Lang[ID_BTN_CLOSE];
-end;
+End;
 
-procedure TProfileAnalysisForm.lvFlatMouseMove(Sender: TObject;
+Procedure TProfileAnalysisForm.lvFlatMouseMove(Sender: TObject;
     Shift: TShiftState; X, Y: Integer);
-var
+Var
     It: TListItem;
-begin
-    with Sender as TListView do
-    begin
+Begin
+    With Sender As TListView Do
+    Begin
         It := GetItemAt(X, Y);
-        if Assigned(It) and Assigned(It.Data) then
+        If Assigned(It) And Assigned(It.Data) Then
             Cursor := crHandPoint
-        else
+        Else
             Cursor := crDefault;
-    end;
-end;
+    End;
+End;
 
-procedure TProfileAnalysisForm.lvFlatClick(Sender: TObject);
-var
+Procedure TProfileAnalysisForm.lvFlatClick(Sender: TObject);
+Var
     It: TListItem;
     P: TPoint;
     e: TEditor;
-begin
+Begin
     P := TListView(Sender).ScreenToClient(Mouse.CursorPos);
     It := TListView(Sender).GetItemAt(P.X, P.Y);
-    if Assigned(It) and Assigned(It.Data) then
-    begin
+    If Assigned(It) And Assigned(It.Data) Then
+    Begin
         e := MainForm.GetEditorFromFileName(
             MainForm.CppParser1.GetImplementationFileName(PStatement(It.Data)));
-        if Assigned(e) then
-        begin
+        If Assigned(e) Then
+        Begin
             e.GotoLineNr(MainForm.CppParser1.GetImplementationLine(
                 PStatement(It.Data)));
             e.Activate;
-        end;
-    end;
-end;
+        End;
+    End;
+End;
 
-procedure TProfileAnalysisForm.PageControl1Change(Sender: TObject);
-begin
-    if PageControl1.ActivePage = tabFlat then
+Procedure TProfileAnalysisForm.PageControl1Change(Sender: TObject);
+Begin
+    If PageControl1.ActivePage = tabFlat Then
         lvFlat.SetFocus
-    else
+    Else
         lvGraph.SetFocus;
-end;
+End;
 
-end.
+End.

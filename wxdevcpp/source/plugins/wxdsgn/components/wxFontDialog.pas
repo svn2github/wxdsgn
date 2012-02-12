@@ -24,284 +24,284 @@
 { ****************************************************************** }
 
 
-unit WxFontDialog;
+Unit WxFontDialog;
 
-interface
+Interface
 
-uses
-  Windows, Messages, SysUtils, Classes, wxUtils, WxNonVisibleBaseComponent;
+Uses
+    Windows, Messages, SysUtils, Classes, wxUtils, WxNonVisibleBaseComponent;
 
-type
-  TWxFontDialog = class(TWxNonVisibleBaseComponent, IWxComponentInterface)
-  private
+Type
+    TWxFontDialog = Class(TWxNonVisibleBaseComponent, IWxComponentInterface)
+    Private
     { Private declarations }
-    FWx_Class: string;
-    FWx_PropertyList: TStringList;
+        FWx_Class: String;
+        FWx_PropertyList: TStringList;
 
-    procedure AutoInitialize;
-    procedure AutoDestroy;
+        Procedure AutoInitialize;
+        Procedure AutoDestroy;
 
-  protected
+    Protected
 
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    function GenerateControlIDs: string;
-    function GenerateEnumControlIDs: string;
-    function GenerateEventTableEntries(CurrClassName: string): string;
-    function GenerateGUIControlCreation: string;
-    function GenerateXRCControlCreation(IndentString: string): TStringList;
-    function GenerateGUIControlDeclaration: string;
-    function GenerateHeaderInclude: string;
-    function GenerateImageInclude: string;
-    function GetEventList: TStringList;
-    function GetIDName: string;
-    function GetIDValue: integer;
-    function GetParameterFromEventName(EventName: string): string;
-    function GetPropertyList: TStringList;
-    function GetTypeFromEventName(EventName: string): string;
-    function GetWxClassName: string;
-    procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
-    procedure SetIDName(IDName: string);
-    procedure SetIDValue(IDValue: integer);
-    procedure SetWxClassName(wxClassName: string);
-    function GetFGColor: string;
-    procedure SetFGColor(strValue: string);
-    function GetBGColor: string;
-    procedure SetBGColor(strValue: string);
+    Public
+        Constructor Create(AOwner: TComponent); Override;
+        Destructor Destroy; Override;
+        Function GenerateControlIDs: String;
+        Function GenerateEnumControlIDs: String;
+        Function GenerateEventTableEntries(CurrClassName: String): String;
+        Function GenerateGUIControlCreation: String;
+        Function GenerateXRCControlCreation(IndentString: String): TStringList;
+        Function GenerateGUIControlDeclaration: String;
+        Function GenerateHeaderInclude: String;
+        Function GenerateImageInclude: String;
+        Function GetEventList: TStringList;
+        Function GetIDName: String;
+        Function GetIDValue: Integer;
+        Function GetParameterFromEventName(EventName: String): String;
+        Function GetPropertyList: TStringList;
+        Function GetTypeFromEventName(EventName: String): String;
+        Function GetWxClassName: String;
+        Procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
+        Procedure SetIDName(IDName: String);
+        Procedure SetIDValue(IDValue: Integer);
+        Procedure SetWxClassName(wxClassName: String);
+        Function GetFGColor: String;
+        Procedure SetFGColor(strValue: String);
+        Function GetBGColor: String;
+        Procedure SetBGColor(strValue: String);
 
-    function GetGenericColor(strVariableName:String): string;
-    procedure SetGenericColor(strVariableName,strValue: string);
+        Function GetGenericColor(strVariableName: String): String;
+        Procedure SetGenericColor(strVariableName, strValue: String);
 
-    
-    procedure SetProxyFGColorString(Value: string);
-    procedure SetProxyBGColorString(Value: string);
 
-    function GetBorderAlignment: TWxBorderAlignment;
-    procedure SetBorderAlignment(border: TWxBorderAlignment);
-    function GetBorderWidth: integer;
-    procedure SetBorderWidth(width: integer);
-    function GetStretchFactor: integer;
-    procedure SetStretchFactor(intValue: integer);
+        Procedure SetProxyFGColorString(Value: String);
+        Procedure SetProxyBGColorString(Value: String);
 
-  published
+        Function GetBorderAlignment: TWxBorderAlignment;
+        Procedure SetBorderAlignment(border: TWxBorderAlignment);
+        Function GetBorderWidth: Integer;
+        Procedure SetBorderWidth(width: Integer);
+        Function GetStretchFactor: Integer;
+        Procedure SetStretchFactor(intValue: Integer);
+
+    Published
     { Published declarations }
-    property Wx_Class: string Read FWx_Class Write FWx_Class;
-  end;
+        Property Wx_Class: String Read FWx_Class Write FWx_Class;
+    End;
 
-procedure Register;
+Procedure Register;
 
-implementation
+Implementation
 
-procedure Register;
-begin
-  RegisterComponents('wxWidgets', [TWxFontDialog]);
-end;
+Procedure Register;
+Begin
+    RegisterComponents('wxWidgets', [TWxFontDialog]);
+End;
 
 { Method to set variable and property values and create objects }
-procedure TWxFontDialog.AutoInitialize;
-begin
-  FWx_PropertyList := TStringList.Create;
-  FWx_Class    := 'wxFontDialog';
-  Glyph.Handle := LoadBitmap(hInstance, 'TWxFontDialog');
-end; { of AutoInitialize }
+Procedure TWxFontDialog.AutoInitialize;
+Begin
+    FWx_PropertyList := TStringList.Create;
+    FWx_Class := 'wxFontDialog';
+    Glyph.Handle := LoadBitmap(hInstance, 'TWxFontDialog');
+End; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
-procedure TWxFontDialog.AutoDestroy;
-begin
-  FWx_PropertyList.Destroy;
-  Glyph.Assign(nil);
-end; { of AutoDestroy }
+Procedure TWxFontDialog.AutoDestroy;
+Begin
+    FWx_PropertyList.Destroy;
+    Glyph.Assign(Nil);
+End; { of AutoDestroy }
 
-constructor TWxFontDialog.Create(AOwner: TComponent);
-begin
+Constructor TWxFontDialog.Create(AOwner: TComponent);
+Begin
   { Call the Create method of the container's parent class       }
-  inherited Create(AOwner);
+    Inherited Create(AOwner);
 
-  AutoInitialize;
+    AutoInitialize;
 
-  FWx_PropertyList.add('Name:Name');
-  FWx_PropertyList.add('Wx_Class:Base Class');
-end;
+    FWx_PropertyList.add('Name:Name');
+    FWx_PropertyList.add('Wx_Class:Base Class');
+End;
 
-destructor TWxFontDialog.Destroy;
-begin
-  AutoDestroy;
-  inherited Destroy;
-end;
+Destructor TWxFontDialog.Destroy;
+Begin
+    AutoDestroy;
+    Inherited Destroy;
+End;
 
-function TWxFontDialog.GenerateControlIDs: string;
-begin
-  Result := '';
-end;
+Function TWxFontDialog.GenerateControlIDs: String;
+Begin
+    Result := '';
+End;
 
-function TWxFontDialog.GenerateEnumControlIDs: string;
-begin
-  Result := '';
-end;
+Function TWxFontDialog.GenerateEnumControlIDs: String;
+Begin
+    Result := '';
+End;
 
-function TWxFontDialog.GenerateEventTableEntries(CurrClassName: string): string;
-begin
-  Result := '';
-end;
+Function TWxFontDialog.GenerateEventTableEntries(CurrClassName: String): String;
+Begin
+    Result := '';
+End;
 
-function TWxFontDialog.GenerateXRCControlCreation(IndentString: string): TStringList;
-begin
+Function TWxFontDialog.GenerateXRCControlCreation(IndentString: String): TStringList;
+Begin
 
-  Result := TStringList.Create;
+    Result := TStringList.Create;
 
-  try
-    Result.Add(IndentString + Format('<object class="%s" name="%s">',
-      [self.Wx_Class, self.Name]));
-    Result.Add(IndentString + '</object>');
-  except
-    Result.Free;
-    raise;
-  end;
+    Try
+        Result.Add(IndentString + Format('<object class="%s" name="%s">',
+            [self.Wx_Class, self.Name]));
+        Result.Add(IndentString + '</object>');
+    Except
+        Result.Free;
+        Raise;
+    End;
 
-end;
+End;
 
-function TWxFontDialog.GenerateGUIControlCreation: string;
-begin
-  Result := '';
-  Result := Format('%s =  new %s(this);', [self.Name, self.wx_Class]);
-end;
+Function TWxFontDialog.GenerateGUIControlCreation: String;
+Begin
+    Result := '';
+    Result := Format('%s =  new %s(this);', [self.Name, self.wx_Class]);
+End;
 
-function TWxFontDialog.GenerateGUIControlDeclaration: string;
-begin
-  Result := '';
-  Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
-end;
+Function TWxFontDialog.GenerateGUIControlDeclaration: String;
+Begin
+    Result := '';
+    Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
+End;
 
-function TWxFontDialog.GenerateHeaderInclude: string;
-begin
-  Result := '';
-  Result := '#include <wx/fontdlg.h>';
-end;
+Function TWxFontDialog.GenerateHeaderInclude: String;
+Begin
+    Result := '';
+    Result := '#include <wx/fontdlg.h>';
+End;
 
-function TWxFontDialog.GenerateImageInclude: string;
-begin
+Function TWxFontDialog.GenerateImageInclude: String;
+Begin
 
-end;
+End;
 
-function TWxFontDialog.GetEventList: TStringList;
-begin
-  Result := nil;
-end;
+Function TWxFontDialog.GetEventList: TStringList;
+Begin
+    Result := Nil;
+End;
 
-function TWxFontDialog.GetIDName: string;
-begin
+Function TWxFontDialog.GetIDName: String;
+Begin
 
-end;
+End;
 
-function TWxFontDialog.GetIDValue: integer;
-begin
-  Result := 0;
-end;
+Function TWxFontDialog.GetIDValue: Integer;
+Begin
+    Result := 0;
+End;
 
-function TWxFontDialog.GetParameterFromEventName(EventName: string): string;
-begin
+Function TWxFontDialog.GetParameterFromEventName(EventName: String): String;
+Begin
 
-end;
+End;
 
-function TWxFontDialog.GetStretchFactor: integer;
-begin
+Function TWxFontDialog.GetStretchFactor: Integer;
+Begin
     Result := 1;
-end;
+End;
 
-function TWxFontDialog.GetPropertyList: TStringList;
-begin
-  Result := FWx_PropertyList;
-end;
+Function TWxFontDialog.GetPropertyList: TStringList;
+Begin
+    Result := FWx_PropertyList;
+End;
 
-function TWxFontDialog.GetBorderAlignment: TWxBorderAlignment;
-begin
-  Result := [];
-end;
+Function TWxFontDialog.GetBorderAlignment: TWxBorderAlignment;
+Begin
+    Result := [];
+End;
 
-procedure TWxFontDialog.SetBorderAlignment(border: TWxBorderAlignment);
-begin
-end;
+Procedure TWxFontDialog.SetBorderAlignment(border: TWxBorderAlignment);
+Begin
+End;
 
-function TWxFontDialog.GetBorderWidth: integer;
-begin
-  Result := 0;
-end;
+Function TWxFontDialog.GetBorderWidth: Integer;
+Begin
+    Result := 0;
+End;
 
-procedure TWxFontDialog.SetBorderWidth(width: integer);
-begin
-end;
+Procedure TWxFontDialog.SetBorderWidth(width: Integer);
+Begin
+End;
 
-function TWxFontDialog.GetTypeFromEventName(EventName: string): string;
-begin
+Function TWxFontDialog.GetTypeFromEventName(EventName: String): String;
+Begin
 
-end;
+End;
 
-function TWxFontDialog.GetWxClassName: string;
-begin
-  if trim(wx_Class) = '' then
-    wx_Class := 'wxFontDialog';
-  Result := wx_Class;
-end;
+Function TWxFontDialog.GetWxClassName: String;
+Begin
+    If trim(wx_Class) = '' Then
+        wx_Class := 'wxFontDialog';
+    Result := wx_Class;
+End;
 
-procedure TWxFontDialog.SaveControlOrientation(ControlOrientation:
-  TWxControlOrientation);
-begin
+Procedure TWxFontDialog.SaveControlOrientation(ControlOrientation:
+    TWxControlOrientation);
+Begin
 
-end;
+End;
 
-procedure TWxFontDialog.SetIDName(IDName: string);
-begin
+Procedure TWxFontDialog.SetIDName(IDName: String);
+Begin
 
-end;
+End;
 
-procedure TWxFontDialog.SetIDValue(IDValue: integer);
-begin
+Procedure TWxFontDialog.SetIDValue(IDValue: Integer);
+Begin
 
-end;
+End;
 
-procedure TWxFontDialog.SetStretchFactor(intValue: integer);
-begin
-end;
+Procedure TWxFontDialog.SetStretchFactor(intValue: Integer);
+Begin
+End;
 
-procedure TWxFontDialog.SetWxClassName(wxClassName: string);
-begin
-  wx_Class := wxClassName;
-end;
+Procedure TWxFontDialog.SetWxClassName(wxClassName: String);
+Begin
+    wx_Class := wxClassName;
+End;
 
-function TWxFontDialog.GetGenericColor(strVariableName:String): string;
-begin
+Function TWxFontDialog.GetGenericColor(strVariableName: String): String;
+Begin
 
-end;
-procedure TWxFontDialog.SetGenericColor(strVariableName,strValue: string);
-begin
+End;
+Procedure TWxFontDialog.SetGenericColor(strVariableName, strValue: String);
+Begin
 
-end;
+End;
 
 
-function TWxFontDialog.GetFGColor: string;
-begin
+Function TWxFontDialog.GetFGColor: String;
+Begin
 
-end;
+End;
 
-procedure TWxFontDialog.SetFGColor(strValue: string);
-begin
-end;
+Procedure TWxFontDialog.SetFGColor(strValue: String);
+Begin
+End;
 
-function TWxFontDialog.GetBGColor: string;
-begin
-end;
+Function TWxFontDialog.GetBGColor: String;
+Begin
+End;
 
-procedure TWxFontDialog.SetBGColor(strValue: string);
-begin
-end;
+Procedure TWxFontDialog.SetBGColor(strValue: String);
+Begin
+End;
 
-procedure TWxFontDialog.SetProxyFGColorString(Value: string);
-begin
-end;
+Procedure TWxFontDialog.SetProxyFGColorString(Value: String);
+Begin
+End;
 
-procedure TWxFontDialog.SetProxyBGColorString(Value: string);
-begin
-end;
+Procedure TWxFontDialog.SetProxyBGColorString(Value: String);
+Begin
+End;
 
-end.
+End.

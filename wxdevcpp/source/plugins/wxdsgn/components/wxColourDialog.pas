@@ -24,279 +24,279 @@
 { ****************************************************************** }
 
 
-unit WxColourDialog;
+Unit WxColourDialog;
 
-interface
+Interface
 
-uses
-  Windows, Messages, SysUtils, Classes, wxUtils, WxNonVisibleBaseComponent;
+Uses
+    Windows, Messages, SysUtils, Classes, wxUtils, WxNonVisibleBaseComponent;
 
-type
-  TWxColourDialog = class(TWxNonVisibleBaseComponent, IWxComponentInterface)
-  private
+Type
+    TWxColourDialog = Class(TWxNonVisibleBaseComponent, IWxComponentInterface)
+    Private
     { Private declarations }
-    FWx_Class: string;
-    FWx_PropertyList: TStringList;
-    procedure AutoInitialize;
-    procedure AutoDestroy;
+        FWx_Class: String;
+        FWx_PropertyList: TStringList;
+        Procedure AutoInitialize;
+        Procedure AutoDestroy;
 
-  protected
+    Protected
 
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    function GenerateControlIDs: string;
-    function GenerateEnumControlIDs: string;
-    function GenerateEventTableEntries(CurrClassName: string): string;
-    function GenerateGUIControlCreation: string;
-    function GenerateXRCControlCreation(IndentString: string): TStringList;
-    function GenerateGUIControlDeclaration: string;
-    function GenerateHeaderInclude: string;
-    function GenerateImageInclude: string;
-    function GetEventList: TStringList;
-    function GetIDName: string;
-    function GetIDValue: integer;
-    function GetParameterFromEventName(EventName: string): string;
-    function GetPropertyList: TStringList;
-    function GetTypeFromEventName(EventName: string): string;
-    function GetWxClassName: string;
-    procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
-    procedure SetIDName(IDName: string);
-    procedure SetIDValue(IDValue: integer);
-    procedure SetWxClassName(wxClassName: string);
-    function GetFGColor: string;
-    procedure SetFGColor(strValue: string);
-    function GetBGColor: string;
-    procedure SetBGColor(strValue: string);
-    function GetGenericColor(strVariableName:String): string;
-    procedure SetGenericColor(strVariableName,strValue: string);
-    
-    procedure SetProxyFGColorString(Value: string);
-    procedure SetProxyBGColorString(Value: string);
+    Public
+        Constructor Create(AOwner: TComponent); Override;
+        Destructor Destroy; Override;
+        Function GenerateControlIDs: String;
+        Function GenerateEnumControlIDs: String;
+        Function GenerateEventTableEntries(CurrClassName: String): String;
+        Function GenerateGUIControlCreation: String;
+        Function GenerateXRCControlCreation(IndentString: String): TStringList;
+        Function GenerateGUIControlDeclaration: String;
+        Function GenerateHeaderInclude: String;
+        Function GenerateImageInclude: String;
+        Function GetEventList: TStringList;
+        Function GetIDName: String;
+        Function GetIDValue: Integer;
+        Function GetParameterFromEventName(EventName: String): String;
+        Function GetPropertyList: TStringList;
+        Function GetTypeFromEventName(EventName: String): String;
+        Function GetWxClassName: String;
+        Procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
+        Procedure SetIDName(IDName: String);
+        Procedure SetIDValue(IDValue: Integer);
+        Procedure SetWxClassName(wxClassName: String);
+        Function GetFGColor: String;
+        Procedure SetFGColor(strValue: String);
+        Function GetBGColor: String;
+        Procedure SetBGColor(strValue: String);
+        Function GetGenericColor(strVariableName: String): String;
+        Procedure SetGenericColor(strVariableName, strValue: String);
 
-    function GetBorderAlignment: TWxBorderAlignment;
-    procedure SetBorderAlignment(border: TWxBorderAlignment);
-    function GetBorderWidth: integer;
-    procedure SetBorderWidth(width: integer);
-    function GetStretchFactor: integer;
-    procedure SetStretchFactor(intValue: integer);
+        Procedure SetProxyFGColorString(Value: String);
+        Procedure SetProxyBGColorString(Value: String);
 
-  published
+        Function GetBorderAlignment: TWxBorderAlignment;
+        Procedure SetBorderAlignment(border: TWxBorderAlignment);
+        Function GetBorderWidth: Integer;
+        Procedure SetBorderWidth(width: Integer);
+        Function GetStretchFactor: Integer;
+        Procedure SetStretchFactor(intValue: Integer);
+
+    Published
     { Published declarations }
-    property Wx_Class: string Read FWx_Class Write FWx_Class;
-  end;
+        Property Wx_Class: String Read FWx_Class Write FWx_Class;
+    End;
 
-procedure Register;
+Procedure Register;
 
-implementation
+Implementation
 
-procedure Register;
-begin
-  RegisterComponents('wxWidgets', [TWxColourDialog]);
-end;
+Procedure Register;
+Begin
+    RegisterComponents('wxWidgets', [TWxColourDialog]);
+End;
 
 { Method to set variable and property values and create objects }
-procedure TWxColourDialog.AutoInitialize;
-begin
-  FWx_PropertyList := TStringList.Create;
-  FWx_Class    := 'wxColourDialog';
-  Glyph.Handle := LoadBitmap(hInstance, 'TWxColourDialog');
-end; { of AutoInitialize }
+Procedure TWxColourDialog.AutoInitialize;
+Begin
+    FWx_PropertyList := TStringList.Create;
+    FWx_Class := 'wxColourDialog';
+    Glyph.Handle := LoadBitmap(hInstance, 'TWxColourDialog');
+End; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
-procedure TWxColourDialog.AutoDestroy;
-begin
-  FWx_PropertyList.Destroy;
-  Glyph.Assign(nil);
-end; { of AutoDestroy }
+Procedure TWxColourDialog.AutoDestroy;
+Begin
+    FWx_PropertyList.Destroy;
+    Glyph.Assign(Nil);
+End; { of AutoDestroy }
 
-constructor TWxColourDialog.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  AutoInitialize;
-  FWx_PropertyList.add('Name:Name');
-  FWx_PropertyList.add('Wx_Class:Base Class');
-end;
+Constructor TWxColourDialog.Create(AOwner: TComponent);
+Begin
+    Inherited Create(AOwner);
+    AutoInitialize;
+    FWx_PropertyList.add('Name:Name');
+    FWx_PropertyList.add('Wx_Class:Base Class');
+End;
 
-destructor TWxColourDialog.Destroy;
-begin
-  AutoDestroy;
-  inherited Destroy;
-end;
+Destructor TWxColourDialog.Destroy;
+Begin
+    AutoDestroy;
+    Inherited Destroy;
+End;
 
-function TWxColourDialog.GenerateControlIDs: string;
-begin
-  Result := '';
-end;
+Function TWxColourDialog.GenerateControlIDs: String;
+Begin
+    Result := '';
+End;
 
-function TWxColourDialog.GenerateEnumControlIDs: string;
-begin
-  Result := '';
-end;
+Function TWxColourDialog.GenerateEnumControlIDs: String;
+Begin
+    Result := '';
+End;
 
-function TWxColourDialog.GenerateEventTableEntries(CurrClassName: string): string;
-begin
-  Result := '';
-end;
+Function TWxColourDialog.GenerateEventTableEntries(CurrClassName: String): String;
+Begin
+    Result := '';
+End;
 
-function TWxColourDialog.GenerateXRCControlCreation(IndentString: string): TStringList;
-begin
+Function TWxColourDialog.GenerateXRCControlCreation(IndentString: String): TStringList;
+Begin
 
-  Result := TStringList.Create;
+    Result := TStringList.Create;
 
-  try
-    Result.Add(IndentString + Format('<object class="%s" name="%s">',
-      [self.Wx_Class, self.Name]));
-    Result.Add(IndentString + '</object>');
-  except
-    Result.Free;
-    raise;
-  end;
+    Try
+        Result.Add(IndentString + Format('<object class="%s" name="%s">',
+            [self.Wx_Class, self.Name]));
+        Result.Add(IndentString + '</object>');
+    Except
+        Result.Free;
+        Raise;
+    End;
 
-end;
+End;
 
-function TWxColourDialog.GenerateGUIControlCreation: string;
-begin
-  Result := '';
-  Result := Format('%s =  new %s(this);', [self.Name, self.wx_Class]);
-end;
+Function TWxColourDialog.GenerateGUIControlCreation: String;
+Begin
+    Result := '';
+    Result := Format('%s =  new %s(this);', [self.Name, self.wx_Class]);
+End;
 
-function TWxColourDialog.GenerateGUIControlDeclaration: string;
-begin
-  Result := '';
-  Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
-end;
+Function TWxColourDialog.GenerateGUIControlDeclaration: String;
+Begin
+    Result := '';
+    Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
+End;
 
-function TWxColourDialog.GenerateHeaderInclude: string;
-begin
-  Result := '';
-  Result := '#include <wx/colordlg.h>';
-end;
+Function TWxColourDialog.GenerateHeaderInclude: String;
+Begin
+    Result := '';
+    Result := '#include <wx/colordlg.h>';
+End;
 
-function TWxColourDialog.GenerateImageInclude: string;
-begin
+Function TWxColourDialog.GenerateImageInclude: String;
+Begin
 
-end;
+End;
 
-function TWxColourDialog.GetEventList: TStringList;
-begin
-  Result := nil;
-end;
+Function TWxColourDialog.GetEventList: TStringList;
+Begin
+    Result := Nil;
+End;
 
-function TWxColourDialog.GetIDName: string;
-begin
+Function TWxColourDialog.GetIDName: String;
+Begin
 
-end;
+End;
 
-function TWxColourDialog.GetIDValue: integer;
-begin
-  Result := 0;
-end;
+Function TWxColourDialog.GetIDValue: Integer;
+Begin
+    Result := 0;
+End;
 
-function TWxColourDialog.GetParameterFromEventName(EventName: string): string;
-begin
+Function TWxColourDialog.GetParameterFromEventName(EventName: String): String;
+Begin
 
-end;
+End;
 
-function TWxColourDialog.GetStretchFactor: integer;
-begin
-   Result := 1;
-end;
+Function TWxColourDialog.GetStretchFactor: Integer;
+Begin
+    Result := 1;
+End;
 
-function TWxColourDialog.GetPropertyList: TStringList;
-begin
-  Result := FWx_PropertyList;
-end;
+Function TWxColourDialog.GetPropertyList: TStringList;
+Begin
+    Result := FWx_PropertyList;
+End;
 
-function TWxColourDialog.GetBorderAlignment: TWxBorderAlignment;
-begin
-  Result := [];
-end;
+Function TWxColourDialog.GetBorderAlignment: TWxBorderAlignment;
+Begin
+    Result := [];
+End;
 
-procedure TWxColourDialog.SetBorderAlignment(border: TWxBorderAlignment);
-begin
-end;
+Procedure TWxColourDialog.SetBorderAlignment(border: TWxBorderAlignment);
+Begin
+End;
 
-function TWxColourDialog.GetBorderWidth: integer;
-begin
-  Result := 0;
-end;
+Function TWxColourDialog.GetBorderWidth: Integer;
+Begin
+    Result := 0;
+End;
 
-procedure TWxColourDialog.SetBorderWidth(width: integer);
-begin
-end;
+Procedure TWxColourDialog.SetBorderWidth(width: Integer);
+Begin
+End;
 
-function TWxColourDialog.GetTypeFromEventName(EventName: string): string;
-begin
+Function TWxColourDialog.GetTypeFromEventName(EventName: String): String;
+Begin
 
-end;
+End;
 
-function TWxColourDialog.GetWxClassName: string;
-begin
-  if trim(wx_Class) = '' then
-    wx_Class := 'wxColourDialog';
-  Result := wx_Class;
-end;
+Function TWxColourDialog.GetWxClassName: String;
+Begin
+    If trim(wx_Class) = '' Then
+        wx_Class := 'wxColourDialog';
+    Result := wx_Class;
+End;
 
-procedure TWxColourDialog.SaveControlOrientation(
-  ControlOrientation: TWxControlOrientation);
-begin
+Procedure TWxColourDialog.SaveControlOrientation(
+    ControlOrientation: TWxControlOrientation);
+Begin
 
-end;
+End;
 
-procedure TWxColourDialog.SetIDName(IDName: string);
-begin
+Procedure TWxColourDialog.SetIDName(IDName: String);
+Begin
 
-end;
+End;
 
-procedure TWxColourDialog.SetIDValue(IDValue: integer);
-begin
+Procedure TWxColourDialog.SetIDValue(IDValue: Integer);
+Begin
 
-end;
+End;
 
-procedure TWxColourDialog.SetStretchFactor(intValue: integer);
-begin
-end;
+Procedure TWxColourDialog.SetStretchFactor(intValue: Integer);
+Begin
+End;
 
-procedure TWxColourDialog.SetWxClassName(wxClassName: string);
-begin
-  wx_Class := wxClassName;
-end;
+Procedure TWxColourDialog.SetWxClassName(wxClassName: String);
+Begin
+    wx_Class := wxClassName;
+End;
 
-function TWxColourDialog.GetGenericColor(strVariableName:String): string;
-begin
+Function TWxColourDialog.GetGenericColor(strVariableName: String): String;
+Begin
 
-end;
-procedure TWxColourDialog.SetGenericColor(strVariableName,strValue: string);
-begin
+End;
+Procedure TWxColourDialog.SetGenericColor(strVariableName, strValue: String);
+Begin
 
-end;
+End;
 
 
-function TWxColourDialog.GetFGColor: string;
-begin
+Function TWxColourDialog.GetFGColor: String;
+Begin
 
-end;
+End;
 
-procedure TWxColourDialog.SetFGColor(strValue: string);
-begin
-end;
+Procedure TWxColourDialog.SetFGColor(strValue: String);
+Begin
+End;
 
-function TWxColourDialog.GetBGColor: string;
-begin
-end;
+Function TWxColourDialog.GetBGColor: String;
+Begin
+End;
 
-procedure TWxColourDialog.SetBGColor(strValue: string);
-begin
-end;
+Procedure TWxColourDialog.SetBGColor(strValue: String);
+Begin
+End;
 
-procedure TWxColourDialog.SetProxyFGColorString(Value: string);
-begin
-end;
+Procedure TWxColourDialog.SetProxyFGColorString(Value: String);
+Begin
+End;
 
-procedure TWxColourDialog.SetProxyBGColorString(Value: string);
-begin
-end;
+Procedure TWxColourDialog.SetProxyBGColorString(Value: String);
+Begin
+End;
 
-end.
+End.
  

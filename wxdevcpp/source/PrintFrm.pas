@@ -17,11 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-unit PrintFrm;
+Unit PrintFrm;
 
-interface
+Interface
 
-uses
+Uses
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
     StdCtrls, Buttons, MultiLangSupport, Spin, datamod, XPMenu;
@@ -31,8 +31,8 @@ uses
   QStdCtrls, QButtons, MultiLangSupport, QComCtrls, datamod;
 {$ENDIF}
 
-type
-    TPrintForm = class(TForm)
+Type
+    TPrintForm = Class(TForm)
         btnCancel: TBitBtn;
         btnOk: TBitBtn;
         grpParams: TGroupBox;
@@ -47,24 +47,24 @@ type
         cbSelection: TCheckBox;
         cbLineNum: TCheckBox;
         XPMenu: TXPMenu;
-        procedure FormCreate(Sender: TObject);
-        procedure cbLineNumClick(Sender: TObject);
-    public
-        procedure LoadText;
-    end;
+        Procedure FormCreate(Sender: TObject);
+        Procedure cbLineNumClick(Sender: TObject);
+    Public
+        Procedure LoadText;
+    End;
 
-var
+Var
     PrintForm: TPrintForm;
 
-implementation
+Implementation
 
-uses
+Uses
     devcfg;
 
 {$R *.dfm}
 
-procedure TPrintForm.LoadText;
-begin
+Procedure TPrintForm.LoadText;
+Begin
     DesktopFont := True;
     XPMenu.Active := devData.XPTheme;
     Caption := Lang[ID_PRT];
@@ -81,26 +81,26 @@ begin
 
     btnOk.Caption := Lang[ID_BTN_OK];
     btnCancel.Caption := Lang[ID_BTN_CANCEL];
-end;
+End;
 
-procedure TPrintForm.FormCreate(Sender: TObject);
-begin
+Procedure TPrintForm.FormCreate(Sender: TObject);
+Begin
     LoadText;
     cbColors.Checked := devData.PrintColors;
     cbHighlight.Checked := devData.PrintHighlight;
     cbWordWrap.Checked := devData.PrintWordWrap;
-    if devData.PrintLineNumbers or devData.PrintLineNumbersMargins then
-        cbLineNum.Checked := true
-    else
-        cbLineNum.Checked := false;
+    If devData.PrintLineNumbers Or devData.PrintLineNumbersMargins Then
+        cbLineNum.Checked := True
+    Else
+        cbLineNum.Checked := False;
     rbLN.Checked := devData.PrintLineNumbers;
     rbLNMargin.Checked := devData.PrintLineNumbersMargins;
-end;
+End;
 
-procedure TPrintForm.cbLineNumClick(Sender: TObject);
-begin
+Procedure TPrintForm.cbLineNumClick(Sender: TObject);
+Begin
     rbLN.Enabled := cbLineNum.Checked;
     rbLNMargin.Enabled := cbLineNum.Checked;
-end;
+End;
 
-end.
+End.

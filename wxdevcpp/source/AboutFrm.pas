@@ -19,11 +19,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-unit AboutFrm;
+Unit AboutFrm;
 
-interface
+Interface
 
-uses
+Uses
     Version,
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
@@ -34,8 +34,8 @@ uses
   QStdCtrls, QButtons, QExtCtrls;
 {$ENDIF}
 
-type
-    TAboutForm = class(TForm)
+Type
+    TAboutForm = Class(TForm)
         btnOk: TBitBtn;
         btnUpdateCheck: TBitBtn;
         banner: TImage;
@@ -69,17 +69,17 @@ type
         Book: TLabel;
         Label1: TLabel;
         BuildNumber: TLabel;
-        procedure LabelClick(Sender: TObject);
-        procedure FormCreate(Sender: TObject);
-        procedure btnUpdateCheckClick(Sender: TObject);
-    private
-        procedure LoadText;
-    protected
-        procedure CreateParams(var Params: TCreateParams); override;
-    end;
+        Procedure LabelClick(Sender: TObject);
+        Procedure FormCreate(Sender: TObject);
+        Procedure btnUpdateCheckClick(Sender: TObject);
+    Private
+        Procedure LoadText;
+    Protected
+        Procedure CreateParams(Var Params: TCreateParams); Override;
+    End;
 
-implementation
-uses
+Implementation
+Uses
 {$IFDEF WIN32}
     ShellAPI, devcfg, MultiLangSupport, main;
 {$ENDIF}
@@ -89,34 +89,34 @@ uses
 
 {$R *.dfm}
 
-function GetAppVersion: string;
-var
+Function GetAppVersion: String;
+Var
     Size, Size2: DWord;
     Pt, Pt2: Pointer;
-begin
-    Size := GetFileVersionInfoSize(PChar(ParamStr(0)), Size2);
-    if Size > 0 then
-    begin
+Begin
+    Size := GetFileVersionInfoSize(Pchar(ParamStr(0)), Size2);
+    If Size > 0 Then
+    Begin
         GetMem(Pt, Size);
-        try
-            GetFileVersionInfo(PChar(ParamStr(0)), 0, Size, Pt);
+        Try
+            GetFileVersionInfo(Pchar(ParamStr(0)), 0, Size, Pt);
             VerQueryValue(Pt, '\', Pt2, Size2);
-            with TVSFixedFileInfo(Pt2^) do
-            begin
+            With TVSFixedFileInfo(Pt2^) Do
+            Begin
                 Result := ' build ' +
                     IntToStr(HiWord(dwFileVersionMS)) + '.' +
                     IntToStr(LoWord(dwFileVersionMS)) + '.' +
                     IntToStr(HiWord(dwFileVersionLS)) + '.' +
                     IntToStr(LoWord(dwFileVersionLS));
-            end;
-        finally
+            End;
+        Finally
             FreeMem(Pt);
-        end;
-    end;
-end;
+        End;
+    End;
+End;
 
-procedure TAboutForm.LoadText;
-begin
+Procedure TAboutForm.LoadText;
+Begin
     DesktopFont := True;
     XPMenu.Active := devData.XPTheme;
     Caption := 'About wxDev-C++';
@@ -126,20 +126,20 @@ begin
     btnUpdateCheck.Caption := Lang[ID_AB_UPDATE];
     Authors.Caption := Lang[ID_BTN_AUTHOR];
     BuildNumber.Caption := GetAppVersion;
-end;
+End;
 
-procedure TAboutForm.LabelClick(Sender: TObject);
-var s: string;
-begin
-    if pos('@', (Sender as TLabel).Caption) <> 0 then
-        s := 'mailto:' + (Sender as TLabel).Caption
-    else
-        s := (Sender as TLabel).Caption;
-    ShellExecute(GetDesktopWindow(), 'open', PChar(s), nil, nil, SW_SHOWNORMAL);
-end;
+Procedure TAboutForm.LabelClick(Sender: TObject);
+Var s: String;
+Begin
+    If pos('@', (Sender As TLabel).Caption) <> 0 Then
+        s := 'mailto:' + (Sender As TLabel).Caption
+    Else
+        s := (Sender As TLabel).Caption;
+    ShellExecute(GetDesktopWindow(), 'open', Pchar(s), Nil, Nil, SW_SHOWNORMAL);
+End;
 
-procedure TAboutForm.FormCreate(Sender: TObject);
-begin
+Procedure TAboutForm.FormCreate(Sender: TObject);
+Begin
     LoadText;
     wxDevCopyright.Font.Style := [fsBold];
     CopyrightLabel.Font.Style := [fsBold];
@@ -151,24 +151,24 @@ begin
     wxWebsite.Font.Color := clBlue;
     Book.Font.Style := [fsUnderline];
     Book.Font.Color := clBlue;
-end;
+End;
 
-procedure TAboutForm.btnUpdateCheckClick(Sender: TObject);
-begin
+Procedure TAboutForm.btnUpdateCheckClick(Sender: TObject);
+Begin
     MainForm.actUpdateCheckExecute(sender);
-end;
+End;
 
-procedure TAboutForm.CreateParams(var Params: TCreateParams);
-begin
-    inherited;
-    if (Parent <> nil) or (ParentWindow <> 0) then
+Procedure TAboutForm.CreateParams(Var Params: TCreateParams);
+Begin
+    Inherited;
+    If (Parent <> Nil) Or (ParentWindow <> 0) Then
         Exit;  // must not mess with wndparent if form is embedded
 
-    if Assigned(Owner) and (Owner is TWincontrol) then
+    If Assigned(Owner) And (Owner Is TWincontrol) Then
         Params.WndParent := TWinControl(Owner).handle
-    else
-    if Assigned(Screen.Activeform) then
+    Else
+    If Assigned(Screen.Activeform) Then
         Params.WndParent := Screen.Activeform.Handle;
-end;
+End;
 
-end.
+End.

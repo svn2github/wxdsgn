@@ -24,140 +24,140 @@
 { ****************************************************************** }
 
 
-unit wxPrintDialog;
+Unit wxPrintDialog;
 
-interface
+Interface
 
-uses
-  Windows, Messages, SysUtils, Classes, wxUtils, WxNonVisibleBaseComponent;
+Uses
+    Windows, Messages, SysUtils, Classes, wxUtils, WxNonVisibleBaseComponent;
 
-type
-  TWxPrintDialog = class(TWxNonVisibleBaseComponent, IWxComponentInterface)
-  private
+Type
+    TWxPrintDialog = Class(TWxNonVisibleBaseComponent, IWxComponentInterface)
+    Private
     { Private declarations }
-    FWx_Class: string;
-    FWx_PropertyList: TStringList;
-    FWx_FromPage: integer;
-    FWx_MaxPage: integer;
-    FWx_MinPage: integer;
-    FWx_NumberOfCopies: integer;
-    FWx_PrintToFile: boolean;
-    FWx_Selection: boolean;
-    FWx_ToPage: integer;
-    FWx_Comments: TStrings;
+        FWx_Class: String;
+        FWx_PropertyList: TStringList;
+        FWx_FromPage: Integer;
+        FWx_MaxPage: Integer;
+        FWx_MinPage: Integer;
+        FWx_NumberOfCopies: Integer;
+        FWx_PrintToFile: Boolean;
+        FWx_Selection: Boolean;
+        FWx_ToPage: Integer;
+        FWx_Comments: TStrings;
 
-    procedure AutoInitialize;
-    procedure AutoDestroy;
+        Procedure AutoInitialize;
+        Procedure AutoDestroy;
 
-  protected
+    Protected
 
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    function GenerateControlIDs: string;
-    function GenerateEnumControlIDs: string;
-    function GenerateEventTableEntries(CurrClassName: string): string;
-    function GenerateGUIControlCreation: string;
-    function GenerateXRCControlCreation(IndentString: string): TStringList;
-    function GenerateGUIControlDeclaration: string;
-    function GenerateHeaderInclude: string;
-    function GenerateImageInclude: string;
-    function GetEventList: TStringList;
-    function GetIDName: string;
-    function GetIDValue: integer;
-    function GetParameterFromEventName(EventName: string): string;
-    function GetPropertyList: TStringList;
-    function GetTypeFromEventName(EventName: string): string;
-    function GetWxClassName: string;
-    procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
-    procedure SetIDName(IDName: string);
-    procedure SetIDValue(IDValue: integer);
-    procedure SetWxClassName(wxClassName: string);
-    function GetFGColor: string;
-    procedure SetFGColor(strValue: string);
-    function GetBGColor: string;
-    procedure SetBGColor(strValue: string);
+    Public
+        Constructor Create(AOwner: TComponent); Override;
+        Destructor Destroy; Override;
+        Function GenerateControlIDs: String;
+        Function GenerateEnumControlIDs: String;
+        Function GenerateEventTableEntries(CurrClassName: String): String;
+        Function GenerateGUIControlCreation: String;
+        Function GenerateXRCControlCreation(IndentString: String): TStringList;
+        Function GenerateGUIControlDeclaration: String;
+        Function GenerateHeaderInclude: String;
+        Function GenerateImageInclude: String;
+        Function GetEventList: TStringList;
+        Function GetIDName: String;
+        Function GetIDValue: Integer;
+        Function GetParameterFromEventName(EventName: String): String;
+        Function GetPropertyList: TStringList;
+        Function GetTypeFromEventName(EventName: String): String;
+        Function GetWxClassName: String;
+        Procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
+        Procedure SetIDName(IDName: String);
+        Procedure SetIDValue(IDValue: Integer);
+        Procedure SetWxClassName(wxClassName: String);
+        Function GetFGColor: String;
+        Procedure SetFGColor(strValue: String);
+        Function GetBGColor: String;
+        Procedure SetBGColor(strValue: String);
 
-    function GetGenericColor(strVariableName:String): string;
-    procedure SetGenericColor(strVariableName,strValue: string);
+        Function GetGenericColor(strVariableName: String): String;
+        Procedure SetGenericColor(strVariableName, strValue: String);
 
-    procedure SetProxyFGColorString(Value: string);
-    procedure SetProxyBGColorString(Value: string);
+        Procedure SetProxyFGColorString(Value: String);
+        Procedure SetProxyBGColorString(Value: String);
 
-    function GetBorderAlignment: TWxBorderAlignment;
-    procedure SetBorderAlignment(border: TWxBorderAlignment);
-    function GetBorderWidth: integer;
-    procedure SetBorderWidth(width: integer);
-    function GetStretchFactor: integer;
-    procedure SetStretchFactor(intValue: integer);
+        Function GetBorderAlignment: TWxBorderAlignment;
+        Procedure SetBorderAlignment(border: TWxBorderAlignment);
+        Function GetBorderWidth: Integer;
+        Procedure SetBorderWidth(width: Integer);
+        Function GetStretchFactor: Integer;
+        Procedure SetStretchFactor(intValue: Integer);
 
-  published
+    Published
     { Published declarations }
-    property Wx_Class: string Read FWx_Class Write FWx_Class;
-    property Wx_FromPage: integer Read FWx_FromPage Write FWx_FromPage;
-    property Wx_MaxPage: integer Read FWx_MaxPage Write FWx_MaxPage;
-    property Wx_MinPage: integer Read FWx_MinPage Write FWx_MinPage;
-    property Wx_NumberOfCopies: integer Read FWx_NumberOfCopies
-      Write FWx_NumberOfCopies;
-    property Wx_PrintToFile: boolean Read FWx_PrintToFile Write FWx_PrintToFile;
-    property Wx_Selection: boolean Read FWx_Selection Write FWx_Selection;
-    property Wx_ToPage: integer Read FWx_ToPage Write FWx_ToPage;
-    property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
-  end;
+        Property Wx_Class: String Read FWx_Class Write FWx_Class;
+        Property Wx_FromPage: Integer Read FWx_FromPage Write FWx_FromPage;
+        Property Wx_MaxPage: Integer Read FWx_MaxPage Write FWx_MaxPage;
+        Property Wx_MinPage: Integer Read FWx_MinPage Write FWx_MinPage;
+        Property Wx_NumberOfCopies: Integer Read FWx_NumberOfCopies
+            Write FWx_NumberOfCopies;
+        Property Wx_PrintToFile: Boolean Read FWx_PrintToFile Write FWx_PrintToFile;
+        Property Wx_Selection: Boolean Read FWx_Selection Write FWx_Selection;
+        Property Wx_ToPage: Integer Read FWx_ToPage Write FWx_ToPage;
+        Property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
+    End;
 
-procedure Register;
+Procedure Register;
 
-implementation
+Implementation
 
-procedure Register;
-begin
-  RegisterComponents('wxWidgets', [TWxPrintDialog]);
-end;
+Procedure Register;
+Begin
+    RegisterComponents('wxWidgets', [TWxPrintDialog]);
+End;
 
 { Method to set variable and property values and create objects }
-procedure TWxPrintDialog.AutoInitialize;
-begin
-  FWx_PropertyList := TStringList.Create;
-  FWx_Class    := 'wxPrintDialog';
-  FWx_Comments := TStringList.Create;
-  Glyph.Handle := LoadBitmap(hInstance, 'TWxPrintDialog');
-end; { of AutoInitialize }
+Procedure TWxPrintDialog.AutoInitialize;
+Begin
+    FWx_PropertyList := TStringList.Create;
+    FWx_Class := 'wxPrintDialog';
+    FWx_Comments := TStringList.Create;
+    Glyph.Handle := LoadBitmap(hInstance, 'TWxPrintDialog');
+End; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
-procedure TWxPrintDialog.AutoDestroy;
-begin
-  FWx_PropertyList.Destroy;
-  FWx_Comments.Destroy;
-  Glyph.Assign(nil);
-end; { of AutoDestroy }
+Procedure TWxPrintDialog.AutoDestroy;
+Begin
+    FWx_PropertyList.Destroy;
+    FWx_Comments.Destroy;
+    Glyph.Assign(Nil);
+End; { of AutoDestroy }
 
-constructor TWxPrintDialog.Create(AOwner: TComponent);
-begin
+Constructor TWxPrintDialog.Create(AOwner: TComponent);
+Begin
   { Call the Create method of the container's parent class       }
-  inherited Create(AOwner);
+    Inherited Create(AOwner);
 
   { AutoInitialize method is generated by Component Create.      }
-  AutoInitialize;
+    AutoInitialize;
 
   { Code to perform other tasks when the component is created }
   { Code to perform other tasks when the component is created }
-  FWx_PropertyList.add('Name:Name');
-  FWx_PropertyList.add('Wx_Class:Base Class');
-  FWx_PropertyList.add('Wx_FromPage:From Page');
-  FWx_PropertyList.add('Wx_MaxPage:Max Page');
-  FWx_PropertyList.add('Wx_MinPage:Min Page');
-  FWx_PropertyList.add('Wx_NumberOfCopies:NumberOfCopies');
-  FWx_PropertyList.add('Wx_PrintToFile:PrintToFile');
-  FWx_PropertyList.add('Wx_Selection:Selection');
-  FWx_PropertyList.add('Wx_ToPage:To Page');
-  FWx_PropertyList.add('Wx_Comments:Comments');
-end;
+    FWx_PropertyList.add('Name:Name');
+    FWx_PropertyList.add('Wx_Class:Base Class');
+    FWx_PropertyList.add('Wx_FromPage:From Page');
+    FWx_PropertyList.add('Wx_MaxPage:Max Page');
+    FWx_PropertyList.add('Wx_MinPage:Min Page');
+    FWx_PropertyList.add('Wx_NumberOfCopies:NumberOfCopies');
+    FWx_PropertyList.add('Wx_PrintToFile:PrintToFile');
+    FWx_PropertyList.add('Wx_Selection:Selection');
+    FWx_PropertyList.add('Wx_ToPage:To Page');
+    FWx_PropertyList.add('Wx_Comments:Comments');
+End;
 
-destructor TWxPrintDialog.Destroy;
-begin
+Destructor TWxPrintDialog.Destroy;
+Begin
   { AutoDestroy, which is generated by Component Create, frees any   }
   { objects created by AutoInitialize.                               }
-  AutoDestroy;
+    AutoDestroy;
 
   { Here, free any other dynamic objects that the component methods  }
   { created but have not yet freed.  Also perform any other clean-up }
@@ -165,210 +165,210 @@ begin
 
   { Last, free the component by calling the Destroy method of the    }
   { parent class.                                                    }
-  inherited Destroy;
-end;
+    Inherited Destroy;
+End;
 
-function TWxPrintDialog.GenerateControlIDs: string;
-begin
-  Result := '';
-end;
+Function TWxPrintDialog.GenerateControlIDs: String;
+Begin
+    Result := '';
+End;
 
-function TWxPrintDialog.GenerateEnumControlIDs: string;
-begin
-  Result := '';
-end;
+Function TWxPrintDialog.GenerateEnumControlIDs: String;
+Begin
+    Result := '';
+End;
 
-function TWxPrintDialog.GenerateEventTableEntries(CurrClassName: string): string;
-begin
-  Result := '';
-end;
+Function TWxPrintDialog.GenerateEventTableEntries(CurrClassName: String): String;
+Begin
+    Result := '';
+End;
 
-function TWxPrintDialog.GenerateXRCControlCreation(IndentString: string): TStringList;
-begin
+Function TWxPrintDialog.GenerateXRCControlCreation(IndentString: String): TStringList;
+Begin
 
-  Result := TStringList.Create;
+    Result := TStringList.Create;
 
-  try
-    Result.Add(IndentString + Format('<object class="%s" name="%s">',
-      [self.Wx_Class, self.Name]));
-    Result.Add(IndentString + '</object>');
+    Try
+        Result.Add(IndentString + Format('<object class="%s" name="%s">',
+            [self.Wx_Class, self.Name]));
+        Result.Add(IndentString + '</object>');
 
-  except
-    Result.Free;
-    raise;
-  end;
+    Except
+        Result.Free;
+        Raise;
+    End;
 
-end;
+End;
 
-function TWxPrintDialog.GenerateGUIControlCreation: string;
-begin
+Function TWxPrintDialog.GenerateGUIControlCreation: String;
+Begin
 
-  Result := '';
-  Result := GetCommentString(self.FWx_Comments.Text) +
-    self.Name + '_Data = new wxPrintDialogData();';
-  Result := Result + #13 + self.Name + '_Data->SetFromPage(' +
-    IntToStr(Wx_FromPage) + ');';
-  Result := Result + #13 + self.Name + '_Data->SetMaxPage(' +
-    IntToStr(Wx_MaxPage) + ');';
-  Result := Result + #13 + self.Name + '_Data->SetMinPage(' +
-    IntToStr(Wx_MinPage) + ');';
-  Result := Result + #13 + self.Name + '_Data->SetNoCopies(' +
-    IntToStr(Wx_NumberOfCopies) + ');';
-  Result := Result + #13 + self.Name + '_Data->SetToPage(' + IntToStr(Wx_ToPage) + ');';
+    Result := '';
+    Result := GetCommentString(self.FWx_Comments.Text) +
+        self.Name + '_Data = new wxPrintDialogData();';
+    Result := Result + #13 + self.Name + '_Data->SetFromPage(' +
+        IntToStr(Wx_FromPage) + ');';
+    Result := Result + #13 + self.Name + '_Data->SetMaxPage(' +
+        IntToStr(Wx_MaxPage) + ');';
+    Result := Result + #13 + self.Name + '_Data->SetMinPage(' +
+        IntToStr(Wx_MinPage) + ');';
+    Result := Result + #13 + self.Name + '_Data->SetNoCopies(' +
+        IntToStr(Wx_NumberOfCopies) + ');';
+    Result := Result + #13 + self.Name + '_Data->SetToPage(' + IntToStr(Wx_ToPage) + ');';
 
-  if Wx_PrintToFile then
-    Result := Result + #13 + self.Name + '_Data->SetPrintToFile(true);'
-  else
-    Result := Result + #13 + self.Name + '_Data->SetPrintToFile(false);';
+    If Wx_PrintToFile Then
+        Result := Result + #13 + self.Name + '_Data->SetPrintToFile(true);'
+    Else
+        Result := Result + #13 + self.Name + '_Data->SetPrintToFile(false);';
 
-  if Wx_Selection then
-    Result := Result + #13 + self.Name + '_Data->SetSelection(true);'
-  else
-    Result := Result + #13 + self.Name + '_Data->SetSelection(false);';
+    If Wx_Selection Then
+        Result := Result + #13 + self.Name + '_Data->SetSelection(true);'
+    Else
+        Result := Result + #13 + self.Name + '_Data->SetSelection(false);';
 
-  Result := Result + #13 + Format('%s =  new %s(this, %s);',
-    [self.Name, self.wx_Class, self.Name + '_Data']);
+    Result := Result + #13 + Format('%s =  new %s(this, %s);',
+        [self.Name, self.wx_Class, self.Name + '_Data']);
 
-end;
+End;
 
-function TWxPrintDialog.GenerateGUIControlDeclaration: string;
-begin
-  Result := '';
-  Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
-  Result := Result + #13 + Format('wxPrintDialogData *%s_Data;', [trim(Self.Name)]);
-end;
+Function TWxPrintDialog.GenerateGUIControlDeclaration: String;
+Begin
+    Result := '';
+    Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
+    Result := Result + #13 + Format('wxPrintDialogData *%s_Data;', [trim(Self.Name)]);
+End;
 
-function TWxPrintDialog.GenerateHeaderInclude: string;
-begin
-  Result := '';
-  Result := '#include <wx/printdlg.h>';
-  Result := Result + #13 + '#include <wx/cmndata.h>';
-end;
+Function TWxPrintDialog.GenerateHeaderInclude: String;
+Begin
+    Result := '';
+    Result := '#include <wx/printdlg.h>';
+    Result := Result + #13 + '#include <wx/cmndata.h>';
+End;
 
-function TWxPrintDialog.GenerateImageInclude: string;
-begin
+Function TWxPrintDialog.GenerateImageInclude: String;
+Begin
 
-end;
+End;
 
-function TWxPrintDialog.GetEventList: TStringList;
-begin
-  Result := nil;
-end;
+Function TWxPrintDialog.GetEventList: TStringList;
+Begin
+    Result := Nil;
+End;
 
-function TWxPrintDialog.GetIDName: string;
-begin
+Function TWxPrintDialog.GetIDName: String;
+Begin
 
-end;
+End;
 
-function TWxPrintDialog.GetIDValue: integer;
-begin
-  Result := 0;
-end;
+Function TWxPrintDialog.GetIDValue: Integer;
+Begin
+    Result := 0;
+End;
 
-function TWxPrintDialog.GetParameterFromEventName(EventName: string): string;
-begin
+Function TWxPrintDialog.GetParameterFromEventName(EventName: String): String;
+Begin
 
-end;
+End;
 
-function TWxPrintDialog.GetStretchFactor: integer;
-begin
+Function TWxPrintDialog.GetStretchFactor: Integer;
+Begin
     Result := 1;
-end;
+End;
 
-function TWxPrintDialog.GetPropertyList: TStringList;
-begin
-  Result := FWx_PropertyList;
-end;
+Function TWxPrintDialog.GetPropertyList: TStringList;
+Begin
+    Result := FWx_PropertyList;
+End;
 
-function TWxPrintDialog.GetBorderAlignment: TWxBorderAlignment;
-begin
-  Result := [];
-end;
+Function TWxPrintDialog.GetBorderAlignment: TWxBorderAlignment;
+Begin
+    Result := [];
+End;
 
-procedure TWxPrintDialog.SetBorderAlignment(border: TWxBorderAlignment);
-begin
-end;
+Procedure TWxPrintDialog.SetBorderAlignment(border: TWxBorderAlignment);
+Begin
+End;
 
-function TWxPrintDialog.GetBorderWidth: integer;
-begin
-  Result := 0;
-end;
+Function TWxPrintDialog.GetBorderWidth: Integer;
+Begin
+    Result := 0;
+End;
 
-procedure TWxPrintDialog.SetBorderWidth(width: integer);
-begin
-end;
+Procedure TWxPrintDialog.SetBorderWidth(width: Integer);
+Begin
+End;
 
-function TWxPrintDialog.GetTypeFromEventName(EventName: string): string;
-begin
+Function TWxPrintDialog.GetTypeFromEventName(EventName: String): String;
+Begin
 
-end;
+End;
 
-function TWxPrintDialog.GetWxClassName: string;
-begin
-  if trim(wx_Class) = '' then
-    wx_Class := 'wxPrintDialog';
-  Result := wx_Class;
-end;
+Function TWxPrintDialog.GetWxClassName: String;
+Begin
+    If trim(wx_Class) = '' Then
+        wx_Class := 'wxPrintDialog';
+    Result := wx_Class;
+End;
 
-procedure TWxPrintDialog.SaveControlOrientation(
-  ControlOrientation: TWxControlOrientation);
-begin
+Procedure TWxPrintDialog.SaveControlOrientation(
+    ControlOrientation: TWxControlOrientation);
+Begin
 
-end;
+End;
 
-procedure TWxPrintDialog.SetIDName(IDName: string);
-begin
+Procedure TWxPrintDialog.SetIDName(IDName: String);
+Begin
 
-end;
+End;
 
-procedure TWxPrintDialog.SetIDValue(IDValue: integer);
-begin
+Procedure TWxPrintDialog.SetIDValue(IDValue: Integer);
+Begin
 
-end;
+End;
 
-procedure TWxPrintDialog.SetStretchFactor(intValue: integer);
-begin
-end;
+Procedure TWxPrintDialog.SetStretchFactor(intValue: Integer);
+Begin
+End;
 
-procedure TWxPrintDialog.SetWxClassName(wxClassName: string);
-begin
-  wx_Class := wxClassName;
-end;
+Procedure TWxPrintDialog.SetWxClassName(wxClassName: String);
+Begin
+    wx_Class := wxClassName;
+End;
 
-function TWxPrintDialog.GetGenericColor(strVariableName:String): string;
-begin
+Function TWxPrintDialog.GetGenericColor(strVariableName: String): String;
+Begin
 
-end;
-procedure TWxPrintDialog.SetGenericColor(strVariableName,strValue: string);
-begin
+End;
+Procedure TWxPrintDialog.SetGenericColor(strVariableName, strValue: String);
+Begin
 
-end;
+End;
 
 
-function TWxPrintDialog.GetFGColor: string;
-begin
+Function TWxPrintDialog.GetFGColor: String;
+Begin
 
-end;
+End;
 
-procedure TWxPrintDialog.SetFGColor(strValue: string);
-begin
-end;
+Procedure TWxPrintDialog.SetFGColor(strValue: String);
+Begin
+End;
 
-function TWxPrintDialog.GetBGColor: string;
-begin
-end;
+Function TWxPrintDialog.GetBGColor: String;
+Begin
+End;
 
-procedure TWxPrintDialog.SetBGColor(strValue: string);
-begin
-end;
+Procedure TWxPrintDialog.SetBGColor(strValue: String);
+Begin
+End;
 
-procedure TWxPrintDialog.SetProxyFGColorString(Value: string);
-begin
-end;
+Procedure TWxPrintDialog.SetProxyFGColorString(Value: String);
+Begin
+End;
 
-procedure TWxPrintDialog.SetProxyBGColorString(Value: string);
-begin
-end;
+Procedure TWxPrintDialog.SetProxyBGColorString(Value: String);
+Begin
+End;
 
-end.
+End.
  

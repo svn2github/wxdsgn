@@ -17,18 +17,18 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-unit Macros;
+Unit Macros;
 
-interface
+Interface
 
-uses
+Uses
     SysUtils, devCfg, Version;
 
-function ParseMacros(Str: String): String;
+Function ParseMacros(Str: String): String;
 
-implementation
+Implementation
 
-uses
+Uses
 {$IFDEF WIN32}
     Main, editor, Dialogs, Utils, Classes;
 {$ENDIF}
@@ -36,17 +36,17 @@ uses
   Main, editor, QDialogs, Utils, Classes;
 {$ENDIF}
 
-procedure Replace(var Str: String; Old, New: String);
-begin
+Procedure Replace(Var Str: String; Old, New: String);
+Begin
     Str := StringReplace(Str, Old, New, [rfReplaceAll]);
-end;
+End;
 
-function ParseMacros(Str: String): String;
-var
+Function ParseMacros(Str: String): String;
+Var
     e: TEditor;
     Dir: String;
     StrList: TStringList;
-begin
+Begin
     Result := Str;
     e := MainForm.GetEditor;
 
@@ -58,45 +58,45 @@ begin
     Replace(Result, '<DATETIME>', DateTimeToStr(Now));
 
     Dir := ExtractFilePath(ParamStr(0)) + '\include';
-    if (not DirectoryExists(Dir)) and (devDirs.C <> '') then
-    begin
+    If (Not DirectoryExists(Dir)) And (devDirs.C <> '') Then
+    Begin
         StrList := TStringList.Create;
         StrToList(devDirs.C, StrList);
         Dir := StrList.Strings[0];
         StrList.Free;
-    end;
+    End;
     Replace(Result, '<INCLUDE>', Dir);
 
     Dir := ExtractFilePath(ParamStr(0)) + '\lib';
-    if (not DirectoryExists(Dir)) and (devDirs.Lib <> '') then
-    begin
+    If (Not DirectoryExists(Dir)) And (devDirs.Lib <> '') Then
+    Begin
         StrList := TStringList.Create;
         StrToList(devDirs.Lib, StrList);
         Dir := StrList.Strings[0];
         StrList.Free;
-    end;
+    End;
     Replace(Result, '<LIB>', Dir);
 
     { Project-dependent macros }
-    if Assigned(MainForm.fProject) then
-    begin
+    If Assigned(MainForm.fProject) Then
+    Begin
         Replace(Result, '<EXENAME>', MainForm.fProject.Executable);
         Replace(Result, '<PROJECTNAME>', MainForm.fProject.Name);
         Replace(Result, '<PROJECTFILE>', MainForm.fProject.FileName);
         Replace(Result, '<PROJECTPATH>', MainForm.fProject.Directory);
         Replace(Result, '<SOURCESPCLIST>', MainForm.fProject.ListUnitStr(' '));
-    end
+    End
     { Non-project editor macros }
-    else
-    if Assigned(e) then
-    begin
+    Else
+    If Assigned(e) Then
+    Begin
         // GAR 10 Nov 2009
         // Hack for Wine/Linux
         // ProductName returns empty string for Wine/Linux
         // for Windows, it returns OS name (e.g. Windows Vista).
-        if (MainForm.JvComputerInfoEx1.OS.ProductName = '') then
+        If (MainForm.JvComputerInfoEx1.OS.ProductName = '') Then
             Replace(Result, '<EXENAME>', ChangeFileExt(e.FileName, ''))
-        else
+        Else
             Replace(Result, '<EXENAME>', ChangeFileExt(e.FileName, EXE_EXT));
 
         Replace(Result, '<PROJECTNAME>', e.FileName);
@@ -105,36 +105,36 @@ begin
 
         // clear unchanged macros
         Replace(Result, '<SOURCESPCLIST>', '');
-    end
-    else
-    begin
+    End
+    Else
+    Begin
         // clear unchanged macros
         Replace(Result, '<EXENAME>', '');
         Replace(Result, '<PROJECTNAME>', '');
         Replace(Result, '<PROJECTFILE>', '');
         Replace(Result, '<PROJECTPATH>', '');
         Replace(Result, '<SOURCESPCLIST>', '');
-    end;
+    End;
 
     { Editor macros }
-    if Assigned(e) then
-    begin
+    If Assigned(e) Then
+    Begin
         Replace(Result, '<SOURCENAME>', e.FileName);
 
-        if Length(e.FileName) = 0 then
+        If Length(e.FileName) = 0 Then
             Replace(Result, '<SOURCENAME>', devDirs.Default)
-        else
+        Else
             Replace(Result, '<SOURCENAME>', ExtractFilePath(e.FileName));
 
         Replace(Result, '<WORDXY>', e.GetWordAtCursor);
-    end
-    else
-    begin
+    End
+    Else
+    Begin
         // clear unchanged macros
         Replace(Result, '<SOURCENAME>', '');
         Replace(Result, '<SOURCENAME>', '');
         Replace(Result, '<WORDXY>', '');
-    end;
-end;
+    End;
+End;
 
-end.
+End.

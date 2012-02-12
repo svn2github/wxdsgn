@@ -17,22 +17,22 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-unit devMonitorTypes;
+Unit devMonitorTypes;
 
-interface
+Interface
 
-uses 
+Uses
 {$IFDEF WIN32}
-  Classes, Windows;
+    Classes, Windows;
 {$ENDIF}
 {$IFDEF LINUX}
   Classes;
 {$ENDIF}
 
-type
-  TdevMonitorChangeType = (mctChanged, mctDeleted);
-  TdevMonitorChange = procedure(Sender: TObject; ChangeType: TdevMonitorChangeType; Filename: string) of object;
+Type
+    TdevMonitorChangeType = (mctChanged, mctDeleted);
+    TdevMonitorChange = Procedure(Sender: TObject; ChangeType: TdevMonitorChangeType; Filename: String) Of Object;
 
-implementation
+Implementation
 
-end.
+End.

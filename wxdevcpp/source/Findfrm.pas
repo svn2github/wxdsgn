@@ -17,11 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-unit Findfrm;
+Unit Findfrm;
 
-interface
+Interface
 
-uses
+Uses
     Search_Center, StrUtils,
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
@@ -32,8 +32,8 @@ uses
   QSynEdit, QStdCtrls, devTabs, QSynEditTypes;
 {$ENDIF}
 
-type
-    TfrmFind = class(TForm)
+Type
+    TfrmFind = Class(TForm)
         btnFind: TButton;
         btnCancel: TButton;
         lblFind: TLabel;
@@ -67,36 +67,36 @@ type
         SNonwhitespacetnrf1: TMenuItem;
         ZeroorOneCharacter1: TMenuItem;
         XPMenu: TXPMenu;
-        procedure btnFindClick(Sender: TObject);
-        procedure FormShow(Sender: TObject);
-        procedure FormClose(Sender: TObject; var Action: TCloseAction);
-        procedure btnCancelClick(Sender: TObject);
-        procedure FormKeyDown(Sender: TObject; var Key: Word;
+        Procedure btnFindClick(Sender: TObject);
+        Procedure FormShow(Sender: TObject);
+        Procedure FormClose(Sender: TObject; Var Action: TCloseAction);
+        Procedure btnCancelClick(Sender: TObject);
+        Procedure FormKeyDown(Sender: TObject; Var Key: Word;
             Shift: TShiftState);
-        procedure LookInChange(Sender: TObject);
-        procedure OnBuildExpr(Sender: TObject);
-    private
+        Procedure LookInChange(Sender: TObject);
+        Procedure OnBuildExpr(Sender: TObject);
+    Private
         fSearchOptions: TSynSearchOptions;
-        fClose: boolean;
-        fFindAll: boolean;
-        fRegex: boolean;
+        fClose: Boolean;
+        fFindAll: Boolean;
+        fRegex: Boolean;
 
-        procedure LoadText;
-        function GetFindWhat: TLookIn;
+        Procedure LoadText;
+        Function GetFindWhat: TLookIn;
 
-    public
-        property SearchOptions: TSynSearchOptions read fSearchOptions;
-        property FindAll: boolean read fFindAll write fFindAll;
-        property FindWhat: TLookIn read GetFindWhat;
-        property Regex: boolean read fRegex write fRegex;
-    end;
+    Public
+        Property SearchOptions: TSynSearchOptions Read fSearchOptions;
+        Property FindAll: Boolean Read fFindAll Write fFindAll;
+        Property FindWhat: TLookIn Read GetFindWhat;
+        Property Regex: Boolean Read fRegex Write fRegex;
+    End;
 
-var
+Var
     frmFind: TfrmFind;
 
-implementation
+Implementation
 
-uses
+Uses
     typinfo,
 {$IFDEF WIN32}
     Main, Dialogs, MultiLangSupport, devcfg;
@@ -107,101 +107,101 @@ uses
 
 {$R *.dfm}
 
-function TfrmFind.GetFindWhat: TLookIn;
-begin
+Function TfrmFind.GetFindWhat: TLookIn;
+Begin
     Result := TLookIn(LookIn.Items.Objects[LookIn.ItemIndex]);
-end;
+End;
 
-procedure TfrmFind.FormShow(Sender: TObject);
-begin
+Procedure TfrmFind.FormShow(Sender: TObject);
+Begin
     LoadText;
     ActiveControl := cboFindText;
     LookIn.Items.Clear;
 
     //What sorta search types can we allow?
-    if SearchCenter.PageControl.PageCount > 0 then
-    begin
+    If SearchCenter.PageControl.PageCount > 0 Then
+    Begin
         LookIn.AddItem(Lang[ID_FIND_SELONLY], TObject(liSelected));
         LookIn.AddItem('Current File', TObject(liFile));
-        if not fFindAll then
+        If Not fFindAll Then
             LookIn.ItemIndex := 1;
-    end;
+    End;
 
     //Insert the Open Files category
-    if SearchCenter.PageControl.PageCount > 0 then
+    If SearchCenter.PageControl.PageCount > 0 Then
         LookIn.AddItem(Lang[ID_FIND_OPENFILES], TObject(liOpen));
 
     //And the Current Project category
-    if Assigned(SearchCenter.Project) then
+    If Assigned(SearchCenter.Project) Then
         LookIn.AddItem(Lang[ID_FIND_PRJFILES], TObject(liProject));
 
     //Set the correct find type for our search
-    if fFindAll then
+    If fFindAll Then
         LookIn.ItemIndex := LookIn.Items.Count - 1;
 
     //Enable or disable the extended search options
     LookIn.OnChange(LookIn);
-end;
+End;
 
-procedure TfrmFind.FormClose(Sender: TObject; var Action: TCloseAction);
-begin
-    if fClose then
+Procedure TfrmFind.FormClose(Sender: TObject; Var Action: TCloseAction);
+Begin
+    If fClose Then
         Action := caHide
-    else
-    begin
+    Else
+    Begin
         Action := caNone;
         ActiveControl := cboFindText;
-    end;
-end;
+    End;
+End;
 
-procedure TfrmFind.btnFindClick(Sender: TObject);
-begin
-    if cboFindText.Text <> '' then
-    begin
-        if cboFindText.Items.IndexOf(cboFindText.Text) = -1 then
+Procedure TfrmFind.btnFindClick(Sender: TObject);
+Begin
+    If cboFindText.Text <> '' Then
+    Begin
+        If cboFindText.Items.IndexOf(cboFindText.Text) = -1 Then
             cboFindText.Items.Insert(0, cboFindText.Text);
 
         fSearchOptions := [];
 
         fRegex := cbRegex.Checked;
-        if cbMatchCase.checked then
+        If cbMatchCase.checked Then
             include(fSearchOptions, ssoMatchCase);
-        if cbWholeWord.Checked then
+        If cbWholeWord.Checked Then
             include(fSearchOptions, ssoWholeWord);
 
-        if TLookIn(LookIn.Items.Objects[LookIn.ItemIndex]) in
-            [liSelected, liFile] then
-        begin
+        If TLookIn(LookIn.Items.Objects[LookIn.ItemIndex]) In
+            [liSelected, liFile] Then
+        Begin
             fFindAll := False;
-            if TLookIn(LookIn.Items.Objects[LookIn.ItemIndex]) = liSelected then
+            If TLookIn(LookIn.Items.Objects[LookIn.ItemIndex]) = liSelected Then
                 include(fSearchOptions, ssoSelectedOnly);
-            if grpDirection.ItemIndex = 1 then
+            If grpDirection.ItemIndex = 1 Then
                 include(fSearchOptions, ssoBackwards);
-            if grpOrigin.ItemIndex = 1 then
+            If grpOrigin.ItemIndex = 1 Then
                 include(fSearchOptions, ssoEntireScope);
-        end
-        else
-        begin
+        End
+        Else
+        Begin
             fFindAll := True;
             MainForm.FindOutput.Items.Clear;
             include(fSearchOptions, ssoEntireScope);
             include(fSearchOptions, ssoReplaceAll);
             include(fSearchOptions, ssoPrompt);
-        end;
+        End;
         fClose := True;
-    end;
-end;
+    End;
+End;
 
-procedure TfrmFind.btnCancelClick(Sender: TObject);
-begin
-    fClose := true;
+Procedure TfrmFind.btnCancelClick(Sender: TObject);
+Begin
+    fClose := True;
     Close;
-end;
+End;
 
-procedure TfrmFind.LoadText;
-var
+Procedure TfrmFind.LoadText;
+Var
     x: Integer;
-begin
+Begin
     DesktopFont := True;
     XPMenu.Active := devData.XPTheme;
     Caption := Lang[ID_FIND];
@@ -225,69 +225,69 @@ begin
     btnCancel.Caption := Lang[ID_BTN_CANCEL];
 
     x := Self.Canvas.TextWidth(btnFind.Caption) + 5;
-    if x > btnFind.Width then
+    If x > btnFind.Width Then
         btnFind.Width := x;
 
     x := Self.Canvas.TextWidth(btnCancel.Caption);
-    if x > btnCancel.Width then
+    If x > btnCancel.Width Then
         btnCancel.Width := x;
-end;
+End;
 
-procedure TfrmFind.FormKeyDown(Sender: TObject; var Key: Word;
+Procedure TfrmFind.FormKeyDown(Sender: TObject; Var Key: Word;
     Shift: TShiftState);
-begin
+Begin
 {$IFDEF WIN32}
-    if (Key = VK_TAB) and (Shift = [ssCtrl]) then
+    If (Key = VK_TAB) And (Shift = [ssCtrl]) Then
 {$ENDIF}
 {$IFDEF LINUX}
   if (Key = XK_TAB) and (Shift = [ssCtrl]) then
 {$ENDIF}
-    begin
+    Begin
         // switch tabs
-        if LookIn.ItemIndex = LookIn.Items.Count - 1 then
+        If LookIn.ItemIndex = LookIn.Items.Count - 1 Then
             LookIn.ItemIndex := 0
-        else
+        Else
             LookIn.ItemIndex := LookIn.ItemIndex + 1;
 
         //Enable or disable the extended search options
         LookIn.OnChange(LookIn);
-    end;
-end;
+    End;
+End;
 
-procedure TfrmFind.LookInChange(Sender: TObject);
-begin
-    if LookIn.ItemIndex = -1 then
-    begin
+Procedure TfrmFind.LookInChange(Sender: TObject);
+Begin
+    If LookIn.ItemIndex = -1 Then
+    Begin
         grpOrigin.Enabled := False;
         grpDirection.Enabled := False;
-    end
-    else
-    begin
-        grpOrigin.Enabled := TLookIn(LookIn.Items.Objects[LookIn.ItemIndex]) in
+    End
+    Else
+    Begin
+        grpOrigin.Enabled := TLookIn(LookIn.Items.Objects[LookIn.ItemIndex]) In
             [liSelected, liFile];
         grpDirection.Enabled :=
-            TLookIn(LookIn.Items.Objects[LookIn.ItemIndex]) in [liSelected, liFile];
-    end;
-end;
+            TLookIn(LookIn.Items.Objects[LookIn.ItemIndex]) In [liSelected, liFile];
+    End;
+End;
 
-procedure TfrmFind.OnBuildExpr(Sender: TObject);
-var
+Procedure TfrmFind.OnBuildExpr(Sender: TObject);
+Var
     Text: String;
     selStart: Integer;
-begin
+Begin
     selStart := cboFindText.SelStart;
-    Text := (Sender as TMenuItem).Caption;
+    Text := (Sender As TMenuItem).Caption;
     Text := Copy(Text, 1, Pos(' ', Text) - 1);
     Text := AnsiReplaceStr(Text, '&', '');
     cboFindText.SelText := Text;
 
     //Do we go into the bracket?
     cboFindText.SetFocus;
-    if (Text = '()') or (Text = '[]') or (Text = '[^]') then
+    If (Text = '()') Or (Text = '[]') Or (Text = '[^]') Then
         cboFindText.SelStart := selStart + Length(Text) - 1
-    else
+    Else
         cboFindText.SelStart := selStart + Length(Text);
     cboFindText.SelLength := 0;
-end;
+End;
 
-end.
+End.

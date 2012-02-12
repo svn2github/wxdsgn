@@ -26,12 +26,12 @@
 {Contact gururamnath@yahoo.com for details                           }
 { ****************************************************************** }
 
-unit WxStaticText;
+Unit WxStaticText;
 
-interface
+Interface
 
-uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
-  Forms, Graphics, StdCtrls, WxUtils, ExtCtrls, WxSizerPanel, wxAuiToolBar, WxAuiNotebookPage, WxToolBar;
+Uses WinTypes, WinProcs, Messages, SysUtils, Classes, Controls,
+    Forms, Graphics, StdCtrls, WxUtils, ExtCtrls, WxSizerPanel, wxAuiToolBar, WxAuiNotebookPage, WxToolBar;
 
 {
 *************IMPORTANT*************
@@ -43,288 +43,288 @@ http://torry.net/tools/components/compcreation/cc.zip
 ***IF YOU FOLLOW THIS YOUR UPDATES WONT BE INCLUDED IN THE DISTRIBUTION****
 }
 
-type
-  TWxStaticText = class(TStaticText, IWxComponentInterface,
-    IWxToolBarInsertableInterface, IWxToolBarNonInsertableInterface,IWxVariableAssignmentInterface)
-  private
+Type
+    TWxStaticText = Class(TStaticText, IWxComponentInterface,
+        IWxToolBarInsertableInterface, IWxToolBarNonInsertableInterface, IWxVariableAssignmentInterface)
+    Private
     { Private fields of TWxStaticText }
     { Storage for property Wx_BGColor }
-    FWx_BGColor: TColor;
+        FWx_BGColor: TColor;
     { Storage for property Wx_Border }
-    FWx_Border: integer;
+        FWx_Border: Integer;
     { Storage for property Wx_Class }
-    FWx_Class: string;
+        FWx_Class: String;
     { Storage for property Wx_ControlOrientation }
-    FWx_ControlOrientation: TWxControlOrientation;
+        FWx_ControlOrientation: TWxControlOrientation;
     { Storage for property Wx_Enabled }
-    FWx_Enabled: boolean;
+        FWx_Enabled: Boolean;
     { Storage for property Wx_FGColor }
-    FWx_FGColor: TColor;
+        FWx_FGColor: TColor;
     { Storage for property Wx_GeneralStyle }
-    FWx_GeneralStyle: TWxStdStyleSet;
+        FWx_GeneralStyle: TWxStdStyleSet;
     { Storage for property Wx_HelpText }
-    FWx_HelpText: string;
+        FWx_HelpText: String;
     { Storage for property Wx_Hidden }
-    FWx_Hidden: boolean;
+        FWx_Hidden: Boolean;
     { Storage for property Wx_IDName }
-    FWx_IDName: string;
+        FWx_IDName: String;
     { Storage for property Wx_IDValue }
-    FWx_IDValue: integer;
+        FWx_IDValue: Integer;
     { Storage for property Wx_LabelStyle }
-    FWx_LabelStyle: TWxLBStyleSet;
+        FWx_LabelStyle: TWxLBStyleSet;
     { Storage for property Wx_ProxyBGColorString }
-    FWx_ProxyBGColorString: TWxColorString;
+        FWx_ProxyBGColorString: TWxColorString;
     { Storage for property Wx_ProxyFGColorString }
-    FWx_ProxyFGColorString: TWxColorString;
+        FWx_ProxyFGColorString: TWxColorString;
     { Storage for property Wx_StretchFactor }
-    FWx_StretchFactor: integer;
+        FWx_StretchFactor: Integer;
     { Storage for property Wx_ToolTip }
-    FWx_ToolTip: string;
-    FWx_Validator: string;
-    FWx_EventList: TStringList;
-    FWx_PropertyList: TStringList;
-    FInvisibleBGColorString: string;
-    FInvisibleFGColorString: string;
-    FWx_Comments: TStrings;
-    FWx_Alignment: TWxSizerAlignmentSet;
-    FWx_BorderAlignment: TWxBorderAlignment;
-    FWx_LHSValue : String;
-    FWx_RHSValue : String;
-    defaultBGColor: TColor;
-    defaultFGColor: TColor;
+        FWx_ToolTip: String;
+        FWx_Validator: String;
+        FWx_EventList: TStringList;
+        FWx_PropertyList: TStringList;
+        FInvisibleBGColorString: String;
+        FInvisibleFGColorString: String;
+        FWx_Comments: TStrings;
+        FWx_Alignment: TWxSizerAlignmentSet;
+        FWx_BorderAlignment: TWxBorderAlignment;
+        FWx_LHSValue: String;
+        FWx_RHSValue: String;
+        defaultBGColor: TColor;
+        defaultFGColor: TColor;
 
 //Aui Properties
-    FWx_AuiManaged: Boolean;
-    FWx_PaneCaption: string;
-    FWx_PaneName: string;
-    FWx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem;
-    FWx_Aui_Dockable_Direction: TwxAuiPaneDockableDirectionSet;
-    FWx_Aui_Pane_Style: TwxAuiPaneStyleSet;
-    FWx_Aui_Pane_Buttons: TwxAuiPaneButtonSet;
-    FWx_BestSize_Height: Integer;
-    FWx_BestSize_Width: Integer;
-    FWx_MinSize_Height: Integer;
-    FWx_MinSize_Width: Integer;
-    FWx_MaxSize_Height: Integer;
-    FWx_MaxSize_Width: Integer;
-    FWx_Floating_Height: Integer;
-    FWx_Floating_Width: Integer;
-    FWx_Floating_X_Pos: Integer;
-    FWx_Floating_Y_Pos: Integer;
-    FWx_Layer: Integer;
-    FWx_Row: Integer;
-    FWx_Position: Integer;
+        FWx_AuiManaged: Boolean;
+        FWx_PaneCaption: String;
+        FWx_PaneName: String;
+        FWx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem;
+        FWx_Aui_Dockable_Direction: TwxAuiPaneDockableDirectionSet;
+        FWx_Aui_Pane_Style: TwxAuiPaneStyleSet;
+        FWx_Aui_Pane_Buttons: TwxAuiPaneButtonSet;
+        FWx_BestSize_Height: Integer;
+        FWx_BestSize_Width: Integer;
+        FWx_MinSize_Height: Integer;
+        FWx_MinSize_Width: Integer;
+        FWx_MaxSize_Height: Integer;
+        FWx_MaxSize_Width: Integer;
+        FWx_Floating_Height: Integer;
+        FWx_Floating_Width: Integer;
+        FWx_Floating_X_Pos: Integer;
+        FWx_Floating_Y_Pos: Integer;
+        FWx_Layer: Integer;
+        FWx_Row: Integer;
+        FWx_Position: Integer;
 
     { Private methods of TWxStaticText }
     { Method to set variable and property values and create objects }
-    procedure AutoInitialize;
+        Procedure AutoInitialize;
     { Method to free any objects created by AutoInitialize }
-    procedure AutoDestroy;
-    procedure WMSize(var Message: TWMSize); message WM_SIZE;
+        Procedure AutoDestroy;
+        Procedure WMSize(Var Message: TWMSize); Message WM_SIZE;
 
-  protected
+    Protected
     { Protected fields of TWxStaticText }
 
     { Protected methods of TWxStaticText }
-    procedure Click; override;
-    procedure Loaded; override;
+        Procedure Click; Override;
+        Procedure Loaded; Override;
 
-  published
+    Published
     { Public fields and properties of TWxStaticText }
 
     { Public methods of TWxStaticText }
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    function GenerateControlIDs: string;
-    function GenerateEnumControlIDs: string; virtual;
-    function GenerateEventTableEntries(CurrClassName: string): string; virtual;
-    function GenerateGUIControlCreation: string; virtual;
-    function GenerateXRCControlCreation(IndentString: string): TStringList;
-    function GenerateGUIControlDeclaration: string; virtual;
-    function GenerateHeaderInclude: string; virtual;
-    function GenerateImageInclude: string;
-    function GetEventList: TStringList;
-    function GetIDName: string;
-    function GetIDValue: integer;
-    function GetParameterFromEventName(EventName: string): string;
-    function GetPropertyList: TStringList; virtual;
-    function GetTypeFromEventName(EventName: string): string;
-    function GetWxClassName: string; virtual;
-    procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
-    procedure SetIDName(IDName: string);
-    procedure SetIDValue(IDValue: integer);
-    procedure SetWxClassName(wxClassName: string);
+        Constructor Create(AOwner: TComponent); Override;
+        Destructor Destroy; Override;
+        Function GenerateControlIDs: String;
+        Function GenerateEnumControlIDs: String; Virtual;
+        Function GenerateEventTableEntries(CurrClassName: String): String; Virtual;
+        Function GenerateGUIControlCreation: String; Virtual;
+        Function GenerateXRCControlCreation(IndentString: String): TStringList;
+        Function GenerateGUIControlDeclaration: String; Virtual;
+        Function GenerateHeaderInclude: String; Virtual;
+        Function GenerateImageInclude: String;
+        Function GetEventList: TStringList;
+        Function GetIDName: String;
+        Function GetIDValue: Integer;
+        Function GetParameterFromEventName(EventName: String): String;
+        Function GetPropertyList: TStringList; Virtual;
+        Function GetTypeFromEventName(EventName: String): String;
+        Function GetWxClassName: String; Virtual;
+        Procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
+        Procedure SetIDName(IDName: String);
+        Procedure SetIDValue(IDValue: Integer);
+        Procedure SetWxClassName(wxClassName: String);
 
-    function GetBorderAlignment: TWxBorderAlignment;
-    procedure SetBorderAlignment(border: TWxBorderAlignment);
-    function GetBorderWidth: integer;
-    procedure SetBorderWidth(width: integer);
-    function GetStretchFactor: integer;
-    procedure SetStretchFactor(intValue: integer);
+        Function GetBorderAlignment: TWxBorderAlignment;
+        Procedure SetBorderAlignment(border: TWxBorderAlignment);
+        Function GetBorderWidth: Integer;
+        Procedure SetBorderWidth(width: Integer);
+        Function GetStretchFactor: Integer;
+        Procedure SetStretchFactor(intValue: Integer);
 
-    function GetFGColor: string;
-    procedure SetFGColor(strValue: string);
-    function GetBGColor: string;
-    procedure SetBGColor(strValue: string);
+        Function GetFGColor: String;
+        Procedure SetFGColor(strValue: String);
+        Function GetBGColor: String;
+        Procedure SetBGColor(strValue: String);
 
-    function GetGenericColor(strVariableName:String): string;
-    procedure SetGenericColor(strVariableName,strValue: string);
+        Function GetGenericColor(strVariableName: String): String;
+        Procedure SetGenericColor(strVariableName, strValue: String);
 
-    procedure SetProxyFGColorString(Value: string);
-    procedure SetProxyBGColorString(Value: string);
-    
-    function GetLHSVariableAssignment:String;
-    function GetRHSVariableAssignment:String;
+        Procedure SetProxyFGColorString(Value: String);
+        Procedure SetProxyBGColorString(Value: String);
 
-  published
+        Function GetLHSVariableAssignment: String;
+        Function GetRHSVariableAssignment: String;
+
+    Published
     { Published properties of TWxStaticText }
-    property OnClick;
-    property OnDblClick;
-    property OnDragDrop;
-    property OnMouseDown;
-    property OnMouseMove;
-    property OnMouseUp;
-    property Wx_BGColor: TColor Read FWx_BGColor Write FWx_BGColor;
-    property Wx_Class: string Read FWx_Class Write FWx_Class;
-    property Wx_ControlOrientation: TWxControlOrientation
-      Read FWx_ControlOrientation Write FWx_ControlOrientation;
-    property Wx_Enabled: boolean Read FWx_Enabled Write FWx_Enabled default True;
-    property Wx_FGColor: TColor Read FWx_FGColor Write FWx_FGColor;
-    property Wx_GeneralStyle: TWxStdStyleSet
-      Read FWx_GeneralStyle Write FWx_GeneralStyle;
-    property Wx_HelpText: string Read FWx_HelpText Write FWx_HelpText;
-    property Wx_Hidden: boolean Read FWx_Hidden Write FWx_Hidden;
-    property Wx_IDName: string Read FWx_IDName Write FWx_IDName;
-    property Wx_IDValue: integer Read FWx_IDValue Write FWx_IDValue default -1;
-    property Wx_LabelStyle: TWxLBStyleSet Read FWx_LabelStyle Write FWx_LabelStyle;
-    property Wx_Validator: string Read FWx_Validator Write FWx_Validator;
-    property Wx_ToolTip: string Read FWx_ToolTip Write FWx_ToolTip;
+        Property OnClick;
+        Property OnDblClick;
+        Property OnDragDrop;
+        Property OnMouseDown;
+        Property OnMouseMove;
+        Property OnMouseUp;
+        Property Wx_BGColor: TColor Read FWx_BGColor Write FWx_BGColor;
+        Property Wx_Class: String Read FWx_Class Write FWx_Class;
+        Property Wx_ControlOrientation: TWxControlOrientation
+            Read FWx_ControlOrientation Write FWx_ControlOrientation;
+        Property Wx_Enabled: Boolean Read FWx_Enabled Write FWx_Enabled Default True;
+        Property Wx_FGColor: TColor Read FWx_FGColor Write FWx_FGColor;
+        Property Wx_GeneralStyle: TWxStdStyleSet
+            Read FWx_GeneralStyle Write FWx_GeneralStyle;
+        Property Wx_HelpText: String Read FWx_HelpText Write FWx_HelpText;
+        Property Wx_Hidden: Boolean Read FWx_Hidden Write FWx_Hidden;
+        Property Wx_IDName: String Read FWx_IDName Write FWx_IDName;
+        Property Wx_IDValue: Integer Read FWx_IDValue Write FWx_IDValue Default -1;
+        Property Wx_LabelStyle: TWxLBStyleSet Read FWx_LabelStyle Write FWx_LabelStyle;
+        Property Wx_Validator: String Read FWx_Validator Write FWx_Validator;
+        Property Wx_ToolTip: String Read FWx_ToolTip Write FWx_ToolTip;
 
-    property Wx_Border: integer Read GetBorderWidth Write SetBorderWidth default 5;
-    property Wx_BorderAlignment: TWxBorderAlignment Read GetBorderAlignment Write SetBorderAlignment default [wxALL];
-    property Wx_Alignment: TWxSizerAlignmentSet Read FWx_Alignment Write FWx_Alignment default [wxALIGN_CENTER];
-    property Wx_StretchFactor: integer Read GetStretchFactor Write SetStretchFactor default 0;
+        Property Wx_Border: Integer Read GetBorderWidth Write SetBorderWidth Default 5;
+        Property Wx_BorderAlignment: TWxBorderAlignment Read GetBorderAlignment Write SetBorderAlignment Default [wxALL];
+        Property Wx_Alignment: TWxSizerAlignmentSet Read FWx_Alignment Write FWx_Alignment Default [wxALIGN_CENTER];
+        Property Wx_StretchFactor: Integer Read GetStretchFactor Write SetStretchFactor Default 0;
 
-    property InvisibleBGColorString: string Read FInvisibleBGColorString Write FInvisibleBGColorString;
-    property InvisibleFGColorString: string Read FInvisibleFGColorString Write FInvisibleFGColorString;
-    property Wx_ProxyBGColorString: TWxColorString Read FWx_ProxyBGColorString Write FWx_ProxyBGColorString;
-    property Wx_ProxyFGColorString: TWxColorString Read FWx_ProxyFGColorString Write FWx_ProxyFGColorString;
+        Property InvisibleBGColorString: String Read FInvisibleBGColorString Write FInvisibleBGColorString;
+        Property InvisibleFGColorString: String Read FInvisibleFGColorString Write FInvisibleFGColorString;
+        Property Wx_ProxyBGColorString: TWxColorString Read FWx_ProxyBGColorString Write FWx_ProxyBGColorString;
+        Property Wx_ProxyFGColorString: TWxColorString Read FWx_ProxyFGColorString Write FWx_ProxyFGColorString;
 
-    property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
-    property Wx_LHSValue: string Read FWx_LHSValue Write FWx_LHSValue;
-    property Wx_RHSValue: string Read FWx_RHSValue Write FWx_RHSValue;
+        Property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
+        Property Wx_LHSValue: String Read FWx_LHSValue Write FWx_LHSValue;
+        Property Wx_RHSValue: String Read FWx_RHSValue Write FWx_RHSValue;
 
 //Aui Properties
-    property Wx_AuiManaged: boolean read FWx_AuiManaged write FWx_AuiManaged default False;
-    property Wx_PaneCaption: string read FWx_PaneCaption write FWx_PaneCaption;
-    property Wx_PaneName: string read FWx_PaneName write FWx_PaneName;
-    property Wx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem read FWx_Aui_Dock_Direction write FWx_Aui_Dock_Direction;
-    property Wx_Aui_Dockable_Direction: TwxAuiPaneDockableDirectionSet read FWx_Aui_Dockable_Direction write FWx_Aui_Dockable_Direction;
-    property Wx_Aui_Pane_Style: TwxAuiPaneStyleSet read FWx_Aui_Pane_Style write FWx_Aui_Pane_Style;
-    property Wx_Aui_Pane_Buttons: TwxAuiPaneButtonSet read FWx_Aui_Pane_Buttons write FWx_Aui_Pane_Buttons;
-    property Wx_BestSize_Height: integer read FWx_BestSize_Height write FWx_BestSize_Height default -1;
-    property Wx_BestSize_Width: integer read FWx_BestSize_Width write FWx_BestSize_Width default -1;
-    property Wx_MinSize_Height: integer read FWx_MinSize_Height write FWx_MinSize_Height default -1;
-    property Wx_MinSize_Width: integer read FWx_MinSize_Width write FWx_MinSize_Width default -1;
-    property Wx_MaxSize_Height: integer read FWx_MaxSize_Height write FWx_MaxSize_Height default -1;
-    property Wx_MaxSize_Width: integer read FWx_MaxSize_Width write FWx_MaxSize_Width default -1;
-    property Wx_Floating_Height: integer read FWx_Floating_Height write FWx_Floating_Height default -1;
-    property Wx_Floating_Width: integer read FWx_Floating_Width write FWx_Floating_Width default -1;
-    property Wx_Floating_X_Pos: integer read FWx_Floating_X_Pos write FWx_Floating_X_Pos default -1;
-    property Wx_Floating_Y_Pos: integer read FWx_Floating_Y_Pos write FWx_Floating_Y_Pos default -1;
-    property Wx_Layer: integer read FWx_Layer write FWx_Layer default 0;
-    property Wx_Row: integer read FWx_Row write FWx_Row default 0;
-    property Wx_Position: integer read FWx_Position write FWx_Position default 0;
+        Property Wx_AuiManaged: Boolean Read FWx_AuiManaged Write FWx_AuiManaged Default False;
+        Property Wx_PaneCaption: String Read FWx_PaneCaption Write FWx_PaneCaption;
+        Property Wx_PaneName: String Read FWx_PaneName Write FWx_PaneName;
+        Property Wx_Aui_Dock_Direction: TwxAuiPaneDockDirectionItem Read FWx_Aui_Dock_Direction Write FWx_Aui_Dock_Direction;
+        Property Wx_Aui_Dockable_Direction: TwxAuiPaneDockableDirectionSet Read FWx_Aui_Dockable_Direction Write FWx_Aui_Dockable_Direction;
+        Property Wx_Aui_Pane_Style: TwxAuiPaneStyleSet Read FWx_Aui_Pane_Style Write FWx_Aui_Pane_Style;
+        Property Wx_Aui_Pane_Buttons: TwxAuiPaneButtonSet Read FWx_Aui_Pane_Buttons Write FWx_Aui_Pane_Buttons;
+        Property Wx_BestSize_Height: Integer Read FWx_BestSize_Height Write FWx_BestSize_Height Default -1;
+        Property Wx_BestSize_Width: Integer Read FWx_BestSize_Width Write FWx_BestSize_Width Default -1;
+        Property Wx_MinSize_Height: Integer Read FWx_MinSize_Height Write FWx_MinSize_Height Default -1;
+        Property Wx_MinSize_Width: Integer Read FWx_MinSize_Width Write FWx_MinSize_Width Default -1;
+        Property Wx_MaxSize_Height: Integer Read FWx_MaxSize_Height Write FWx_MaxSize_Height Default -1;
+        Property Wx_MaxSize_Width: Integer Read FWx_MaxSize_Width Write FWx_MaxSize_Width Default -1;
+        Property Wx_Floating_Height: Integer Read FWx_Floating_Height Write FWx_Floating_Height Default -1;
+        Property Wx_Floating_Width: Integer Read FWx_Floating_Width Write FWx_Floating_Width Default -1;
+        Property Wx_Floating_X_Pos: Integer Read FWx_Floating_X_Pos Write FWx_Floating_X_Pos Default -1;
+        Property Wx_Floating_Y_Pos: Integer Read FWx_Floating_Y_Pos Write FWx_Floating_Y_Pos Default -1;
+        Property Wx_Layer: Integer Read FWx_Layer Write FWx_Layer Default 0;
+        Property Wx_Row: Integer Read FWx_Row Write FWx_Row Default 0;
+        Property Wx_Position: Integer Read FWx_Position Write FWx_Position Default 0;
 
-  end;
+    End;
 
-procedure Register;
+Procedure Register;
 
-implementation
+Implementation
 
-procedure Register;
-begin
-  RegisterComponents('wxWidgets', [TWxStaticText]);
-end;
+Procedure Register;
+Begin
+    RegisterComponents('wxWidgets', [TWxStaticText]);
+End;
 
 { Method to set variable and property values and create objects }
-procedure TWxStaticText.AutoInitialize;
-begin
-  FWx_EventList          := TStringList.Create;
-  FWx_PropertyList       := TStringList.Create;
-  FWx_Comments           := TStringList.Create;
-  FWx_Border             := 5;
-  FWx_Class              := 'wxStaticText';
-  FWx_Enabled            := True;
-  FWx_BorderAlignment    := [wxAll];
-  FWx_Alignment          := [wxALIGN_CENTER];
-  FWx_IDValue            := -1;
-  FWx_StretchFactor      := 0;
-  FWx_ProxyBGColorString := TWxColorString.Create;
-  FWx_ProxyFGColorString := TWxColorString.Create;
-  defaultBGColor         := clBtnFace;
-  defaultFGColor         := self.font.color;
-  AutoSize               := True;
+Procedure TWxStaticText.AutoInitialize;
+Begin
+    FWx_EventList := TStringList.Create;
+    FWx_PropertyList := TStringList.Create;
+    FWx_Comments := TStringList.Create;
+    FWx_Border := 5;
+    FWx_Class := 'wxStaticText';
+    FWx_Enabled := True;
+    FWx_BorderAlignment := [wxAll];
+    FWx_Alignment := [wxALIGN_CENTER];
+    FWx_IDValue := -1;
+    FWx_StretchFactor := 0;
+    FWx_ProxyBGColorString := TWxColorString.Create;
+    FWx_ProxyFGColorString := TWxColorString.Create;
+    defaultBGColor := clBtnFace;
+    defaultFGColor := self.font.color;
+    AutoSize := True;
 
-end; { of AutoInitialize }
+End; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
-procedure TWxStaticText.AutoDestroy;
-begin
-  FWx_EventList.Destroy;
-  FWx_PropertyList.Destroy;
-  FWx_ProxyBGColorString.Destroy;
-  FWx_ProxyFGColorString.Destroy;
-  FWx_Comments.Destroy;
-end; { of AutoDestroy }
+Procedure TWxStaticText.AutoDestroy;
+Begin
+    FWx_EventList.Destroy;
+    FWx_PropertyList.Destroy;
+    FWx_ProxyBGColorString.Destroy;
+    FWx_ProxyFGColorString.Destroy;
+    FWx_Comments.Destroy;
+End; { of AutoDestroy }
 
 { Override OnClick handler from TStaticText,IWxComponentInterface }
-procedure TWxStaticText.Click;
-begin
+Procedure TWxStaticText.Click;
+Begin
      { Code to execute before activating click
        behavior of component's parent class }
 
   { Activate click behavior of parent }
-  inherited Click;
+    Inherited Click;
 
      { Code to execute after click behavior
        of parent }
 
-end;
+End;
 
-constructor TWxStaticText.Create(AOwner: TComponent);
-begin
+Constructor TWxStaticText.Create(AOwner: TComponent);
+Begin
 
   { Call the Create method of the parent class }
-  inherited Create(AOwner);
+    Inherited Create(AOwner);
   { AutoInitialize sets the initial values of variables and      }
   { properties; also, it creates objects for properties of       }
   { standard Delphi object types (e.g., TFont, TTimer,           }
   { TPicture) and for any variables marked as objects.           }
   { AutoInitialize method is generated by Component Create.      }
-  AutoInitialize;
+    AutoInitialize;
 
   { Code to perform other tasks when the component is created }
-  PopulateGenericProperties(FWx_PropertyList);
-  PopulateAuiGenericProperties(FWx_PropertyList);
+    PopulateGenericProperties(FWx_PropertyList);
+    PopulateAuiGenericProperties(FWx_PropertyList);
 
-  FWx_PropertyList.add('Wx_LabelStyle:Label Style');
-  FWx_PropertyList.add('wxST_ALIGN_LEFT:wxALIGN_LEFT');
-  FWx_PropertyList.add('wxST_ALIGN_RIGHT:wxALIGN_RIGHT');
-  FWx_PropertyList.add('wxST_ALIGN_CENTRE:wxALIGN_CENTRE');
-  FWx_PropertyList.add('wxST_NO_AUTORESIZE:wxST_NO_AUTORESIZE');
-  
-  FWx_PropertyList.add('Caption:Label');
-  FWx_PropertyList.add('Wx_LHSValue   : LHS Variable');
-  FWx_PropertyList.add('Wx_RHSValue   : RHS Variable');
+    FWx_PropertyList.add('Wx_LabelStyle:Label Style');
+    FWx_PropertyList.add('wxST_ALIGN_LEFT:wxALIGN_LEFT');
+    FWx_PropertyList.add('wxST_ALIGN_RIGHT:wxALIGN_RIGHT');
+    FWx_PropertyList.add('wxST_ALIGN_CENTRE:wxALIGN_CENTRE');
+    FWx_PropertyList.add('wxST_NO_AUTORESIZE:wxST_NO_AUTORESIZE');
 
-end;
+    FWx_PropertyList.add('Caption:Label');
+    FWx_PropertyList.add('Wx_LHSValue   : LHS Variable');
+    FWx_PropertyList.add('Wx_RHSValue   : RHS Variable');
 
-destructor TWxStaticText.Destroy;
-begin
+End;
+
+Destructor TWxStaticText.Destroy;
+Begin
   { AutoDestroy, which is generated by Component Create, frees any   }
   { objects created by AutoInitialize.                               }
-  AutoDestroy;
+    AutoDestroy;
 
   { Here, free any other dynamic objects that the component methods  }
   { created but have not yet freed.  Also perform any other clean-up }
@@ -332,403 +332,404 @@ begin
 
   { Last, free the component by calling the Destroy method of the    }
   { parent class.                                                    }
-  inherited Destroy;
-end;
+    Inherited Destroy;
+End;
 
-function TWxStaticText.GenerateEnumControlIDs: string;
-begin
-  Result := GetWxEnum(self.Wx_IDValue, self.Wx_IDName);
-end;
+Function TWxStaticText.GenerateEnumControlIDs: String;
+Begin
+    Result := GetWxEnum(self.Wx_IDValue, self.Wx_IDName);
+End;
 
-function TWxStaticText.GenerateControlIDs: string;
-begin
-  Result := '';
-  if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
-    Result := Format('#define %s %d ', [Wx_IDName, Wx_IDValue]);
-end;
+Function TWxStaticText.GenerateControlIDs: String;
+Begin
+    Result := '';
+    If (Wx_IDValue > 0) And (trim(Wx_IDName) <> '') Then
+        Result := Format('#define %s %d ', [Wx_IDName, Wx_IDValue]);
+End;
 
-function TWxStaticText.GenerateEventTableEntries(CurrClassName: string): string;
-begin
-  Result := '';
-end;
+Function TWxStaticText.GenerateEventTableEntries(CurrClassName: String): String;
+Begin
+    Result := '';
+End;
 
-function TWxStaticText.GenerateXRCControlCreation(IndentString: string): TStringList;
-begin
+Function TWxStaticText.GenerateXRCControlCreation(IndentString: String): TStringList;
+Begin
 
-  Result := TStringList.Create;
+    Result := TStringList.Create;
 
-  try
-    Result.Add(IndentString + Format('<object class="%s" name="%s">',
-      [self.Wx_Class, self.Name]));
-    Result.Add(IndentString + Format('  <label>%s</label>', [XML_Label(self.Caption)]));
-    Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
-    Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
+    Try
+        Result.Add(IndentString + Format('<object class="%s" name="%s">',
+            [self.Wx_Class, self.Name]));
+        Result.Add(IndentString + Format('  <label>%s</label>', [XML_Label(self.Caption)]));
+        Result.Add(IndentString + Format('  <IDident>%s</IDident>', [self.Wx_IDName]));
+        Result.Add(IndentString + Format('  <ID>%d</ID>', [self.Wx_IDValue]));
 
-    if not(UseDefaultSize)then
-      Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
-    if not(UseDefaultPos) then
-      Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
+        If Not (UseDefaultSize) Then
+            Result.Add(IndentString + Format('  <size>%d,%d</size>', [self.Width, self.Height]));
+        If Not (UseDefaultPos) Then
+            Result.Add(IndentString + Format('  <pos>%d,%d</pos>', [self.Left, self.Top]));
 
-    Result.Add(IndentString + Format('  <style>%s</style>',
-      [GetLabelSpecificStyle(Wx_GeneralStyle, Wx_LabelStyle)]));
-    Result.Add(IndentString + '</object>');
+        Result.Add(IndentString + Format('  <style>%s</style>',
+            [GetLabelSpecificStyle(Wx_GeneralStyle, Wx_LabelStyle)]));
+        Result.Add(IndentString + '</object>');
 
-  except
-    Result.Free;
-    raise;
-  end;
+    Except
+        Result.Free;
+        Raise;
+    End;
 
-end;
+End;
 
-function TWxStaticText.GenerateGUIControlCreation: string;
-var
-  strSize: string;
-  strColorStr: string;
-  strStyle, parentName, strAlignment: string;
-begin
-  Result := '';
-    if FWx_PaneCaption = '' then
-    FWx_PaneCaption := Self.Name;
-  if FWx_PaneName = '' then
-    FWx_PaneName := Self.Name + '_Pane';
+Function TWxStaticText.GenerateGUIControlCreation: String;
+Var
+    strSize: String;
+    strColorStr: String;
+    strStyle, parentName, strAlignment: String;
+Begin
+    Result := '';
+    If FWx_PaneCaption = '' Then
+        FWx_PaneCaption := Self.Name;
+    If FWx_PaneName = '' Then
+        FWx_PaneName := Self.Name + '_Pane';
 
-  parentName := GetWxWidgetParent(self, Wx_AuiManaged);
+    parentName := GetWxWidgetParent(self, Wx_AuiManaged);
 
   //Determine whether we should just use wxDefaultSize
-  if wxST_NO_AUTORESIZE in Wx_LabelStyle then
-    strSize := Format('wxSize(%d, %d)', [self.Width, self.Height])
-  else
-    strSize := 'wxDefaultSize';
+    If wxST_NO_AUTORESIZE In Wx_LabelStyle Then
+        strSize := Format('wxSize(%d, %d)', [self.Width, self.Height])
+    Else
+        strSize := 'wxDefaultSize';
 
   //Set the static text style
-  strStyle := GetLabelSpecificStyle(Wx_GeneralStyle, Wx_LabelStyle);
-  if trim(strStyle) = '' then
-    strStyle := '0';
-  strStyle := ', ' + strStyle + ', ' + GetCppString(Name);
+    strStyle := GetLabelSpecificStyle(Wx_GeneralStyle, Wx_LabelStyle);
+    If trim(strStyle) = '' Then
+        strStyle := '0';
+    strStyle := ', ' + strStyle + ', ' + GetCppString(Name);
 
- if (XRCGEN) then
- begin //xrc export
+    If (XRCGEN) Then
+    Begin //xrc export
   //Last comma is removed because it depends on the user selection of the properties.
-  Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
-    [self.Name, parentName, StringFormat, self.Name, self.wx_Class]);
-  
- end
- else
- begin //cpp export
+        Result := GetCommentString(self.FWx_Comments.Text) +
+            Format('%s = XRCCTRL(*%s, %s("%s"), %s);',
+            [self.Name, parentName, StringFormat, self.Name, self.wx_Class]);
+
+    End
+    Else
+    Begin //cpp export
 
   //Last comma is removed because it depends on the user selection of the properties.
-  Result := GetCommentString(self.FWx_Comments.Text) +
-    Format('%s = new %s(%s, %s, %s, %s, %s%s);',
-    [self.Name, self.Wx_Class, ParentName, GetWxIDString(self.Wx_IDName,
-    self.Wx_IDValue),
-    GetCppString(self.Caption), GetWxPosition(self.Left, self.Top), strSize, strStyle]);
- end;
+        Result := GetCommentString(self.FWx_Comments.Text) +
+            Format('%s = new %s(%s, %s, %s, %s, %s%s);',
+            [self.Name, self.Wx_Class, ParentName, GetWxIDString(self.Wx_IDName,
+            self.Wx_IDValue),
+            GetCppString(self.Caption), GetWxPosition(self.Left, self.Top), strSize, strStyle]);
+    End;
 
-  if trim(self.Wx_ToolTip) <> '' then
-    Result := Result + #13 + Format('%s->SetToolTip(%s);',
-      [self.Name, GetCppString(self.Wx_ToolTip)]);
+    If trim(self.Wx_ToolTip) <> '' Then
+        Result := Result + #13 + Format('%s->SetToolTip(%s);',
+            [self.Name, GetCppString(self.Wx_ToolTip)]);
 
-  if self.Wx_Hidden then
-    Result := Result + #13 + Format('%s->Show(false);', [self.Name]);
+    If self.Wx_Hidden Then
+        Result := Result + #13 + Format('%s->Show(false);', [self.Name]);
 
-  if not Wx_Enabled then
-    Result := Result + #13 + Format('%s->Enable(false);', [self.Name]);
+    If Not Wx_Enabled Then
+        Result := Result + #13 + Format('%s->Enable(false);', [self.Name]);
 
-  if trim(self.Wx_HelpText) <> '' then
-    Result := Result + #13 + Format('%s->SetHelpText(%s);',
-      [self.Name, GetCppString(self.Wx_HelpText)]);
+    If trim(self.Wx_HelpText) <> '' Then
+        Result := Result + #13 + Format('%s->SetHelpText(%s);',
+            [self.Name, GetCppString(self.Wx_HelpText)]);
 
-  strColorStr := trim(GetwxColorFromString(InvisibleFGColorString));
-  if strColorStr <> '' then
-    Result := Result + #13 + Format('%s->SetForegroundColour(%s);',
-      [self.Name, strColorStr]);
+    strColorStr := trim(GetwxColorFromString(InvisibleFGColorString));
+    If strColorStr <> '' Then
+        Result := Result + #13 + Format('%s->SetForegroundColour(%s);',
+            [self.Name, strColorStr]);
 
-  strColorStr := trim(GetwxColorFromString(InvisibleBGColorString));
-  if strColorStr <> '' then
-    Result := Result + #13 + Format('%s->SetBackgroundColour(%s);',
-      [self.Name, strColorStr]);
+    strColorStr := trim(GetwxColorFromString(InvisibleBGColorString));
+    If strColorStr <> '' Then
+        Result := Result + #13 + Format('%s->SetBackgroundColour(%s);',
+            [self.Name, strColorStr]);
 
 
-  strColorStr := GetWxFontDeclaration(self.Font);
-  if strColorStr <> '' then
-    Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
-if not (XRCGEN) then //NUKLEAR ZELPH
-  begin
-    if (Wx_AuiManaged and FormHasAuiManager(self)) and not (self.Parent is TWxSizerPanel) then
-    begin
-      if HasToolbarPaneStyle(Self.Wx_Aui_Pane_Style) then
-      begin
-        Self.Wx_Aui_Pane_Style := Self.Wx_Aui_Pane_Style + [ToolbarPane]; //always make sure we are a toolbar
-        Self.Wx_Layer := 10;
-      end;
+    strColorStr := GetWxFontDeclaration(self.Font);
+    If strColorStr <> '' Then
+        Result := Result + #13 + Format('%s->SetFont(%s);', [self.Name, strColorStr]);
+    If Not (XRCGEN) Then //NUKLEAR ZELPH
+    Begin
+        If (Wx_AuiManaged And FormHasAuiManager(self)) And Not (self.Parent Is TWxSizerPanel) Then
+        Begin
+            If HasToolbarPaneStyle(Self.Wx_Aui_Pane_Style) Then
+            Begin
+                Self.Wx_Aui_Pane_Style := Self.Wx_Aui_Pane_Style + [ToolbarPane]; //always make sure we are a toolbar
+                Self.Wx_Layer := 10;
+            End;
 
-      if not HasToolbarPaneStyle(Self.Wx_Aui_Pane_Style) then
-      begin
-        if (self.Parent.ClassName = 'TWxPanel') then
-          if not (self.Parent.Parent is TForm) then
-            Result := Result + #13 + Format('%s->Reparent(this);', [parentName]);
-      end;
+            If Not HasToolbarPaneStyle(Self.Wx_Aui_Pane_Style) Then
+            Begin
+                If (self.Parent.ClassName = 'TWxPanel') Then
+                    If Not (self.Parent.Parent Is TForm) Then
+                        Result := Result + #13 + Format('%s->Reparent(this);', [parentName]);
+            End;
 
-      if (self.Parent is TWxAuiToolBar) then
-        Result := Result + #13 + Format('%s->AddControl(%s);',
-          [self.Parent.Name, self.Name])
-      else
-        Result := Result + #13 + Format('%s->AddPane(%s, wxAuiPaneInfo()%s%s%s%s%s%s%s%s%s%s%s%s);',
-          [GetAuiManagerName(self), self.Name,
-          GetAuiPaneName(Self.Wx_PaneName),
-            GetAuiPaneCaption(Self.Wx_PaneCaption),
-            GetAuiDockDirection(Self.Wx_Aui_Dock_Direction),
-            GetAuiDockableDirections(self.Wx_Aui_Dockable_Direction),
-            GetAui_Pane_Style(Self.Wx_Aui_Pane_Style),
-            GetAui_Pane_Buttons(Self.Wx_Aui_Pane_Buttons),
-            GetAuiRow(Self.Wx_Row),
-            GetAuiPosition(Self.Wx_Position),
-            GetAuiLayer(Self.Wx_Layer),
-            GetAuiPaneBestSize(Self.Wx_BestSize_Width, Self.Wx_BestSize_Height),
-            GetAuiPaneMinSize(Self.Wx_MinSize_Width, Self.Wx_MinSize_Height),
-            GetAuiPaneMaxSize(Self.Wx_MaxSize_Width, Self.Wx_MaxSize_Height)]);
+            If (self.Parent Is TWxAuiToolBar) Then
+                Result := Result + #13 + Format('%s->AddControl(%s);',
+                    [self.Parent.Name, self.Name])
+            Else
+                Result := Result + #13 + Format('%s->AddPane(%s, wxAuiPaneInfo()%s%s%s%s%s%s%s%s%s%s%s%s);',
+                    [GetAuiManagerName(self), self.Name,
+                    GetAuiPaneName(Self.Wx_PaneName),
+                    GetAuiPaneCaption(Self.Wx_PaneCaption),
+                    GetAuiDockDirection(Self.Wx_Aui_Dock_Direction),
+                    GetAuiDockableDirections(self.Wx_Aui_Dockable_Direction),
+                    GetAui_Pane_Style(Self.Wx_Aui_Pane_Style),
+                    GetAui_Pane_Buttons(Self.Wx_Aui_Pane_Buttons),
+                    GetAuiRow(Self.Wx_Row),
+                    GetAuiPosition(Self.Wx_Position),
+                    GetAuiLayer(Self.Wx_Layer),
+                    GetAuiPaneBestSize(Self.Wx_BestSize_Width, Self.Wx_BestSize_Height),
+                    GetAuiPaneMinSize(Self.Wx_MinSize_Width, Self.Wx_MinSize_Height),
+                    GetAuiPaneMaxSize(Self.Wx_MaxSize_Width, Self.Wx_MaxSize_Height)]);
 
-    end
-    else
-    begin
-  if (self.Parent is TWxSizerPanel) then
-  begin
-    strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
-    Result := Result + #13 + Format('%s->Add(%s, %d, %s, %d);',
-      [self.Parent.Name, self.Name, self.Wx_StretchFactor, strAlignment,
-      self.Wx_Border]);
-  end;
+        End
+        Else
+        Begin
+            If (self.Parent Is TWxSizerPanel) Then
+            Begin
+                strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
+                Result := Result + #13 + Format('%s->Add(%s, %d, %s, %d);',
+                    [self.Parent.Name, self.Name, self.Wx_StretchFactor, strAlignment,
+                    self.Wx_Border]);
+            End;
 
-      if (self.Parent is TWxAuiNotebookPage) then
-      begin
+            If (self.Parent Is TWxAuiNotebookPage) Then
+            Begin
         //        strParentLabel := TWxAuiNoteBookPage(Self.Parent).Caption;
-        Result := Result + #13 + Format('%s->AddPage(%s, %s);',
+                Result := Result + #13 + Format('%s->AddPage(%s, %s);',
           //          [self.Parent.Parent.Name, self.Name, GetCppString(strParentLabel)]);
-          [self.Parent.Parent.Name, self.Name, GetCppString(TWxAuiNoteBookPage(Self.Parent).Caption)]);
-      end;
+                    [self.Parent.Parent.Name, self.Name, GetCppString(TWxAuiNoteBookPage(Self.Parent).Caption)]);
+            End;
 
-      if (self.Parent is TWxAuiToolBar) or (self.Parent is TWxToolBar) then
-    Result := Result + #13 + Format('%s->AddControl(%s);',
-      [self.Parent.Name, self.Name]);
-    end;
-  end;
+            If (self.Parent Is TWxAuiToolBar) Or (self.Parent Is TWxToolBar) Then
+                Result := Result + #13 + Format('%s->AddControl(%s);',
+                    [self.Parent.Name, self.Name]);
+        End;
+    End;
 
   // Change the text justification in the form designer
-  if wxST_ALIGN_LEFT in Wx_LabelStyle then
-    self.Alignment := taLeftJustify;
+    If wxST_ALIGN_LEFT In Wx_LabelStyle Then
+        self.Alignment := taLeftJustify;
 
-  if wxST_ALIGN_CENTRE in Wx_LabelStyle then
-    self.Alignment := taCenter;
+    If wxST_ALIGN_CENTRE In Wx_LabelStyle Then
+        self.Alignment := taCenter;
 
-  if wxST_ALIGN_RIGHT in Wx_LabelStyle then
-    self.Alignment := taRightJustify;
+    If wxST_ALIGN_RIGHT In Wx_LabelStyle Then
+        self.Alignment := taRightJustify;
 
-  if wxST_NO_AUTORESIZE in Wx_LabelStyle then
-    self.AutoSize := False
-  else begin
-    self.AutoSize := True;
-    self.Repaint;
-    self.SelectFirst;
-  end;
+    If wxST_NO_AUTORESIZE In Wx_LabelStyle Then
+        self.AutoSize := False
+    Else
+    Begin
+        self.AutoSize := True;
+        self.Repaint;
+        self.SelectFirst;
+    End;
 
-end;
+End;
 
-function TWxStaticText.GenerateGUIControlDeclaration: string;
-begin
-  Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
-end;
+Function TWxStaticText.GenerateGUIControlDeclaration: String;
+Begin
+    Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
+End;
 
-function TWxStaticText.GenerateHeaderInclude: string;
-begin
-  Result := '#include <wx/stattext.h>';
-end;
+Function TWxStaticText.GenerateHeaderInclude: String;
+Begin
+    Result := '#include <wx/stattext.h>';
+End;
 
-function TWxStaticText.GenerateImageInclude: string;
-begin
+Function TWxStaticText.GenerateImageInclude: String;
+Begin
 
-end;
+End;
 
-function TWxStaticText.GetEventList: TStringList;
-begin
-  Result := FWx_EventList;
-end;
+Function TWxStaticText.GetEventList: TStringList;
+Begin
+    Result := FWx_EventList;
+End;
 
-function TWxStaticText.GetIDName: string;
-begin
-  Result := wx_IDName;
-end;
+Function TWxStaticText.GetIDName: String;
+Begin
+    Result := wx_IDName;
+End;
 
-function TWxStaticText.GetIDValue: integer;
-begin
-  Result := wx_IDValue;
-end;
+Function TWxStaticText.GetIDValue: Integer;
+Begin
+    Result := wx_IDValue;
+End;
 
-function TWxStaticText.GetParameterFromEventName(EventName: string): string;
-begin
+Function TWxStaticText.GetParameterFromEventName(EventName: String): String;
+Begin
 
-end;
+End;
 
-function TWxStaticText.GetPropertyList: TStringList;
-begin
-  Result := FWx_PropertyList;
-end;
+Function TWxStaticText.GetPropertyList: TStringList;
+Begin
+    Result := FWx_PropertyList;
+End;
 
-function TWxStaticText.GetStretchFactor: integer;
-begin
-  Result := FWx_StretchFactor;
-end;
+Function TWxStaticText.GetStretchFactor: Integer;
+Begin
+    Result := FWx_StretchFactor;
+End;
 
-function TWxStaticText.GetTypeFromEventName(EventName: string): string;
-begin
+Function TWxStaticText.GetTypeFromEventName(EventName: String): String;
+Begin
 
-end;
+End;
 
-function TWxStaticText.GetWxClassName: string;
-begin
-  if trim(wx_Class) = '' then
-    wx_Class := 'wxStaticText';
-  Result := wx_Class;
-end;
+Function TWxStaticText.GetWxClassName: String;
+Begin
+    If trim(wx_Class) = '' Then
+        wx_Class := 'wxStaticText';
+    Result := wx_Class;
+End;
 
-function TWxStaticText.GetBorderAlignment: TWxBorderAlignment;
-begin
-  Result := FWx_BorderAlignment;
-end;
+Function TWxStaticText.GetBorderAlignment: TWxBorderAlignment;
+Begin
+    Result := FWx_BorderAlignment;
+End;
 
-procedure TWxStaticText.SetBorderAlignment(border: TWxBorderAlignment);
-begin
-  FWx_BorderAlignment := border;
-end;
+Procedure TWxStaticText.SetBorderAlignment(border: TWxBorderAlignment);
+Begin
+    FWx_BorderAlignment := border;
+End;
 
-function TWxStaticText.GetBorderWidth: integer;
-begin
-  Result := FWx_Border;
-end;
+Function TWxStaticText.GetBorderWidth: Integer;
+Begin
+    Result := FWx_Border;
+End;
 
-procedure TWxStaticText.SetBorderWidth(width: integer);
-begin
-  FWx_Border := width;
-end;
+Procedure TWxStaticText.SetBorderWidth(width: Integer);
+Begin
+    FWx_Border := width;
+End;
 
-procedure TWxStaticText.Loaded;
-begin
-  inherited Loaded;
+Procedure TWxStaticText.Loaded;
+Begin
+    Inherited Loaded;
 
      { Perform any component setup that depends on the property
        values having been set }
 
-end;
+End;
 
-procedure TWxStaticText.SaveControlOrientation(ControlOrientation:
-  TWxControlOrientation);
-begin
-  wx_ControlOrientation := ControlOrientation;
-end;
+Procedure TWxStaticText.SaveControlOrientation(ControlOrientation:
+    TWxControlOrientation);
+Begin
+    wx_ControlOrientation := ControlOrientation;
+End;
 
-procedure TWxStaticText.SetIDName(IDName: string);
-begin
-  wx_IDName := IDName;
-end;
+Procedure TWxStaticText.SetIDName(IDName: String);
+Begin
+    wx_IDName := IDName;
+End;
 
-procedure TWxStaticText.SetIDValue(IDValue: integer);
-begin
-  Wx_IDValue := IDVAlue;
-end;
+Procedure TWxStaticText.SetIDValue(IDValue: Integer);
+Begin
+    Wx_IDValue := IDVAlue;
+End;
 
-procedure TWxStaticText.SetStretchFactor(intValue: integer);
-begin
-  FWx_StretchFactor := intValue;
-end;
+Procedure TWxStaticText.SetStretchFactor(intValue: Integer);
+Begin
+    FWx_StretchFactor := intValue;
+End;
 
-procedure TWxStaticText.SetWxClassName(wxClassName: string);
-begin
-  wx_Class := wxClassName;
-end;
+Procedure TWxStaticText.SetWxClassName(wxClassName: String);
+Begin
+    wx_Class := wxClassName;
+End;
 
-procedure TWxStaticText.WMSize(var Message: TWMSize);
-var
-  W, H: integer;
-begin
-  inherited;
+Procedure TWxStaticText.WMSize(Var Message: TWMSize);
+Var
+    W, H: Integer;
+Begin
+    Inherited;
 
   //Copy the new width and height of the component so we can use SetBounds to
   //change both at once
-  W := Width;
-  H := Height;
+    W := Width;
+    H := Height;
 
   //Update the component size if we adjusted W or H
-  if (W <> Width) or (H <> Height) then
-    inherited SetBounds(Left, Top, W, H);
+    If (W <> Width) Or (H <> Height) Then
+        Inherited SetBounds(Left, Top, W, H);
 
-  Message.Result := 0;
-end;
+    Message.Result := 0;
+End;
 
-function TWxStaticText.GetGenericColor(strVariableName:String): string;
-begin
+Function TWxStaticText.GetGenericColor(strVariableName: String): String;
+Begin
 
-end;
-procedure TWxStaticText.SetGenericColor(strVariableName,strValue: string);
-begin
+End;
+Procedure TWxStaticText.SetGenericColor(strVariableName, strValue: String);
+Begin
 
-end;
+End;
 
-function TWxStaticText.GetFGColor: string;
-begin
-  Result := FInvisibleFGColorString;
-end;
+Function TWxStaticText.GetFGColor: String;
+Begin
+    Result := FInvisibleFGColorString;
+End;
 
-procedure TWxStaticText.SetFGColor(strValue: string);
-begin
-  FInvisibleFGColorString := strValue;
+Procedure TWxStaticText.SetFGColor(strValue: String);
+Begin
+    FInvisibleFGColorString := strValue;
 
-  if IsDefaultColorStr(strValue) then
-    self.Font.Color := defaultFGColor
-  else
-    self.Font.Color := GetColorFromString(strValue);
-end;
+    If IsDefaultColorStr(strValue) Then
+        self.Font.Color := defaultFGColor
+    Else
+        self.Font.Color := GetColorFromString(strValue);
+End;
 
-function TWxStaticText.GetBGColor: string;
-begin
-  Result := FInvisibleBGColorString;
-end;
+Function TWxStaticText.GetBGColor: String;
+Begin
+    Result := FInvisibleBGColorString;
+End;
 
-procedure TWxStaticText.SetBGColor(strValue: string);
-begin
-  FInvisibleBGColorString := strValue;
-  if IsDefaultColorStr(strValue) then
-    self.Color := defaultBGColor
-  else
-    self.Color := GetColorFromString(strValue);
-end;
+Procedure TWxStaticText.SetBGColor(strValue: String);
+Begin
+    FInvisibleBGColorString := strValue;
+    If IsDefaultColorStr(strValue) Then
+        self.Color := defaultBGColor
+    Else
+        self.Color := GetColorFromString(strValue);
+End;
 
-procedure TWxStaticText.SetProxyFGColorString(Value: string);
-begin
-  FInvisibleFGColorString := Value;
-  self.Color := GetColorFromString(Value);
-end;
+Procedure TWxStaticText.SetProxyFGColorString(Value: String);
+Begin
+    FInvisibleFGColorString := Value;
+    self.Color := GetColorFromString(Value);
+End;
 
-procedure TWxStaticText.SetProxyBGColorString(Value: string);
-begin
-  FInvisibleBGColorString := Value;
-  self.Font.Color := GetColorFromString(Value);
-end;
+Procedure TWxStaticText.SetProxyBGColorString(Value: String);
+Begin
+    FInvisibleBGColorString := Value;
+    self.Font.Color := GetColorFromString(Value);
+End;
 
-function TWxStaticText.GetLHSVariableAssignment:String;
-begin
-    Result:='';
-    if trim(Wx_LHSValue) = '' then
+Function TWxStaticText.GetLHSVariableAssignment: String;
+Begin
+    Result := '';
+    If trim(Wx_LHSValue) = '' Then
         exit;
-    Result:= Format('%s = %s->GetValue();',[Wx_LHSValue,self.Name]);
-end;
+    Result := Format('%s = %s->GetValue();', [Wx_LHSValue, self.Name]);
+End;
 
-function TWxStaticText.GetRHSVariableAssignment:String;
-begin
-    Result:='';
-    if trim(Wx_RHSValue) = '' then
+Function TWxStaticText.GetRHSVariableAssignment: String;
+Begin
+    Result := '';
+    If trim(Wx_RHSValue) = '' Then
         exit;
-    Result:= Format('%s->SetValue(%s);',[self.Name,Wx_RHSValue]);
-end;
+    Result := Format('%s->SetValue(%s);', [self.Name, Wx_RHSValue]);
+End;
 
 
-end.
+End.

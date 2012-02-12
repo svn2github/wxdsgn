@@ -24,127 +24,127 @@
 { ****************************************************************** }
 
 
-unit WxFindReplaceDialog;
+Unit WxFindReplaceDialog;
 
-interface
+Interface
 
-uses
-  Windows, Messages, SysUtils, Classes, wxUtils, WxNonVisibleBaseComponent;
+Uses
+    Windows, Messages, SysUtils, Classes, wxUtils, WxNonVisibleBaseComponent;
 
-type
-  TWxFindReplaceDialog = class(TWxNonVisibleBaseComponent, IWxComponentInterface)
-  private
+Type
+    TWxFindReplaceDialog = Class(TWxNonVisibleBaseComponent, IWxComponentInterface)
+    Private
     { Private declarations }
-    FWx_Class: string;
-    FWx_PropertyList: TStringList;
-    FWx_FindString: string;
-    FWx_ReplaceString: string;
-    FWx_Title: string;
-    FWx_Flags: TWxFindReplaceFlagSet;
-    FWx_Styles: TwxFindReplaceDialogStyleSet;
+        FWx_Class: String;
+        FWx_PropertyList: TStringList;
+        FWx_FindString: String;
+        FWx_ReplaceString: String;
+        FWx_Title: String;
+        FWx_Flags: TWxFindReplaceFlagSet;
+        FWx_Styles: TwxFindReplaceDialogStyleSet;
 
-    FEVT_FIND: string;
-    FEVT_FIND_NEXT: string;
-    FEVT_FIND_REPLACE: string;
-    FEVT_FIND_REPLACE_ALL: string;
-    FEVT_FIND_CLOSE: string;
-    FEVT_UPDATE_UI: string;
-    FWx_EventList: TStringList;
+        FEVT_FIND: String;
+        FEVT_FIND_NEXT: String;
+        FEVT_FIND_REPLACE: String;
+        FEVT_FIND_REPLACE_ALL: String;
+        FEVT_FIND_CLOSE: String;
+        FEVT_UPDATE_UI: String;
+        FWx_EventList: TStringList;
 
-    procedure AutoInitialize;
-    procedure AutoDestroy;
+        Procedure AutoInitialize;
+        Procedure AutoDestroy;
 
-  protected
+    Protected
 
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    function GenerateControlIDs: string;
-    function GenerateEnumControlIDs: string;
-    function GenerateEventTableEntries(CurrClassName: string): string;
-    function GenerateGUIControlCreation: string;
-    function GenerateXRCControlCreation(IndentString: string): TStringList;
-    function GenerateGUIControlDeclaration: string;
-    function GenerateHeaderInclude: string;
-    function GenerateImageInclude: string;
-    function GetEventList: TStringList;
-    function GetIDName: string;
-    function GetIDValue: integer;
-    function GetParameterFromEventName(EventName: string): string;
-    function GetPropertyList: TStringList;
-    function GetTypeFromEventName(EventName: string): string;
-    function GetWxClassName: string;
-    procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
-    procedure SetIDName(IDName: string);
-    procedure SetIDValue(IDValue: integer);
-    procedure SetWxClassName(wxClassName: string);
-    function GetFGColor: string;
-    procedure SetFGColor(strValue: string);
-    function GetBGColor: string;
-    procedure SetBGColor(strValue: string);
+    Public
+        Constructor Create(AOwner: TComponent); Override;
+        Destructor Destroy; Override;
+        Function GenerateControlIDs: String;
+        Function GenerateEnumControlIDs: String;
+        Function GenerateEventTableEntries(CurrClassName: String): String;
+        Function GenerateGUIControlCreation: String;
+        Function GenerateXRCControlCreation(IndentString: String): TStringList;
+        Function GenerateGUIControlDeclaration: String;
+        Function GenerateHeaderInclude: String;
+        Function GenerateImageInclude: String;
+        Function GetEventList: TStringList;
+        Function GetIDName: String;
+        Function GetIDValue: Integer;
+        Function GetParameterFromEventName(EventName: String): String;
+        Function GetPropertyList: TStringList;
+        Function GetTypeFromEventName(EventName: String): String;
+        Function GetWxClassName: String;
+        Procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
+        Procedure SetIDName(IDName: String);
+        Procedure SetIDValue(IDValue: Integer);
+        Procedure SetWxClassName(wxClassName: String);
+        Function GetFGColor: String;
+        Procedure SetFGColor(strValue: String);
+        Function GetBGColor: String;
+        Procedure SetBGColor(strValue: String);
 
-    function GetGenericColor(strVariableName:String): string;
-    procedure SetGenericColor(strVariableName,strValue: string);
+        Function GetGenericColor(strVariableName: String): String;
+        Procedure SetGenericColor(strVariableName, strValue: String);
 
-    procedure SetProxyFGColorString(Value: string);
-    procedure SetProxyBGColorString(Value: string);
+        Procedure SetProxyFGColorString(Value: String);
+        Procedure SetProxyBGColorString(Value: String);
 
-    function GetBorderAlignment: TWxBorderAlignment;
-    procedure SetBorderAlignment(border: TWxBorderAlignment);
-    function GetBorderWidth: integer;
-    procedure SetBorderWidth(width: integer);
-    function GetStretchFactor: integer;
-    procedure SetStretchFactor(intValue: integer);
+        Function GetBorderAlignment: TWxBorderAlignment;
+        Procedure SetBorderAlignment(border: TWxBorderAlignment);
+        Function GetBorderWidth: Integer;
+        Procedure SetBorderWidth(width: Integer);
+        Function GetStretchFactor: Integer;
+        Procedure SetStretchFactor(intValue: Integer);
 
-  published
+    Published
     { Published declarations }
-    property Wx_Class: string Read FWx_Class Write FWx_Class;
-    property Wx_FindString: string Read FWx_FindString Write FWx_FindString;
-    property Wx_ReplaceString: string Read FWx_ReplaceString Write FWx_ReplaceString;
-    property Wx_Title: string Read FWx_Title Write FWx_Title;
-    property Wx_Flags: TWxFindReplaceFlagSet Read FWx_Flags Write FWx_Flags;
-    property Wx_Styles: TwxFindReplaceDialogStyleSet Read FWx_Styles Write FWx_Styles;
+        Property Wx_Class: String Read FWx_Class Write FWx_Class;
+        Property Wx_FindString: String Read FWx_FindString Write FWx_FindString;
+        Property Wx_ReplaceString: String Read FWx_ReplaceString Write FWx_ReplaceString;
+        Property Wx_Title: String Read FWx_Title Write FWx_Title;
+        Property Wx_Flags: TWxFindReplaceFlagSet Read FWx_Flags Write FWx_Flags;
+        Property Wx_Styles: TwxFindReplaceDialogStyleSet Read FWx_Styles Write FWx_Styles;
 
-    property EVT_FIND: string Read FEVT_FIND Write FEVT_FIND;
-    property EVT_FIND_NEXT: string Read FEVT_FIND_NEXT Write FEVT_FIND_NEXT;
-    property EVT_FIND_REPLACE: string Read FEVT_FIND_REPLACE Write FEVT_FIND_REPLACE;
-    property EVT_FIND_REPLACE_ALL: string Read FEVT_FIND_REPLACE_ALL Write FEVT_FIND_REPLACE_ALL;
-    property EVT_FIND_CLOSE: string Read FEVT_FIND_CLOSE Write FEVT_FIND_CLOSE;
-    property EVT_UPDATE_UI: string Read FEVT_UPDATE_UI Write FEVT_UPDATE_UI;
-    property Wx_EventList: TStringList Read FWx_EventList Write FWx_EventList;
-  end;
+        Property EVT_FIND: String Read FEVT_FIND Write FEVT_FIND;
+        Property EVT_FIND_NEXT: String Read FEVT_FIND_NEXT Write FEVT_FIND_NEXT;
+        Property EVT_FIND_REPLACE: String Read FEVT_FIND_REPLACE Write FEVT_FIND_REPLACE;
+        Property EVT_FIND_REPLACE_ALL: String Read FEVT_FIND_REPLACE_ALL Write FEVT_FIND_REPLACE_ALL;
+        Property EVT_FIND_CLOSE: String Read FEVT_FIND_CLOSE Write FEVT_FIND_CLOSE;
+        Property EVT_UPDATE_UI: String Read FEVT_UPDATE_UI Write FEVT_UPDATE_UI;
+        Property Wx_EventList: TStringList Read FWx_EventList Write FWx_EventList;
+    End;
 
-procedure Register;
+Procedure Register;
 
-implementation
+Implementation
 
-procedure Register;
-begin
-  RegisterComponents('wxWidgets', [TWxFindReplaceDialog]);
-end;
+Procedure Register;
+Begin
+    RegisterComponents('wxWidgets', [TWxFindReplaceDialog]);
+End;
 
 { Method to set variable and property values and create objects }
-procedure TWxFindReplaceDialog.AutoInitialize;
-begin
-  FWx_PropertyList := TStringList.Create;
-  FWx_Class    := 'wxFindReplaceDialog';
-  Glyph.Handle := LoadBitmap(hInstance, 'TWxFindReplaceDialog');
-  FWx_EventList          := TStringList.Create;
+Procedure TWxFindReplaceDialog.AutoInitialize;
+Begin
+    FWx_PropertyList := TStringList.Create;
+    FWx_Class := 'wxFindReplaceDialog';
+    Glyph.Handle := LoadBitmap(hInstance, 'TWxFindReplaceDialog');
+    FWx_EventList := TStringList.Create;
 
-end; { of AutoInitialize }
+End; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
-procedure TWxFindReplaceDialog.AutoDestroy;
-begin
-  FWx_PropertyList.Destroy;
-  Glyph.Assign(nil);
-  FWx_EventList.Destroy;
-end; { of AutoDestroy }
+Procedure TWxFindReplaceDialog.AutoDestroy;
+Begin
+    FWx_PropertyList.Destroy;
+    Glyph.Assign(Nil);
+    FWx_EventList.Destroy;
+End; { of AutoDestroy }
 
-constructor TWxFindReplaceDialog.Create(AOwner: TComponent);
-begin
+Constructor TWxFindReplaceDialog.Create(AOwner: TComponent);
+Begin
   { Call the Create method of the container's parent class       }
-  inherited Create(AOwner);
+    Inherited Create(AOwner);
 
   { AutoInitialize sets the initial values of variables          }
   { (including subcomponent variables) and properties;           }
@@ -152,44 +152,44 @@ begin
   { Delphi object types (e.g., TFont, TTimer, TPicture)          }
   { and for any variables marked as objects.                     }
   { AutoInitialize method is generated by Component Create.      }
-  AutoInitialize;
+    AutoInitialize;
 
   { Code to perform other tasks when the component is created }
   { Code to perform other tasks when the component is created }
-  FWx_PropertyList.add('Wx_Flags:Flags');
-  FWx_PropertyList.add('Wx_Styles:Styles');
+    FWx_PropertyList.add('Wx_Flags:Flags');
+    FWx_PropertyList.add('Wx_Styles:Styles');
 
-  FWx_PropertyList.add('wxFR_DOWN:wxFR_DOWN');
-  FWx_PropertyList.add('wxFR_WHOLEWORD:wxFR_WHOLEWORD');
-  FWx_PropertyList.add('wxFR_MATCHCASE:wxFR_MATCHCASE');
-  FWx_PropertyList.add('wxFR_REPLACEDIALOG:wxFR_REPLACEDIALOG');
-  FWx_PropertyList.add('wxFR_NOUPDOWN:wxFR_NOUPDOWN');
-  FWx_PropertyList.add('wxFR_NOMATCHCASE:wxFR_NOMATCHCASE');
-  FWx_PropertyList.add('wxFR_NOWHOLEWORD:wxFR_NOWHOLEWORD');
+    FWx_PropertyList.add('wxFR_DOWN:wxFR_DOWN');
+    FWx_PropertyList.add('wxFR_WHOLEWORD:wxFR_WHOLEWORD');
+    FWx_PropertyList.add('wxFR_MATCHCASE:wxFR_MATCHCASE');
+    FWx_PropertyList.add('wxFR_REPLACEDIALOG:wxFR_REPLACEDIALOG');
+    FWx_PropertyList.add('wxFR_NOUPDOWN:wxFR_NOUPDOWN');
+    FWx_PropertyList.add('wxFR_NOMATCHCASE:wxFR_NOMATCHCASE');
+    FWx_PropertyList.add('wxFR_NOWHOLEWORD:wxFR_NOWHOLEWORD');
 
-  FWx_PropertyList.add('Wx_Message:Message');
-  FWx_PropertyList.add('Name:Name');
-  FWx_PropertyList.add('Wx_Class:Base Class');
-  FWx_PropertyList.add('Wx_Title:Title');
+    FWx_PropertyList.add('Wx_Message:Message');
+    FWx_PropertyList.add('Name:Name');
+    FWx_PropertyList.add('Wx_Class:Base Class');
+    FWx_PropertyList.add('Wx_Title:Title');
 
-  FWx_PropertyList.add('Wx_FindString:FindString');
-  FWx_PropertyList.add('Wx_ReplaceString:ReplaceString');
+    FWx_PropertyList.add('Wx_FindString:FindString');
+    FWx_PropertyList.add('Wx_ReplaceString:ReplaceString');
 
-  FWx_EventList.add('EVT_FIND:OnFind');
-  FWx_EventList.add('EVT_FIND_NEXT:OnFindNext');
-  FWx_EventList.add('EVT_FIND_REPLACE:OnReplace');
-  FWx_EventList.add('EVT_FIND_REPLACE_ALL:OnReplaceAll');
-  FWx_EventList.add('EVT_FIND_CLOSE:OnClose');
-  FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
+    FWx_EventList.add('EVT_FIND:OnFind');
+    FWx_EventList.add('EVT_FIND_NEXT:OnFindNext');
+    FWx_EventList.add('EVT_FIND_REPLACE:OnReplace');
+    FWx_EventList.add('EVT_FIND_REPLACE_ALL:OnReplaceAll');
+    FWx_EventList.add('EVT_FIND_CLOSE:OnClose');
+    FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
 
 
-end;
+End;
 
-destructor TWxFindReplaceDialog.Destroy;
-begin
+Destructor TWxFindReplaceDialog.Destroy;
+Begin
   { AutoDestroy, which is generated by Component Create, frees any   }
   { objects created by AutoInitialize.                               }
-  AutoDestroy;
+    AutoDestroy;
 
   { Here, free any other dynamic objects that the component methods  }
   { created but have not yet freed.  Also perform any other clean-up }
@@ -197,287 +197,287 @@ begin
 
   { Last, free the component by calling the Destroy method of the    }
   { parent class.                                                    }
-  inherited Destroy;
-end;
+    Inherited Destroy;
+End;
 
-function TWxFindReplaceDialog.GenerateControlIDs: string;
-begin
-  Result := '';
-end;
+Function TWxFindReplaceDialog.GenerateControlIDs: String;
+Begin
+    Result := '';
+End;
 
-function TWxFindReplaceDialog.GenerateEnumControlIDs: string;
-begin
-  Result := '';
-end;
+Function TWxFindReplaceDialog.GenerateEnumControlIDs: String;
+Begin
+    Result := '';
+End;
 
-function TWxFindReplaceDialog.GenerateEventTableEntries(CurrClassName: string): string;
-begin
-  Result := '';
+Function TWxFindReplaceDialog.GenerateEventTableEntries(CurrClassName: String): String;
+Begin
+    Result := '';
 
-  if (XRCGEN) then
- begin
-  if trim(EVT_FIND) <> '' then
-    Result :=  Result + #13 + Format('EVT_FIND(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName,
-      EVT_FIND]) + '';
+    If (XRCGEN) Then
+    Begin
+        If trim(EVT_FIND) <> '' Then
+            Result := Result + #13 + Format('EVT_FIND(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName,
+                EVT_FIND]) + '';
 
-  if trim(EVT_FIND_NEXT) <> '' then
-    Result :=  Result + #13 + Format('EVT_FIND_NEXT(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName,
-      EVT_FIND_NEXT]) + '';
+        If trim(EVT_FIND_NEXT) <> '' Then
+            Result := Result + #13 + Format('EVT_FIND_NEXT(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName,
+                EVT_FIND_NEXT]) + '';
 
-  if trim(EVT_FIND_REPLACE) <> '' then
-    Result :=  Result + #13 + Format('EVT_FIND_REPLACE(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName,
-      EVT_FIND_REPLACE]) + '';
+        If trim(EVT_FIND_REPLACE) <> '' Then
+            Result := Result + #13 + Format('EVT_FIND_REPLACE(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName,
+                EVT_FIND_REPLACE]) + '';
 
-  if trim(EVT_FIND_REPLACE_ALL) <> '' then
-    Result :=  Result + #13 + Format('EVT_FIND_REPLACE_ALL(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName,
-      EVT_FIND_REPLACE_ALL]) + '';
+        If trim(EVT_FIND_REPLACE_ALL) <> '' Then
+            Result := Result + #13 + Format('EVT_FIND_REPLACE_ALL(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName,
+                EVT_FIND_REPLACE_ALL]) + '';
 
-  if trim(EVT_FIND_CLOSE) <> '' then
-    Result :=  Result + #13 + Format('EVT_FIND_CLOSE(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName,
-      EVT_FIND_CLOSE]) + '';
+        If trim(EVT_FIND_CLOSE) <> '' Then
+            Result := Result + #13 + Format('EVT_FIND_CLOSE(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName,
+                EVT_FIND_CLOSE]) + '';
 
-  if trim(EVT_UPDATE_UI) <> '' then
-    Result := Result + #13 + Format('EVT_UPDATE_UI(XRCID(%s("%s")),%s::%s)',
-      [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + '';
+        If trim(EVT_UPDATE_UI) <> '' Then
+            Result := Result + #13 + Format('EVT_UPDATE_UI(XRCID(%s("%s")),%s::%s)',
+                [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + '';
 
- end
- else
- begin
-  if trim(EVT_FIND) <> '' then
-    Result :=  Result + #13 + Format('EVT_FIND(wxID_ANY,%s::%s)', [CurrClassName,
-      EVT_FIND]) + '';
+    End
+    Else
+    Begin
+        If trim(EVT_FIND) <> '' Then
+            Result := Result + #13 + Format('EVT_FIND(wxID_ANY,%s::%s)', [CurrClassName,
+                EVT_FIND]) + '';
 
-  if trim(EVT_FIND_NEXT) <> '' then
-    Result :=  Result + #13 + Format('EVT_FIND_NEXT(wxID_ANY,%s::%s)', [CurrClassName,
-      EVT_FIND_NEXT]) + '';
+        If trim(EVT_FIND_NEXT) <> '' Then
+            Result := Result + #13 + Format('EVT_FIND_NEXT(wxID_ANY,%s::%s)', [CurrClassName,
+                EVT_FIND_NEXT]) + '';
 
-  if trim(EVT_FIND_REPLACE) <> '' then
-    Result :=  Result + #13 + Format('EVT_FIND_REPLACE(wxID_ANY,%s::%s)', [CurrClassName,
-      EVT_FIND_REPLACE]) + '';
+        If trim(EVT_FIND_REPLACE) <> '' Then
+            Result := Result + #13 + Format('EVT_FIND_REPLACE(wxID_ANY,%s::%s)', [CurrClassName,
+                EVT_FIND_REPLACE]) + '';
 
-  if trim(EVT_FIND_REPLACE_ALL) <> '' then
-    Result :=  Result + #13 + Format('EVT_FIND_REPLACE_ALL(wxID_ANY,%s::%s)', [CurrClassName,
-      EVT_FIND_REPLACE_ALL]) + '';
+        If trim(EVT_FIND_REPLACE_ALL) <> '' Then
+            Result := Result + #13 + Format('EVT_FIND_REPLACE_ALL(wxID_ANY,%s::%s)', [CurrClassName,
+                EVT_FIND_REPLACE_ALL]) + '';
 
-  if trim(EVT_FIND_CLOSE) <> '' then
-    Result :=  Result + #13 + Format('EVT_FIND_CLOSE(wxID_ANY,%s::%s)', [CurrClassName,
-      EVT_FIND_CLOSE]) + '';
+        If trim(EVT_FIND_CLOSE) <> '' Then
+            Result := Result + #13 + Format('EVT_FIND_CLOSE(wxID_ANY,%s::%s)', [CurrClassName,
+                EVT_FIND_CLOSE]) + '';
 
 {
   if trim(EVT_UPDATE_UI) <> '' then
     Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
 }
- end;
+    End;
 
-end;
+End;
 
-function TWxFindReplaceDialog.GenerateXRCControlCreation(IndentString: string):
+Function TWxFindReplaceDialog.GenerateXRCControlCreation(IndentString: String):
 TStringList;
-begin
+Begin
 
-  Result := TStringList.Create;
+    Result := TStringList.Create;
 
-  try
-    Result.Add(Format('<object class="%s" name="%s">', [self.Wx_Class, self.Name]));
-    Result.Add('</object>');
-  except
-    Result.Free;
-    raise;
-  end;
+    Try
+        Result.Add(Format('<object class="%s" name="%s">', [self.Wx_Class, self.Name]));
+        Result.Add('</object>');
+    Except
+        Result.Free;
+        Raise;
+    End;
 
-end;
+End;
 
-function TWxFindReplaceDialog.GenerateGUIControlCreation: string;
-var
-  strFlag, strStyle: string;
+Function TWxFindReplaceDialog.GenerateGUIControlCreation: String;
+Var
+    strFlag, strStyle: String;
 
-begin
-  Result  := '';
-  strFlag := GetFindReplaceFlagString(Wx_Flags);
-  if strFlag = '' then
-    strFlag := '0';
-  Result := self.Name + '_Data = new wxFindReplaceData(' + strFlag + ');';
-  Result := Result + #13 + self.Name + '_Data->SetFindString(' + GetCppString(
-    Wx_FindString) + ');';
-  Result := Result + #13 + self.Name + '_Data->SetReplaceString(' + GetCppString(
-    Wx_ReplaceString) + ');';
+Begin
+    Result := '';
+    strFlag := GetFindReplaceFlagString(Wx_Flags);
+    If strFlag = '' Then
+        strFlag := '0';
+    Result := self.Name + '_Data = new wxFindReplaceData(' + strFlag + ');';
+    Result := Result + #13 + self.Name + '_Data->SetFindString(' + GetCppString(
+        Wx_FindString) + ');';
+    Result := Result + #13 + self.Name + '_Data->SetReplaceString(' + GetCppString(
+        Wx_ReplaceString) + ');';
 
-  strStyle := GetFindReplaceDialogStyleString(Wx_Styles);
-  if strStyle = '' then
-    strStyle := ',0';
+    strStyle := GetFindReplaceDialogStyleString(Wx_Styles);
+    If strStyle = '' Then
+        strStyle := ',0';
 
-  Result := Result + #13 + Format('%s =  new %s(this, %s, %s %s);',
-    [self.Name, self.wx_Class, self.Name + '_Data', GetCppString(Wx_Title), strStyle]);
+    Result := Result + #13 + Format('%s =  new %s(this, %s, %s %s);',
+        [self.Name, self.wx_Class, self.Name + '_Data', GetCppString(Wx_Title), strStyle]);
 
-end;
+End;
 
-function TWxFindReplaceDialog.GenerateGUIControlDeclaration: string;
-begin
-  Result := '';
-  Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
-  Result := Result + #13 + Format('wxFindReplaceData *%s_Data;', [trim(Self.Name)]);
-end;
+Function TWxFindReplaceDialog.GenerateGUIControlDeclaration: String;
+Begin
+    Result := '';
+    Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
+    Result := Result + #13 + Format('wxFindReplaceData *%s_Data;', [trim(Self.Name)]);
+End;
 
-function TWxFindReplaceDialog.GenerateHeaderInclude: string;
-begin
-  Result := '';
-  Result := '#include <wx/fdrepdlg.h>';
-end;
+Function TWxFindReplaceDialog.GenerateHeaderInclude: String;
+Begin
+    Result := '';
+    Result := '#include <wx/fdrepdlg.h>';
+End;
 
-function TWxFindReplaceDialog.GenerateImageInclude: string;
-begin
+Function TWxFindReplaceDialog.GenerateImageInclude: String;
+Begin
 
-end;
+End;
 
-function TWxFindReplaceDialog.GetEventList: TStringList;
-begin
-  Result := Wx_EventList;
-end;
+Function TWxFindReplaceDialog.GetEventList: TStringList;
+Begin
+    Result := Wx_EventList;
+End;
 
-function TWxFindReplaceDialog.GetIDName: string;
-begin
+Function TWxFindReplaceDialog.GetIDName: String;
+Begin
 
-end;
+End;
 
-function TWxFindReplaceDialog.GetIDValue: integer;
-begin
-  Result := 0;
-end;
+Function TWxFindReplaceDialog.GetIDValue: Integer;
+Begin
+    Result := 0;
+End;
 
-function TWxFindReplaceDialog.GetParameterFromEventName(EventName: string): string;
-begin
+Function TWxFindReplaceDialog.GetParameterFromEventName(EventName: String): String;
+Begin
 
-  if EventName = 'EVT_FIND' then
-  begin
-    Result := 'wxFindDialogEvent& event';
-    exit;
-  end;
-  if EventName = 'EVT_FIND_NEXT' then
-  begin
-    Result := 'wxFindDialogEvent& event';
-    exit;
-  end;
-  if EventName = 'EVT_FIND_REPLACE' then
-  begin
-    Result := 'wxFindDialogEvent& event';
-    exit;
-  end;
-  if EventName = 'EVT_FIND_REPLACE_ALL' then
-  begin
-    Result := 'wxFindDialogEvent& event';
-    exit;
-  end;
-  if EventName = 'EVT_FIND_CLOSE' then
-  begin
-    Result := 'wxFindDialogEvent& event';
-    exit;
-  end;
-  if EventName = 'EVT_UPDATE_UI' then
-  begin
-    Result := 'wxUpdateUIEvent& event';
-    exit;
-  end;
+    If EventName = 'EVT_FIND' Then
+    Begin
+        Result := 'wxFindDialogEvent& event';
+        exit;
+    End;
+    If EventName = 'EVT_FIND_NEXT' Then
+    Begin
+        Result := 'wxFindDialogEvent& event';
+        exit;
+    End;
+    If EventName = 'EVT_FIND_REPLACE' Then
+    Begin
+        Result := 'wxFindDialogEvent& event';
+        exit;
+    End;
+    If EventName = 'EVT_FIND_REPLACE_ALL' Then
+    Begin
+        Result := 'wxFindDialogEvent& event';
+        exit;
+    End;
+    If EventName = 'EVT_FIND_CLOSE' Then
+    Begin
+        Result := 'wxFindDialogEvent& event';
+        exit;
+    End;
+    If EventName = 'EVT_UPDATE_UI' Then
+    Begin
+        Result := 'wxUpdateUIEvent& event';
+        exit;
+    End;
 
-end;
+End;
 
-function TWxFindReplaceDialog.GetStretchFactor: integer;
-begin
-   Result := 1;
-end;
+Function TWxFindReplaceDialog.GetStretchFactor: Integer;
+Begin
+    Result := 1;
+End;
 
-function TWxFindReplaceDialog.GetPropertyList: TStringList;
-begin
-  Result := FWx_PropertyList;
-end;
+Function TWxFindReplaceDialog.GetPropertyList: TStringList;
+Begin
+    Result := FWx_PropertyList;
+End;
 
-function TWxFindReplaceDialog.GetBorderAlignment: TWxBorderAlignment;
-begin
-  Result := [];
-end;
+Function TWxFindReplaceDialog.GetBorderAlignment: TWxBorderAlignment;
+Begin
+    Result := [];
+End;
 
-procedure TWxFindReplaceDialog.SetBorderAlignment(border: TWxBorderAlignment);
-begin
-end;
+Procedure TWxFindReplaceDialog.SetBorderAlignment(border: TWxBorderAlignment);
+Begin
+End;
 
-function TWxFindReplaceDialog.GetBorderWidth: integer;
-begin
-  Result := 0;
-end;
+Function TWxFindReplaceDialog.GetBorderWidth: Integer;
+Begin
+    Result := 0;
+End;
 
-procedure TWxFindReplaceDialog.SetBorderWidth(width: integer);
-begin
-end;
+Procedure TWxFindReplaceDialog.SetBorderWidth(width: Integer);
+Begin
+End;
 
-function TWxFindReplaceDialog.GetTypeFromEventName(EventName: string): string;
-begin
+Function TWxFindReplaceDialog.GetTypeFromEventName(EventName: String): String;
+Begin
 
-end;
+End;
 
-function TWxFindReplaceDialog.GetWxClassName: string;
-begin
-  if trim(wx_Class) = '' then
-    wx_Class := 'wxFindReplaceDialog';
-  Result := wx_Class;
-end;
+Function TWxFindReplaceDialog.GetWxClassName: String;
+Begin
+    If trim(wx_Class) = '' Then
+        wx_Class := 'wxFindReplaceDialog';
+    Result := wx_Class;
+End;
 
-procedure TWxFindReplaceDialog.SaveControlOrientation(
-  ControlOrientation: TWxControlOrientation);
-begin
+Procedure TWxFindReplaceDialog.SaveControlOrientation(
+    ControlOrientation: TWxControlOrientation);
+Begin
 
-end;
+End;
 
-procedure TWxFindReplaceDialog.SetIDName(IDName: string);
-begin
+Procedure TWxFindReplaceDialog.SetIDName(IDName: String);
+Begin
 
-end;
+End;
 
-procedure TWxFindReplaceDialog.SetIDValue(IDValue: integer);
-begin
+Procedure TWxFindReplaceDialog.SetIDValue(IDValue: Integer);
+Begin
 
-end;
+End;
 
-procedure TWxFindReplaceDialog.SetStretchFactor(intValue: integer);
-begin
-end;
+Procedure TWxFindReplaceDialog.SetStretchFactor(intValue: Integer);
+Begin
+End;
 
-procedure TWxFindReplaceDialog.SetWxClassName(wxClassName: string);
-begin
-  wx_Class := wxClassName;
-end;
+Procedure TWxFindReplaceDialog.SetWxClassName(wxClassName: String);
+Begin
+    wx_Class := wxClassName;
+End;
 
-function TWxFindReplaceDialog.GetGenericColor(strVariableName:String): string;
-begin
+Function TWxFindReplaceDialog.GetGenericColor(strVariableName: String): String;
+Begin
 
-end;
-procedure TWxFindReplaceDialog.SetGenericColor(strVariableName,strValue: string);
-begin
+End;
+Procedure TWxFindReplaceDialog.SetGenericColor(strVariableName, strValue: String);
+Begin
 
-end;
+End;
 
-function TWxFindReplaceDialog.GetFGColor: string;
-begin
+Function TWxFindReplaceDialog.GetFGColor: String;
+Begin
 
-end;
+End;
 
-procedure TWxFindReplaceDialog.SetFGColor(strValue: string);
-begin
-end;
+Procedure TWxFindReplaceDialog.SetFGColor(strValue: String);
+Begin
+End;
 
-function TWxFindReplaceDialog.GetBGColor: string;
-begin
-end;
+Function TWxFindReplaceDialog.GetBGColor: String;
+Begin
+End;
 
-procedure TWxFindReplaceDialog.SetBGColor(strValue: string);
-begin
-end;
+Procedure TWxFindReplaceDialog.SetBGColor(strValue: String);
+Begin
+End;
 
-procedure TWxFindReplaceDialog.SetProxyFGColorString(Value: string);
-begin
-end;
+Procedure TWxFindReplaceDialog.SetProxyFGColorString(Value: String);
+Begin
+End;
 
-procedure TWxFindReplaceDialog.SetProxyBGColorString(Value: string);
-begin
-end;
+Procedure TWxFindReplaceDialog.SetProxyBGColorString(Value: String);
+Begin
+End;
 
-end.
+End.

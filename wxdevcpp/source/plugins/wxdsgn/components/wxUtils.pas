@@ -30,1103 +30,1102 @@
   2)Scrollbar need to have the vertical and horizontal poperties
 
 *}
-UNIT WxUtils;
+Unit WxUtils;
 
-INTERFACE
+Interface
 
-USES
-WinTypes, WinProcs, Messages, SysUtils, StrUtils, Classes, Controls,
-Forms, Graphics, StdCtrls, Dialogs, ComCtrls, ExtCtrls, dmListview,
-dmTreeView,
-UPicEdit, UStrings, TypInfo, Menus, UStatusbar, UValidator,
-JvInspector, wxversion, DateUtils, xprocs, ShellAPI, SHFolder;
+Uses
+    WinTypes, WinProcs, Messages, SysUtils, StrUtils, Classes, Controls,
+    Forms, Graphics, StdCtrls, Dialogs, ComCtrls, ExtCtrls, dmListview,
+    dmTreeView,
+    UPicEdit, UStrings, TypInfo, Menus, UStatusbar, UValidator,
+    JvInspector, wxversion, DateUtils, xprocs, ShellAPI, SHFolder;
 
-CONST
-IID_IWxComponentInterface: TGUID = '{624949E8-E46C-4EF9-BADA-BC85325165B3}';
-IID_IWxDesignerFormInterface: TGUID =
-'{3e8e18a0-6515-11db-bd13-0800200c9a66}';
-IID_IWxDialogNonInsertableInterface: TGUID =
-'{AED02C7A-E2E5-4BFD-AF42-080D4D07027C}';
-IID_IWxToolBarInsertableInterface: TGUID =
-'{5B1BDAFE-76E9-4C84-A694-0D99C6D17BC4}';
-IID_IWxToolBarNonInsertableInterface: TGUID =
-'{6A81CF27-1269-4BD6-9C5D-16F88293B66B}';
-IID_IWxWindowInterface: TGUID = '{3164E818-E7FA-423B-B342-C89D8AF23617}';
-IID_IWxContainerAndSizerInterface: TGUID =
-'{2C8662AE-7C13-4C96-81F6-32B195ABE1C9}';
-IDD_IWxContainerInterface: TGUID = '{1149F8B7-04D7-466F-96FA-74C7383F2EFD}';
-IID_IWxToolBarInterface: TGUID = '{518BF32C-F961-4148-B506-F60A9D21AD15}';
-IDD_IWxStatusBarInterface: TGUID = '{4E9800A3-D948-4F48-A109-7F81B69ECAD3}';
-IDD_IWxMenuBarInterface: TGUID = '{b74eeaf0-7f08-11db-9fe1-0800200c9a66}';
-IDD_IWxCollectionInterface: TGUID = '{DC147ECD-47A2-4334-A113-CD9B794CBCE1}';
-IID_IWxVariableAssignmentInterface: TGUID =
-'{624949E8-E46C-4EF9-B4DA-BC8532617513}';
-IID_IWxValidatorInterface: TGUID = '{782949E8-47A2-4BA9-E4CA-CA9B832ADCA1}';
-IID_IWxSplitterInterface: TGUID = '{900F32A7-3864-4827-9039-85C053504BDB}';
-IID_IWxControlPanelInterface: TGUID =
-'{077d51a0-6628-11db-bd13-0800200c9a66}';
-IID_IWxThirdPartyComponentInterface: TGUID =
-'{ead81650-6903-11db-bd13-0800200c9a66}';
-IID_IWxImageContainerInterface: TGUID =
-'{10619130-6bd4-11db-bd13-0800200c9a66}';
-IID_IWxAuiManagerInterface: TGUID = '{AD6CF99F-7C74-4C13-BBCA-46A0F6486162}';
-IID_IWxAuiPaneInfoInterface: TGUID =
-'{7D45A54D-4C39-447E-A484-352EEC1956C5}';
-IID_IWxAuiPaneInterface: TGUID = '{885FADF9-3EF9-4B00-BC80-204A1349DC94}';
-IID_IWxAuiToolBarInterface: TGUID = '{313E569A-5F00-423C-A71E-1E3BB3F2FD2A}';
-IID_IWxAuiNonInsertableInterface: TGUID =
-'{D8527AE6-9AC3-401E-B86E-6CE96853E47D}';
+Const
+    IID_IWxComponentInterface: TGUID = '{624949E8-E46C-4EF9-BADA-BC85325165B3}';
+    IID_IWxDesignerFormInterface: TGUID =
+        '{3e8e18a0-6515-11db-bd13-0800200c9a66}';
+    IID_IWxDialogNonInsertableInterface: TGUID =
+        '{AED02C7A-E2E5-4BFD-AF42-080D4D07027C}';
+    IID_IWxToolBarInsertableInterface: TGUID =
+        '{5B1BDAFE-76E9-4C84-A694-0D99C6D17BC4}';
+    IID_IWxToolBarNonInsertableInterface: TGUID =
+        '{6A81CF27-1269-4BD6-9C5D-16F88293B66B}';
+    IID_IWxWindowInterface: TGUID = '{3164E818-E7FA-423B-B342-C89D8AF23617}';
+    IID_IWxContainerAndSizerInterface: TGUID =
+        '{2C8662AE-7C13-4C96-81F6-32B195ABE1C9}';
+    IDD_IWxContainerInterface: TGUID = '{1149F8B7-04D7-466F-96FA-74C7383F2EFD}';
+    IID_IWxToolBarInterface: TGUID = '{518BF32C-F961-4148-B506-F60A9D21AD15}';
+    IDD_IWxStatusBarInterface: TGUID = '{4E9800A3-D948-4F48-A109-7F81B69ECAD3}';
+    IDD_IWxMenuBarInterface: TGUID = '{b74eeaf0-7f08-11db-9fe1-0800200c9a66}';
+    IDD_IWxCollectionInterface: TGUID = '{DC147ECD-47A2-4334-A113-CD9B794CBCE1}';
+    IID_IWxVariableAssignmentInterface: TGUID =
+        '{624949E8-E46C-4EF9-B4DA-BC8532617513}';
+    IID_IWxValidatorInterface: TGUID = '{782949E8-47A2-4BA9-E4CA-CA9B832ADCA1}';
+    IID_IWxSplitterInterface: TGUID = '{900F32A7-3864-4827-9039-85C053504BDB}';
+    IID_IWxControlPanelInterface: TGUID =
+        '{077d51a0-6628-11db-bd13-0800200c9a66}';
+    IID_IWxThirdPartyComponentInterface: TGUID =
+        '{ead81650-6903-11db-bd13-0800200c9a66}';
+    IID_IWxImageContainerInterface: TGUID =
+        '{10619130-6bd4-11db-bd13-0800200c9a66}';
+    IID_IWxAuiManagerInterface: TGUID = '{AD6CF99F-7C74-4C13-BBCA-46A0F6486162}';
+    IID_IWxAuiPaneInfoInterface: TGUID =
+        '{7D45A54D-4C39-447E-A484-352EEC1956C5}';
+    IID_IWxAuiPaneInterface: TGUID = '{885FADF9-3EF9-4B00-BC80-204A1349DC94}';
+    IID_IWxAuiToolBarInterface: TGUID = '{313E569A-5F00-423C-A71E-1E3BB3F2FD2A}';
+    IID_IWxAuiNonInsertableInterface: TGUID =
+        '{D8527AE6-9AC3-401E-B86E-6CE96853E47D}';
 
-VAR
-StringFormat: STRING;
-UseDefaultPos: BOOLEAN;
-UseDefaultSize: BOOLEAN;
-UseIndividEnums: BOOLEAN;
+Var
+    StringFormat: String;
+    UseDefaultPos: Boolean;
+    UseDefaultSize: Boolean;
+    UseIndividEnums: Boolean;
 
-XRCGEN: BOOLEAN;//NUKLEAR ZELPH
+    XRCGEN: Boolean;//NUKLEAR ZELPH
 
 //type
 
-FUNCTION ExtractComponentPropertyName(CONST S: STRING): STRING;
-FUNCTION ExtractComponentPropertyCaption(CONST S: STRING): STRING;
-FUNCTION iswxForm(FileName: STRING): BOOLEAN;
+Function ExtractComponentPropertyName(Const S: String): String;
+Function ExtractComponentPropertyCaption(Const S: String): String;
+Function iswxForm(FileName: String): Boolean;
 //function isRCExt(FileName: string): boolean;
-FUNCTION isXRCExt(FileName: STRING): BOOLEAN;
-FUNCTION SaveStringToFile(strContent, strFileName: STRING): BOOLEAN;
+Function isXRCExt(FileName: String): Boolean;
+Function SaveStringToFile(strContent, strFileName: String): Boolean;
 
-FUNCTION CreateGraphicFileName(strFileName: STRING): STRING;
-FUNCTION CreateGraphicFileDir(strFileName: STRING): STRING;
+Function CreateGraphicFileName(strFileName: String): String;
+Function CreateGraphicFileDir(strFileName: String): String;
 
-FUNCTION LocalAppDataPath: STRING;
+Function LocalAppDataPath: String;
 
-TYPE
-TWxPoint = CLASS(TComponent)
-PRIVATE
-FX: INTEGER;
-FY: INTEGER;
-PUBLISHED
-PROPERTY X: INTEGER READ FX WRITE FX DEFAULT 0;
-PROPERTY Y: INTEGER READ FY WRITE FY DEFAULT 0;
-END;
+Type
+    TWxPoint = Class(TComponent)
+    Private
+        FX: Integer;
+        FY: Integer;
+    Published
+        Property X: Integer Read FX Write FX Default 0;
+        Property Y: Integer Read FY Write FY Default 0;
+    End;
 
 // Added by Tony Reina 20 June 2006
 // We need a TButton class that will allow for the caption to be aligned
 // I found this code at the Delphi Central website: http://www.delphi-central.com/tbut.aspx
-TYPE
-THorizAlign = (halLeft, halRight, halCentre);
-TVerticalAlign = (valTop, valBottom, valCentre);
+Type
+    THorizAlign = (halLeft, halRight, halCentre);
+    TVerticalAlign = (valTop, valBottom, valCentre);
 
-TMultiLineBtn = CLASS(TButton)
-PRIVATE
-fMultiLine: BOOLEAN;
-fHorizAlign: THorizAlign;
-fVerticalAlign: TVerticalAlign;
-PROCEDURE SetMultiLine(Value: BOOLEAN);
-PROCEDURE SetHorizAlign(Value: THorizAlign);
-PROCEDURE SetVerticalAlign(Value: TVerticalAlign);
-PROTECTED
-PROCEDURE CreateParams(VAR Params: TCreateParams); OVERRIDE;
-PUBLIC
-CONSTRUCTOR Create(AOwner: TComponent); OVERRIDE;
-PUBLISHED
-PROPERTY HorizAlign: THorizAlign
-READ fHorizAlign WRITE setHorizAlign DEFAULT halCentre;
-PROPERTY VerticalAlign: TVerticalAlign READ fVerticalAlign
-WRITE setVerticalAlign DEFAULT valCentre;
-PROPERTY MultiLine: BOOLEAN
-READ fMultiLine WRITE SetMultiLine DEFAULT TRUE;
-END;
+    TMultiLineBtn = Class(TButton)
+    Private
+        fMultiLine: Boolean;
+        fHorizAlign: THorizAlign;
+        fVerticalAlign: TVerticalAlign;
+        Procedure SetMultiLine(Value: Boolean);
+        Procedure SetHorizAlign(Value: THorizAlign);
+        Procedure SetVerticalAlign(Value: TVerticalAlign);
+    Protected
+        Procedure CreateParams(Var Params: TCreateParams); Override;
+    Public
+        Constructor Create(AOwner: TComponent); Override;
+    Published
+        Property HorizAlign: THorizAlign
+            Read fHorizAlign Write setHorizAlign Default halCentre;
+        Property VerticalAlign: TVerticalAlign Read fVerticalAlign
+            Write setVerticalAlign Default valCentre;
+        Property MultiLine: Boolean
+            Read fMultiLine Write SetMultiLine Default True;
+    End;
     // END: TMultiLineBtn
 
-TWxStdDialogButtons = SET OF
-(wxID_OK, wxID_YES, wxID_SAVE, wxID_NO, wxID_CANCEL,
-wxID_APPLY, wxID_HELP, wxID_CONTEXT_HELP);
-TWxSizerAlignment = (wxALIGN_TOP, wxALIGN_LEFT, wxALIGN_RIGHT,
-wxALIGN_BOTTOM,
-wxALIGN_CENTER, wxALIGN_CENTER_VERTICAL,
-wxALIGN_CENTER_HORIZONTAL, wxEXPAND);
-TWxSizerAlignmentSet = SET OF TWxSizerAlignment;
-TWxBorderAlignment = SET OF (wxTOP, wxLEFT, wxRIGHT, wxBOTTOM, wxALL);
-TWxControlOrientation = (wxControlVertical, wxControlHorizontal,
-wxControlNone);
-TWxGridSelection = (wxGridSelectCells, wxGridSelectColumns,
-wxGridSelectRows);
-TWxDesignerType = (dtWxDialog, dtWxFrame, dtWxWizard);
+    TWxStdDialogButtons = Set Of
+        (wxID_OK, wxID_YES, wxID_SAVE, wxID_NO, wxID_CANCEL,
+        wxID_APPLY, wxID_HELP, wxID_CONTEXT_HELP);
+    TWxSizerAlignment = (wxALIGN_TOP, wxALIGN_LEFT, wxALIGN_RIGHT,
+        wxALIGN_BOTTOM,
+        wxALIGN_CENTER, wxALIGN_CENTER_VERTICAL,
+        wxALIGN_CENTER_HORIZONTAL, wxEXPAND);
+    TWxSizerAlignmentSet = Set Of TWxSizerAlignment;
+    TWxBorderAlignment = Set Of (wxTOP, wxLEFT, wxRIGHT, wxBOTTOM, wxALL);
+    TWxControlOrientation = (wxControlVertical, wxControlHorizontal,
+        wxControlNone);
+    TWxGridSelection = (wxGridSelectCells, wxGridSelectColumns,
+        wxGridSelectRows);
+    TWxDesignerType = (dtWxDialog, dtWxFrame, dtWxWizard);
 
-IWxComponentInterface = INTERFACE
-['{624949E8-E46C-4EF9-BADA-BC85325165B3}']
-FUNCTION GenerateEnumControlIDs: STRING;
-FUNCTION GenerateControlIDs: STRING;
+    IWxComponentInterface = Interface
+        ['{624949E8-E46C-4EF9-BADA-BC85325165B3}']
+        Function GenerateEnumControlIDs: String;
+        Function GenerateControlIDs: String;
 
-FUNCTION GenerateGUIControlCreation: STRING;
-FUNCTION GenerateXRCControlCreation(IndentString: STRING): TStringList;
-FUNCTION GenerateGUIControlDeclaration: STRING;
-FUNCTION GenerateHeaderInclude: STRING;
-FUNCTION GenerateImageInclude: STRING;
-FUNCTION GetPropertyList: TStringList;
+        Function GenerateGUIControlCreation: String;
+        Function GenerateXRCControlCreation(IndentString: String): TStringList;
+        Function GenerateGUIControlDeclaration: String;
+        Function GenerateHeaderInclude: String;
+        Function GenerateImageInclude: String;
+        Function GetPropertyList: TStringList;
 
-FUNCTION GetEventList: TStringList;
-FUNCTION GenerateEventTableEntries(CurrClassName: STRING): STRING;
-FUNCTION GetParameterFromEventName(EventName: STRING): STRING;
-FUNCTION GetTypeFromEventName(EventName: STRING): STRING;
+        Function GetEventList: TStringList;
+        Function GenerateEventTableEntries(CurrClassName: String): String;
+        Function GetParameterFromEventName(EventName: String): String;
+        Function GetTypeFromEventName(EventName: String): String;
 
-FUNCTION GetIDName: STRING;
-PROCEDURE SetIDName(IDName: STRING);
-FUNCTION GetIDValue: INTEGER;
-PROCEDURE SetIDValue(IDValue: INTEGER);
+        Function GetIDName: String;
+        Procedure SetIDName(IDName: String);
+        Function GetIDValue: Integer;
+        Procedure SetIDValue(IDValue: Integer);
 
-FUNCTION GetWxClassName: STRING;
-PROCEDURE SetWxClassName(wxClassName: STRING);
+        Function GetWxClassName: String;
+        Procedure SetWxClassName(wxClassName: String);
 
-PROCEDURE SaveControlOrientation(ControlOrientation:
-TWxControlOrientation);
-FUNCTION GetBorderAlignment: TWxBorderAlignment;
-PROCEDURE SetBorderAlignment(border: TWxBorderAlignment);
-FUNCTION GetBorderWidth: INTEGER;
-PROCEDURE SetBorderWidth(width: INTEGER);
-FUNCTION GetStretchFactor: INTEGER;
-PROCEDURE SetStretchFactor(intValue: INTEGER);
+        Procedure SaveControlOrientation(ControlOrientation:
+            TWxControlOrientation);
+        Function GetBorderAlignment: TWxBorderAlignment;
+        Procedure SetBorderAlignment(border: TWxBorderAlignment);
+        Function GetBorderWidth: Integer;
+        Procedure SetBorderWidth(width: Integer);
+        Function GetStretchFactor: Integer;
+        Procedure SetStretchFactor(intValue: Integer);
 
-FUNCTION GetFGColor: STRING;
-PROCEDURE SetFGColor(strValue: STRING);
-FUNCTION GetBGColor: STRING;
-PROCEDURE SetBGColor(strValue: STRING);
-FUNCTION GetGenericColor(strVariableName: STRING): STRING;
-PROCEDURE SetGenericColor(strVariableName, strValue: STRING);
-END;
+        Function GetFGColor: String;
+        Procedure SetFGColor(strValue: String);
+        Function GetBGColor: String;
+        Procedure SetBGColor(strValue: String);
+        Function GetGenericColor(strVariableName: String): String;
+        Procedure SetGenericColor(strVariableName, strValue: String);
+    End;
 
-IWxDesignerFormInterface = INTERFACE
-['{3e8e18a0-6515-11db-bd13-0800200c9a66}']
-FUNCTION GetFormName: STRING;
-PROCEDURE SetFormName(StrValue: STRING);
-END;
+    IWxDesignerFormInterface = Interface
+        ['{3e8e18a0-6515-11db-bd13-0800200c9a66}']
+        Function GetFormName: String;
+        Procedure SetFormName(StrValue: String);
+    End;
 
-IWxDialogNonInsertableInterface = INTERFACE
-['{AED02C7A-E2E5-4BFD-AF42-080D4D07027C}']
+    IWxDialogNonInsertableInterface = Interface
+        ['{AED02C7A-E2E5-4BFD-AF42-080D4D07027C}']
         //procedure DummySizerNonInsertableInterfaceProcedure;
-END;
+    End;
 
-IWxToolBarInsertableInterface = INTERFACE
-['{5B1BDAFE-76E9-4C84-A694-0D99C6D17BC4}']
+    IWxToolBarInsertableInterface = Interface
+        ['{5B1BDAFE-76E9-4C84-A694-0D99C6D17BC4}']
         //procedure DummyToolBarInsertableInterfaceProcedure;
-END;
+    End;
 
-IWxToolBarNonInsertableInterface = INTERFACE
-['{6A81CF27-1269-4BD6-9C5D-16F88293B66B}']
+    IWxToolBarNonInsertableInterface = Interface
+        ['{6A81CF27-1269-4BD6-9C5D-16F88293B66B}']
         //procedure DummyToolBarNonInsertableInterfaceProcedure;
-END;
+    End;
 
-IWxWindowInterface = INTERFACE
-['{3164E818-E7FA-423B-B342-C89D8AF23617}']
+    IWxWindowInterface = Interface
+        ['{3164E818-E7FA-423B-B342-C89D8AF23617}']
 
-END;
+    End;
 
-IWxContainerAndSizerInterface = INTERFACE
-['{2C8662AE-7C13-4C96-81F6-32B195ABE1C9}']
-FUNCTION GenerateLastCreationCode: STRING;
-END;
+    IWxContainerAndSizerInterface = Interface
+        ['{2C8662AE-7C13-4C96-81F6-32B195ABE1C9}']
+        Function GenerateLastCreationCode: String;
+    End;
 
-IWxContainerInterface = INTERFACE
-['{1149F8B7-04D7-466F-96FA-74C7383F2EFD}']
-END;
+    IWxContainerInterface = Interface
+        ['{1149F8B7-04D7-466F-96FA-74C7383F2EFD}']
+    End;
 
-IWxToolBarInterface = INTERFACE
-['{518BF32C-F961-4148-B506-F60A9D21AD15}']
-FUNCTION GetRealizeString: STRING;
-END;
+    IWxToolBarInterface = Interface
+        ['{518BF32C-F961-4148-B506-F60A9D21AD15}']
+        Function GetRealizeString: String;
+    End;
 
-IWxStatusBarInterface = INTERFACE
-['{4E9800A3-D948-4F48-A109-7F81B69ECAD3}']
-END;
+    IWxStatusBarInterface = Interface
+        ['{4E9800A3-D948-4F48-A109-7F81B69ECAD3}']
+    End;
 
-IWxMenuBarInterface = INTERFACE
-['{b74eeaf0-7f08-11db-9fe1-0800200c9a66}']
-FUNCTION GenerateXPM(strFileName: STRING): BOOLEAN;
-END;
+    IWxMenuBarInterface = Interface
+        ['{b74eeaf0-7f08-11db-9fe1-0800200c9a66}']
+        Function GenerateXPM(strFileName: String): Boolean;
+    End;
 
-IWxCollectionInterface = INTERFACE
-['{DC147ECD-47A2-4334-A113-CD9B794CBCE1}']
-FUNCTION GetMaxID: INTEGER;
-END;
+    IWxCollectionInterface = Interface
+        ['{DC147ECD-47A2-4334-A113-CD9B794CBCE1}']
+        Function GetMaxID: Integer;
+    End;
 
-IWxVariableAssignmentInterface = INTERFACE
-['{624949E8-E46C-4EF9-B4DA-BC8532617513}']
-FUNCTION GetLHSVariableAssignment: STRING;
-FUNCTION GetRHSVariableAssignment: STRING;
-END;
+    IWxVariableAssignmentInterface = Interface
+        ['{624949E8-E46C-4EF9-B4DA-BC8532617513}']
+        Function GetLHSVariableAssignment: String;
+        Function GetRHSVariableAssignment: String;
+    End;
 
-IWxValidatorInterface = INTERFACE
-['{782949E8-47A2-4BA9-E4CA-CA9B832ADCA1}']
-FUNCTION GetValidator: STRING;
-PROCEDURE SetValidator(value: STRING);
-END;
+    IWxValidatorInterface = Interface
+        ['{782949E8-47A2-4BA9-E4CA-CA9B832ADCA1}']
+        Function GetValidator: String;
+        Procedure SetValidator(value: String);
+    End;
 
-IWxSplitterInterface = INTERFACE
-['{900F32A7-3864-4827-9039-85C053504BDB}']
-END;
+    IWxSplitterInterface = Interface
+        ['{900F32A7-3864-4827-9039-85C053504BDB}']
+    End;
 
-IWxControlPanelInterface = INTERFACE
-['{077d51a0-6628-11db-bd13-0800200c9a66}']
-END;
+    IWxControlPanelInterface = Interface
+        ['{077d51a0-6628-11db-bd13-0800200c9a66}']
+    End;
 
-IWxThirdPartyComponentInterface = INTERFACE
-['{ead81650-6903-11db-bd13-0800200c9a66}']
-FUNCTION GetHeaderLocation: STRING;
-FUNCTION GetLibName(CompilerTye: INTEGER): STRING;
-FUNCTION IsLibAddedAtEnd(CompilerTye: INTEGER): BOOLEAN;
-END;
+    IWxThirdPartyComponentInterface = Interface
+        ['{ead81650-6903-11db-bd13-0800200c9a66}']
+        Function GetHeaderLocation: String;
+        Function GetLibName(CompilerTye: Integer): String;
+        Function IsLibAddedAtEnd(CompilerTye: Integer): Boolean;
+    End;
 
-IWxImageContainerInterface = INTERFACE
-['{10619130-6bd4-11db-bd13-0800200c9a66}']
-FUNCTION GetBitmapCount: INTEGER;
-FUNCTION GetBitmap(Idx: INTEGER; VAR bmp: TBitmap;
-VAR PropertyName: STRING): BOOLEAN;
-FUNCTION GetPropertyName(Idx: INTEGER): STRING;
-FUNCTION PreserveFormat: BOOLEAN;
-FUNCTION GetGraphicFileName: STRING;
-FUNCTION SetGraphicFileName(strFileName: STRING): BOOLEAN;
-END;
+    IWxImageContainerInterface = Interface
+        ['{10619130-6bd4-11db-bd13-0800200c9a66}']
+        Function GetBitmapCount: Integer;
+        Function GetBitmap(Idx: Integer; Var bmp: TBitmap;
+            Var PropertyName: String): Boolean;
+        Function GetPropertyName(Idx: Integer): String;
+        Function PreserveFormat: Boolean;
+        Function GetGraphicFileName: String;
+        Function SetGraphicFileName(strFileName: String): Boolean;
+    End;
 
-IWxAuiManagerInterface = INTERFACE
-['{AD6CF99F-7C74-4C13-BBCA-46A0F6486162}']
-END;
+    IWxAuiManagerInterface = Interface
+        ['{AD6CF99F-7C74-4C13-BBCA-46A0F6486162}']
+    End;
 
-IWxAuiPaneInfoInterface = INTERFACE
-['{7D45A54D-4C39-447E-A484-352EEC1956C5}']
-END;
+    IWxAuiPaneInfoInterface = Interface
+        ['{7D45A54D-4C39-447E-A484-352EEC1956C5}']
+    End;
 
 
-IWxAuiPaneInterface = INTERFACE
-['{885FADF9-3EF9-4B00-BC80-204A1349DC94}']
-END;
+    IWxAuiPaneInterface = Interface
+        ['{885FADF9-3EF9-4B00-BC80-204A1349DC94}']
+    End;
 
-IWxAuiToolBarInterface = INTERFACE
-['{313E569A-5F00-423C-A71E-1E3BB3F2FD2A}']
-END;
+    IWxAuiToolBarInterface = Interface
+        ['{313E569A-5F00-423C-A71E-1E3BB3F2FD2A}']
+    End;
 
-IWxAuiNonInsertableInterface = INTERFACE
-['{D8527AE6-9AC3-401E-B86E-6CE96853E47D}']
-END;
+    IWxAuiNonInsertableInterface = Interface
+        ['{D8527AE6-9AC3-401E-B86E-6CE96853E47D}']
+    End;
 
-TWxStdStyleItem = (wxSIMPLE_BORDER, wxDOUBLE_BORDER, wxSUNKEN_BORDER,
-wxRAISED_BORDER, wxSTATIC_BORDER, wxTRANSPARENT_WINDOW,
-wxTAB_TRAVERSAL, wxWANTS_CHARS,
-wxNO_FULL_REPAINT_ON_RESIZE, wxVSCROLL,
-wxHSCROLL, wxCLIP_CHILDREN, wxNO_BORDER,
-wxALWAYS_SHOW_SB, wxFULL_REPAINT_ON_RESIZE);
-TWxStdStyleSet = SET OF TWxStdStyleItem;
+    TWxStdStyleItem = (wxSIMPLE_BORDER, wxDOUBLE_BORDER, wxSUNKEN_BORDER,
+        wxRAISED_BORDER, wxSTATIC_BORDER, wxTRANSPARENT_WINDOW,
+        wxTAB_TRAVERSAL, wxWANTS_CHARS,
+        wxNO_FULL_REPAINT_ON_RESIZE, wxVSCROLL,
+        wxHSCROLL, wxCLIP_CHILDREN, wxNO_BORDER,
+        wxALWAYS_SHOW_SB, wxFULL_REPAINT_ON_RESIZE);
+    TWxStdStyleSet = Set Of TWxStdStyleItem;
 
-TWxBtnStyleItem = (wxBU_AUTODRAW, wxBU_LEFT, wxBU_TOP,
-wxBU_RIGHT, wxBU_BOTTOM,
-wxBU_EXACTFIT);
-TWxBtnStyleSet = SET OF TWxBtnStyleItem;
+    TWxBtnStyleItem = (wxBU_AUTODRAW, wxBU_LEFT, wxBU_TOP,
+        wxBU_RIGHT, wxBU_BOTTOM,
+        wxBU_EXACTFIT);
+    TWxBtnStyleSet = Set Of TWxBtnStyleItem;
 
-TWxLbStyleItem = (wxST_ALIGN_LEFT, wxST_ALIGN_RIGHT, wxST_ALIGN_CENTRE,
-wxST_NO_AUTORESIZE);
-TWxLbStyleSet = SET OF TWxLbStyleItem;
+    TWxLbStyleItem = (wxST_ALIGN_LEFT, wxST_ALIGN_RIGHT, wxST_ALIGN_CENTRE,
+        wxST_NO_AUTORESIZE);
+    TWxLbStyleSet = Set Of TWxLbStyleItem;
 
-TWxEdtGeneralStyleItem = (wxTE_PROCESS_ENTER, wxTE_PROCESS_TAB,
-wxTE_PASSWORD,
-wxTE_READONLY, wxTE_RICH, wxTE_RICH2, wxTE_AUTO_URL, wxTE_NO_VSCROLL,
-wxTE_NOHIDESEL, wxTE_DONTWRAP, wxTE_LINEWRAP,
-wxTE_WORDWRAP, wxTE_CHARWRAP, wxTE_BESTWRAP,
-wxTE_CAPITALIZE, wxTE_MULTILINE, wxTE_LEFT,
-wxTE_CENTRE, wxTE_RIGHT);
-TWxEdtGeneralStyleSet = SET OF TWxEdtGeneralStyleItem;
+    TWxEdtGeneralStyleItem = (wxTE_PROCESS_ENTER, wxTE_PROCESS_TAB,
+        wxTE_PASSWORD,
+        wxTE_READONLY, wxTE_RICH, wxTE_RICH2, wxTE_AUTO_URL, wxTE_NO_VSCROLL,
+        wxTE_NOHIDESEL, wxTE_DONTWRAP, wxTE_LINEWRAP,
+        wxTE_WORDWRAP, wxTE_CHARWRAP, wxTE_BESTWRAP,
+        wxTE_CAPITALIZE, wxTE_MULTILINE, wxTE_LEFT,
+        wxTE_CENTRE, wxTE_RIGHT);
+    TWxEdtGeneralStyleSet = Set Of TWxEdtGeneralStyleItem;
 
-TWxRichTextStyleItem = (wxRE_READONLY, wxRE_MULTILINE);
-TWxRichTextStyleSet = SET OF TWxRichTextStyleItem;
+    TWxRichTextStyleItem = (wxRE_READONLY, wxRE_MULTILINE);
+    TWxRichTextStyleSet = Set Of TWxRichTextStyleItem;
 
-TwxRichTextSLCStyleItem = (wxRICHTEXTSTYLELIST_HIDE_TYPE_SELECTOR);
-TwxRichTextSLCStyleSet = SET OF TwxRichTextSLCStyleItem;
+    TwxRichTextSLCStyleItem = (wxRICHTEXTSTYLELIST_HIDE_TYPE_SELECTOR);
+    TwxRichTextSLCStyleSet = Set Of TwxRichTextSLCStyleItem;
 
 
     //  TWxEdtAlignmentStyleItem = (wxTE_LEFT, wxTE_CENTRE, wxTE_RIGHT);
     // TWxEdtAlignmentStyleSet = set of TWxEdtAlignmentStyleItem;
 
-TWxDlgStyleItem = (wxCAPTION, wxRESIZE_BORDER, wxSYSTEM_MENU, wxTHICK_FRAME,
-wxSTAY_ON_TOP, wxDIALOG_NO_PARENT, wxDIALOG_EX_CONTEXTHELP,
-wxMINIMIZE_BOX,
-wxMAXIMIZE_BOX, wxCLOSE_BOX, wxNO_3D,
-wxDEFAULT_DIALOG_STYLE, wxDEFAULT_FRAME_STYLE,
-wxMINIMIZE, wxMAXIMIZE, wxFRAME_TOOL_WINDOW,
-wxFRAME_NO_TASKBAR, wxFRAME_FLOAT_ON_PARENT,
-wxFRAME_EX_CONTEXTHELP, wxFRAME_SHAPED);
-TWxDlgStyleSet = SET OF TWxDlgStyleItem;
+    TWxDlgStyleItem = (wxCAPTION, wxRESIZE_BORDER, wxSYSTEM_MENU, wxTHICK_FRAME,
+        wxSTAY_ON_TOP, wxDIALOG_NO_PARENT, wxDIALOG_EX_CONTEXTHELP,
+        wxMINIMIZE_BOX,
+        wxMAXIMIZE_BOX, wxCLOSE_BOX, wxNO_3D,
+        wxDEFAULT_DIALOG_STYLE, wxDEFAULT_FRAME_STYLE,
+        wxMINIMIZE, wxMAXIMIZE, wxFRAME_TOOL_WINDOW,
+        wxFRAME_NO_TASKBAR, wxFRAME_FLOAT_ON_PARENT,
+        wxFRAME_EX_CONTEXTHELP, wxFRAME_SHAPED);
+    TWxDlgStyleSet = Set Of TWxDlgStyleItem;
 
     //class  	wxAnimationCtrl
-TWxAnimationCtrlStyleItem = (wxAC_DEFAULT_STYLE, wxAC_NO_AUTORESIZE);
-TWxAnimationCtrlStyleSet = SET OF TWxAnimationCtrlStyleItem;
+    TWxAnimationCtrlStyleItem = (wxAC_DEFAULT_STYLE, wxAC_NO_AUTORESIZE);
+    TWxAnimationCtrlStyleSet = Set Of TWxAnimationCtrlStyleItem;
 
     //class  	wxCustomButton
-TWxCBtnPosStyleSubItem = (wxCUSTBUT_LEFT, wxCUSTBUT_RIGHT,
-wxCUSTBUT_TOP, wxCUSTBUT_BOTTOM);
-TWxCBtnPosStyleSubSet = SET OF TWxCBtnPosStyleSubItem;
+    TWxCBtnPosStyleSubItem = (wxCUSTBUT_LEFT, wxCUSTBUT_RIGHT,
+        wxCUSTBUT_TOP, wxCUSTBUT_BOTTOM);
+    TWxCBtnPosStyleSubSet = Set Of TWxCBtnPosStyleSubItem;
 
-TWxCBtnStyleSubItem = (wxCUSTBUT_NOTOGGLE, wxCUSTBUT_BUTTON,
-wxCUSTBUT_TOGGLE, wxCUSTBUT_BUT_DCLICK_TOG, wxCUSTBUT_TOG_DCLICK_BUT);
-TWxCBtnStyleSubSet = SET OF TWxCBtnStyleSubItem;
+    TWxCBtnStyleSubItem = (wxCUSTBUT_NOTOGGLE, wxCUSTBUT_BUTTON,
+        wxCUSTBUT_TOGGLE, wxCUSTBUT_BUT_DCLICK_TOG, wxCUSTBUT_TOG_DCLICK_BUT);
+    TWxCBtnStyleSubSet = Set Of TWxCBtnStyleSubItem;
 
-TWxCBtnDwgStyleSubItem = (wxCUSTBUT_FLAT);
-TWxCBtnDwgStyleSubSet = SET OF TWxCBtnDwgStyleSubItem;
+    TWxCBtnDwgStyleSubItem = (wxCUSTBUT_FLAT);
+    TWxCBtnDwgStyleSubSet = Set Of TWxCBtnDwgStyleSubItem;
 
     //class  	wxColourPickerCtrl
-TWxClrPickCtrlStyleItem = (wxCLRP_DEFAULT_STYLE, wxCLRP_USE_TEXTCTRL,
-wxCLRP_SHOW_LABEL);
-TWxClrPickCtrlStyleSet = SET OF TWxClrPickCtrlStyleItem;
+    TWxClrPickCtrlStyleItem = (wxCLRP_DEFAULT_STYLE, wxCLRP_USE_TEXTCTRL,
+        wxCLRP_SHOW_LABEL);
+    TWxClrPickCtrlStyleSet = Set Of TWxClrPickCtrlStyleItem;
 
     //class  	wxDirPickerCtrl
-TWxDirPickCtrlStyleItem = (wxDIRP_DEFAULT_STYLE, wxDIRP_USE_TEXTCTRL,
-wxDIRP_DIR_MUST_EXIST, wxDIRP_CHANGE_DIR);
-TWxDirPickCtrlStyleSet = SET OF TWxDirPickCtrlStyleItem;
+    TWxDirPickCtrlStyleItem = (wxDIRP_DEFAULT_STYLE, wxDIRP_USE_TEXTCTRL,
+        wxDIRP_DIR_MUST_EXIST, wxDIRP_CHANGE_DIR);
+    TWxDirPickCtrlStyleSet = Set Of TWxDirPickCtrlStyleItem;
 
     //class  	wxFilePickerCtrl
-TWxFilePickCtrlStyleItem = (wxFLP_DEFAULT_STYLE, wxFLP_USE_TEXTCTRL,
-wxFLP_OPEN, wxFLP_SAVE, wxFLP_OVERWRITE_PROMPT, wxFLP_FILE_MUST_EXIST,
-wxFLP_CHANGE_DIR);
-TWxFilePickCtrlStyleSet = SET OF TWxFilePickCtrlStyleItem;
+    TWxFilePickCtrlStyleItem = (wxFLP_DEFAULT_STYLE, wxFLP_USE_TEXTCTRL,
+        wxFLP_OPEN, wxFLP_SAVE, wxFLP_OVERWRITE_PROMPT, wxFLP_FILE_MUST_EXIST,
+        wxFLP_CHANGE_DIR);
+    TWxFilePickCtrlStyleSet = Set Of TWxFilePickCtrlStyleItem;
 
     //class  	wxFontPickerCtrl
-TWxFontPickCtrlStyleItem = (wxFNTP_DEFAULT_STYLE, wxFNTP_USE_TEXTCTRL,
-wxFNTP_FONTDESC_AS_LABEL, wxFNTP_USEFONT_FOR_LABEL);
-TWxFontPickCtrlStyleSet = SET OF TWxFontPickCtrlStyleItem;
+    TWxFontPickCtrlStyleItem = (wxFNTP_DEFAULT_STYLE, wxFNTP_USE_TEXTCTRL,
+        wxFNTP_FONTDESC_AS_LABEL, wxFNTP_USEFONT_FOR_LABEL);
+    TWxFontPickCtrlStyleSet = Set Of TWxFontPickCtrlStyleItem;
 
     //newly Added
-TWxCmbStyleItem = (wxCB_SIMPLE, wxCB_DROPDOWN, wxCB_READONLY, wxCB_SORT);
-TWxCmbStyleSet = SET OF TWxCmbStyleItem;
+    TWxCmbStyleItem = (wxCB_SIMPLE, wxCB_DROPDOWN, wxCB_READONLY, wxCB_SORT);
+    TWxCmbStyleSet = Set Of TWxCmbStyleItem;
 
-TWxOwnCmbStyleItem = (wxODCB_DCLICK_CYCLES, wxODCB_STD_CONTROL_PAINT);
-TWxOwnCmbStyleSet = SET OF TWxOwnCmbStyleItem;
+    TWxOwnCmbStyleItem = (wxODCB_DCLICK_CYCLES, wxODCB_STD_CONTROL_PAINT);
+    TWxOwnCmbStyleSet = Set Of TWxOwnCmbStyleItem;
 
-TWxPickCalStyleItem = (wxDP_SPIN, wxDP_DROPDOWN, wxDP_DEFAULT,
-wxDP_ALLOWNONE, wxDP_SHOWCENTURY);
-TWxPickCalStyleSet = SET OF TWxPickCalStyleItem;
+    TWxPickCalStyleItem = (wxDP_SPIN, wxDP_DROPDOWN, wxDP_DEFAULT,
+        wxDP_ALLOWNONE, wxDP_SHOWCENTURY);
+    TWxPickCalStyleSet = Set Of TWxPickCalStyleItem;
 
-TWxLBxStyleSubItem = (wxLB_SINGLE, wxLB_MULTIPLE, wxLB_EXTENDED);
-TWxLBxStyleSubSet = SET OF TWxLBxStyleSubItem;
+    TWxLBxStyleSubItem = (wxLB_SINGLE, wxLB_MULTIPLE, wxLB_EXTENDED);
+    TWxLBxStyleSubSet = Set Of TWxLBxStyleSubItem;
 
-TWxLBxStyleItem = (wxLB_HSCROLL, wxLB_ALWAYS_SB, wxLB_NEEDED_SB, wxLB_SORT);
-TWxLBxStyleSet = SET OF TWxLBxStyleItem;
+    TWxLBxStyleItem = (wxLB_HSCROLL, wxLB_ALWAYS_SB, wxLB_NEEDED_SB, wxLB_SORT);
+    TWxLBxStyleSet = Set Of TWxLBxStyleItem;
 
-TWxCBxStyleItem = (wxCHK_2STATE, wxCHK_3STATE,
-wxCHK_ALLOW_3RD_STATE_FOR_USER,
-wxALIGN_RIGHT_CB);
-TWxCBxStyleSet = SET OF TWxCBxStyleItem;
+    TWxCBxStyleItem = (wxCHK_2STATE, wxCHK_3STATE,
+        wxCHK_ALLOW_3RD_STATE_FOR_USER,
+        wxALIGN_RIGHT_CB);
+    TWxCBxStyleSet = Set Of TWxCBxStyleItem;
 
-TWxRBStyleItem = (wxRB_GROUP, wxRB_SINGLE);
-TWxRBStyleSet = SET OF TWxRBStyleItem;
+    TWxRBStyleItem = (wxRB_GROUP, wxRB_SINGLE);
+    TWxRBStyleSet = Set Of TWxRBStyleItem;
 
-TWxGagOrientation = (wxGA_HORIZONTAL, wxGA_VERTICAL);
+    TWxGagOrientation = (wxGA_HORIZONTAL, wxGA_VERTICAL);
 
-TWxgagStyleItem = (wxGA_SMOOTH, wxGA_MARQUEE);
-TWxgagStyleSet = SET OF TWxgagStyleItem;
+    TWxgagStyleItem = (wxGA_SMOOTH, wxGA_MARQUEE);
+    TWxgagStyleSet = Set Of TWxgagStyleItem;
 
-TWxsbtnOrientation = (wxSP_HORIZONTAL, wxSP_VERTICAL);
+    TWxsbtnOrientation = (wxSP_HORIZONTAL, wxSP_VERTICAL);
 
-TWxsbtnStyleItem = (wxSP_ARROW_KEYS, wxSP_WRAP);
-TWxsbtnStyleSet = SET OF TWxsbtnStyleItem;
+    TWxsbtnStyleItem = (wxSP_ARROW_KEYS, wxSP_WRAP);
+    TWxsbtnStyleSet = Set Of TWxsbtnStyleItem;
 
-TWx_SBOrientation = (wxSB_HORIZONTAL, wxSB_VERTICAL);
+    TWx_SBOrientation = (wxSB_HORIZONTAL, wxSB_VERTICAL);
 
-TWx_SliderOrientation = (wxSL_HORIZONTAL, wxSL_VERTICAL);
-TWx_SliderRange = (wxSL_SELRANGE, wxSL_INVERSE);
+    TWx_SliderOrientation = (wxSL_HORIZONTAL, wxSL_VERTICAL);
+    TWx_SliderRange = (wxSL_SELRANGE, wxSL_INVERSE);
 
-TWxsldrStyleItem = (wxSL_AUTOTICKS, wxSL_LABELS, wxSL_LEFT,
-wxSL_RIGHT, wxSL_TOP, wxSL_BOTTOM, wxSL_BOTH);
-TWxsldrStyleSet = SET OF TWxsldrStyleItem;
+    TWxsldrStyleItem = (wxSL_AUTOTICKS, wxSL_LABELS, wxSL_LEFT,
+        wxSL_RIGHT, wxSL_TOP, wxSL_BOTTOM, wxSL_BOTH);
+    TWxsldrStyleSet = Set Of TWxsldrStyleItem;
 
-TWxHyperLnkStyleItem = (wxHL_ALIGN_LEFT, wxHL_ALIGN_RIGHT,
-wxHL_ALIGN_CENTRE, wxHL_CONTEXTMENU, wxHL_DEFAULT_STYLE);
-TWxHyperLnkStyleSet = SET OF TWxHyperLnkStyleItem;
+    TWxHyperLnkStyleItem = (wxHL_ALIGN_LEFT, wxHL_ALIGN_RIGHT,
+        wxHL_ALIGN_CENTRE, wxHL_CONTEXTMENU, wxHL_DEFAULT_STYLE);
+    TWxHyperLnkStyleSet = Set Of TWxHyperLnkStyleItem;
 
-TWxcalctrlStyleItem = (wxCAL_SUNDAY_FIRST, wxCAL_MONDAY_FIRST,
-wxCAL_SHOW_HOLIDAYS,
-wxCAL_NO_YEAR_CHANGE, wxCAL_NO_MONTH_CHANGE,
-wxCAL_SHOW_SURROUNDING_WEEKS,
-wxCAL_SEQUENTIAL_MONTH_SELECTION);
-TWxcalctrlStyleSet = SET OF TWxcalctrlStyleItem;
+    TWxcalctrlStyleItem = (wxCAL_SUNDAY_FIRST, wxCAL_MONDAY_FIRST,
+        wxCAL_SHOW_HOLIDAYS,
+        wxCAL_NO_YEAR_CHANGE, wxCAL_NO_MONTH_CHANGE,
+        wxCAL_SHOW_SURROUNDING_WEEKS,
+        wxCAL_SEQUENTIAL_MONTH_SELECTION);
+    TWxcalctrlStyleSet = Set Of TWxcalctrlStyleItem;
 
     //Book controls
     //Notebook
-TWxnbxAlignStyleItem = (wxNB_DEFAULT, wxNB_TOP, wxNB_LEFT,
-wxNB_RIGHT, wxNB_BOTTOM);
-TWxnbxStyleItem = (wxNB_FIXEDWIDTH, wxNB_MULTILINE,
-wxNB_NOPAGETHEME, wxNB_FLAT);
-TWxnbxStyleSet = SET OF TWxnbxStyleItem;
+    TWxnbxAlignStyleItem = (wxNB_DEFAULT, wxNB_TOP, wxNB_LEFT,
+        wxNB_RIGHT, wxNB_BOTTOM);
+    TWxnbxStyleItem = (wxNB_FIXEDWIDTH, wxNB_MULTILINE,
+        wxNB_NOPAGETHEME, wxNB_FLAT);
+    TWxnbxStyleSet = Set Of TWxnbxStyleItem;
 
     //Choicebook
-TWxchbxAlignStyleItem = (wxCHB_DEFAULT, wxCHB_TOP, wxCHB_LEFT,
-wxCHB_RIGHT, wxCHB_BOTTOM);
+    TWxchbxAlignStyleItem = (wxCHB_DEFAULT, wxCHB_TOP, wxCHB_LEFT,
+        wxCHB_RIGHT, wxCHB_BOTTOM);
     { prepare for future styles }
     {    TWxchbxStyleItem = ();
     TWxchbxStyleSet  = set of TWxchbxStyleItem;
 }
     //ListBook
-TWxlbbxAlignStyleItem = (wxLB_DEFAULT, wxLB_TOP, wxLB_LEFT,
-wxLB_RIGHT, wxLB_BOTTOM);
+    TWxlbbxAlignStyleItem = (wxLB_DEFAULT, wxLB_TOP, wxLB_LEFT,
+        wxLB_RIGHT, wxLB_BOTTOM);
     { prepare for future styles   }
     {    TWxlbbxStyleItem = ();
     TWxlbbxStyleSet  = set of TWxlbbxStyleItem;
 }
     //treebook
-TWxtrbxAlignStyleItem = (wxBK_DEFAULT, wxBK_TOP, wxBK_LEFT,
-wxBK_RIGHT, wxBK_BOTTOM);
+    TWxtrbxAlignStyleItem = (wxBK_DEFAULT, wxBK_TOP, wxBK_LEFT,
+        wxBK_RIGHT, wxBK_BOTTOM);
     { prepare for future styles  }
     {   TWxtrbxStyleItem = ();
     TWxtrbxStyleSet  = set of TWxtrbxStyleItem;
 }
     //Toolbook
-TWxtlbxAlignStyleItem = (wxTLB_DEFAULT);
+    TWxtlbxAlignStyleItem = (wxTLB_DEFAULT);
     { prepare for future styles  }
     {  TWxtlbxAlignStyleItem = ();
   TWxtlbxStyleSet = set of TWxtlbxStyleItem;
 }
-TWxrbxStyleItem = (wxRA_SPECIFY_ROWS, wxRA_SPECIFY_COLS);
-TWxrbxStyleSet = SET OF TWxrbxStyleItem;
+    TWxrbxStyleItem = (wxRA_SPECIFY_ROWS, wxRA_SPECIFY_COLS);
+    TWxrbxStyleSet = Set Of TWxrbxStyleItem;
 
-TWxsbrStyleItem = (wxST_SIZEGRIP);
-TWxsbrStyleSet = SET OF TWxsbrStyleItem;
+    TWxsbrStyleItem = (wxST_SIZEGRIP);
+    TWxsbrStyleSet = Set Of TWxsbrStyleItem;
 
-TWxtbrStyleItem = (wxTB_FLAT, wxTB_DOCKABLE, wxTB_HORIZONTAL,
-wxTB_VERTICAL, wxTB_TEXT,
-wxTB_NOICONS, wxTB_NODIVIDER, wxTB_NOALIGN, wxTB_HORZ_LAYOUT,
-wxTB_HORZ_TEXT);
-TWxtbrStyleSet = SET OF TWxtbrStyleItem;
+    TWxtbrStyleItem = (wxTB_FLAT, wxTB_DOCKABLE, wxTB_HORIZONTAL,
+        wxTB_VERTICAL, wxTB_TEXT,
+        wxTB_NOICONS, wxTB_NODIVIDER, wxTB_NOALIGN, wxTB_HORZ_LAYOUT,
+        wxTB_HORZ_TEXT);
+    TWxtbrStyleSet = Set Of TWxtbrStyleItem;
 
-TWxLvView = (wxLC_ICON, wxLC_SMALL_ICON, wxLC_LIST, wxLC_REPORT,
-wxLC_VIRTUAL{$IFDEF PRIVATE_BUILD}, wxLC_TILE{$ENDIF});
-TWxLVStyleItem = (wxLC_ALIGN_TOP, wxLC_ALIGN_LEFT, wxLC_AUTOARRANGE,
-wxLC_EDIT_LABELS, wxLC_GROUPS, wxLC_NO_HEADER, wxLC_NO_SORT_HEADER,
-wxLC_SINGLE_SEL, wxLC_SORT_ASCENDING, wxLC_SORT_DESCENDING,
-wxLC_HRULES, wxLC_VRULES);
-TWxLVStyleSet = SET OF TWxLVStyleItem;
+    TWxLvView = (wxLC_ICON, wxLC_SMALL_ICON, wxLC_LIST, wxLC_REPORT,
+        wxLC_VIRTUAL{$IFDEF PRIVATE_BUILD}, wxLC_TILE{$ENDIF});
+    TWxLVStyleItem = (wxLC_ALIGN_TOP, wxLC_ALIGN_LEFT, wxLC_AUTOARRANGE,
+        wxLC_EDIT_LABELS, wxLC_GROUPS, wxLC_NO_HEADER, wxLC_NO_SORT_HEADER,
+        wxLC_SINGLE_SEL, wxLC_SORT_ASCENDING, wxLC_SORT_DESCENDING,
+        wxLC_HRULES, wxLC_VRULES);
+    TWxLVStyleSet = Set Of TWxLVStyleItem;
 
-TWxTVStyleItem = (wxTR_EDIT_LABELS, wxTR_NO_BUTTONS, wxTR_HAS_BUTTONS,
-wxTR_TWIST_BUTTONS, wxTR_NO_LINES, wxTR_FULL_ROW_HIGHLIGHT,
-wxTR_LINES_AT_ROOT, wxTR_HIDE_ROOT, wxTR_ROW_LINES, wxTR_COLUMN_LINES,
-wxTR_HAS_VARIABLE_ROW_HEIGHT, wxTR_SINGLE, wxTR_SHOW_ROOT_LABEL_ONLY,
-wxTR_MULTIPLE, wxTR_EXTENDED,
-wxTR_DEFAULT_STYLE);
-TWxTVStyleSet = SET OF TWxTVStyleItem;
+    TWxTVStyleItem = (wxTR_EDIT_LABELS, wxTR_NO_BUTTONS, wxTR_HAS_BUTTONS,
+        wxTR_TWIST_BUTTONS, wxTR_NO_LINES, wxTR_FULL_ROW_HIGHLIGHT,
+        wxTR_LINES_AT_ROOT, wxTR_HIDE_ROOT, wxTR_ROW_LINES, wxTR_COLUMN_LINES,
+        wxTR_HAS_VARIABLE_ROW_HEIGHT, wxTR_SINGLE, wxTR_SHOW_ROOT_LABEL_ONLY,
+        wxTR_MULTIPLE, wxTR_EXTENDED,
+        wxTR_DEFAULT_STYLE);
+    TWxTVStyleSet = Set Of TWxTVStyleItem;
 
-TWxScrWinStyleItem = (wxRETAINED);
-TWxScrWinStyleSet = SET OF TWxScrWinStyleItem;
+    TWxScrWinStyleItem = (wxRETAINED);
+    TWxScrWinStyleSet = Set Of TWxScrWinStyleItem;
 
-TWxHtmlWinStyleItem = (wxHW_SCROLLBAR_NEVER, wxHW_SCROLLBAR_AUTO,
-wxHW_NO_SELECTION);
-TWxHtmlWinStyleSet = SET OF TWxHtmlWinStyleItem;
+    TWxHtmlWinStyleItem = (wxHW_SCROLLBAR_NEVER, wxHW_SCROLLBAR_AUTO,
+        wxHW_NO_SELECTION);
+    TWxHtmlWinStyleSet = Set Of TWxHtmlWinStyleItem;
 
-TWxSplitterWinStyleItem = (wxSP_3D, wxSP_3DSASH, wxSP_3DBORDER,
-wxSP_BORDER, wxSP_NOBORDER, wxSP_NO_XP_THEME, wxSP_PERMIT_UNSPLIT,
-wxSP_LIVE_UPDATE);
-TWxSplitterWinStyleSet = SET OF TWxSplitterWinStyleItem;
+    TWxSplitterWinStyleItem = (wxSP_3D, wxSP_3DSASH, wxSP_3DBORDER,
+        wxSP_BORDER, wxSP_NOBORDER, wxSP_NO_XP_THEME, wxSP_PERMIT_UNSPLIT,
+        wxSP_LIVE_UPDATE);
+    TWxSplitterWinStyleSet = Set Of TWxSplitterWinStyleItem;
 
-TWxMenuItemStyleItem = (wxMnuItm_Normal, wxMnuItm_Separator,
-wxMnuItm_Radio, wxMnuItm_Check, wxMnuItm_History);
+    TWxMenuItemStyleItem = (wxMnuItm_Normal, wxMnuItm_Separator,
+        wxMnuItm_Radio, wxMnuItm_Check, wxMnuItm_History);
 
-TWxToolbottonItemStyleItem = (wxITEM_NORMAL, wxITEM_RADIO, wxITEM_CHECK);
+    TWxToolbottonItemStyleItem = (wxITEM_NORMAL, wxITEM_RADIO, wxITEM_CHECK);
 
-TWxFindReplaceFlagItem = (wxFR_DOWN, wxFR_WHOLEWORD, wxFR_MATCHCASE);
-TWxFindReplaceFlagSet = SET OF TWxFindReplaceFlagItem;
+    TWxFindReplaceFlagItem = (wxFR_DOWN, wxFR_WHOLEWORD, wxFR_MATCHCASE);
+    TWxFindReplaceFlagSet = Set Of TWxFindReplaceFlagItem;
 
-TwxFindReplaceDialogStyleItem = (wxFR_REPLACEDIALOG, wxFR_NOUPDOWN,
-wxFR_NOMATCHCASE, wxFR_NOWHOLEWORD);
-TwxFindReplaceDialogStyleSet = SET OF TwxFindReplaceDialogStyleItem;
+    TwxFindReplaceDialogStyleItem = (wxFR_REPLACEDIALOG, wxFR_NOUPDOWN,
+        wxFR_NOMATCHCASE, wxFR_NOWHOLEWORD);
+    TwxFindReplaceDialogStyleSet = Set Of TwxFindReplaceDialogStyleItem;
 
-TWx_LIOrientation = (wxLI_HORIZONTAL, wxLI_VERTICAL);
+    TWx_LIOrientation = (wxLI_HORIZONTAL, wxLI_VERTICAL);
 
     //End of Control Styles
 
-TWxFileDialogType = (wxOPEN, wxSAVE);
+    TWxFileDialogType = (wxOPEN, wxSAVE);
 
-TWxFileDialogStyleItem = (wxHIDE_READONLY, wxOVERWRITE_PROMPT, wxMULTIPLE,
-wxCHANGE_DIR, wxFILE_MUST_EXIST);
-TWxFileDialogStyleSet = SET OF TWxFileDialogStyleItem;
+    TWxFileDialogStyleItem = (wxHIDE_READONLY, wxOVERWRITE_PROMPT, wxMULTIPLE,
+        wxCHANGE_DIR, wxFILE_MUST_EXIST);
+    TWxFileDialogStyleSet = Set Of TWxFileDialogStyleItem;
 
-TWxDirDialogStyleItem = (wxDD_NEW_DIR_BUTTON);
-TWxDirDialogStyleSet = SET OF TWxDirDialogStyleItem;
+    TWxDirDialogStyleItem = (wxDD_NEW_DIR_BUTTON);
+    TWxDirDialogStyleSet = Set Of TWxDirDialogStyleItem;
 
-TWxProgressDialogStyleItem =
-(wxPD_APP_MODAL, wxPD_AUTO_HIDE, wxPD_CAN_ABORT, wxPD_ELAPSED_TIME,
-wxPD_ESTIMATED_TIME, wxPD_REMAINING_TIME, wxPD_SMOOTH, wxPD_CAN_SKIP);
-TWxProgressDialogStyleSet = SET OF TWxProgressDialogStyleItem;
+    TWxProgressDialogStyleItem =
+        (wxPD_APP_MODAL, wxPD_AUTO_HIDE, wxPD_CAN_ABORT, wxPD_ELAPSED_TIME,
+        wxPD_ESTIMATED_TIME, wxPD_REMAINING_TIME, wxPD_SMOOTH, wxPD_CAN_SKIP);
+    TWxProgressDialogStyleSet = Set Of TWxProgressDialogStyleItem;
 
-TWxMessageDialogStyleItem = (wxOK, wxCANCEL, wxYES_NO, wxYES_DEFAULT,
-wxNO_DEFAULT, wxICON_EXCLAMATION, wxICON_HAND, wxICON_ERROR,
-wxICON_QUESTION,
-wxICON_INFORMATION, wxCENTRE);
-TWxMessageDialogStyleSet = SET OF TWxMessageDialogStyleItem;
+    TWxMessageDialogStyleItem = (wxOK, wxCANCEL, wxYES_NO, wxYES_DEFAULT,
+        wxNO_DEFAULT, wxICON_EXCLAMATION, wxICON_HAND, wxICON_ERROR,
+        wxICON_QUESTION,
+        wxICON_INFORMATION, wxCENTRE);
+    TWxMessageDialogStyleSet = Set Of TWxMessageDialogStyleItem;
 
-TWxPaperSizeItem = (wxPAPER_NONE, wxPAPER_LETTER, wxPAPER_LEGAL,
-wxPAPER_A4, wxPAPER_CSHEET, wxPAPER_DSHEET, wxPAPER_ESHEET,
-wxPAPER_LETTERSMALL, wxPAPER_TABLOID, wxPAPER_LEDGER,
-wxPAPER_STATEMENT, wxPAPER_EXECUTIVE, wxPAPER_A3,
-wxPAPER_A4SMALL, wxPAPER_A5, wxPAPER_B4, wxPAPER_B5,
-wxPAPER_FOLIO, wxPAPER_QUARTO, wxPAPER_10X14, wxPAPER_11X17,
-wxPAPER_NOTE, wxPAPER_ENV_9, wxPAPER_ENV_10,
-wxPAPER_ENV_11, wxPAPER_ENV_12, wxPAPER_ENV_14, wxPAPER_ENV_DL,
-wxPAPER_ENV_C5,
-wxPAPER_ENV_C3, wxPAPER_ENV_C4, wxPAPER_ENV_C6,
-wxPAPER_ENV_C65, wxPAPER_ENV_B4, wxPAPER_ENV_B5, wxPAPER_ENV_B6,
-wxPAPER_ENV_ITALY,
-wxPAPER_ENV_MONARCH, wxPAPER_ENV_PERSONAL,
-wxPAPER_FANFOLD_US, wxPAPER_FANFOLD_STD_GERMAN,
-wxPAPER_FANFOLD_LGL_GERMAN);
+    TWxPaperSizeItem = (wxPAPER_NONE, wxPAPER_LETTER, wxPAPER_LEGAL,
+        wxPAPER_A4, wxPAPER_CSHEET, wxPAPER_DSHEET, wxPAPER_ESHEET,
+        wxPAPER_LETTERSMALL, wxPAPER_TABLOID, wxPAPER_LEDGER,
+        wxPAPER_STATEMENT, wxPAPER_EXECUTIVE, wxPAPER_A3,
+        wxPAPER_A4SMALL, wxPAPER_A5, wxPAPER_B4, wxPAPER_B5,
+        wxPAPER_FOLIO, wxPAPER_QUARTO, wxPAPER_10X14, wxPAPER_11X17,
+        wxPAPER_NOTE, wxPAPER_ENV_9, wxPAPER_ENV_10,
+        wxPAPER_ENV_11, wxPAPER_ENV_12, wxPAPER_ENV_14, wxPAPER_ENV_DL,
+        wxPAPER_ENV_C5,
+        wxPAPER_ENV_C3, wxPAPER_ENV_C4, wxPAPER_ENV_C6,
+        wxPAPER_ENV_C65, wxPAPER_ENV_B4, wxPAPER_ENV_B5, wxPAPER_ENV_B6,
+        wxPAPER_ENV_ITALY,
+        wxPAPER_ENV_MONARCH, wxPAPER_ENV_PERSONAL,
+        wxPAPER_FANFOLD_US, wxPAPER_FANFOLD_STD_GERMAN,
+        wxPAPER_FANFOLD_LGL_GERMAN);
 
     //Sizer orientation
-TWxSizerOrientation = (wxVertical, wxHorizontal);
+    TWxSizerOrientation = (wxVertical, wxHorizontal);
 
-TWxMediaCtrlControl = (wxMEDIACTRLPLAYERCONTROLS_NONE,
-wxMEDIACTRLPLAYERCONTROLS_STEP, wxMEDIACTRLPLAYERCONTROLS_VOLUME);
-TWxMediaCtrlControls = SET OF TWxMediaCtrlControl;
+    TWxMediaCtrlControl = (wxMEDIACTRLPLAYERCONTROLS_NONE,
+        wxMEDIACTRLPLAYERCONTROLS_STEP, wxMEDIACTRLPLAYERCONTROLS_VOLUME);
+    TWxMediaCtrlControls = Set Of TWxMediaCtrlControl;
 
     //wxAUI styles etc.
-TwxAuiManagerFlag = (wxAUI_MGR_ALLOW_FLOATING, wxAUI_MGR_ALLOW_ACTIVE_PANE,
-wxAUI_MGR_TRANSPARENT_DRAG,
-wxAUI_MGR_TRANSPARENT_HINT,
-wxAUI_MGR_VENETIAN_BLINDS_HINT, wxAUI_MGR_RECTANGLE_HINT,
-wxAUI_MGR_HINT_FADE,
-wxAUI_MGR_NO_VENETIAN_BLINDS_FADE);
-TwxAuiManagerFlagSet = SET OF TwxAuiManagerFlag;
+    TwxAuiManagerFlag = (wxAUI_MGR_ALLOW_FLOATING, wxAUI_MGR_ALLOW_ACTIVE_PANE,
+        wxAUI_MGR_TRANSPARENT_DRAG,
+        wxAUI_MGR_TRANSPARENT_HINT,
+        wxAUI_MGR_VENETIAN_BLINDS_HINT, wxAUI_MGR_RECTANGLE_HINT,
+        wxAUI_MGR_HINT_FADE,
+        wxAUI_MGR_NO_VENETIAN_BLINDS_FADE);
+    TwxAuiManagerFlagSet = Set Of TwxAuiManagerFlag;
 
-TwxAuiPaneDockDirectionItem = (wxAUI_DOCK_NONE, wxAUI_DOCK_TOP,
-wxAUI_DOCK_RIGHT, wxAUI_DOCK_BOTTOM, wxAUI_DOCK_LEFT, wxAUI_DOCK_CENTER);
+    TwxAuiPaneDockDirectionItem = (wxAUI_DOCK_NONE, wxAUI_DOCK_TOP,
+        wxAUI_DOCK_RIGHT, wxAUI_DOCK_BOTTOM, wxAUI_DOCK_LEFT, wxAUI_DOCK_CENTER);
     //mn later perhaps  TwxAuiPaneDockDirectionSet = set of TwxAuiPaneDockDirectionItem;
 
-TwxAuiPaneDockableDirectionItem = (TopDockable, RightDockable,
-BottomDockable, LeftDockable);
-TwxAuiPaneDockableDirectionSet = SET OF TwxAuiPaneDockableDirectionItem;
+    TwxAuiPaneDockableDirectionItem = (TopDockable, RightDockable,
+        BottomDockable, LeftDockable);
+    TwxAuiPaneDockableDirectionSet = Set Of TwxAuiPaneDockableDirectionItem;
 
-TwxAuiPaneStyleItem = (CaptionVisible, DestroyOnClose, DockFixed,
-Floatable, Gripper, GripperTop, Movable, PaneBorder, Resizable,
-ToolbarPane, CenterPane);
-TwxAuiPaneStyleSet = SET OF TwxAuiPaneStyleItem;
+    TwxAuiPaneStyleItem = (CaptionVisible, DestroyOnClose, DockFixed,
+        Floatable, Gripper, GripperTop, Movable, PaneBorder, Resizable,
+        ToolbarPane, CenterPane);
+    TwxAuiPaneStyleSet = Set Of TwxAuiPaneStyleItem;
 
-TwxAuiPaneButtonItem = (CloseButton, MaximizeButton,
-MinimizeButton, PinButton);
-TwxAuiPaneButtonSet = SET OF TwxAuiPaneButtonItem;
+    TwxAuiPaneButtonItem = (CloseButton, MaximizeButton,
+        MinimizeButton, PinButton);
+    TwxAuiPaneButtonSet = Set Of TwxAuiPaneButtonItem;
 
-TWxAuiTbrStyleItem = (wxAUI_TB_TEXT, wxAUI_TB_NO_TOOLTIPS,
-wxAUI_TB_NO_AUTORESIZE, wxAUI_TB_GRIPPER,
-wxAUI_TB_OVERFLOW, wxAUI_TB_VERTICAL, wxAUI_TB_HORZ_TEXT,
-wxAUI_TB_DEFAULT_STYLE);
-TWxAuiTbrStyleSet = SET OF TWxAuiTbrStyleItem;
+    TWxAuiTbrStyleItem = (wxAUI_TB_TEXT, wxAUI_TB_NO_TOOLTIPS,
+        wxAUI_TB_NO_AUTORESIZE, wxAUI_TB_GRIPPER,
+        wxAUI_TB_OVERFLOW, wxAUI_TB_VERTICAL, wxAUI_TB_HORZ_TEXT,
+        wxAUI_TB_DEFAULT_STYLE);
+    TWxAuiTbrStyleSet = Set Of TWxAuiTbrStyleItem;
 
     //Notebook
-TWxAuinbxAlignStyleItem =
-(wxAUI_NB_TOP, {wxAUI_NB_LEFT, wxAUI_NB_RIGHT, } wxAUI_NB_BOTTOM);
-TWxAuinbxStyleItem = (wxAUI_NB_TAB_SPLIT, wxAUI_NB_TAB_MOVE,
-wxAUI_NB_TAB_EXTERNAL_MOVE, wxAUI_NB_TAB_FIXED_WIDTH,
-wxAUI_NB_SCROLL_BUTTONS, wxAUI_NB_WINDOWLIST_BUTTON, wxAUI_NB_CLOSE_BUTTON,
-wxAUI_NB_CLOSE_ON_ACTIVE_TAB, wxAUI_NB_CLOSE_ON_ALL_TABS);
-TWxAuinbxStyleSet = SET OF TWxAuinbxStyleItem;
+    TWxAuinbxAlignStyleItem =
+        (wxAUI_NB_TOP, {wxAUI_NB_LEFT, wxAUI_NB_RIGHT, } wxAUI_NB_BOTTOM);
+    TWxAuinbxStyleItem = (wxAUI_NB_TAB_SPLIT, wxAUI_NB_TAB_MOVE,
+        wxAUI_NB_TAB_EXTERNAL_MOVE, wxAUI_NB_TAB_FIXED_WIDTH,
+        wxAUI_NB_SCROLL_BUTTONS, wxAUI_NB_WINDOWLIST_BUTTON, wxAUI_NB_CLOSE_BUTTON,
+        wxAUI_NB_CLOSE_ON_ACTIVE_TAB, wxAUI_NB_CLOSE_ON_ALL_TABS);
+    TWxAuinbxStyleSet = Set Of TWxAuinbxStyleItem;
 
-TWxColorString = CLASS
-PUBLIC
-FstrColorValue: STRING;
-PUBLISHED
-PROPERTY strColorValue: STRING READ FstrColorValue WRITE FstrColorValue;
-END;
+    TWxColorString = Class
+    Public
+        FstrColorValue: String;
+    Published
+        Property strColorValue: String Read FstrColorValue Write FstrColorValue;
+    End;
 
-TWxValidatorString = CLASS(TComponent)
-PUBLIC
-FstrValidatorValue: STRING;
-FValidatorType: INTEGER;
-FFilterType: INTEGER;
-FValidatorVarName: STRING;
-CONSTRUCTOR Create(Owner: TComponent); OVERRIDE;
+    TWxValidatorString = Class(TComponent)
+    Public
+        FstrValidatorValue: String;
+        FValidatorType: Integer;
+        FFilterType: Integer;
+        FValidatorVarName: String;
+        Constructor Create(Owner: TComponent); Override;
 
-PUBLISHED
-PROPERTY strValidatorValue: STRING
-READ FstrValidatorValue WRITE FstrValidatorValue;
-END;
+    Published
+        Property strValidatorValue: String
+            Read FstrValidatorValue Write FstrValidatorValue;
+    End;
 
     // Added 11 May 2005 - Tony
-TWxFileNameString = CLASS
-PUBLIC
-FstrFileNameValue: STRING;
-PUBLISHED
-PROPERTY strFileNameValue: STRING READ FstrFileNameValue
-WRITE FstrFileNameValue;
-END;
+    TWxFileNameString = Class
+    Public
+        FstrFileNameValue: String;
+    Published
+        Property strFileNameValue: String Read FstrFileNameValue
+            Write FstrFileNameValue;
+    End;
 
     // Added 1 May 2008 - Mal
-TWxAnimationFileNameString = CLASS
-PUBLIC
-FstrFileNameValue: STRING;
-PUBLISHED
-PROPERTY strFileNameValue: STRING READ FstrFileNameValue
-WRITE FstrFileNameValue;
-END;
+    TWxAnimationFileNameString = Class
+    Public
+        FstrFileNameValue: String;
+    Published
+        Property strFileNameValue: String Read FstrFileNameValue
+            Write FstrFileNameValue;
+    End;
 
-TWxJvInspectorTStringsItem = CLASS(TJvCustomInspectorItem)
-PROTECTED
-PROCEDURE ContentsChanged(Sender: TObject);
-FUNCTION GetDisplayValue: STRING; OVERRIDE;
-PROCEDURE Edit; OVERRIDE;
-PROCEDURE SetDisplayValue(CONST Value: STRING); OVERRIDE;
-PROCEDURE SetFlags(CONST Value: TInspectorItemFlags); OVERRIDE;
-PUBLIC
-CONSTRUCTOR Create(CONST AParent: TJvCustomInspectorItem;
-CONST AData: TJvCustomInspectorData); OVERRIDE;
-PUBLIC
-CLASS PROCEDURE RegisterAsDefaultItem;
-END;
+    TWxJvInspectorTStringsItem = Class(TJvCustomInspectorItem)
+    Protected
+        Procedure ContentsChanged(Sender: TObject);
+        Function GetDisplayValue: String; Override;
+        Procedure Edit; Override;
+        Procedure SetDisplayValue(Const Value: String); Override;
+        Procedure SetFlags(Const Value: TInspectorItemFlags); Override;
+    Public
+        Constructor Create(Const AParent: TJvCustomInspectorItem;
+            Const AData: TJvCustomInspectorData); Override;
+    Public
+        Class Procedure RegisterAsDefaultItem;
+    End;
 
-TJvInspectorColorEditItem = CLASS(TJvCustomInspectorItem)
-PROTECTED
-PROCEDURE Edit; OVERRIDE;
+    TJvInspectorColorEditItem = Class(TJvCustomInspectorItem)
+    Protected
+        Procedure Edit; Override;
 
-FUNCTION GetDisplayValue: STRING; OVERRIDE;
-PROCEDURE SetDisplayValue(CONST Value: STRING); OVERRIDE;
-PROCEDURE SetFlags(CONST Value: TInspectorItemFlags); OVERRIDE;
-PUBLIC
-CLASS PROCEDURE RegisterAsDefaultItem;
-END;
+        Function GetDisplayValue: String; Override;
+        Procedure SetDisplayValue(Const Value: String); Override;
+        Procedure SetFlags(Const Value: TInspectorItemFlags); Override;
+    Public
+        Class Procedure RegisterAsDefaultItem;
+    End;
 
     // Added 11 May 2005 by Tony
-TJvInspectorFileNameEditItem = CLASS(TJvCustomInspectorItem)
-PROTECTED
-PROCEDURE Edit; OVERRIDE;
-FUNCTION GetDisplayValue: STRING; OVERRIDE;
-PROCEDURE SetFlags(CONST Value: TInspectorItemFlags); OVERRIDE;
-PUBLIC
-CLASS PROCEDURE RegisterAsDefaultItem;
-END;
+    TJvInspectorFileNameEditItem = Class(TJvCustomInspectorItem)
+    Protected
+        Procedure Edit; Override;
+        Function GetDisplayValue: String; Override;
+        Procedure SetFlags(Const Value: TInspectorItemFlags); Override;
+    Public
+        Class Procedure RegisterAsDefaultItem;
+    End;
 
     // Added 1 May 2008 by Mal needed for Animation Control
-TJvInspectorAnimationFileNameEditItem = CLASS(TJvCustomInspectorItem)
-PROTECTED
-PROCEDURE Edit; OVERRIDE;
-FUNCTION GetDisplayValue: STRING; OVERRIDE;
-PROCEDURE SetFlags(CONST Value: TInspectorItemFlags); OVERRIDE;
-PUBLIC
-CLASS PROCEDURE RegisterAsDefaultItem;
-END;
+    TJvInspectorAnimationFileNameEditItem = Class(TJvCustomInspectorItem)
+    Protected
+        Procedure Edit; Override;
+        Function GetDisplayValue: String; Override;
+        Procedure SetFlags(Const Value: TInspectorItemFlags); Override;
+    Public
+        Class Procedure RegisterAsDefaultItem;
+    End;
 
-TJvInspectorListItemsItem = CLASS(TJvCustomInspectorItem)
-PROTECTED
-PROCEDURE Edit; OVERRIDE;
+    TJvInspectorListItemsItem = Class(TJvCustomInspectorItem)
+    Protected
+        Procedure Edit; Override;
 
-FUNCTION GetDisplayValue: STRING; OVERRIDE;
-PROCEDURE SetDisplayValue(CONST Value: STRING); OVERRIDE;
-PROCEDURE SetFlags(CONST Value: TInspectorItemFlags); OVERRIDE;
-PUBLIC
-CLASS PROCEDURE RegisterAsDefaultItem;
-END;
+        Function GetDisplayValue: String; Override;
+        Procedure SetDisplayValue(Const Value: String); Override;
+        Procedure SetFlags(Const Value: TInspectorItemFlags); Override;
+    Public
+        Class Procedure RegisterAsDefaultItem;
+    End;
 
-TJvInspectorListColumnsItem = CLASS(TJvCustomInspectorItem)
-PROTECTED
-PROCEDURE Edit; OVERRIDE;
+    TJvInspectorListColumnsItem = Class(TJvCustomInspectorItem)
+    Protected
+        Procedure Edit; Override;
 
-FUNCTION GetDisplayValue: STRING; OVERRIDE;
-PROCEDURE SetDisplayValue(CONST Value: STRING); OVERRIDE;
-PROCEDURE SetFlags(CONST Value: TInspectorItemFlags); OVERRIDE;
-PUBLIC
-CLASS PROCEDURE RegisterAsDefaultItem;
-END;
+        Function GetDisplayValue: String; Override;
+        Procedure SetDisplayValue(Const Value: String); Override;
+        Procedure SetFlags(Const Value: TInspectorItemFlags); Override;
+    Public
+        Class Procedure RegisterAsDefaultItem;
+    End;
 
-TJvInspectorStatusBarItem = CLASS(TJvCustomInspectorItem)
-PROTECTED
-PROCEDURE Edit; OVERRIDE;
+    TJvInspectorStatusBarItem = Class(TJvCustomInspectorItem)
+    Protected
+        Procedure Edit; Override;
 
-FUNCTION GetDisplayValue: STRING; OVERRIDE;
-PROCEDURE SetDisplayValue(CONST Value: STRING); OVERRIDE;
-PROCEDURE SetFlags(CONST Value: TInspectorItemFlags); OVERRIDE;
-PUBLIC
-CLASS PROCEDURE RegisterAsDefaultItem;
-END;
+        Function GetDisplayValue: String; Override;
+        Procedure SetDisplayValue(Const Value: String); Override;
+        Procedure SetFlags(Const Value: TInspectorItemFlags); Override;
+    Public
+        Class Procedure RegisterAsDefaultItem;
+    End;
 
-TJvInspectorTreeNodesItem = CLASS(TJvCustomInspectorItem)
-PROTECTED
-PROCEDURE Edit; OVERRIDE;
+    TJvInspectorTreeNodesItem = Class(TJvCustomInspectorItem)
+    Protected
+        Procedure Edit; Override;
 
-FUNCTION GetDisplayValue: STRING; OVERRIDE;
-PROCEDURE SetDisplayValue(CONST Value: STRING); OVERRIDE;
-PROCEDURE SetFlags(CONST Value: TInspectorItemFlags); OVERRIDE;
-PUBLIC
-CLASS PROCEDURE RegisterAsDefaultItem;
-END;
+        Function GetDisplayValue: String; Override;
+        Procedure SetDisplayValue(Const Value: String); Override;
+        Procedure SetFlags(Const Value: TInspectorItemFlags); Override;
+    Public
+        Class Procedure RegisterAsDefaultItem;
+    End;
 
-TJvInspectorBitmapItem = CLASS(TJvCustomInspectorItem)
-PROTECTED
-PROCEDURE Edit; OVERRIDE;
+    TJvInspectorBitmapItem = Class(TJvCustomInspectorItem)
+    Protected
+        Procedure Edit; Override;
 
-FUNCTION GetDisplayValue: STRING; OVERRIDE;
-PROCEDURE SetDisplayValue(CONST Value: STRING); OVERRIDE;
-PROCEDURE SetFlags(CONST Value: TInspectorItemFlags); OVERRIDE;
-PUBLIC
-CLASS PROCEDURE RegisterAsDefaultItem;
-END;
+        Function GetDisplayValue: String; Override;
+        Procedure SetDisplayValue(Const Value: String); Override;
+        Procedure SetFlags(Const Value: TInspectorItemFlags); Override;
+    Public
+        Class Procedure RegisterAsDefaultItem;
+    End;
 
-TJvInspectorMyFontItem = CLASS(TJvCustomInspectorItem)
-PROTECTED
-PROCEDURE Edit; OVERRIDE;
+    TJvInspectorMyFontItem = Class(TJvCustomInspectorItem)
+    Protected
+        Procedure Edit; Override;
 
-FUNCTION GetDisplayValue: STRING; OVERRIDE;
-PROCEDURE SetDisplayValue(CONST Value: STRING); OVERRIDE;
-PROCEDURE SetFlags(CONST Value: TInspectorItemFlags); OVERRIDE;
-PUBLIC
-CLASS PROCEDURE RegisterAsDefaultItem;
-END;
+        Function GetDisplayValue: String; Override;
+        Procedure SetDisplayValue(Const Value: String); Override;
+        Procedure SetFlags(Const Value: TInspectorItemFlags); Override;
+    Public
+        Class Procedure RegisterAsDefaultItem;
+    End;
 
-TJvInspectorMenuItem = CLASS(TJvCustomInspectorItem)
-PROTECTED
-PROCEDURE Edit; OVERRIDE;
+    TJvInspectorMenuItem = Class(TJvCustomInspectorItem)
+    Protected
+        Procedure Edit; Override;
 
-FUNCTION GetDisplayValue: STRING; OVERRIDE;
-PROCEDURE SetDisplayValue(CONST Value: STRING); OVERRIDE;
-PROCEDURE SetFlags(CONST Value: TInspectorItemFlags); OVERRIDE;
-PUBLIC
-CLASS PROCEDURE RegisterAsDefaultItem;
-END;
+        Function GetDisplayValue: String; Override;
+        Procedure SetDisplayValue(Const Value: String); Override;
+        Procedure SetFlags(Const Value: TInspectorItemFlags); Override;
+    Public
+        Class Procedure RegisterAsDefaultItem;
+    End;
 
-TJvInspectorValidatorItem = CLASS(TJvCustomInspectorItem)
-PROTECTED
-PROCEDURE ContentsChanged(Sender: TObject);
-FUNCTION GetDisplayValue: STRING; OVERRIDE;
-PROCEDURE Edit; OVERRIDE;
-PROCEDURE SetFlags(CONST Value: TInspectorItemFlags); OVERRIDE;
-PROCEDURE SetDisplayValue(CONST Value: STRING); OVERRIDE;
+    TJvInspectorValidatorItem = Class(TJvCustomInspectorItem)
+    Protected
+        Procedure ContentsChanged(Sender: TObject);
+        Function GetDisplayValue: String; Override;
+        Procedure Edit; Override;
+        Procedure SetFlags(Const Value: TInspectorItemFlags); Override;
+        Procedure SetDisplayValue(Const Value: String); Override;
 
-PUBLIC
-CONSTRUCTOR Create(CONST AParent: TJvCustomInspectorItem;
-CONST AData: TJvCustomInspectorData); OVERRIDE;
-CLASS PROCEDURE RegisterAsDefaultItem;
-END;
+    Public
+        Constructor Create(Const AParent: TJvCustomInspectorItem;
+            Const AData: TJvCustomInspectorData); Override;
+        Class Procedure RegisterAsDefaultItem;
+    End;
 
-FUNCTION UnixPathToDosPath(CONST Path: STRING): STRING;
-FUNCTION LocalConvertLibsToCurrentVersion(strValue: STRING): STRING;
-FUNCTION Convert25LibsToCurrentVersion(strValue: STRING): STRING;
-FUNCTION Convert26LibsToCurrentVersion(strValue: STRING): STRING;
+Function UnixPathToDosPath(Const Path: String): String;
+Function LocalConvertLibsToCurrentVersion(strValue: String): String;
+Function Convert25LibsToCurrentVersion(strValue: String): String;
+Function Convert26LibsToCurrentVersion(strValue: String): String;
 
-FUNCTION GetExtension(FileName: STRING): STRING;
+Function GetExtension(FileName: String): String;
 
-FUNCTION GetGridSelectionToString(grdsel: TWxGridSelection): STRING;
-FUNCTION GetStdStyleString(stdStyle: TWxStdStyleSet): STRING;
-FUNCTION GetComboxBoxStyleString(stdStyle: TWxCmbStyleSet): STRING;
-FUNCTION GetOwnComboxBoxStyleString(stdStyle: TWxOwnCmbStyleSet): STRING;
-FUNCTION GetCheckboxStyleString(stdStyle: TWxcbxStyleSet): STRING;
-FUNCTION GetTreeviewStyleString(stdStyle: TWxTVStyleSet): STRING;
-FUNCTION GetRadiobuttonStyleString(stdStyle: TWxrbStyleSet): STRING;
-FUNCTION GetListboxStyleString(stdStyle: TWxlbxStyleSet): STRING;
-FUNCTION GetGaugeStyleString(stdStyle: TWxgagStyleSet): STRING;
-FUNCTION GetScrollbarStyleString(stdStyle: TWxsbrStyleSet): STRING;
-FUNCTION GetSpinButtonStyleString(stdStyle: TWxsbtnStyleSet): STRING;
-FUNCTION GetSliderStyleString(stdStyle: TWxsldrStyleSet): STRING;
-FUNCTION GetHyperLnkStyleString(stdStyle: TWxHyperLnkStyleSet): STRING;
-FUNCTION GetPickCalStyleString(stdStyle: TWxPickCalStyleSet): STRING;
-FUNCTION GetCalendarCtrlStyleString(stdStyle: TWxcalctrlStyleSet): STRING;
+Function GetGridSelectionToString(grdsel: TWxGridSelection): String;
+Function GetStdStyleString(stdStyle: TWxStdStyleSet): String;
+Function GetComboxBoxStyleString(stdStyle: TWxCmbStyleSet): String;
+Function GetOwnComboxBoxStyleString(stdStyle: TWxOwnCmbStyleSet): String;
+Function GetCheckboxStyleString(stdStyle: TWxcbxStyleSet): String;
+Function GetTreeviewStyleString(stdStyle: TWxTVStyleSet): String;
+Function GetRadiobuttonStyleString(stdStyle: TWxrbStyleSet): String;
+Function GetListboxStyleString(stdStyle: TWxlbxStyleSet): String;
+Function GetGaugeStyleString(stdStyle: TWxgagStyleSet): String;
+Function GetScrollbarStyleString(stdStyle: TWxsbrStyleSet): String;
+Function GetSpinButtonStyleString(stdStyle: TWxsbtnStyleSet): String;
+Function GetSliderStyleString(stdStyle: TWxsldrStyleSet): String;
+Function GetHyperLnkStyleString(stdStyle: TWxHyperLnkStyleSet): String;
+Function GetPickCalStyleString(stdStyle: TWxPickCalStyleSet): String;
+Function GetCalendarCtrlStyleString(stdStyle: TWxcalctrlStyleSet): String;
 //function GetChoicebookStyleString(stdStyle: TWxchbxStyleSet): string;
 //function GetListbookStyleString(stdStyle: TWxlbbxStyleSet): string;
-FUNCTION GetNotebookStyleString(stdStyle: TWxnbxStyleSet): STRING;
-FUNCTION GetAuiNotebookStyleString(stdStyle: TWxAuinbxStyleSet): STRING;
+Function GetNotebookStyleString(stdStyle: TWxnbxStyleSet): String;
+Function GetAuiNotebookStyleString(stdStyle: TWxAuinbxStyleSet): String;
 //function GetToolbookStyleString(stdStyle: TWxtlbxStyleSet): string;
 //function GetTreebookStyleString(stdStyle: TWxtrbxStyleSet): string;
-FUNCTION GetRadioBoxStyleString(stdStyle: TWxrbxStyleSet): STRING;
-FUNCTION GetStatusBarStyleString(stdStyle: TWxsbrStyleSet): STRING;
-FUNCTION GetToolBarStyleString(stdStyle: TWxtbrStyleSet): STRING;
-FUNCTION GetScrolledWindowStyleString(stdStyle: TWxScrWinStyleSet): STRING;
-FUNCTION GetHtmlWindowStyleString(stdStyle: TWxHtmlWinStyleSet): STRING;
-FUNCTION GetSplitterWindowStyleString(stdStyle:
-TWxSplitterWinStyleSet): STRING;
-FUNCTION GetFileDialogStyleString(stdStyle: TWxFileDialogStyleSet): STRING;
-FUNCTION GetDirDialogStyleString(stdStyle: TWxDirDialogStyleSet): STRING;
-FUNCTION GetProgressDialogStyleString(stdStyle:
-TWxProgressDialogStyleSet): STRING;
-FUNCTION GetTextEntryDialogStyleString(stdStyle: TWxMessageDialogStyleSet;
-edtStyle: TWxEdtGeneralStyleSet): STRING;
-FUNCTION GetMediaCtrlStyle(mediaStyle: TWxMediaCtrlControl): STRING;
-FUNCTION GetMediaCtrlStyleString(mediaStyle: TWxMediaCtrlControls): STRING;
-FUNCTION GetMessageDialogStyleString(stdStyle: TWxMessageDialogStyleSet;
-NoEndComma: BOOLEAN): STRING;
-FUNCTION GetFindReplaceFlagString(stdstyle: TWxFindReplaceFlagSet): STRING;
-FUNCTION GetFindReplaceDialogStyleString(stdstyle:
-TWxFindReplaceDialogStyleSet): STRING;
+Function GetRadioBoxStyleString(stdStyle: TWxrbxStyleSet): String;
+Function GetStatusBarStyleString(stdStyle: TWxsbrStyleSet): String;
+Function GetToolBarStyleString(stdStyle: TWxtbrStyleSet): String;
+Function GetScrolledWindowStyleString(stdStyle: TWxScrWinStyleSet): String;
+Function GetHtmlWindowStyleString(stdStyle: TWxHtmlWinStyleSet): String;
+Function GetSplitterWindowStyleString(stdStyle:
+    TWxSplitterWinStyleSet): String;
+Function GetFileDialogStyleString(stdStyle: TWxFileDialogStyleSet): String;
+Function GetDirDialogStyleString(stdStyle: TWxDirDialogStyleSet): String;
+Function GetProgressDialogStyleString(stdStyle:
+    TWxProgressDialogStyleSet): String;
+Function GetTextEntryDialogStyleString(stdStyle: TWxMessageDialogStyleSet;
+    edtStyle: TWxEdtGeneralStyleSet): String;
+Function GetMediaCtrlStyle(mediaStyle: TWxMediaCtrlControl): String;
+Function GetMediaCtrlStyleString(mediaStyle: TWxMediaCtrlControls): String;
+Function GetMessageDialogStyleString(stdStyle: TWxMessageDialogStyleSet;
+    NoEndComma: Boolean): String;
+Function GetFindReplaceFlagString(stdstyle: TWxFindReplaceFlagSet): String;
+Function GetFindReplaceDialogStyleString(stdstyle:
+    TWxFindReplaceDialogStyleSet): String;
 
-FUNCTION GetCheckboxSpecificStyle(stdstyle: TWxStdStyleSet;
-cbxstyle: TWxcbxStyleSet): STRING;
-FUNCTION GetTreeviewSpecificStyle(stdstyle: TWxStdStyleSet;
-tvstyle: TWxTvStyleSet): STRING;
-FUNCTION GetRadiobuttonSpecificStyle(stdstyle: TWxStdStyleSet;
-rbstyle: TWxrbStyleSet): STRING;
-FUNCTION GetListboxSpecificStyle(stdstyle: TWxStdStyleSet;
-lbxstyle: TWxlbxStyleSet): STRING;
-FUNCTION GetGaugeSpecificStyle(stdstyle: TWxStdStyleSet;
-gagstyle: TWxgagStyleSet): STRING;
-FUNCTION GetScrollbarSpecificStyle(stdstyle: TWxStdStyleSet;
-scbrstyle: TWxsbrStyleSet): STRING;
-FUNCTION GetHyperLnkSpecificStyle(stdstyle: TWxStdStyleSet;
-edtstyle: TWxHyperLnkStyleSet): STRING;
-FUNCTION GetSpinButtonSpecificStyle(stdstyle: TWxStdStyleSet;
-sbtnstyle: TWxsbtnStyleSet;
-edtstyle: TWxEdtGeneralStyleSet): STRING;
-FUNCTION GetSliderSpecificStyle(stdstyle: TWxStdStyleSet;
-sldrstyle: TWxsldrStyleSet): STRING;
-FUNCTION GetDateVariableExpansion(value: TDateTime): STRING;
-FUNCTION GetCalendarCtrlSpecificStyle(stdstyle: TWxStdStyleSet;
-calctrlstyle: TWxcalctrlStyleSet): STRING;
-FUNCTION GetPickCalSpecificStyle(stdstyle: TWxStdStyleSet;
-calctrlstyle: TWxPickCalStyleSet): STRING;
+Function GetCheckboxSpecificStyle(stdstyle: TWxStdStyleSet;
+    cbxstyle: TWxcbxStyleSet): String;
+Function GetTreeviewSpecificStyle(stdstyle: TWxStdStyleSet;
+    tvstyle: TWxTvStyleSet): String;
+Function GetRadiobuttonSpecificStyle(stdstyle: TWxStdStyleSet;
+    rbstyle: TWxrbStyleSet): String;
+Function GetListboxSpecificStyle(stdstyle: TWxStdStyleSet;
+    lbxstyle: TWxlbxStyleSet): String;
+Function GetGaugeSpecificStyle(stdstyle: TWxStdStyleSet;
+    gagstyle: TWxgagStyleSet): String;
+Function GetScrollbarSpecificStyle(stdstyle: TWxStdStyleSet;
+    scbrstyle: TWxsbrStyleSet): String;
+Function GetHyperLnkSpecificStyle(stdstyle: TWxStdStyleSet;
+    edtstyle: TWxHyperLnkStyleSet): String;
+Function GetSpinButtonSpecificStyle(stdstyle: TWxStdStyleSet;
+    sbtnstyle: TWxsbtnStyleSet;
+    edtstyle: TWxEdtGeneralStyleSet): String;
+Function GetSliderSpecificStyle(stdstyle: TWxStdStyleSet;
+    sldrstyle: TWxsldrStyleSet): String;
+Function GetDateVariableExpansion(value: TDateTime): String;
+Function GetCalendarCtrlSpecificStyle(stdstyle: TWxStdStyleSet;
+    calctrlstyle: TWxcalctrlStyleSet): String;
+Function GetPickCalSpecificStyle(stdstyle: TWxStdStyleSet;
+    calctrlstyle: TWxPickCalStyleSet): String;
 
-FUNCTION GetRTSListCtrlStyleString(stdStyle: TwxRichTextSLCStyleSet): STRING;
-FUNCTION GetRTSListCtrlSpecificStyle(stdstyle: TWxStdStyleSet;
-lbxstyle: TwxRichTextSLCStyleSet): STRING;
+Function GetRTSListCtrlStyleString(stdStyle: TwxRichTextSLCStyleSet): String;
+Function GetRTSListCtrlSpecificStyle(stdstyle: TWxStdStyleSet;
+    lbxstyle: TwxRichTextSLCStyleSet): String;
 
-FUNCTION GetChoicebookSpecificStyle(stdstyle:
-TWxStdStyleSet{; bookalign: TWxchbxAlignStyleItem; cbbxstyle: TWxchbxStyleSet}): STRING;
-FUNCTION GetChoiceAlignmentString(Value: TWxchbxAlignStyleItem): STRING;
+Function GetChoicebookSpecificStyle(stdstyle:
+    TWxStdStyleSet{; bookalign: TWxchbxAlignStyleItem; cbbxstyle: TWxchbxStyleSet}): String;
+Function GetChoiceAlignmentString(Value: TWxchbxAlignStyleItem): String;
 
 {function GetListbookSpecificStyle(stdstyle: TWxStdStyleSet; lbbxstyle: TWxlbbxStyleSet): string; }
-FUNCTION GetListbookSpecificStyle(stdstyle:
-TWxStdStyleSet{; bookalign: TWxlbbxAlignStyleItem}): STRING;
-FUNCTION GetListAlignment(Value: TWxlbbxAlignStyleItem): STRING;
+Function GetListbookSpecificStyle(stdstyle:
+    TWxStdStyleSet{; bookalign: TWxlbbxAlignStyleItem}): String;
+Function GetListAlignment(Value: TWxlbbxAlignStyleItem): String;
 
-FUNCTION GetNotebookSpecificStyle(stdstyle: TWxStdStyleSet;
-    {bookalign: TWxnbxAlignStyleItem;} nbxstyle: TWxnbxStyleSet): STRING;
-FUNCTION GetAuiNotebookSpecificStyle(stdstyle: TWxStdStyleSet;
-    {bookalign: TWxnbxAlignStyleItem;} nbxstyle: TWxAuinbxStyleSet): STRING;
-FUNCTION GetTabAlignmentString(Value: TWxnbxAlignStyleItem): STRING;
+Function GetNotebookSpecificStyle(stdstyle: TWxStdStyleSet;
+    {bookalign: TWxnbxAlignStyleItem;} nbxstyle: TWxnbxStyleSet): String;
+Function GetAuiNotebookSpecificStyle(stdstyle: TWxStdStyleSet;
+    {bookalign: TWxnbxAlignStyleItem;} nbxstyle: TWxAuinbxStyleSet): String;
+Function GetTabAlignmentString(Value: TWxnbxAlignStyleItem): String;
 
-FUNCTION GetToolbookSpecificStyle(stdstyle:
-TWxStdStyleSet{; tlbxstyle: TWxtlbxStyleSet}): STRING;
+Function GetToolbookSpecificStyle(stdstyle:
+    TWxStdStyleSet{; tlbxstyle: TWxtlbxStyleSet}): String;
 
 {function GetTreebookSpecificStyle(stdstyle: TWxStdStyleSet;
   trbxstyle: TWxtrbxStyleSet): string;    }
-FUNCTION GetTreebookSpecificStyle(stdstyle:
-TWxStdStyleSet{; bookalign: TWxtrbxAlignStyleItem}): STRING;
-FUNCTION GetTreeAlignment(Value: TWxtrbxAlignStyleItem): STRING;
+Function GetTreebookSpecificStyle(stdstyle:
+    TWxStdStyleSet{; bookalign: TWxtrbxAlignStyleItem}): String;
+Function GetTreeAlignment(Value: TWxtrbxAlignStyleItem): String;
 
-FUNCTION GetRadioBoxSpecificStyle(stdstyle: TWxStdStyleSet;
-rbxstyle: TWxrbxStyleSet): STRING;
-FUNCTION GetStatusBarSpecificStyle(stdstyle: TWxStdStyleSet;
-sbrstyle: TWxsbrStyleSet): STRING;
-FUNCTION GetToolBarSpecificStyle(stdstyle: TWxStdStyleSet;
-tbrstyle: TWxtbrStyleSet): STRING;
-FUNCTION GetAuiToolBarSpecificStyle(stdstyle: TWxStdStyleSet;
-tbrstyle: TWxAuiTbrStyleSet): STRING;
-FUNCTION GetScrolledWindowSpecificStyle(stdstyle: TWxStdStyleSet;
-scrWinStyle: TWxScrWinStyleSet): STRING;
-FUNCTION GetHtmlWindowSpecificStyle(stdstyle: TWxStdStyleSet;
-htmlWinStyle: TWxHtmlWinStyleSet): STRING;
-FUNCTION GetSplitterWindowSpecificStyle(stdstyle: TWxStdStyleSet;
-splitterWinStyle: TWxSplitterWinStyleSet): STRING;
-FUNCTION GetRichTextSpecificStyle(stdstyle: TWxStdStyleSet;
-dlgstyle: TWxRichTextStyleSet): STRING;
-FUNCTION GetListViewSpecificStyle(stdstyle: TWxStdStyleSet;
-lstvwstyle: TWxLVStyleSet; view: TWxLvView): STRING;
-FUNCTION GetEditSpecificStyle(stdstyle: TWxStdStyleSet;
-dlgstyle: TWxEdtGeneralStyleSet): STRING;
-FUNCTION GetAnimationCtrlSpecificStyle(stdstyle:
-TWxStdStyleSet{;
-  dlgstyle: TWxAnimationCtrlStyleSet}): STRING;
-FUNCTION GetButtonSpecificStyle(stdstyle: TWxStdStyleSet;
-dlgstyle: TWxBtnStyleSet): STRING;
-FUNCTION GetLabelSpecificStyle(stdstyle: TWxStdStyleSet;
-dlgstyle: TWxLbStyleSet): STRING;
-FUNCTION GetcomboBoxSpecificStyle(stdstyle: TWxStdStyleSet;
-cmbstyle: TWxCmbStyleSet; edtstyle: TWxEdtGeneralStyleSet): STRING;
-FUNCTION GetOwncomboBoxSpecificStyle(stdstyle: TWxStdStyleSet;
-cmbstyle: TWxCmbStyleSet; edtstyle: TWxEdtGeneralStyleSet;
-owncmbstyle: TWxOwnCmbStyleSet): STRING;
-FUNCTION GetStdDialogButtonsSpecificStyle(btnstyle:
-TWxStdDialogButtons): STRING;
-FUNCTION GetDialogSpecificStyle(stdstyle: TWxStdStyleSet;
-dlgstyle: TWxDlgStyleSet; wxclassname: STRING): STRING;
+Function GetRadioBoxSpecificStyle(stdstyle: TWxStdStyleSet;
+    rbxstyle: TWxrbxStyleSet): String;
+Function GetStatusBarSpecificStyle(stdstyle: TWxStdStyleSet;
+    sbrstyle: TWxsbrStyleSet): String;
+Function GetToolBarSpecificStyle(stdstyle: TWxStdStyleSet;
+    tbrstyle: TWxtbrStyleSet): String;
+Function GetAuiToolBarSpecificStyle(stdstyle: TWxStdStyleSet;
+    tbrstyle: TWxAuiTbrStyleSet): String;
+Function GetScrolledWindowSpecificStyle(stdstyle: TWxStdStyleSet;
+    scrWinStyle: TWxScrWinStyleSet): String;
+Function GetHtmlWindowSpecificStyle(stdstyle: TWxStdStyleSet;
+    htmlWinStyle: TWxHtmlWinStyleSet): String;
+Function GetSplitterWindowSpecificStyle(stdstyle: TWxStdStyleSet;
+    splitterWinStyle: TWxSplitterWinStyleSet): String;
+Function GetRichTextSpecificStyle(stdstyle: TWxStdStyleSet;
+    dlgstyle: TWxRichTextStyleSet): String;
+Function GetListViewSpecificStyle(stdstyle: TWxStdStyleSet;
+    lstvwstyle: TWxLVStyleSet; view: TWxLvView): String;
+Function GetEditSpecificStyle(stdstyle: TWxStdStyleSet;
+    dlgstyle: TWxEdtGeneralStyleSet): String;
+Function GetAnimationCtrlSpecificStyle(stdstyle:
+    TWxStdStyleSet{;
+  dlgstyle: TWxAnimationCtrlStyleSet}): String;
+Function GetButtonSpecificStyle(stdstyle: TWxStdStyleSet;
+    dlgstyle: TWxBtnStyleSet): String;
+Function GetLabelSpecificStyle(stdstyle: TWxStdStyleSet;
+    dlgstyle: TWxLbStyleSet): String;
+Function GetcomboBoxSpecificStyle(stdstyle: TWxStdStyleSet;
+    cmbstyle: TWxCmbStyleSet; edtstyle: TWxEdtGeneralStyleSet): String;
+Function GetOwncomboBoxSpecificStyle(stdstyle: TWxStdStyleSet;
+    cmbstyle: TWxCmbStyleSet; edtstyle: TWxEdtGeneralStyleSet;
+    owncmbstyle: TWxOwnCmbStyleSet): String;
+Function GetStdDialogButtonsSpecificStyle(btnstyle:
+    TWxStdDialogButtons): String;
+Function GetDialogSpecificStyle(stdstyle: TWxStdStyleSet;
+    dlgstyle: TWxDlgStyleSet; wxclassname: String): String;
 
-PROCEDURE PopulateGenericProperties(VAR PropertyList: TStringList);
-PROCEDURE PopulateAuiGenericProperties(VAR PropertyList: TStringList);
-FUNCTION SizerAlignmentToStr(SizerAlignment: TWxSizerAlignmentSet): STRING;
-OVERLOAD;
-FUNCTION BorderAlignmentToStr(BorderAlignment: TWxBorderAlignment): STRING;
-FUNCTION RGBFormatStrToColor(strColorValue: STRING): TColor;
-FUNCTION GetColorFromString(strColorValue: STRING): TColor;
-FUNCTION GetGeneralColorFromString(strColorValue: STRING): TColor;
-FUNCTION IsDefaultColorStr(strvalue: STRING): BOOLEAN;
-FUNCTION GetwxColorFromString(strValue: STRING): STRING;
-FUNCTION PaperIDToString(sizeitem: TWxPaperSizeItem): STRING;
+Procedure PopulateGenericProperties(Var PropertyList: TStringList);
+Procedure PopulateAuiGenericProperties(Var PropertyList: TStringList);
+Function SizerAlignmentToStr(SizerAlignment: TWxSizerAlignmentSet): String;
+    Overload;
+Function BorderAlignmentToStr(BorderAlignment: TWxBorderAlignment): String;
+Function RGBFormatStrToColor(strColorValue: String): TColor;
+Function GetColorFromString(strColorValue: String): TColor;
+Function GetGeneralColorFromString(strColorValue: String): TColor;
+Function IsDefaultColorStr(strvalue: String): Boolean;
+Function GetwxColorFromString(strValue: String): String;
+Function PaperIDToString(sizeitem: TWxPaperSizeItem): String;
 
-FUNCTION IsControlWxSizer(ctrl: TControl): BOOLEAN;
-FUNCTION IsControlWxContainer(ctrl: TControl): BOOLEAN;
-FUNCTION IsControlWxWindow(ctrl: TControl): BOOLEAN;
-FUNCTION IsControlWxToolBar(ctrl: TControl): BOOLEAN;
-FUNCTION IsControlWxStatusBar(ctrl: TControl): BOOLEAN;
-FUNCTION IsControlWxNonVisible(ctrl: TControl): BOOLEAN;
-FUNCTION GetNonVisualComponentCount(frmMainObj: TForm): INTEGER;
-FUNCTION IsControlWxAuiManager(ctrl: TControl): BOOLEAN;
-FUNCTION IsControlWxAuiToolBar(ctrl: TControl): BOOLEAN;
+Function IsControlWxSizer(ctrl: TControl): Boolean;
+Function IsControlWxContainer(ctrl: TControl): Boolean;
+Function IsControlWxWindow(ctrl: TControl): Boolean;
+Function IsControlWxToolBar(ctrl: TControl): Boolean;
+Function IsControlWxStatusBar(ctrl: TControl): Boolean;
+Function IsControlWxNonVisible(ctrl: TControl): Boolean;
+Function GetNonVisualComponentCount(frmMainObj: TForm): Integer;
+Function IsControlWxAuiManager(ctrl: TControl): Boolean;
+Function IsControlWxAuiToolBar(ctrl: TControl): Boolean;
 
-FUNCTION GetWxIDString(strID: STRING; intID: LONGINT): STRING;
-FUNCTION IsValidClass(COMP: TComponent): BOOLEAN;
-FUNCTION GetEventNameFromDisplayName(strDisplayName: STRING;
-strlst: TStringList): STRING;
-FUNCTION AlignmentToStr(taPos: TAlignment): STRING;
-PROCEDURE ChangeControlZOrder(Sender: TObject; MoveUp: BOOLEAN = TRUE);
-FUNCTION GetXPMFromTPicture(XPMName: STRING; delphiBitmap: TBitmap): STRING;
-FUNCTION GetXPMFromTPictureXXX(XPMName: STRING; delphiBitmap: TBitmap): STRING;
-FUNCTION GenerateXPMDirectly(bmp: TBitmap; strCompName: STRING;
-strParentName: STRING; strFileName: STRING): BOOLEAN;
-FUNCTION OpenXPMImage(InpImage: TBitmap; strFname: STRING): BOOLEAN;
-FUNCTION GetCppString(str: STRING): STRING;
-FUNCTION GetWxPosition(Left: INTEGER; Top: INTEGER): STRING;
-FUNCTION GetWxSize(Width: INTEGER; Height: INTEGER): STRING;
-FUNCTION GetWxEnum(Wx_IDValue: INTEGER; Wx_IDName: STRING): STRING;
-FUNCTION GetCommentString(str: STRING): STRING;
-FUNCTION GetWxFontDeclaration(fnt: TFont): STRING;
-FUNCTION GetDesignerFormName(cntrl: TControl): STRING;
-FUNCTION GetWxWidgetParent(cntrl: TControl; AuiManaged: BOOLEAN): STRING;
-FUNCTION GetWxWindowControls(wnCtrl: TWinControl): INTEGER;
-FUNCTION GetAvailableControlCount(ParentControl: TWinControl;
-ControlToCheck: TComponent): INTEGER; OVERLOAD;
-FUNCTION GetAvailableControlCount(ParentControl: TWinControl;
-ControlToCheck: STRING): INTEGER; OVERLOAD;
-FUNCTION GetMaxIDofWxForm(ParentControl: TWinControl): INTEGER;
-FUNCTION GetMenuKindAsText(menuStyle: TWxMenuItemStyleItem): STRING;
-FUNCTION GetToolButtonKindAsText(toolStyle:
-TWxToolbottonItemStyleItem): STRING;
+Function GetWxIDString(strID: String; intID: Longint): String;
+Function IsValidClass(Comp: TComponent): Boolean;
+Function GetEventNameFromDisplayName(strDisplayName: String;
+    strlst: TStringList): String;
+Function AlignmentToStr(taPos: TAlignment): String;
+Procedure ChangeControlZOrder(Sender: TObject; MoveUp: Boolean = True);
+Function GetXPMFromTPicture(XPMName: String; delphiBitmap: TBitmap): String;
+Function GenerateXPMDirectly(bmp: TBitmap; strCompName: String;
+    strParentName: String; strFileName: String): Boolean;
+Function OpenXPMImage(InpImage: TBitmap; strFname: String): Boolean;
+Function GetCppString(str: String): String;
+Function GetWxPosition(Left: Integer; Top: Integer): String;
+Function GetWxSize(Width: Integer; Height: Integer): String;
+Function GetWxEnum(Wx_IDValue: Integer; Wx_IDName: String): String;
+Function GetCommentString(str: String): String;
+Function GetWxFontDeclaration(fnt: TFont): String;
+Function GetDesignerFormName(cntrl: TControl): String;
+Function GetWxWidgetParent(cntrl: TControl; AuiManaged: Boolean): String;
+Function GetWxWindowControls(wnCtrl: TWinControl): Integer;
+Function GetAvailableControlCount(ParentControl: TWinControl;
+    ControlToCheck: TComponent): Integer; Overload;
+Function GetAvailableControlCount(ParentControl: TWinControl;
+    ControlToCheck: String): Integer; Overload;
+Function GetMaxIDofWxForm(ParentControl: TWinControl): Integer;
+Function GetMenuKindAsText(menuStyle: TWxMenuItemStyleItem): String;
+Function GetToolButtonKindAsText(toolStyle:
+    TWxToolbottonItemStyleItem): String;
 
-FUNCTION GetTotalHtOfAllToolBarAndStatusBar(ParentControl:
-TWinControl): INTEGER;
-FUNCTION GetPredefinedwxIds: TStringList;
-FUNCTION IsIDPredefined(str: STRING; strlst: TStringList): BOOLEAN;
+Function GetTotalHtOfAllToolBarAndStatusBar(ParentControl:
+    TWinControl): Integer;
+Function GetPredefinedwxIds: TStringList;
+Function IsIDPredefined(str: String; strlst: TStringList): Boolean;
 
-FUNCTION XML_Label(str: STRING): STRING;
-FUNCTION CreateBlankXRC: TStringList;
-FUNCTION GetWxMonthFromIndex(MonthIndex: INTEGER): STRING;
-FUNCTION GetDateToString(dt: TDateTime): STRING;
+Function XML_Label(str: String): String;
+Function CreateBlankXRC: TStringList;
+Function GetWxMonthFromIndex(MonthIndex: Integer): String;
+Function GetDateToString(dt: TDateTime): String;
 
-FUNCTION GetLongName(CONST ShortPathName: STRING): STRING;
+Function GetLongName(Const ShortPathName: String): String;
 // EAB TODO: Copied from utils. Check if we can place it in a single common place.
-FUNCTION ValidateClassName(ClassName: STRING): INTEGER;
+Function ValidateClassName(ClassName: String): Integer;
 // EAB TODO: Copied from utils. Check if we can place it in a single common place.
-FUNCTION CreateValidClassName(ClassName: STRING): STRING;
+Function CreateValidClassName(ClassName: String): String;
 // EAB TODO: Copied from utils. Check if we can place it in a single common place.
-FUNCTION ValidateFileName(FileName: STRING): INTEGER;
+Function ValidateFileName(FileName: String): Integer;
 // EAB TODO: Copied from utils. Check if we can place it in a single common place.
-FUNCTION CreateValidFileName(FileName: STRING): STRING;
+Function CreateValidFileName(FileName: String): String;
 // EAB TODO: Copied from utils. Check if we can place it in a single common place.
 
-FUNCTION GetAuiManagerName(Control: TControl): STRING;
-FUNCTION FormHasAuiManager(Control: TControl): BOOLEAN;
-FUNCTION GetAuiDockDirection(Wx_Aui_Dock_Direction:
-TwxAuiPaneDockDirectionItem): STRING;
-FUNCTION GetAuiDockableDirections(Wx_Aui_Dockable_Direction:
-TwxAuiPaneDockableDirectionSet): STRING;
-FUNCTION GetAui_Pane_Style(Wx_Aui_Pane_Style: TwxAuiPaneStyleSet): STRING;
-FUNCTION GetAui_Pane_Buttons(Wx_Aui_Pane_Buttons: TwxAuiPaneButtonSet): STRING;
-FUNCTION GetAuiRow(row: INTEGER): STRING;
-FUNCTION GetAuiPosition(position: INTEGER): STRING;
-FUNCTION GetAuiLayer(layer: INTEGER): STRING;
-FUNCTION GetAuiPaneBestSize(width: INTEGER; height: INTEGER): STRING;
-FUNCTION GetAuiPaneMinSize(width: INTEGER; height: INTEGER): STRING;
-FUNCTION GetAuiPaneMaxSize(width: INTEGER; height: INTEGER): STRING;
-FUNCTION GetAuiPaneFloatingSize(width: INTEGER; height: INTEGER): STRING;
-FUNCTION GetAuiPaneFloatingPos(x: INTEGER; y: INTEGER): STRING;
-FUNCTION GetAuiPaneCaption(caption: STRING): STRING;
-FUNCTION GetAuiPaneName(name: STRING): STRING;
-FUNCTION HasToolbarPaneStyle(Wx_Aui_Pane_Style: TwxAuiPaneStyleSet): BOOLEAN;
-FUNCTION GetRefinedWxEdtGeneralStyleValue(
-sValue: TWxEdtGeneralStyleSet): TWxEdtGeneralStyleSet;
+Function GetAuiManagerName(Control: TControl): String;
+Function FormHasAuiManager(Control: TControl): Boolean;
+Function GetAuiDockDirection(Wx_Aui_Dock_Direction:
+    TwxAuiPaneDockDirectionItem): String;
+Function GetAuiDockableDirections(Wx_Aui_Dockable_Direction:
+    TwxAuiPaneDockableDirectionSet): String;
+Function GetAui_Pane_Style(Wx_Aui_Pane_Style: TwxAuiPaneStyleSet): String;
+Function GetAui_Pane_Buttons(Wx_Aui_Pane_Buttons: TwxAuiPaneButtonSet): String;
+Function GetAuiRow(row: Integer): String;
+Function GetAuiPosition(position: Integer): String;
+Function GetAuiLayer(layer: Integer): String;
+Function GetAuiPaneBestSize(width: Integer; height: Integer): String;
+Function GetAuiPaneMinSize(width: Integer; height: Integer): String;
+Function GetAuiPaneMaxSize(width: Integer; height: Integer): String;
+Function GetAuiPaneFloatingSize(width: Integer; height: Integer): String;
+Function GetAuiPaneFloatingPos(x: Integer; y: Integer): String;
+Function GetAuiPaneCaption(caption: String): String;
+Function GetAuiPaneName(name: String): String;
+Function HasToolbarPaneStyle(Wx_Aui_Pane_Style: TwxAuiPaneStyleSet): Boolean;
+Function GetRefinedWxEdtGeneralStyleValue(
+    sValue: TWxEdtGeneralStyleSet): TWxEdtGeneralStyleSet;
 
-IMPLEMENTATION
+Implementation
 
-USES DesignerFrm, wxlistCtrl, WxStaticBitmap, WxBitmapButton,
-WxSizerPanel, WxToolButton,
-UColorEdit, UMenuitem, WxCustomMenuItem, WxPopupMenu, WxMenuBar,
-WxCustomButton, WxTreeCtrl,
-WxNonVisibleBaseComponent, wxdesigner, wxnotebook, wxAUInotebook,
-OpenSaveDialogs, wxAuiManager, wxAuiNoteBookPage
+Uses DesignerFrm, wxlistCtrl, WxStaticBitmap, WxBitmapButton,
+    WxSizerPanel, WxToolButton,
+    UColorEdit, UMenuitem, WxCustomMenuItem, WxPopupMenu, WxMenuBar,
+    WxCustomButton, WxTreeCtrl,
+    WxNonVisibleBaseComponent, wxdesigner, wxnotebook, wxAUInotebook,
+    OpenSaveDialogs, wxAuiManager, wxAuiNoteBookPage
 {$IFDEF WIN32}
-, ShlObj, ActiveX
+    , ShlObj, ActiveX
 {$ENDIF}
-;
+    ;
 
-FUNCTION ExtractComponentPropertyName(CONST S: STRING): STRING;
-VAR
-SepaPos: INTEGER;
-BEGIN
-Result := '';
-SepaPos := Pos(':', S);
-IF SepaPos > 1 THEN
-Result := Copy(S, 1, SepaPos - 1);
-END;
+Function ExtractComponentPropertyName(Const S: String): String;
+Var
+    SepaPos: Integer;
+Begin
+    Result := '';
+    SepaPos := Pos(':', S);
+    If SepaPos > 1 Then
+        Result := Copy(S, 1, SepaPos - 1);
+End;
 
-FUNCTION CreateGraphicFileDir(strFileName: STRING): STRING;
-VAR
-strDir: STRING;
-fileDir: STRING;
-workingDir: STRING;
-BEGIN
+Function CreateGraphicFileDir(strFileName: String): String;
+Var
+    strDir: String;
+    fileDir: String;
+    workingDir: String;
+Begin
 
-strDir := '';
-fileDir := IncludetrailingPathDelimiter(ExtractFileDir(strFileName));
+    strDir := '';
+    fileDir := IncludetrailingPathDelimiter(ExtractFileDir(strFileName));
 
     // Get current working directory
-workingDir := GetCurrentDir;
+    workingDir := GetCurrentDir;
     // If working directory already contained within fileDir, then
     //    don't add it again.
-IF AnsiContainsStr(fileDir, workingDir) THEN
-workingDir := '';
+    If AnsiContainsStr(fileDir, workingDir) Then
+        workingDir := '';
 
     // See if file directory exists
-IF DirectoryExists(fileDir) THEN
-strDir := fileDir
+    If DirectoryExists(fileDir) Then
+        strDir := fileDir
 
     // Try working directory plus file directory
-ELSE
-IF DirectoryExists(workingDir + pd + fileDir) THEN
-strDir := workingDir + pd + fileDir
-ELSE
-BEGIN
+    Else
+    If DirectoryExists(workingDir + pd + fileDir) Then
+        strDir := workingDir + pd + fileDir
+    Else
+    Begin
         // Try to force the directory creation
-IF ForceDirectories(workingDir + pd + fileDir) THEN
-strDir := workingDir + pd + fileDir
-ELSE
+        If ForceDirectories(workingDir + pd + fileDir) Then
+            strDir := workingDir + pd + fileDir
+        Else
 
-ShowMessage('ERROR: Can''t create directory ' +
-workingDir + pd + fileDir);
+            ShowMessage('ERROR: Can''t create directory ' +
+                workingDir + pd + fileDir);
 
-END;
+    End;
 
-strDir := IncludetrailingPathDelimiter(strDir);
+    strDir := IncludetrailingPathDelimiter(strDir);
 
     //strDir := AnsiReplaceText(strDir, '\', '/');
 
-Result := strDir;
+    Result := strDir;
 
-END;
+End;
 
-FUNCTION CreateGraphicFileName(strFileName: STRING): STRING;
-BEGIN
+Function CreateGraphicFileName(strFileName: String): String;
+Begin
 
-strFileName := CreateGraphicFileDir(strFileName)
-+ ExtractFileName(strFileName);
+    strFileName := CreateGraphicFileDir(strFileName)
+        + ExtractFileName(strFileName);
 
-strFileName := AnsiReplaceText(strFileName, '\', '/');
+    strFileName := AnsiReplaceText(strFileName, '\', '/');
 
-Result := strFileName;
+    Result := strFileName;
 
-END;
+End;
 
-FUNCTION ExtractComponentPropertyCaption(CONST S: STRING): STRING;
-VAR
-SepaPos: INTEGER;
-BEGIN
-Result := '';
-IF S = '' THEN
-Exit;
-SepaPos := Pos(':', S);
-IF SepaPos > 1 THEN
-Result := Copy(S, SepaPos + 1, Length(S));
-END;
+Function ExtractComponentPropertyCaption(Const S: String): String;
+Var
+    SepaPos: Integer;
+Begin
+    Result := '';
+    If S = '' Then
+        Exit;
+    SepaPos := Pos(':', S);
+    If SepaPos > 1 Then
+        Result := Copy(S, SepaPos + 1, Length(S));
+End;
 
-FUNCTION iswxForm(FileName: STRING): BOOLEAN;
-BEGIN
-IF LowerCase(ExtractFileExt(FileName)) = LowerCase(WXFORM_EXT) THEN
-Result := TRUE
-ELSE
-result := FALSE;
-END;
+Function iswxForm(FileName: String): Boolean;
+Begin
+    If LowerCase(ExtractFileExt(FileName)) = LowerCase(WXFORM_EXT) Then
+        Result := True
+    Else
+        result := False;
+End;
 
 {function isRCExt(FileName: string): boolean;
 begin
@@ -1136,346 +1135,346 @@ begin
     result := False;
 end;}
 
-FUNCTION isXRCExt(FileName: STRING): BOOLEAN;
-BEGIN
-IF LowerCase(ExtractFileExt(FileName)) = LowerCase(XRC_EXT) THEN
-Result := TRUE
-ELSE
-result := FALSE;
-END;
+Function isXRCExt(FileName: String): Boolean;
+Begin
+    If LowerCase(ExtractFileExt(FileName)) = LowerCase(XRC_EXT) Then
+        Result := True
+    Else
+        result := False;
+End;
 
-FUNCTION SaveStringToFile(strContent, strFileName: STRING): BOOLEAN;
-VAR
-strStringList: TStringList;
-BEGIN
-Result := TRUE;
-strStringList := TStringList.Create;
-strStringList.Text := strContent;
-TRY
-strStringList.SaveToFile(strFileName);
-EXCEPT
-Result := FALSE;
-END;
-strStringList.Destroy;
-END;
+Function SaveStringToFile(strContent, strFileName: String): Boolean;
+Var
+    strStringList: TStringList;
+Begin
+    Result := True;
+    strStringList := TStringList.Create;
+    strStringList.Text := strContent;
+    Try
+        strStringList.SaveToFile(strFileName);
+    Except
+        Result := False;
+    End;
+    strStringList.Destroy;
+End;
 
-CONSTRUCTOR TWxValidatorString.Create(Owner: TComponent);
-BEGIN
-INHERITED;
-END;
+Constructor TWxValidatorString.Create(Owner: TComponent);
+Begin
+    Inherited;
+End;
 
-FUNCTION TranslateChar(CONST Str: STRING; FromChar, ToChar: CHAR): STRING;
-VAR
-I: INTEGER;
-BEGIN
-Result := Str;
-FOR I := 1 TO Length(Result) DO
-IF Result[I] = FromChar THEN
-Result[I] := ToChar;
-END;
+Function TranslateChar(Const Str: String; FromChar, ToChar: Char): String;
+Var
+    I: Integer;
+Begin
+    Result := Str;
+    For I := 1 To Length(Result) Do
+        If Result[I] = FromChar Then
+            Result[I] := ToChar;
+End;
 
-FUNCTION UnixPathToDosPath(CONST Path: STRING): STRING;
-BEGIN
-Result := TranslateChar(Path, '/', '\');
-END;
+Function UnixPathToDosPath(Const Path: String): String;
+Begin
+    Result := TranslateChar(Path, '/', '\');
+End;
 
-FUNCTION LocalConvertLibsToCurrentVersion(strValue: STRING): STRING;
-BEGIN
-Result := Convert25LibsToCurrentVersion(strValue);
-Result := Convert26LibsToCurrentVersion(Result);
+Function LocalConvertLibsToCurrentVersion(strValue: String): String;
+Begin
+    Result := Convert25LibsToCurrentVersion(strValue);
+    Result := Convert26LibsToCurrentVersion(Result);
     //Auto -mwindows flag addition
-IF AnsiContainsText(Result, '-lwxmsw') AND
-(AnsiContainsText(Result, '-mwindows') = FALSE) THEN
-BEGIN
-Result := '-mwindows_@@_' + Result;
-END;
-END;
+    If AnsiContainsText(Result, '-lwxmsw') And
+        (AnsiContainsText(Result, '-mwindows') = False) Then
+    Begin
+        Result := '-mwindows_@@_' + Result;
+    End;
+End;
 
-FUNCTION Convert25LibsToCurrentVersion(strValue: STRING): STRING;
-BEGIN
-Result := StringReplace(strValue, 'wxmsw25', 'wxmsw27', [rfReplaceAll]);
-END;
+Function Convert25LibsToCurrentVersion(strValue: String): String;
+Begin
+    Result := StringReplace(strValue, 'wxmsw25', 'wxmsw27', [rfReplaceAll]);
+End;
 
-FUNCTION Convert26LibsToCurrentVersion(strValue: STRING): STRING;
-BEGIN
-Result := StringReplace(strValue, 'wxmsw26', 'wxmsw27', [rfReplaceAll]);
-END;
+Function Convert26LibsToCurrentVersion(strValue: String): String;
+Begin
+    Result := StringReplace(strValue, 'wxmsw26', 'wxmsw27', [rfReplaceAll]);
+End;
 
-FUNCTION GetDateToString(dt: TDateTime): STRING;
-VAR
-AYear, AMonth, ADay, AHour, AMinute, ASecond, AMilliSecond: WORD;
-BEGIN
-DecodeDateTime(dt, AYear, AMonth, ADay, AHour, AMinute, ASecond,
-AMilliSecond);
-Result := Format('%d/%d/%d', [AMonth, ADay, AYear]);
-END;
+Function GetDateToString(dt: TDateTime): String;
+Var
+    AYear, AMonth, ADay, AHour, AMinute, ASecond, AMilliSecond: Word;
+Begin
+    DecodeDateTime(dt, AYear, AMonth, ADay, AHour, AMinute, ASecond,
+        AMilliSecond);
+    Result := Format('%d/%d/%d', [AMonth, ADay, AYear]);
+End;
 
-FUNCTION GetWxMonthFromIndex(MonthIndex: INTEGER): STRING;
-BEGIN
-CASE MonthIndex OF
-1:
-Result := 'wxDateTime::Jan';
-2:
-Result := 'wxDateTime::Feb';
-3:
-Result := 'wxDateTime::Mar';
-4:
-Result := 'wxDateTime::Apr';
-5:
-Result := 'wxDateTime::May';
-6:
-Result := 'wxDateTime::Jun';
-7:
-Result := 'wxDateTime::Jul';
-8:
-Result := 'wxDateTime::Aug';
-9:
-Result := 'wxDateTime::Sep';
-10:
-Result := 'wxDateTime::Oct';
-11:
-Result := 'wxDateTime::Nov';
-12:
-Result := 'wxDateTime::Dec';
-END;
-END;
+Function GetWxMonthFromIndex(MonthIndex: Integer): String;
+Begin
+    Case MonthIndex Of
+        1:
+            Result := 'wxDateTime::Jan';
+        2:
+            Result := 'wxDateTime::Feb';
+        3:
+            Result := 'wxDateTime::Mar';
+        4:
+            Result := 'wxDateTime::Apr';
+        5:
+            Result := 'wxDateTime::May';
+        6:
+            Result := 'wxDateTime::Jun';
+        7:
+            Result := 'wxDateTime::Jul';
+        8:
+            Result := 'wxDateTime::Aug';
+        9:
+            Result := 'wxDateTime::Sep';
+        10:
+            Result := 'wxDateTime::Oct';
+        11:
+            Result := 'wxDateTime::Nov';
+        12:
+            Result := 'wxDateTime::Dec';
+    End;
+End;
 
-FUNCTION XML_Label(str: STRING): STRING;
-BEGIN
+Function XML_Label(str: String): String;
+Begin
 
     // Some string characters need to be changed for the XRC format
     // See http://cvs.wxwidgets.org/viewcvs.cgi/wxWidgets/docs/tech/tn0014.txt?rev=1.18&content-type=text/vnd.viewcvs-markup
     // Section 3. "Common attribute types", Subsection "String"
-strChange(str, '_', '__');
-strChange(str, '&', '_');
-strChange(str, '/', '//');
-Result := str;
+    strChange(str, '_', '__');
+    strChange(str, '&', '_');
+    strChange(str, '/', '//');
+    Result := str;
 
-END;
+End;
 
-FUNCTION GetTotalHtOfAllToolBarAndStatusBar(ParentControl:
-TWinControl): INTEGER;
-VAR
-I: INTEGER;
-BEGIN
-Result := 0;
-FOR I := 0 TO ParentControl.ControlCount - 1 DO // Iterate
-BEGIN
-IF NOT (IsControlWxToolBar(ParentControl.Controls[i]) OR
-IsControlWxStatusBar(ParentControl.Controls[i])) THEN
-continue;
-Result := Result + ParentControl.Controls[i].Height;
-END; // for
-END;
+Function GetTotalHtOfAllToolBarAndStatusBar(ParentControl:
+    TWinControl): Integer;
+Var
+    I: Integer;
+Begin
+    Result := 0;
+    For I := 0 To ParentControl.ControlCount - 1 Do // Iterate
+    Begin
+        If Not (IsControlWxToolBar(ParentControl.Controls[i]) Or
+            IsControlWxStatusBar(ParentControl.Controls[i])) Then
+            continue;
+        Result := Result + ParentControl.Controls[i].Height;
+    End; // for
+End;
 
-FUNCTION IsIDPredefined(str: STRING; strlst: TStringList): BOOLEAN;
-BEGIN
-IF strlst.IndexOf(str) <> -1 THEN
-Result := TRUE
-ELSE
-Result := FALSE;
-END;
+Function IsIDPredefined(str: String; strlst: TStringList): Boolean;
+Begin
+    If strlst.IndexOf(str) <> -1 Then
+        Result := True
+    Else
+        Result := False;
+End;
 
-FUNCTION GetPredefinedwxIds: TStringList;
-BEGIN
-Result := TStringList.Create;
-Result.add('wxID_OPEN');
-Result.add('wxID_CLOSE');
-Result.add('wxID_NEW');
-Result.add('wxID_SAVE');
-Result.add('wxID_SAVEAS');
-Result.add('wxID_REVERT');
-Result.add('wxID_EXIT');
-Result.add('wxID_UNDO');
-Result.add('wxID_REDO');
-Result.add('wxID_HELP');
-Result.add('wxID_PRINT');
-Result.add('wxID_PRINT_SETUP');
-Result.add('wxID_PAGE_SETUP');
-Result.add('wxID_PREVIEW');
-Result.add('wxID_ABOUT');
-Result.add('wxID_HELP_CONTENTS');
-Result.add('wxID_HELP_INDEX');
-Result.add('wxID_HELP_SEARCH');
-Result.add('wxID_HELP_COMMANDS');
-Result.add('wxID_HELP_PROCEDURES');
-Result.add('wxID_HELP_CONTEXT');
-Result.add('wxID_CLOSE_ALL');
-Result.add('wxID_PREFERENCES');
-Result.add('wxID_EDIT');
-Result.add('wxID_CUT');
-Result.add('wxID_COPY');
-Result.add('wxID_PASTE');
-Result.add('wxID_CLEAR');
-Result.add('wxID_FIND');
-Result.add('wxID_DUPLICATE');
-Result.add('wxID_SELECTALL');
-Result.add('wxID_DELETE');
-Result.add('wxID_REPLACE');
-Result.add('wxID_REPLACE_ALL');
-Result.add('wxID_PROPERTIES');
-Result.add('wxID_VIEW_DETAILS');
-Result.add('wxID_VIEW_LARGEICONS');
-Result.add('wxID_VIEW_SMALLICONS');
-Result.add('wxID_VIEW_LIST');
-Result.add('wxID_VIEW_SORTDATE');
-Result.add('wxID_VIEW_SORTNAME');
-Result.add('wxID_VIEW_SORTSIZE');
-Result.add('wxID_VIEW_SORTTYPE');
-Result.add('wxID_FILE');
-Result.add('wxID_FILE1');
-Result.add('wxID_FILE2');
-Result.add('wxID_FILE3');
-Result.add('wxID_FILE4');
-Result.add('wxID_FILE5');
-Result.add('wxID_FILE6');
-Result.add('wxID_FILE7');
-Result.add('wxID_FILE8');
-Result.add('wxID_FILE9');
-Result.add('wxID_OK');
-Result.add('wxID_CANCEL');
-Result.add('wxID_APPLY');
-Result.add('wxID_YES');
-Result.add('wxID_NO');
-Result.add('wxID_STATIC');
-Result.add('wxID_FORWARD');
-Result.add('wxID_BACKWARD');
-Result.add('wxID_DEFAULT');
-Result.add('wxID_MORE');
-Result.add('wxID_SETUP');
-Result.add('wxID_RESET');
-Result.add('wxID_CONTEXT_HELP');
-Result.add('wxID_YESTOALL');
-Result.add('wxID_NOTOALL');
-Result.add('wxID_ABORT');
-Result.add('wxID_RETRY');
-Result.add('wxID_IGNORE');
-Result.add('wxID_ADD');
-Result.add('wxID_REMOVE');
-Result.add('wxID_UP');
-Result.add('wxID_DOWN');
-Result.add('wxID_HOME');
-Result.add('wxID_REFRESH');
-Result.add('wxID_STOP');
-Result.add('wxID_INDEX');
-Result.add('wxID_BOLD');
-Result.add('wxID_ITALIC');
-Result.add('wxID_JUSTIFY_CENTER');
-Result.add('wxID_JUSTIFY_FILL');
-Result.add('wxID_JUSTIFY_RIGHT');
-Result.add('wxID_JUSTIFY_LEFT');
-Result.add('wxID_UNDERLINE');
-Result.add('wxID_INDENT');
-Result.add('wxID_UNINDENT');
-Result.add('wxID_ZOOM_100');
-Result.add('wxID_ZOOM_FIT');
-Result.add('wxID_ZOOM_IN');
-Result.add('wxID_ZOOM_OUT');
-Result.add('wxID_UNDELETE');
-Result.add('wxID_REVERT_TO_SAVED');
-Result.add('wxID_SYSTEM_MENU');
-Result.add('wxID_CLOSE_FRAME');
-Result.add('wxID_MOVE_FRAME');
-Result.add('wxID_RESIZE_FRAME');
-Result.add('wxID_MAXIMIZE_FRAME');
-Result.add('wxID_ICONIZE_FRAME');
-Result.add('wxID_RESTORE_FRAME');
-Result.add('wxID_FILEDLGG');
-END;
+Function GetPredefinedwxIds: TStringList;
+Begin
+    Result := TStringList.Create;
+    Result.add('wxID_OPEN');
+    Result.add('wxID_CLOSE');
+    Result.add('wxID_NEW');
+    Result.add('wxID_SAVE');
+    Result.add('wxID_SAVEAS');
+    Result.add('wxID_REVERT');
+    Result.add('wxID_EXIT');
+    Result.add('wxID_UNDO');
+    Result.add('wxID_REDO');
+    Result.add('wxID_HELP');
+    Result.add('wxID_PRINT');
+    Result.add('wxID_PRINT_SETUP');
+    Result.add('wxID_PAGE_SETUP');
+    Result.add('wxID_PREVIEW');
+    Result.add('wxID_ABOUT');
+    Result.add('wxID_HELP_CONTENTS');
+    Result.add('wxID_HELP_INDEX');
+    Result.add('wxID_HELP_SEARCH');
+    Result.add('wxID_HELP_COMMANDS');
+    Result.add('wxID_HELP_PROCEDURES');
+    Result.add('wxID_HELP_CONTEXT');
+    Result.add('wxID_CLOSE_ALL');
+    Result.add('wxID_PREFERENCES');
+    Result.add('wxID_EDIT');
+    Result.add('wxID_CUT');
+    Result.add('wxID_COPY');
+    Result.add('wxID_PASTE');
+    Result.add('wxID_CLEAR');
+    Result.add('wxID_FIND');
+    Result.add('wxID_DUPLICATE');
+    Result.add('wxID_SELECTALL');
+    Result.add('wxID_DELETE');
+    Result.add('wxID_REPLACE');
+    Result.add('wxID_REPLACE_ALL');
+    Result.add('wxID_PROPERTIES');
+    Result.add('wxID_VIEW_DETAILS');
+    Result.add('wxID_VIEW_LARGEICONS');
+    Result.add('wxID_VIEW_SMALLICONS');
+    Result.add('wxID_VIEW_LIST');
+    Result.add('wxID_VIEW_SORTDATE');
+    Result.add('wxID_VIEW_SORTNAME');
+    Result.add('wxID_VIEW_SORTSIZE');
+    Result.add('wxID_VIEW_SORTTYPE');
+    Result.add('wxID_FILE');
+    Result.add('wxID_FILE1');
+    Result.add('wxID_FILE2');
+    Result.add('wxID_FILE3');
+    Result.add('wxID_FILE4');
+    Result.add('wxID_FILE5');
+    Result.add('wxID_FILE6');
+    Result.add('wxID_FILE7');
+    Result.add('wxID_FILE8');
+    Result.add('wxID_FILE9');
+    Result.add('wxID_OK');
+    Result.add('wxID_CANCEL');
+    Result.add('wxID_APPLY');
+    Result.add('wxID_YES');
+    Result.add('wxID_NO');
+    Result.add('wxID_STATIC');
+    Result.add('wxID_FORWARD');
+    Result.add('wxID_BACKWARD');
+    Result.add('wxID_DEFAULT');
+    Result.add('wxID_MORE');
+    Result.add('wxID_SETUP');
+    Result.add('wxID_RESET');
+    Result.add('wxID_CONTEXT_HELP');
+    Result.add('wxID_YESTOALL');
+    Result.add('wxID_NOTOALL');
+    Result.add('wxID_ABORT');
+    Result.add('wxID_RETRY');
+    Result.add('wxID_IGNORE');
+    Result.add('wxID_ADD');
+    Result.add('wxID_REMOVE');
+    Result.add('wxID_UP');
+    Result.add('wxID_DOWN');
+    Result.add('wxID_HOME');
+    Result.add('wxID_REFRESH');
+    Result.add('wxID_STOP');
+    Result.add('wxID_INDEX');
+    Result.add('wxID_BOLD');
+    Result.add('wxID_ITALIC');
+    Result.add('wxID_JUSTIFY_CENTER');
+    Result.add('wxID_JUSTIFY_FILL');
+    Result.add('wxID_JUSTIFY_RIGHT');
+    Result.add('wxID_JUSTIFY_LEFT');
+    Result.add('wxID_UNDERLINE');
+    Result.add('wxID_INDENT');
+    Result.add('wxID_UNINDENT');
+    Result.add('wxID_ZOOM_100');
+    Result.add('wxID_ZOOM_FIT');
+    Result.add('wxID_ZOOM_IN');
+    Result.add('wxID_ZOOM_OUT');
+    Result.add('wxID_UNDELETE');
+    Result.add('wxID_REVERT_TO_SAVED');
+    Result.add('wxID_SYSTEM_MENU');
+    Result.add('wxID_CLOSE_FRAME');
+    Result.add('wxID_MOVE_FRAME');
+    Result.add('wxID_RESIZE_FRAME');
+    Result.add('wxID_MAXIMIZE_FRAME');
+    Result.add('wxID_ICONIZE_FRAME');
+    Result.add('wxID_RESTORE_FRAME');
+    Result.add('wxID_FILEDLGG');
+End;
 
-FUNCTION GetGridSelectionToString(grdsel: TWxGridSelection): STRING;
-BEGIN
-Result := 'wxGridSelectCells';
-IF grdsel = wxGridSelectCells THEN
-Result := 'wxGridSelectCells';
-IF grdsel = wxGridSelectColumns THEN
-Result := 'wxGridSelectColumns';
-IF grdsel = wxGridSelectRows THEN
-Result := 'wxGridSelectRows';
+Function GetGridSelectionToString(grdsel: TWxGridSelection): String;
+Begin
+    Result := 'wxGridSelectCells';
+    If grdsel = wxGridSelectCells Then
+        Result := 'wxGridSelectCells';
+    If grdsel = wxGridSelectColumns Then
+        Result := 'wxGridSelectColumns';
+    If grdsel = wxGridSelectRows Then
+        Result := 'wxGridSelectRows';
 
-END;
+End;
 
-FUNCTION GetWxFontDeclaration(fnt: TFont): STRING;
-VAR
-strStyle, strWeight, strUnderline: STRING;
-BEGIN
-IF (fnt.Name = Screen.HintFont.Name) AND
-(fnt.Size = Screen.HintFont.Size) AND
-(fnt.Style = Screen.HintFont.Style) THEN
-Result := ''
-ELSE
-BEGIN
-IF fsItalic IN fnt.Style THEN
-strStyle := 'wxITALIC'
-ELSE
-strStyle := 'wxNORMAL';
+Function GetWxFontDeclaration(fnt: TFont): String;
+Var
+    strStyle, strWeight, strUnderline: String;
+Begin
+    If (fnt.Name = Screen.HintFont.Name) And
+        (fnt.Size = Screen.HintFont.Size) And
+        (fnt.Style = Screen.HintFont.Style) Then
+        Result := ''
+    Else
+    Begin
+        If fsItalic In fnt.Style Then
+            strStyle := 'wxITALIC'
+        Else
+            strStyle := 'wxNORMAL';
 
-IF fsBold IN fnt.Style THEN
-strWeight := 'wxBOLD'
-ELSE
-strWeight := 'wxNORMAL';
+        If fsBold In fnt.Style Then
+            strWeight := 'wxBOLD'
+        Else
+            strWeight := 'wxNORMAL';
 
-IF fsUnderline IN fnt.Style THEN
-strUnderline := 'true'
-ELSE
-strUnderline := 'false';
+        If fsUnderline In fnt.Style Then
+            strUnderline := 'true'
+        Else
+            strUnderline := 'false';
 
-IF fnt.Name <> Screen.IconFont.Name THEN
-Result := Format('wxFont(%d, wxSWISS, %s, %s, %s, %s)',
-[fnt.Size, strStyle, strWeight, strUnderline, GetCppString(fnt.Name)])
-ELSE
-Result := Format('wxFont(%d, wxSWISS, %s, %s, %s)',
-[fnt.Size, strStyle, strWeight, strUnderline]);
-END;
-END;
+        If fnt.Name <> Screen.IconFont.Name Then
+            Result := Format('wxFont(%d, wxSWISS, %s, %s, %s, %s)',
+                [fnt.Size, strStyle, strWeight, strUnderline, GetCppString(fnt.Name)])
+        Else
+            Result := Format('wxFont(%d, wxSWISS, %s, %s, %s)',
+                [fnt.Size, strStyle, strWeight, strUnderline]);
+    End;
+End;
 
-FUNCTION GetDesignerFormName(cntrl: TControl): STRING;
-VAR
-ParentCtrl, PrevParentCtrl: TControl;
+Function GetDesignerFormName(cntrl: TControl): String;
+Var
+    ParentCtrl, PrevParentCtrl: TControl;
 
-BEGIN
-ParentCtrl := cntrl.Parent;
-IF ParentCtrl = NIL THEN
-BEGIN
-IF cntrl IS TfrmNewForm THEN
-BEGIN
-Result := TfrmNewForm(cntrl).Wx_Name;
-exit;
-END;
-END;
+Begin
+    ParentCtrl := cntrl.Parent;
+    If ParentCtrl = Nil Then
+    Begin
+        If cntrl Is TfrmNewForm Then
+        Begin
+            Result := TfrmNewForm(cntrl).Wx_Name;
+            exit;
+        End;
+    End;
 
-WHILE (ParentCtrl <> NIL) DO
-BEGIN
-PrevParentCtrl := ParentCtrl;
-ParentCtrl := ParentCtrl.Parent;
-IF ParentCtrl = NIL THEN
-BEGIN
-IF PrevParentCtrl IS TfrmNewForm THEN
-Result := TfrmNewForm(PrevParentCtrl).Wx_Name
-ELSE
-Result := '';
-exit;
-END;
-END;
+    While (ParentCtrl <> Nil) Do
+    Begin
+        PrevParentCtrl := ParentCtrl;
+        ParentCtrl := ParentCtrl.Parent;
+        If ParentCtrl = Nil Then
+        Begin
+            If PrevParentCtrl Is TfrmNewForm Then
+                Result := TfrmNewForm(PrevParentCtrl).Wx_Name
+            Else
+                Result := '';
+            exit;
+        End;
+    End;
 
-END;
+End;
 
-FUNCTION GetWxWidgetParent(cntrl: TControl; AuiManaged: BOOLEAN): STRING;
-VAR
-TestCtrl: TControl;
-BEGIN
-Result := '';
-IF cntrl = NIL THEN
-exit;
+Function GetWxWidgetParent(cntrl: TControl; AuiManaged: Boolean): String;
+Var
+    TestCtrl: TControl;
+Begin
+    Result := '';
+    If cntrl = Nil Then
+        exit;
 
-IF cntrl.Parent = NIL THEN
-exit;
+    If cntrl.Parent = Nil Then
+        exit;
 
-IF cntrl.Parent IS TForm THEN
-BEGIN
-Result := 'this';
-exit;
-END;
+    If cntrl.Parent Is TForm Then
+    Begin
+        Result := 'this';
+        exit;
+    End;
 
     {mn
     if not (cntrl.Parent is TwxSizerPanel) then
@@ -1485,373 +1484,373 @@ END;
     end;
   mn}
 
-IF (AuiManaged AND NOT (cntrl.Parent IS TWxSizerPanel))
+    If (AuiManaged And Not (cntrl.Parent Is TWxSizerPanel))
     // protect ourselves from idiots
-    {or (cntrl.Parent is TWxAuiNoteBookPage)} THEN
-BEGIN
-Result := 'this';
-Exit;
-END;
+    {or (cntrl.Parent is TWxAuiNoteBookPage)} Then
+    Begin
+        Result := 'this';
+        Exit;
+    End;
 
-IF (cntrl.Parent IS TWxAuiNoteBookPage) THEN
-BEGIN
-Result := cntrl.Parent.Parent.Name;
-Exit;
-END;
+    If (cntrl.Parent Is TWxAuiNoteBookPage) Then
+    Begin
+        Result := cntrl.Parent.Parent.Name;
+        Exit;
+    End;
 
-IF (cntrl.Parent IS TWxSizerPanel) THEN
-BEGIN
-TestCtrl := cntrl.Parent;
-Result := TestCtrl.Name;
-WHILE ((TestCtrl IS TWxSizerPanel)) DO
-BEGIN
-IF (TestCtrl IS TWxSizerPanel) THEN
-TestCtrl := TestCtrl.Parent;
+    If (cntrl.Parent Is TWxSizerPanel) Then
+    Begin
+        TestCtrl := cntrl.Parent;
+        Result := TestCtrl.Name;
+        While ((TestCtrl Is TWxSizerPanel)) Do
+        Begin
+            If (TestCtrl Is TWxSizerPanel) Then
+                TestCtrl := TestCtrl.Parent;
 
-IF TestCtrl = NIL THEN
-BEGIN
-Result := 'this';
-break;
-END;
-IF (TestCtrl IS TForm) THEN
-Result := 'this'
-ELSE
-Result := TestCtrl.Name;
-END;
-Exit;
-END;
+            If TestCtrl = Nil Then
+            Begin
+                Result := 'this';
+                break;
+            End;
+            If (TestCtrl Is TForm) Then
+                Result := 'this'
+            Else
+                Result := TestCtrl.Name;
+        End;
+        Exit;
+    End;
 
-IF (cntrl.Parent IS TWxNotebook) OR (cntrl.Parent IS TWxAuiNotebook) THEN
-BEGIN
-Result := cntrl.Parent.Name;
-exit;
+    If (cntrl.Parent Is TWxNotebook) Or (cntrl.Parent Is TWxAuiNotebook) Then
+    Begin
+        Result := cntrl.Parent.Name;
+        exit;
 
-END;
+    End;
 
-IF (cntrl.Parent IS TPageControl) THEN
+    If (cntrl.Parent Is TPageControl) Then
         //we assume compound tool/choice/list/tool/tree-books
-BEGIN
-Result := GetWxWidgetParent(cntrl.Parent, FALSE);
+    Begin
+        Result := GetWxWidgetParent(cntrl.Parent, False);
         //this should return the grandparent
-exit;
-END
-ELSE
-BEGIN
-Result := cntrl.Parent.Name;
-exit;
-END;
+        exit;
+    End
+    Else
+    Begin
+        Result := cntrl.Parent.Name;
+        exit;
+    End;
 
-END;
+End;
 
-FUNCTION GetWxWindowControls(wnCtrl: TWinControl): INTEGER;
-VAR
-I: INTEGER;
-wndInterface: IWxWindowInterface;
-BEGIN
-Result := 0;
-FOR I := 0 TO wnCtrl.ComponentCount - 1 DO // Iterate
-IF wnCtrl.Components[i].GetInterface(IID_IWxWindowInterface,
-wndInterface) THEN
-Inc(Result); // for
-END;
+Function GetWxWindowControls(wnCtrl: TWinControl): Integer;
+Var
+    I: Integer;
+    wndInterface: IWxWindowInterface;
+Begin
+    Result := 0;
+    For I := 0 To wnCtrl.ComponentCount - 1 Do // Iterate
+        If wnCtrl.Components[i].GetInterface(IID_IWxWindowInterface,
+            wndInterface) Then
+            Inc(Result); // for
+End;
 
-FUNCTION GetMaxIDofWxForm(ParentControl: TWinControl): INTEGER;
-VAR
-wxcompInterface: IWxComponentInterface;
-I: INTEGER;
-BEGIN
-Result := 0;
-FOR I := 0 TO ParentControl.ComponentCount - 1 DO // Iterate
-IF ParentControl.Components[I].GetInterface(IID_IWxComponentInterface,
-wxcompInterface) THEN
-IF wxcompInterface.GetIDValue > Result THEN
-Result := wxcompInterface.GetIDValue;
+Function GetMaxIDofWxForm(ParentControl: TWinControl): Integer;
+Var
+    wxcompInterface: IWxComponentInterface;
+    I: Integer;
+Begin
+    Result := 0;
+    For I := 0 To ParentControl.ComponentCount - 1 Do // Iterate
+        If ParentControl.Components[I].GetInterface(IID_IWxComponentInterface,
+            wxcompInterface) Then
+            If wxcompInterface.GetIDValue > Result Then
+                Result := wxcompInterface.GetIDValue;
 
     // Fix for erroneously large ID values
-IF (Result > 32768) THEN
-BEGIN
+    If (Result > 32768) Then
+    Begin
 
-Result := 1001;
-FOR I := 0 TO ParentControl.ComponentCount - 1 DO // Iterate
-IF ParentControl.Components[I].GetInterface(IID_IWxComponentInterface,
-wxcompInterface) THEN
-BEGIN
-wxcompInterface.SetIDValue(Result);
-Result := Result + 1;
-END;
-END;
+        Result := 1001;
+        For I := 0 To ParentControl.ComponentCount - 1 Do // Iterate
+            If ParentControl.Components[I].GetInterface(IID_IWxComponentInterface,
+                wxcompInterface) Then
+            Begin
+                wxcompInterface.SetIDValue(Result);
+                Result := Result + 1;
+            End;
+    End;
 
-IF Result = 0 THEN
-Result := 1000;
+    If Result = 0 Then
+        Result := 1000;
 
-END;
+End;
 
-FUNCTION GetMenuKindAsText(menuStyle: TWxMenuItemStyleItem): STRING;
-BEGIN
-Result := 'wxITEM_NORMAL';
-IF menuStyle = wxMnuItm_Normal THEN
-BEGIN
-Result := 'wxITEM_NORMAL';
-exit;
-END;
+Function GetMenuKindAsText(menuStyle: TWxMenuItemStyleItem): String;
+Begin
+    Result := 'wxITEM_NORMAL';
+    If menuStyle = wxMnuItm_Normal Then
+    Begin
+        Result := 'wxITEM_NORMAL';
+        exit;
+    End;
 
-IF menuStyle = wxMnuItm_Separator THEN
-BEGIN
-Result := 'wxITEM_SEPARATOR';
-exit;
-END;
-IF menuStyle = wxMnuItm_Radio THEN
-BEGIN
-Result := 'wxITEM_RADIO';
-exit;
-END;
-IF menuStyle = wxMnuItm_Check THEN
-BEGIN
-Result := 'wxITEM_CHECK';
-exit;
-END;
+    If menuStyle = wxMnuItm_Separator Then
+    Begin
+        Result := 'wxITEM_SEPARATOR';
+        exit;
+    End;
+    If menuStyle = wxMnuItm_Radio Then
+    Begin
+        Result := 'wxITEM_RADIO';
+        exit;
+    End;
+    If menuStyle = wxMnuItm_Check Then
+    Begin
+        Result := 'wxITEM_CHECK';
+        exit;
+    End;
 
-END;
+End;
 
-FUNCTION GetToolButtonKindAsText(toolStyle:
-TWxToolbottonItemStyleItem): STRING;
-BEGIN
-Result := 'wxITEM_NORMAL';
-IF toolStyle = wxITEM_NORMAL THEN
-BEGIN
-Result := 'wxITEM_NORMAL';
-exit;
-END;
+Function GetToolButtonKindAsText(toolStyle:
+    TWxToolbottonItemStyleItem): String;
+Begin
+    Result := 'wxITEM_NORMAL';
+    If toolStyle = wxITEM_NORMAL Then
+    Begin
+        Result := 'wxITEM_NORMAL';
+        exit;
+    End;
 
-IF toolStyle = wxITEM_RADIO THEN
-BEGIN
-Result := 'wxITEM_RADIO';
-exit;
-END;
+    If toolStyle = wxITEM_RADIO Then
+    Begin
+        Result := 'wxITEM_RADIO';
+        exit;
+    End;
 
-IF toolStyle = wxITEM_CHECK THEN
-BEGIN
-Result := 'wxITEM_CHECK';
-exit;
-END;
+    If toolStyle = wxITEM_CHECK Then
+    Begin
+        Result := 'wxITEM_CHECK';
+        exit;
+    End;
 
-END;
+End;
 
-FUNCTION GetAvailableControlCount(ParentControl: TWinControl;
-ControlToCheck: STRING): INTEGER; OVERLOAD;
-VAR
-I: INTEGER;
-BEGIN
-Result := 0;
-FOR I := 0 TO ParentControl.ComponentCount - 1 DO // Iterate
-IF strContainsU(ParentControl.Components[i].ClassName, ControlToCheck) THEN
-Inc(Result); // for
-END;
+Function GetAvailableControlCount(ParentControl: TWinControl;
+    ControlToCheck: String): Integer; Overload;
+Var
+    I: Integer;
+Begin
+    Result := 0;
+    For I := 0 To ParentControl.ComponentCount - 1 Do // Iterate
+        If strContainsU(ParentControl.Components[i].ClassName, ControlToCheck) Then
+            Inc(Result); // for
+End;
 
-FUNCTION GetAvailableControlCount(ParentControl: TWinControl;
-ControlToCheck: TComponent): INTEGER; OVERLOAD;
-VAR
-I: INTEGER;
-BEGIN
-Result := 0;
-FOR I := 0 TO ParentControl.ComponentCount - 1 DO // Iterate
-IF strContainsU(ParentControl.Components[i].ClassName,
-ControlToCheck.ClassName) THEN
-Inc(Result); // for
-END;
+Function GetAvailableControlCount(ParentControl: TWinControl;
+    ControlToCheck: TComponent): Integer; Overload;
+Var
+    I: Integer;
+Begin
+    Result := 0;
+    For I := 0 To ParentControl.ComponentCount - 1 Do // Iterate
+        If strContainsU(ParentControl.Components[i].ClassName,
+            ControlToCheck.ClassName) Then
+            Inc(Result); // for
+End;
 
-FUNCTION GetEventNameFromDisplayName(strDisplayName: STRING;
-strlst: TStringList): STRING;
-VAR
-I: INTEGER;
-strEventName, strEventCaption: STRING;
-intPos: INTEGER;
-BEGIN
-Result := '';
-FOR i := 0 TO strlst.Count - 1 DO // Iterate
-BEGIN
-intPos := Pos(':', strlst[i]);
-strEventName := Copy(strlst[i], 0, intPos - 1);
-strEventCaption := Trim(Copy(strlst[i], intPos + 1, Length(strlst[i])));
-IF AnsiSameText(strEventCaption, strDisplayName) THEN
-Result := strEventName;
-END; // for
-END;
+Function GetEventNameFromDisplayName(strDisplayName: String;
+    strlst: TStringList): String;
+Var
+    I: Integer;
+    strEventName, strEventCaption: String;
+    intPos: Integer;
+Begin
+    Result := '';
+    For i := 0 To strlst.Count - 1 Do // Iterate
+    Begin
+        intPos := Pos(':', strlst[i]);
+        strEventName := Copy(strlst[i], 0, intPos - 1);
+        strEventCaption := Trim(Copy(strlst[i], intPos + 1, Length(strlst[i])));
+        If AnsiSameText(strEventCaption, strDisplayName) Then
+            Result := strEventName;
+    End; // for
+End;
 
-FUNCTION IsValidClass(COMP: TComponent): BOOLEAN;
-VAR
-intfObj: IWxComponentInterface;
-BEGIN
-Result := COMP.GetInterface(IID_IWxComponentInterface, intfObj);
-END;
+Function IsValidClass(Comp: TComponent): Boolean;
+Var
+    intfObj: IWxComponentInterface;
+Begin
+    Result := Comp.GetInterface(IID_IWxComponentInterface, intfObj);
+End;
 
 //Here is the start
 
-FUNCTION GetCheckboxStyleString(stdStyle: TWxcbxStyleSet): STRING;
-VAR
-I: INTEGER;
-strLst: TStringList;
-BEGIN
-strLst := TStringList.Create;
+Function GetCheckboxStyleString(stdStyle: TWxcbxStyleSet): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
+    strLst := TStringList.Create;
 
-TRY
+    Try
 
-IF wxCHK_2STATE IN stdStyle THEN
-strLst.add('wxCHK_2STATE ');
+        If wxCHK_2STATE In stdStyle Then
+            strLst.add('wxCHK_2STATE ');
 
-IF wxCHK_3STATE IN stdStyle THEN
-strLst.add('wxCHK_3STATE ');
+        If wxCHK_3STATE In stdStyle Then
+            strLst.add('wxCHK_3STATE ');
 
-IF wxCHK_ALLOW_3RD_STATE_FOR_USER IN stdStyle THEN
-strLst.add('wxCHK_ALLOW_3RD_STATE_FOR_USER');
+        If wxCHK_ALLOW_3RD_STATE_FOR_USER In stdStyle Then
+            strLst.add('wxCHK_ALLOW_3RD_STATE_FOR_USER');
 
-IF wxALIGN_RIGHT_CB IN stdStyle THEN
-strLst.add('wxALIGN_RIGHT');
+        If wxALIGN_RIGHT_CB In stdStyle Then
+            strLst.add('wxALIGN_RIGHT');
 
-IF strLst.Count = 0 THEN
-Result := ''
-ELSE
-FOR I := 0 TO strLst.Count - 1 DO // Iterate
-IF i <> strLst.Count - 1 THEN
-Result := Result + strLst[i] + ' | '
-ELSE
-Result := Result + strLst[i] // for
-;
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i] // for
+        ;
         //sendDebug(Result);
-FINALLY
-strLst.Destroy;
-END;
-END;
+    Finally
+        strLst.Destroy;
+    End;
+End;
 
-FUNCTION GetTreeviewStyleString(stdStyle: TWxtvStyleSet): STRING;
-VAR
-I: INTEGER;
-strLst: TStringList;
-BEGIN
-strLst := TStringList.Create;
+Function GetTreeviewStyleString(stdStyle: TWxtvStyleSet): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
+    strLst := TStringList.Create;
 
-TRY
-IF wxTR_EDIT_LABELS IN stdStyle THEN
-strLst.add('wxTR_EDIT_LABELS');
+    Try
+        If wxTR_EDIT_LABELS In stdStyle Then
+            strLst.add('wxTR_EDIT_LABELS');
 
-IF wxTR_NO_BUTTONS IN stdStyle THEN
-strLst.add('wxTR_NO_BUTTONS');
+        If wxTR_NO_BUTTONS In stdStyle Then
+            strLst.add('wxTR_NO_BUTTONS');
 
-IF wxTR_HAS_BUTTONS IN stdStyle THEN
-strLst.add('wxTR_HAS_BUTTONS');
+        If wxTR_HAS_BUTTONS In stdStyle Then
+            strLst.add('wxTR_HAS_BUTTONS');
 
-IF wxTR_TWIST_BUTTONS IN stdStyle THEN
-strLst.add('wxTR_TWIST_BUTTONS');
+        If wxTR_TWIST_BUTTONS In stdStyle Then
+            strLst.add('wxTR_TWIST_BUTTONS');
 
-IF wxTR_NO_LINES IN stdStyle THEN
-strLst.add('wxTR_NO_LINES');
+        If wxTR_NO_LINES In stdStyle Then
+            strLst.add('wxTR_NO_LINES');
 
-IF wxTR_FULL_ROW_HIGHLIGHT IN stdStyle THEN
-strLst.add('wxTR_FULL_ROW_HIGHLIGHT');
+        If wxTR_FULL_ROW_HIGHLIGHT In stdStyle Then
+            strLst.add('wxTR_FULL_ROW_HIGHLIGHT');
 
-IF wxTR_LINES_AT_ROOT IN stdStyle THEN
-strLst.add('wxTR_LINES_AT_ROOT');
+        If wxTR_LINES_AT_ROOT In stdStyle Then
+            strLst.add('wxTR_LINES_AT_ROOT');
 
-IF wxTR_HIDE_ROOT IN stdStyle THEN
-strLst.add('wxTR_HIDE_ROOT');
+        If wxTR_HIDE_ROOT In stdStyle Then
+            strLst.add('wxTR_HIDE_ROOT');
 
-IF wxTR_ROW_LINES IN stdStyle THEN
-strLst.add('wxTR_ROW_LINES');
+        If wxTR_ROW_LINES In stdStyle Then
+            strLst.add('wxTR_ROW_LINES');
 
-IF wxTR_HAS_VARIABLE_ROW_HEIGHT IN stdStyle THEN
-strLst.add('wxTR_HAS_VARIABLE_ROW_HEIGHT');
+        If wxTR_HAS_VARIABLE_ROW_HEIGHT In stdStyle Then
+            strLst.add('wxTR_HAS_VARIABLE_ROW_HEIGHT');
 
-IF wxTR_SINGLE IN stdStyle THEN
-strLst.add('wxTR_SINGLE');
+        If wxTR_SINGLE In stdStyle Then
+            strLst.add('wxTR_SINGLE');
 
-IF wxTR_MULTIPLE IN stdStyle THEN
-strLst.add('wxTR_MULTIPLE');
+        If wxTR_MULTIPLE In stdStyle Then
+            strLst.add('wxTR_MULTIPLE');
 
-IF wxTR_EXTENDED IN stdStyle THEN
-strLst.add('wxTR_EXTENDED');
+        If wxTR_EXTENDED In stdStyle Then
+            strLst.add('wxTR_EXTENDED');
 
-IF wxTR_DEFAULT_STYLE IN stdStyle THEN
-strLst.add('wxTR_DEFAULT_STYLE');
+        If wxTR_DEFAULT_STYLE In stdStyle Then
+            strLst.add('wxTR_DEFAULT_STYLE');
 
-IF strLst.Count = 0 THEN
-Result := ''
-ELSE
-FOR I := 0 TO strLst.Count - 1 DO // Iterate
-IF i <> strLst.Count - 1 THEN
-Result := Result + strLst[i] + ' | '
-ELSE
-Result := Result + strLst[i] // for
-;
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i] // for
+        ;
         //sendDebug(Result);
-FINALLY
-strLst.Destroy;
-END;
-END;
+    Finally
+        strLst.Destroy;
+    End;
+End;
 
-FUNCTION GetRadiobuttonStyleString(stdStyle: TWxrbStyleSet): STRING;
-VAR
-I: INTEGER;
-strLst: TStringList;
-BEGIN
+Function GetRadiobuttonStyleString(stdStyle: TWxrbStyleSet): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
 
-strLst := TStringList.Create;
+    strLst := TStringList.Create;
 
-TRY
-IF wxRB_GROUP IN stdStyle THEN
-strLst.add('wxRB_GROUP');
+    Try
+        If wxRB_GROUP In stdStyle Then
+            strLst.add('wxRB_GROUP');
 
-IF wxRB_SINGLE IN stdStyle THEN
-strLst.add('wxRB_SINGLE');
+        If wxRB_SINGLE In stdStyle Then
+            strLst.add('wxRB_SINGLE');
 
-IF strLst.Count = 0 THEN
-Result := ''
-ELSE
-FOR I := 0 TO strLst.Count - 1 DO // Iterate
-IF i <> strLst.Count - 1 THEN
-Result := Result + strLst[i] + ' | '
-ELSE
-Result := Result + strLst[i] // for
-;
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i] // for
+        ;
         //sendDebug(Result);
-FINALLY
-strLst.Destroy;
-END;
-END;
+    Finally
+        strLst.Destroy;
+    End;
+End;
 
-FUNCTION GetRTSListCtrlStyleString(stdStyle: TwxRichTextSLCStyleSet): STRING;
-VAR
-I: INTEGER;
-strLst: TStringList;
-BEGIN
-strLst := TStringList.Create;
+Function GetRTSListCtrlStyleString(stdStyle: TwxRichTextSLCStyleSet): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
+    strLst := TStringList.Create;
 
-TRY
-IF wxRICHTEXTSTYLELIST_HIDE_TYPE_SELECTOR IN stdStyle THEN
-strLst.add('wxRICHTEXTSTYLELIST_HIDE_TYPE_SELECTOR');
+    Try
+        If wxRICHTEXTSTYLELIST_HIDE_TYPE_SELECTOR In stdStyle Then
+            strLst.add('wxRICHTEXTSTYLELIST_HIDE_TYPE_SELECTOR');
 
-IF strLst.Count = 0 THEN
-Result := ''
-ELSE
-FOR I := 0 TO strLst.Count - 1 DO // Iterate
-IF i <> strLst.Count - 1 THEN
-Result := Result + strLst[i] + ' | '
-ELSE
-Result := Result + strLst[i] // for
-;
-FINALLY
-strLst.Destroy;
-END;
-END;
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i] // for
+        ;
+    Finally
+        strLst.Destroy;
+    End;
+End;
 
 
-FUNCTION GetListboxStyleString(stdStyle: TWxlbxStyleSet): STRING;
-VAR
-I: INTEGER;
-strLst: TStringList;
-BEGIN
-strLst := TStringList.Create;
+Function GetListboxStyleString(stdStyle: TWxlbxStyleSet): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
+    strLst := TStringList.Create;
 
-TRY
+    Try
         // if wxLB_SINGLE  in stdStyle then
         //   strLst.add('wxLB_SINGLE');
 
@@ -1861,107 +1860,107 @@ TRY
         // if wxLB_EXTENDED   in stdStyle then
         //   strLst.add('wxLB_EXTENDED');
 
-IF wxLB_HSCROLL IN stdStyle THEN
-strLst.add('wxLB_HSCROLL');
+        If wxLB_HSCROLL In stdStyle Then
+            strLst.add('wxLB_HSCROLL');
 
-IF wxLB_ALWAYS_SB IN stdStyle THEN
-strLst.add('wxLB_ALWAYS_SB');
+        If wxLB_ALWAYS_SB In stdStyle Then
+            strLst.add('wxLB_ALWAYS_SB');
 
-IF wxLB_NEEDED_SB IN stdStyle THEN
-strLst.add('wxLB_NEEDED_SB');
+        If wxLB_NEEDED_SB In stdStyle Then
+            strLst.add('wxLB_NEEDED_SB');
 
-IF wxLB_SORT IN stdStyle THEN
-strLst.add('wxLB_SORT');
+        If wxLB_SORT In stdStyle Then
+            strLst.add('wxLB_SORT');
 
-IF strLst.Count = 0 THEN
-Result := ''
-ELSE
-FOR I := 0 TO strLst.Count - 1 DO // Iterate
-IF i <> strLst.Count - 1 THEN
-Result := Result + strLst[i] + ' | '
-ELSE
-Result := Result + strLst[i] // for
-;
-FINALLY
-strLst.Destroy;
-END;
-END;
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i] // for
+        ;
+    Finally
+        strLst.Destroy;
+    End;
+End;
 
-FUNCTION GetGaugeStyleString(stdStyle: TWxgagStyleSet): STRING;
-VAR
-I: INTEGER;
-strLst: TStringList;
-BEGIN
+Function GetGaugeStyleString(stdStyle: TWxgagStyleSet): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
 
-strLst := TStringList.Create;
+    strLst := TStringList.Create;
 
-TRY
-IF wxGA_SMOOTH IN stdStyle THEN
-strLst.add('wxGA_SMOOTH');
+    Try
+        If wxGA_SMOOTH In stdStyle Then
+            strLst.add('wxGA_SMOOTH');
 
-IF wxGA_MARQUEE IN stdStyle THEN
-strLst.add('wxGA_MARQUEE');
+        If wxGA_MARQUEE In stdStyle Then
+            strLst.add('wxGA_MARQUEE');
 
-IF strLst.Count = 0 THEN
-Result := ''
-ELSE
-FOR I := 0 TO strLst.Count - 1 DO // Iterate
-IF i <> strLst.Count - 1 THEN
-Result := Result + strLst[i] + ' | '
-ELSE
-Result := Result + strLst[i] // for
-;
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i] // for
+        ;
         //sendDebug(Result);
 
-FINALLY
-strLst.Destroy;
-END;
+    Finally
+        strLst.Destroy;
+    End;
 
-END;
+End;
 
-FUNCTION GetScrollbarStyleString(stdStyle: TWxsbrStyleSet): STRING;
-VAR
-I: INTEGER;
-strLst: TStringList;
-BEGIN
+Function GetScrollbarStyleString(stdStyle: TWxsbrStyleSet): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
 
-strLst := TStringList.Create;
+    strLst := TStringList.Create;
 
-TRY
-IF wxST_SIZEGRIP IN stdStyle THEN
-strLst.add('wxST_SIZEGRIP');
+    Try
+        If wxST_SIZEGRIP In stdStyle Then
+            strLst.add('wxST_SIZEGRIP');
 
-IF strLst.Count = 0 THEN
-Result := ''
-ELSE
-FOR I := 0 TO strLst.Count - 1 DO // Iterate
-IF i <> strLst.Count - 1 THEN
-Result := Result + strLst[i] + ' | '
-ELSE
-Result := Result + strLst[i] // for
-;
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i] // for
+        ;
         //sendDebug(Result);
 
-FINALLY
-strLst.Destroy;
-END;
+    Finally
+        strLst.Destroy;
+    End;
 
-END;
+End;
 
-FUNCTION GetSpinButtonStyleString(stdStyle: TWxsbtnStyleSet): STRING;
-VAR
-I: INTEGER;
-strLst: TStringList;
-BEGIN
+Function GetSpinButtonStyleString(stdStyle: TWxsbtnStyleSet): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
 
-strLst := TStringList.Create;
+    strLst := TStringList.Create;
 
-TRY
-IF wxSP_ARROW_KEYS IN stdStyle THEN
-strLst.add('wxSP_ARROW_KEYS');
+    Try
+        If wxSP_ARROW_KEYS In stdStyle Then
+            strLst.add('wxSP_ARROW_KEYS');
 
-IF wxSP_WRAP IN stdStyle THEN
-strLst.add('wxSP_WRAP');
+        If wxSP_WRAP In stdStyle Then
+            strLst.add('wxSP_WRAP');
 
         { if wxSP_HORIZONTAL in stdStyle then
        strLst.add('wxSP_HORIZONTAL');
@@ -1969,188 +1968,188 @@ strLst.add('wxSP_WRAP');
      if wxSP_VERTICAL in stdStyle then
        strLst.add('wxSP_VERTICAL');
      }
-IF strLst.Count = 0 THEN
-Result := ''
-ELSE
-FOR I := 0 TO strLst.Count - 1 DO // Iterate
-IF i <> strLst.Count - 1 THEN
-Result := Result + strLst[i] + ' | '
-ELSE
-Result := Result + strLst[i] // for
-;
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i] // for
+        ;
         //sendDebug(Result);
-FINALLY
-strLst.Destroy;
-END;
+    Finally
+        strLst.Destroy;
+    End;
 
-END;
+End;
 
-FUNCTION GetHyperLnkStyleString(stdStyle: TWxHyperLnkStyleSet): STRING;
-VAR
-I: INTEGER;
-strLst: TStringList;
-BEGIN
-strLst := TStringList.Create;
-TRY
-IF wxHL_ALIGN_LEFT IN stdStyle THEN
-strLst.add('wxHL_ALIGN_LEFT');
+Function GetHyperLnkStyleString(stdStyle: TWxHyperLnkStyleSet): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
+    strLst := TStringList.Create;
+    Try
+        If wxHL_ALIGN_LEFT In stdStyle Then
+            strLst.add('wxHL_ALIGN_LEFT');
 
-IF wxHL_ALIGN_RIGHT IN stdStyle THEN
-strLst.add('wxHL_ALIGN_RIGHT');
+        If wxHL_ALIGN_RIGHT In stdStyle Then
+            strLst.add('wxHL_ALIGN_RIGHT');
 
-IF wxHL_ALIGN_CENTRE IN stdStyle THEN
-strLst.add('wxHL_ALIGN_CENTRE');
+        If wxHL_ALIGN_CENTRE In stdStyle Then
+            strLst.add('wxHL_ALIGN_CENTRE');
 
-IF wxHL_CONTEXTMENU IN stdStyle THEN
-strLst.add('wxHL_CONTEXTMENU');
+        If wxHL_CONTEXTMENU In stdStyle Then
+            strLst.add('wxHL_CONTEXTMENU');
 
-IF wxHL_DEFAULT_STYLE IN stdStyle THEN
-strLst.add('wxHL_DEFAULT_STYLE');
+        If wxHL_DEFAULT_STYLE In stdStyle Then
+            strLst.add('wxHL_DEFAULT_STYLE');
 
-IF strLst.Count = 0 THEN
-Result := ''
-ELSE
-FOR I := 0 TO strLst.Count - 1 DO // Iterate
-IF i <> strLst.Count - 1 THEN
-Result := Result + strLst[i] + ' | '
-ELSE
-Result := Result + strLst[i] // for
-;
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i] // for
+        ;
         //sendDebug(Result);
-FINALLY
-strLst.Destroy;
-END;
-END;
+    Finally
+        strLst.Destroy;
+    End;
+End;
 
-FUNCTION GetSliderStyleString(stdStyle: TWxsldrStyleSet): STRING;
-VAR
-I: INTEGER;
-strLst: TStringList;
-BEGIN
+Function GetSliderStyleString(stdStyle: TWxsldrStyleSet): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
 
-strLst := TStringList.Create;
+    strLst := TStringList.Create;
 
-TRY
-IF wxSL_AUTOTICKS IN stdStyle THEN
-strLst.add('wxSL_AUTOTICKS');
+    Try
+        If wxSL_AUTOTICKS In stdStyle Then
+            strLst.add('wxSL_AUTOTICKS');
 
-IF wxSL_LABELS IN stdStyle THEN
-strLst.add('wxSL_LABELS');
+        If wxSL_LABELS In stdStyle Then
+            strLst.add('wxSL_LABELS');
 
-IF wxSL_LEFT IN stdStyle THEN
-strLst.add('wxSL_LEFT');
+        If wxSL_LEFT In stdStyle Then
+            strLst.add('wxSL_LEFT');
 
-IF wxSL_RIGHT IN stdStyle THEN
-strLst.add('wxSL_RIGHT');
+        If wxSL_RIGHT In stdStyle Then
+            strLst.add('wxSL_RIGHT');
 
-IF wxSL_TOP IN stdStyle THEN
-strLst.add('wxSL_TOP');
+        If wxSL_TOP In stdStyle Then
+            strLst.add('wxSL_TOP');
 
-IF wxSL_BOTTOM IN stdStyle THEN
-strLst.add('wxSL_BOTTOM');
+        If wxSL_BOTTOM In stdStyle Then
+            strLst.add('wxSL_BOTTOM');
 
-IF wxSL_BOTH IN stdStyle THEN
-strLst.add('wxSL_BOTH');
+        If wxSL_BOTH In stdStyle Then
+            strLst.add('wxSL_BOTH');
 
-IF strLst.Count = 0 THEN
-Result := ''
-ELSE
-FOR I := 0 TO strLst.Count - 1 DO // Iterate
-IF i <> strLst.Count - 1 THEN
-Result := Result + strLst[i] + ' | '
-ELSE
-Result := Result + strLst[i] // for
-;
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i] // for
+        ;
         //sendDebug(Result);
-FINALLY
-strLst.Destroy;
-END;
-END;
+    Finally
+        strLst.Destroy;
+    End;
+End;
 
-FUNCTION GetPickCalStyleString(stdStyle: TWxPickCalStyleSet): STRING;
-VAR
-I: INTEGER;
-strLst: TStringList;
-BEGIN
+Function GetPickCalStyleString(stdStyle: TWxPickCalStyleSet): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
 
-strLst := TStringList.Create;
+    strLst := TStringList.Create;
 
-TRY
-IF wxDP_SPIN IN stdStyle THEN
-strLst.add('wxDP_SPIN');
+    Try
+        If wxDP_SPIN In stdStyle Then
+            strLst.add('wxDP_SPIN');
 
-IF wxDP_DROPDOWN IN stdStyle THEN
-strLst.add('wxDP_DROPDOWN');
+        If wxDP_DROPDOWN In stdStyle Then
+            strLst.add('wxDP_DROPDOWN');
 
-IF wxDP_DEFAULT IN stdStyle THEN
-strLst.add('wxDP_DEFAULT');
+        If wxDP_DEFAULT In stdStyle Then
+            strLst.add('wxDP_DEFAULT');
 
-IF wxDP_ALLOWNONE IN stdStyle THEN
-strLst.add('wxDP_ALLOWNONE');
+        If wxDP_ALLOWNONE In stdStyle Then
+            strLst.add('wxDP_ALLOWNONE');
 
-IF wxDP_SHOWCENTURY IN stdStyle THEN
-strLst.add('wxDP_SHOWCENTURY');
+        If wxDP_SHOWCENTURY In stdStyle Then
+            strLst.add('wxDP_SHOWCENTURY');
 
-IF strLst.Count = 0 THEN
-Result := ''
-ELSE
-FOR I := 0 TO strLst.Count - 1 DO // Iterate
-IF i <> strLst.Count - 1 THEN
-Result := Result + strLst[i] + ' | '
-ELSE
-Result := Result + strLst[i] // for
-;
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i] // for
+        ;
         //sendDebug(Result);
-FINALLY
-strLst.Destroy;
-END;
-END;
+    Finally
+        strLst.Destroy;
+    End;
+End;
 
-FUNCTION GetCalendarCtrlStyleString(stdStyle: TWxcalctrlStyleSet): STRING;
-VAR
-I: INTEGER;
-strLst: TStringList;
-BEGIN
+Function GetCalendarCtrlStyleString(stdStyle: TWxcalctrlStyleSet): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
 
-strLst := TStringList.Create;
+    strLst := TStringList.Create;
 
-TRY
-IF wxCAL_SUNDAY_FIRST IN stdStyle THEN
-strLst.add('wxCAL_SUNDAY_FIRST');
+    Try
+        If wxCAL_SUNDAY_FIRST In stdStyle Then
+            strLst.add('wxCAL_SUNDAY_FIRST');
 
-IF wxCAL_MONDAY_FIRST IN stdStyle THEN
-strLst.add('wxCAL_MONDAY_FIRST');
+        If wxCAL_MONDAY_FIRST In stdStyle Then
+            strLst.add('wxCAL_MONDAY_FIRST');
 
-IF wxCAL_SHOW_HOLIDAYS IN stdStyle THEN
-strLst.add('wxCAL_SHOW_HOLIDAYS');
+        If wxCAL_SHOW_HOLIDAYS In stdStyle Then
+            strLst.add('wxCAL_SHOW_HOLIDAYS');
 
-IF wxCAL_NO_YEAR_CHANGE IN stdStyle THEN
-strLst.add('wxCAL_NO_YEAR_CHANGE');
+        If wxCAL_NO_YEAR_CHANGE In stdStyle Then
+            strLst.add('wxCAL_NO_YEAR_CHANGE');
 
-IF wxCAL_NO_MONTH_CHANGE IN stdStyle THEN
-strLst.add('wxCAL_NO_MONTH_CHANGE');
+        If wxCAL_NO_MONTH_CHANGE In stdStyle Then
+            strLst.add('wxCAL_NO_MONTH_CHANGE');
 
-IF wxCAL_SHOW_SURROUNDING_WEEKS IN stdStyle THEN
-strLst.add('wxCAL_SHOW_SURROUNDING_WEEKS');
+        If wxCAL_SHOW_SURROUNDING_WEEKS In stdStyle Then
+            strLst.add('wxCAL_SHOW_SURROUNDING_WEEKS');
 
-IF wxCAL_SEQUENTIAL_MONTH_SELECTION IN stdStyle THEN
-strLst.add('wxCAL_SEQUENTIAL_MONTH_SELECTION');
+        If wxCAL_SEQUENTIAL_MONTH_SELECTION In stdStyle Then
+            strLst.add('wxCAL_SEQUENTIAL_MONTH_SELECTION');
 
-IF strLst.Count = 0 THEN
-Result := ''
-ELSE
-FOR I := 0 TO strLst.Count - 1 DO // Iterate
-IF i <> strLst.Count - 1 THEN
-Result := Result + strLst[i] + ' | '
-ELSE
-Result := Result + strLst[i] // for
-;
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i] // for
+        ;
         //sendDebug(Result);
-FINALLY
-strLst.Destroy;
-END;
+    Finally
+        strLst.Destroy;
+    End;
 
-END;
+End;
 
 {
 function GetChoicebookStyleString(stdStyle: TWxchbxStyleSet): string;
@@ -2227,98 +2226,98 @@ begin
 end;
 }
 
-FUNCTION GetNotebookStyleString(stdStyle: TWxnbxStyleSet): STRING;
-VAR
-I: INTEGER;
-strLst: TStringList;
-BEGIN
+Function GetNotebookStyleString(stdStyle: TWxnbxStyleSet): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
 
-strLst := TStringList.Create;
+    strLst := TStringList.Create;
 
-TRY
+    Try
 
-IF wxNB_FIXEDWIDTH IN stdStyle THEN
-strLst.add('wxNB_FIXEDWIDTH');
+        If wxNB_FIXEDWIDTH In stdStyle Then
+            strLst.add('wxNB_FIXEDWIDTH');
 
-IF wxNB_MULTILINE IN stdStyle THEN
-strLst.add('wxNB_MULTILINE');
+        If wxNB_MULTILINE In stdStyle Then
+            strLst.add('wxNB_MULTILINE');
 
-IF wxNB_NOPAGETHEME IN stdStyle THEN
-strLst.add('wxNB_NOPAGETHEME');
+        If wxNB_NOPAGETHEME In stdStyle Then
+            strLst.add('wxNB_NOPAGETHEME');
 
-IF wxNB_FLAT IN stdStyle THEN
-strLst.add('wxNB_FLAT');
+        If wxNB_FLAT In stdStyle Then
+            strLst.add('wxNB_FLAT');
 
-IF strLst.Count = 0 THEN
-Result := ''
-ELSE
-FOR I := 0 TO strLst.Count - 1 DO // Iterate
-IF i <> strLst.Count - 1 THEN
-Result := Result + strLst[i] + ' | '
-ELSE
-Result := Result + strLst[i] // for
-;
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i] // for
+        ;
         //sendDebug(Result);
 
-FINALLY
-strLst.Destroy;
-END;
+    Finally
+        strLst.Destroy;
+    End;
 
-END;
+End;
 
-FUNCTION GetAuiNotebookStyleString(stdStyle: TWxAuinbxStyleSet): STRING;
-VAR
-I: INTEGER;
-strLst: TStringList;
-BEGIN
+Function GetAuiNotebookStyleString(stdStyle: TWxAuinbxStyleSet): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
 
-strLst := TStringList.Create;
+    strLst := TStringList.Create;
 
-TRY
+    Try
 
-IF wxAUI_NB_TAB_SPLIT IN stdStyle THEN
-strLst.add('wxAUI_NB_TAB_SPLIT');
+        If wxAUI_NB_TAB_SPLIT In stdStyle Then
+            strLst.add('wxAUI_NB_TAB_SPLIT');
 
-IF wxAUI_NB_TAB_MOVE IN stdStyle THEN
-strLst.add('wxAUI_NB_TAB_MOVE');
+        If wxAUI_NB_TAB_MOVE In stdStyle Then
+            strLst.add('wxAUI_NB_TAB_MOVE');
 
-IF wxAUI_NB_TAB_EXTERNAL_MOVE IN stdStyle THEN
-strLst.add('wxAUI_NB_TAB_EXTERNAL_MOVE');
+        If wxAUI_NB_TAB_EXTERNAL_MOVE In stdStyle Then
+            strLst.add('wxAUI_NB_TAB_EXTERNAL_MOVE');
 
-IF wxAUI_NB_TAB_FIXED_WIDTH IN stdStyle THEN
-strLst.add('wxAUI_NB_TAB_FIXED_WIDTH');
+        If wxAUI_NB_TAB_FIXED_WIDTH In stdStyle Then
+            strLst.add('wxAUI_NB_TAB_FIXED_WIDTH');
 
-IF wxAUI_NB_SCROLL_BUTTONS IN stdStyle THEN
-strLst.add('wxAUI_NB_SCROLL_BUTTONS');
+        If wxAUI_NB_SCROLL_BUTTONS In stdStyle Then
+            strLst.add('wxAUI_NB_SCROLL_BUTTONS');
 
-IF wxAUI_NB_WINDOWLIST_BUTTON IN stdStyle THEN
-strLst.add('wxAUI_NB_WINDOWLIST_BUTTON');
+        If wxAUI_NB_WINDOWLIST_BUTTON In stdStyle Then
+            strLst.add('wxAUI_NB_WINDOWLIST_BUTTON');
 
-IF wxAUI_NB_CLOSE_BUTTON IN stdStyle THEN
-strLst.add('wxAUI_NB_CLOSE_BUTTON');
+        If wxAUI_NB_CLOSE_BUTTON In stdStyle Then
+            strLst.add('wxAUI_NB_CLOSE_BUTTON');
 
-IF wxAUI_NB_CLOSE_ON_ACTIVE_TAB IN stdStyle THEN
-strLst.add('wxAUI_NB_CLOSE_ON_ACTIVE_TAB');
+        If wxAUI_NB_CLOSE_ON_ACTIVE_TAB In stdStyle Then
+            strLst.add('wxAUI_NB_CLOSE_ON_ACTIVE_TAB');
 
-IF wxAUI_NB_CLOSE_ON_ALL_TABS IN stdStyle THEN
-strLst.add('wxAUI_NB_CLOSE_ON_ALL_TABS');
+        If wxAUI_NB_CLOSE_ON_ALL_TABS In stdStyle Then
+            strLst.add('wxAUI_NB_CLOSE_ON_ALL_TABS');
 
-IF strLst.Count = 0 THEN
-Result := ''
-ELSE
-FOR I := 0 TO strLst.Count - 1 DO // Iterate
-IF i <> strLst.Count - 1 THEN
-Result := Result + strLst[i] + ' | '
-ELSE
-Result := Result + strLst[i] // for
-;
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i] // for
+        ;
         //sendDebug(Result);
 
-FINALLY
-strLst.Destroy;
-END;
+    Finally
+        strLst.Destroy;
+    End;
 
-END;
+End;
 
 {
 function GetToolbookStyleString(stdStyle: TWxtlbxStyleSet): string;
@@ -2395,1287 +2394,1287 @@ begin
 end;
 }
 
-FUNCTION GetRadioBoxStyleString(stdStyle: TWxrbxStyleSet): STRING;
-VAR
-I: INTEGER;
-strLst: TStringList;
-BEGIN
+Function GetRadioBoxStyleString(stdStyle: TWxrbxStyleSet): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
 
-strLst := TStringList.Create;
+    strLst := TStringList.Create;
 
-TRY
-IF wxRA_SPECIFY_ROWS IN stdStyle THEN
-strLst.add('wxRA_SPECIFY_ROWS');
+    Try
+        If wxRA_SPECIFY_ROWS In stdStyle Then
+            strLst.add('wxRA_SPECIFY_ROWS');
 
-IF wxRA_SPECIFY_COLS IN stdStyle THEN
-strLst.add('wxRA_SPECIFY_COLS');
+        If wxRA_SPECIFY_COLS In stdStyle Then
+            strLst.add('wxRA_SPECIFY_COLS');
 
-IF strLst.Count = 0 THEN
-Result := ''
-ELSE
-FOR I := 0 TO strLst.Count - 1 DO // Iterate
-IF i <> strLst.Count - 1 THEN
-Result := Result + strLst[i] + ' | '
-ELSE
-Result := Result + strLst[i] // for
-;
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i] // for
+        ;
         //sendDebug(Result);
-FINALLY
-strLst.Destroy;
-END;
-END;
+    Finally
+        strLst.Destroy;
+    End;
+End;
 
-FUNCTION GetStatusBarStyleString(stdStyle: TWxsbrStyleSet): STRING;
-VAR
-I: INTEGER;
-strLst: TStringList;
-BEGIN
+Function GetStatusBarStyleString(stdStyle: TWxsbrStyleSet): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
 
-strLst := TStringList.Create;
+    strLst := TStringList.Create;
 
-TRY
-IF wxST_SIZEGRIP IN stdStyle THEN
-strLst.add('wxST_SIZEGRIP');
+    Try
+        If wxST_SIZEGRIP In stdStyle Then
+            strLst.add('wxST_SIZEGRIP');
 
-IF strLst.Count = 0 THEN
-Result := ''
-ELSE
-FOR I := 0 TO strLst.Count - 1 DO // Iterate
-IF i <> strLst.Count - 1 THEN
-Result := Result + strLst[i] + ' | '
-ELSE
-Result := Result + strLst[i] // for
-;
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i] // for
+        ;
         //sendDebug(Result);
-FINALLY
-strLst.Destroy;
-END;
-END;
+    Finally
+        strLst.Destroy;
+    End;
+End;
 
-FUNCTION GetToolBarStyleString(stdStyle: TWxtbrStyleSet): STRING;
-VAR
-I: INTEGER;
-strLst: TStringList;
-BEGIN
-strLst := TStringList.Create;
+Function GetToolBarStyleString(stdStyle: TWxtbrStyleSet): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
+    strLst := TStringList.Create;
 
-TRY
-IF wxTB_FLAT IN stdStyle THEN
-strLst.add('wxTB_FLAT');
+    Try
+        If wxTB_FLAT In stdStyle Then
+            strLst.add('wxTB_FLAT');
 
-IF wxTB_DOCKABLE IN stdStyle THEN
-strLst.add('wxTB_DOCKABLE');
+        If wxTB_DOCKABLE In stdStyle Then
+            strLst.add('wxTB_DOCKABLE');
 
-IF wxTB_HORIZONTAL IN stdStyle THEN
-strLst.add('wxTB_HORIZONTAL');
+        If wxTB_HORIZONTAL In stdStyle Then
+            strLst.add('wxTB_HORIZONTAL');
 
-IF wxTB_VERTICAL IN stdStyle THEN
-strLst.add('wxTB_VERTICAL');
+        If wxTB_VERTICAL In stdStyle Then
+            strLst.add('wxTB_VERTICAL');
 
-IF wxTB_TEXT IN stdStyle THEN
-strLst.add('wxTB_TEXT');
+        If wxTB_TEXT In stdStyle Then
+            strLst.add('wxTB_TEXT');
 
-IF wxTB_NOICONS IN stdStyle THEN
-strLst.add('wxTB_NOICONS');
+        If wxTB_NOICONS In stdStyle Then
+            strLst.add('wxTB_NOICONS');
 
-IF wxTB_NODIVIDER IN stdStyle THEN
-strLst.add('wxTB_NODIVIDER');
+        If wxTB_NODIVIDER In stdStyle Then
+            strLst.add('wxTB_NODIVIDER');
 
-IF wxTB_NOALIGN IN stdStyle THEN
-strLst.add('wxTB_NOALIGN');
+        If wxTB_NOALIGN In stdStyle Then
+            strLst.add('wxTB_NOALIGN');
 
-IF wxTB_HORZ_LAYOUT IN stdStyle THEN
-strLst.add('wxTB_HORZ_LAYOUT');
+        If wxTB_HORZ_LAYOUT In stdStyle Then
+            strLst.add('wxTB_HORZ_LAYOUT');
 
-IF wxTB_HORZ_TEXT IN stdStyle THEN
-strLst.add('wxTB_HORZ_TEXT');
+        If wxTB_HORZ_TEXT In stdStyle Then
+            strLst.add('wxTB_HORZ_TEXT');
 
-IF strLst.Count = 0 THEN
-Result := ''
-ELSE
-FOR I := 0 TO strLst.Count - 1 DO // Iterate
-IF i <> strLst.Count - 1 THEN
-Result := Result + strLst[i] + ' | '
-ELSE
-Result := Result + strLst[i] // for
-;
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i] // for
+        ;
         //sendDebug(Result);
-FINALLY
-strLst.Destroy;
-END;
-END;
+    Finally
+        strLst.Destroy;
+    End;
+End;
 
-FUNCTION GetScrolledWindowStyleString(stdStyle: TWxScrWinStyleSet): STRING;
-VAR
-I: INTEGER;
-strLst: TStringList;
-BEGIN
-strLst := TStringList.Create;
+Function GetScrolledWindowStyleString(stdStyle: TWxScrWinStyleSet): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
+    strLst := TStringList.Create;
 
-TRY
-IF wxRETAINED IN stdStyle THEN
-strLst.add('wxRETAINED');
+    Try
+        If wxRETAINED In stdStyle Then
+            strLst.add('wxRETAINED');
 
-IF strLst.Count = 0 THEN
-Result := ''
-ELSE
-FOR I := 0 TO strLst.Count - 1 DO // Iterate
-IF i <> strLst.Count - 1 THEN
-Result := Result + strLst[i] + ' | '
-ELSE
-Result := Result + strLst[i] // for
-;
-        //sendDebug(Result);
-
-FINALLY
-strLst.Destroy;
-END;
-
-END;
-
-FUNCTION GetHtmlWindowStyleString(stdStyle: TWxHtmlWinStyleSet): STRING;
-VAR
-I: INTEGER;
-strLst: TStringList;
-BEGIN
-
-strLst := TStringList.Create;
-
-TRY
-
-IF wxHW_SCROLLBAR_NEVER IN stdStyle THEN
-strLst.add('wxHW_SCROLLBAR_NEVER');
-
-IF wxHW_SCROLLBAR_AUTO IN stdStyle THEN
-strLst.add('wxHW_SCROLLBAR_AUTO');
-
-IF wxHW_NO_SELECTION IN stdStyle THEN
-strLst.add('wxHW_NO_SELECTION ');
-
-IF strLst.Count = 0 THEN
-Result := ''
-ELSE
-FOR I := 0 TO strLst.Count - 1 DO // Iterate
-IF i <> strLst.Count - 1 THEN
-Result := Result + strLst[i] + ' | '
-ELSE
-Result := Result + strLst[i] // for
-;
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i] // for
+        ;
         //sendDebug(Result);
 
-FINALLY
-strLst.Destroy;
-END;
+    Finally
+        strLst.Destroy;
+    End;
 
-END;
+End;
 
-FUNCTION GetSplitterWindowStyleString(stdStyle:
-TWxSplitterWinStyleSet): STRING;
-VAR
-I: INTEGER;
-strLst: TStringList;
-BEGIN
+Function GetHtmlWindowStyleString(stdStyle: TWxHtmlWinStyleSet): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
 
-strLst := TStringList.Create;
+    strLst := TStringList.Create;
 
-TRY
-IF wxSP_3D IN stdStyle THEN
-strLst.add('wxSP_3D');
+    Try
 
-IF wxSP_3DSASH IN stdStyle THEN
-strLst.add('wxSP_3DSASH');
+        If wxHW_SCROLLBAR_NEVER In stdStyle Then
+            strLst.add('wxHW_SCROLLBAR_NEVER');
 
-IF wxSP_3DBORDER IN stdStyle THEN
-strLst.add('wxSP_3DBORDER ');
+        If wxHW_SCROLLBAR_AUTO In stdStyle Then
+            strLst.add('wxHW_SCROLLBAR_AUTO');
 
-IF wxSP_BORDER IN stdStyle THEN
-strLst.add('wxSP_BORDER');
+        If wxHW_NO_SELECTION In stdStyle Then
+            strLst.add('wxHW_NO_SELECTION ');
 
-IF wxSP_NOBORDER IN stdStyle THEN
-strLst.add('wxSP_NOBORDER');
-
-IF wxSP_NO_XP_THEME IN stdStyle THEN
-strLst.add('wxSP_NO_XP_THEME ');
-
-IF wxSP_PERMIT_UNSPLIT IN stdStyle THEN
-strLst.add('wxSP_PERMIT_UNSPLIT');
-
-IF wxSP_LIVE_UPDATE IN stdStyle THEN
-strLst.add('wxSP_LIVE_UPDATE');
-
-IF strLst.Count = 0 THEN
-Result := ''
-ELSE
-FOR I := 0 TO strLst.Count - 1 DO // Iterate
-IF i <> strLst.Count - 1 THEN
-Result := Result + strLst[i] + ' | '
-ELSE
-Result := Result + strLst[i] // for
-;
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i] // for
+        ;
         //sendDebug(Result);
 
-FINALLY
-strLst.Destroy;
-END;
+    Finally
+        strLst.Destroy;
+    End;
 
-END;
+End;
 
-FUNCTION GetFileDialogStyleString(stdStyle: TWxFileDialogStyleSet): STRING;
-VAR
-I: INTEGER;
-strLst: TStringList;
-BEGIN
+Function GetSplitterWindowStyleString(stdStyle:
+    TWxSplitterWinStyleSet): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
 
-strLst := TStringList.Create;
+    strLst := TStringList.Create;
 
-TRY
-IF wxHIDE_READONLY IN stdStyle THEN
-strLst.add('wxFD_HIDE_READONLY');
+    Try
+        If wxSP_3D In stdStyle Then
+            strLst.add('wxSP_3D');
 
-IF wxOVERWRITE_PROMPT IN stdStyle THEN
-strLst.add('wxFD_OVERWRITE_PROMPT');
+        If wxSP_3DSASH In stdStyle Then
+            strLst.add('wxSP_3DSASH');
 
-IF wxFILE_MUST_EXIST IN stdStyle THEN
-strLst.add('wxFD_FILE_MUST_EXIST');
+        If wxSP_3DBORDER In stdStyle Then
+            strLst.add('wxSP_3DBORDER ');
 
-IF wxMULTIPLE IN stdStyle THEN
-strLst.add('wxFD_MULTIPLE');
+        If wxSP_BORDER In stdStyle Then
+            strLst.add('wxSP_BORDER');
 
-IF wxCHANGE_DIR IN stdStyle THEN
-strLst.add('wxFD_CHANGE_DIR');
+        If wxSP_NOBORDER In stdStyle Then
+            strLst.add('wxSP_NOBORDER');
 
-IF strLst.Count = 0 THEN
-Result := ''
-ELSE
-BEGIN
-Result := ' | ';
-FOR I := 0 TO strLst.Count - 1 DO // Iterate
-IF i <> strLst.Count - 1 THEN
-Result := Result + strLst[i] + ' | '
-ELSE
-Result := Result + strLst[i]; // for
-END;
-        //sendDebug(Result);
-FINALLY
-strLst.Destroy;
-END;
+        If wxSP_NO_XP_THEME In stdStyle Then
+            strLst.add('wxSP_NO_XP_THEME ');
 
-END;
+        If wxSP_PERMIT_UNSPLIT In stdStyle Then
+            strLst.add('wxSP_PERMIT_UNSPLIT');
 
-FUNCTION GetDirDialogStyleString(stdStyle: TWxDirDialogStyleSet): STRING;
-VAR
-I: INTEGER;
-strLst: TStringList;
-BEGIN
+        If wxSP_LIVE_UPDATE In stdStyle Then
+            strLst.add('wxSP_LIVE_UPDATE');
 
-strLst := TStringList.Create;
-
-TRY
-IF wxDD_NEW_DIR_BUTTON IN stdStyle THEN
-strLst.add('wxDD_NEW_DIR_BUTTON');
-
-IF strLst.Count = 0 THEN
-Result := ''
-ELSE
-BEGIN
-Result := ', ';
-FOR I := 0 TO strLst.Count - 1 DO // Iterate
-IF i <> strLst.Count - 1 THEN
-Result := Result + strLst[i] + ' | '
-ELSE
-Result := Result + strLst[i]; // for
-END;
-        //sendDebug(Result);
-FINALLY
-strLst.Destroy;
-END;
-
-END;
-
-FUNCTION GetProgressDialogStyleString(stdStyle:
-TWxProgressDialogStyleSet): STRING;
-VAR
-I: INTEGER;
-strLst: TStringList;
-BEGIN
-
-strLst := TStringList.Create;
-
-TRY
-IF wxPD_APP_MODAL IN stdStyle THEN
-strLst.add('wxPD_APP_MODAL');
-
-IF wxPD_SMOOTH IN stdStyle THEN
-strLst.add('wxPD_SMOOTH');
-
-IF wxPD_CAN_SKIP IN stdStyle THEN
-strLst.add('wxPD_CAN_SKIP');
-
-IF wxPD_AUTO_HIDE IN stdStyle THEN
-strLst.add('wxPD_AUTO_HIDE');
-
-IF wxPD_CAN_ABORT IN stdStyle THEN
-strLst.add('wxPD_CAN_ABORT ');
-
-IF wxPD_ELAPSED_TIME IN stdStyle THEN
-strLst.add('wxPD_ELAPSED_TIME ');
-
-IF wxPD_ESTIMATED_TIME IN stdStyle THEN
-strLst.add('wxPD_ESTIMATED_TIME');
-
-IF wxPD_REMAINING_TIME IN stdStyle THEN
-strLst.add('wxPD_REMAINING_TIME ');
-
-IF strLst.Count = 0 THEN
-Result := ''
-ELSE
-BEGIN
-Result := ', ';
-FOR I := 0 TO strLst.Count - 1 DO // Iterate
-IF i <> strLst.Count - 1 THEN
-Result := Result + strLst[i] + ' | '
-ELSE
-Result := Result + strLst[i]; // for
-END;
-        //sendDebug(Result);
-FINALLY
-strLst.Destroy;
-END;
-
-END;
-
-FUNCTION GetMediaCtrlStyle(mediaStyle: TWxMediaCtrlControl): STRING;
-BEGIN
-IF wxMEDIACTRLPLAYERCONTROLS_NONE = mediaStyle THEN
-Result := 'wxMEDIACTRLPLAYERCONTROLS_NONE';
-
-IF wxMEDIACTRLPLAYERCONTROLS_STEP = mediaStyle THEN
-Result := 'wxMEDIACTRLPLAYERCONTROLS_STEP';
-
-IF wxMEDIACTRLPLAYERCONTROLS_VOLUME = mediaStyle THEN
-Result := 'wxMEDIACTRLPLAYERCONTROLS_VOLUME';
-
-END;
-
-FUNCTION GetMediaCtrlStyleString(mediaStyle: TWxMediaCtrlControls): STRING;
-VAR
-I: INTEGER;
-strLst: TStringList;
-BEGIN
-
-strLst := TStringList.Create;
-
-TRY
-IF wxMEDIACTRLPLAYERCONTROLS_NONE IN mediaStyle THEN
-strLst.add('wxMEDIACTRLPLAYERCONTROLS_NONE');
-
-IF wxMEDIACTRLPLAYERCONTROLS_STEP IN mediaStyle THEN
-strLst.add('wxMEDIACTRLPLAYERCONTROLS_STEP');
-
-IF wxMEDIACTRLPLAYERCONTROLS_VOLUME IN mediaStyle THEN
-strLst.add('wxMEDIACTRLPLAYERCONTROLS_VOLUME');
-
-IF strLst.Count = 0 THEN
-Result := ''
-ELSE
-BEGIN
-Result := ' ';
-FOR I := 0 TO strLst.Count - 1 DO // Iterate
-IF i <> strLst.Count - 1 THEN
-Result := Result + strLst[i] + ' | '
-ELSE
-Result := Result + strLst[i]; // for
-END;
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i] // for
+        ;
         //sendDebug(Result);
 
-FINALLY
-strLst.Destroy;
-END;
+    Finally
+        strLst.Destroy;
+    End;
 
-END;
+End;
 
-FUNCTION GetMessageDialogStyleString(stdStyle: TWxMessageDialogStyleSet;
-NoEndComma: BOOLEAN): STRING;
-VAR
-I: INTEGER;
-strLst: TStringList;
-BEGIN
+Function GetFileDialogStyleString(stdStyle: TWxFileDialogStyleSet): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
 
-strLst := TStringList.Create;
+    strLst := TStringList.Create;
 
-TRY
-IF wxOK IN stdStyle THEN
-strLst.add('wxOK');
+    Try
+        If wxHIDE_READONLY In stdStyle Then
+            strLst.add('wxFD_HIDE_READONLY');
 
-IF wxCANCEL IN stdStyle THEN
-strLst.add('wxCANCEL');
+        If wxOVERWRITE_PROMPT In stdStyle Then
+            strLst.add('wxFD_OVERWRITE_PROMPT');
 
-IF wxYES_NO IN stdStyle THEN
-strLst.add('wxYES_NO');
+        If wxFILE_MUST_EXIST In stdStyle Then
+            strLst.add('wxFD_FILE_MUST_EXIST');
 
-IF wxYES_DEFAULT IN stdStyle THEN
-strLst.add('wxYES_DEFAULT');
+        If wxMULTIPLE In stdStyle Then
+            strLst.add('wxFD_MULTIPLE');
 
-IF wxNO_DEFAULT IN stdStyle THEN
-strLst.add('wxNO_DEFAULT');
+        If wxCHANGE_DIR In stdStyle Then
+            strLst.add('wxFD_CHANGE_DIR');
 
-IF wxICON_EXCLAMATION IN stdStyle THEN
-strLst.add('wxICON_EXCLAMATION');
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+        Begin
+            Result := ' | ';
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i]; // for
+        End;
+        //sendDebug(Result);
+    Finally
+        strLst.Destroy;
+    End;
 
-IF wxICON_HAND IN stdStyle THEN
-strLst.add('wxICON_HAND');
+End;
 
-IF wxICON_ERROR IN stdStyle THEN
-strLst.add('wxICON_ERROR');
+Function GetDirDialogStyleString(stdStyle: TWxDirDialogStyleSet): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
 
-IF wxICON_QUESTION IN stdStyle THEN
-strLst.add('wxICON_QUESTION');
+    strLst := TStringList.Create;
 
-IF wxICON_INFORMATION IN stdStyle THEN
-strLst.add('wxICON_INFORMATION');
+    Try
+        If wxDD_NEW_DIR_BUTTON In stdStyle Then
+            strLst.add('wxDD_NEW_DIR_BUTTON');
 
-IF wxCENTRE IN stdStyle THEN
-strLst.add('wxCENTRE');
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+        Begin
+            Result := ', ';
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i]; // for
+        End;
+        //sendDebug(Result);
+    Finally
+        strLst.Destroy;
+    End;
 
-IF strLst.Count = 0 THEN
-Result := ''
-ELSE
-BEGIN
-Result := ' ';
-FOR I := 0 TO strLst.Count - 1 DO // Iterate
-IF i <> strLst.Count - 1 THEN
-Result := Result + strLst[i] + ' | '
-ELSE
-Result := Result + strLst[i]; // for
-END;
+End;
+
+Function GetProgressDialogStyleString(stdStyle:
+    TWxProgressDialogStyleSet): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
+
+    strLst := TStringList.Create;
+
+    Try
+        If wxPD_APP_MODAL In stdStyle Then
+            strLst.add('wxPD_APP_MODAL');
+
+        If wxPD_SMOOTH In stdStyle Then
+            strLst.add('wxPD_SMOOTH');
+
+        If wxPD_CAN_SKIP In stdStyle Then
+            strLst.add('wxPD_CAN_SKIP');
+
+        If wxPD_AUTO_HIDE In stdStyle Then
+            strLst.add('wxPD_AUTO_HIDE');
+
+        If wxPD_CAN_ABORT In stdStyle Then
+            strLst.add('wxPD_CAN_ABORT ');
+
+        If wxPD_ELAPSED_TIME In stdStyle Then
+            strLst.add('wxPD_ELAPSED_TIME ');
+
+        If wxPD_ESTIMATED_TIME In stdStyle Then
+            strLst.add('wxPD_ESTIMATED_TIME');
+
+        If wxPD_REMAINING_TIME In stdStyle Then
+            strLst.add('wxPD_REMAINING_TIME ');
+
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+        Begin
+            Result := ', ';
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i]; // for
+        End;
+        //sendDebug(Result);
+    Finally
+        strLst.Destroy;
+    End;
+
+End;
+
+Function GetMediaCtrlStyle(mediaStyle: TWxMediaCtrlControl): String;
+Begin
+    If wxMEDIACTRLPLAYERCONTROLS_NONE = mediaStyle Then
+        Result := 'wxMEDIACTRLPLAYERCONTROLS_NONE';
+
+    If wxMEDIACTRLPLAYERCONTROLS_STEP = mediaStyle Then
+        Result := 'wxMEDIACTRLPLAYERCONTROLS_STEP';
+
+    If wxMEDIACTRLPLAYERCONTROLS_VOLUME = mediaStyle Then
+        Result := 'wxMEDIACTRLPLAYERCONTROLS_VOLUME';
+
+End;
+
+Function GetMediaCtrlStyleString(mediaStyle: TWxMediaCtrlControls): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
+
+    strLst := TStringList.Create;
+
+    Try
+        If wxMEDIACTRLPLAYERCONTROLS_NONE In mediaStyle Then
+            strLst.add('wxMEDIACTRLPLAYERCONTROLS_NONE');
+
+        If wxMEDIACTRLPLAYERCONTROLS_STEP In mediaStyle Then
+            strLst.add('wxMEDIACTRLPLAYERCONTROLS_STEP');
+
+        If wxMEDIACTRLPLAYERCONTROLS_VOLUME In mediaStyle Then
+            strLst.add('wxMEDIACTRLPLAYERCONTROLS_VOLUME');
+
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+        Begin
+            Result := ' ';
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i]; // for
+        End;
         //sendDebug(Result);
 
-FINALLY
-strLst.Destroy;
-END;
+    Finally
+        strLst.Destroy;
+    End;
 
-IF (Result <> '') AND (NoEndComma = FALSE) THEN
-BEGIN
-Result := ',' + Result;
-END;
-END;
+End;
 
-FUNCTION GetFindReplaceFlagString(stdstyle: TWxFindReplaceFlagSet): STRING;
-VAR
-I: INTEGER;
-strLst: TStringList;
-BEGIN
+Function GetMessageDialogStyleString(stdStyle: TWxMessageDialogStyleSet;
+    NoEndComma: Boolean): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
 
-strLst := TStringList.Create;
+    strLst := TStringList.Create;
 
-TRY
+    Try
+        If wxOK In stdStyle Then
+            strLst.add('wxOK');
 
-IF wxFR_DOWN IN stdStyle THEN
-strLst.add('wxFR_DOWN');
+        If wxCANCEL In stdStyle Then
+            strLst.add('wxCANCEL');
 
-IF wxFR_WHOLEWORD IN stdStyle THEN
-strLst.add('wxFR_WHOLEWORD');
+        If wxYES_NO In stdStyle Then
+            strLst.add('wxYES_NO');
 
-IF wxFR_MATCHCASE IN stdStyle THEN
-strLst.add('wxFR_MATCHCASE ');
+        If wxYES_DEFAULT In stdStyle Then
+            strLst.add('wxYES_DEFAULT');
 
-IF strLst.Count = 0 THEN
-Result := ''
-ELSE
-BEGIN
-Result := '';
-FOR I := 0 TO strLst.Count - 1 DO // Iterate
-IF i <> strLst.Count - 1 THEN
-Result := Result + strLst[i] + ' | '
-ELSE
-Result := Result + strLst[i]; // for
-END;
+        If wxNO_DEFAULT In stdStyle Then
+            strLst.add('wxNO_DEFAULT');
+
+        If wxICON_EXCLAMATION In stdStyle Then
+            strLst.add('wxICON_EXCLAMATION');
+
+        If wxICON_HAND In stdStyle Then
+            strLst.add('wxICON_HAND');
+
+        If wxICON_ERROR In stdStyle Then
+            strLst.add('wxICON_ERROR');
+
+        If wxICON_QUESTION In stdStyle Then
+            strLst.add('wxICON_QUESTION');
+
+        If wxICON_INFORMATION In stdStyle Then
+            strLst.add('wxICON_INFORMATION');
+
+        If wxCENTRE In stdStyle Then
+            strLst.add('wxCENTRE');
+
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+        Begin
+            Result := ' ';
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i]; // for
+        End;
         //sendDebug(Result);
 
-FINALLY
-strLst.Destroy;
-END;
+    Finally
+        strLst.Destroy;
+    End;
 
-END;
+    If (Result <> '') And (NoEndComma = False) Then
+    Begin
+        Result := ',' + Result;
+    End;
+End;
 
-FUNCTION GetFindReplaceDialogStyleString(stdstyle:
-TWxFindReplaceDialogStyleSet): STRING;
-VAR
-I: INTEGER;
-strLst: TStringList;
-BEGIN
+Function GetFindReplaceFlagString(stdstyle: TWxFindReplaceFlagSet): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
 
-strLst := TStringList.Create;
+    strLst := TStringList.Create;
 
-TRY
-IF wxFR_REPLACEDIALOG IN stdStyle THEN
-strLst.add('wxFR_REPLACEDIALOG');
+    Try
 
-IF wxFR_NOUPDOWN IN stdStyle THEN
-strLst.add('wxFR_NOUPDOWN ');
+        If wxFR_DOWN In stdStyle Then
+            strLst.add('wxFR_DOWN');
 
-IF wxFR_NOMATCHCASE IN stdStyle THEN
-strLst.add('wxFR_NOMATCHCASE');
+        If wxFR_WHOLEWORD In stdStyle Then
+            strLst.add('wxFR_WHOLEWORD');
 
-IF wxFR_NOWHOLEWORD IN stdStyle THEN
-strLst.add('wxFR_NOWHOLEWORD');
+        If wxFR_MATCHCASE In stdStyle Then
+            strLst.add('wxFR_MATCHCASE ');
 
-IF strLst.Count = 0 THEN
-Result := ''
-ELSE
-BEGIN
-Result := ', ';
-FOR I := 0 TO strLst.Count - 1 DO // Iterate
-IF i <> strLst.Count - 1 THEN
-Result := Result + strLst[i] + ' | '
-ELSE
-Result := Result + strLst[i]; // for
-END;
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+        Begin
+            Result := '';
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i]; // for
+        End;
         //sendDebug(Result);
-FINALLY
-strLst.Destroy;
-END;
 
-END;
+    Finally
+        strLst.Destroy;
+    End;
+
+End;
+
+Function GetFindReplaceDialogStyleString(stdstyle:
+    TWxFindReplaceDialogStyleSet): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
+
+    strLst := TStringList.Create;
+
+    Try
+        If wxFR_REPLACEDIALOG In stdStyle Then
+            strLst.add('wxFR_REPLACEDIALOG');
+
+        If wxFR_NOUPDOWN In stdStyle Then
+            strLst.add('wxFR_NOUPDOWN ');
+
+        If wxFR_NOMATCHCASE In stdStyle Then
+            strLst.add('wxFR_NOMATCHCASE');
+
+        If wxFR_NOWHOLEWORD In stdStyle Then
+            strLst.add('wxFR_NOWHOLEWORD');
+
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+        Begin
+            Result := ', ';
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i]; // for
+        End;
+        //sendDebug(Result);
+    Finally
+        strLst.Destroy;
+    End;
+
+End;
 
 //Here is the end;
 
-FUNCTION GetComboxBoxStyleString(stdStyle: TWxCmbStyleSet): STRING;
-VAR
-I: INTEGER;
-strLst: TStringList;
-BEGIN
+Function GetComboxBoxStyleString(stdStyle: TWxCmbStyleSet): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
 
-strLst := TStringList.Create;
+    strLst := TStringList.Create;
 
-TRY
-IF wxCB_SIMPLE IN stdStyle THEN
-strLst.add('wxCB_SIMPLE');
+    Try
+        If wxCB_SIMPLE In stdStyle Then
+            strLst.add('wxCB_SIMPLE');
 
-IF wxCB_DROPDOWN IN stdStyle THEN
-strLst.add('wxCB_DROPDOWN');
+        If wxCB_DROPDOWN In stdStyle Then
+            strLst.add('wxCB_DROPDOWN');
 
-IF wxCB_READONLY IN stdStyle THEN
-strLst.add('wxCB_READONLY');
+        If wxCB_READONLY In stdStyle Then
+            strLst.add('wxCB_READONLY');
 
-IF wxCB_SORT IN stdStyle THEN
-strLst.add('wxCB_SORT');
+        If wxCB_SORT In stdStyle Then
+            strLst.add('wxCB_SORT');
 
-IF strLst.Count = 0 THEN
-Result := ''
-ELSE
-FOR I := 0 TO strLst.Count - 1 DO // Iterate
-IF i <> strLst.Count - 1 THEN
-Result := Result + strLst[i] + ' | '
-ELSE
-Result := Result + strLst[i] // for
-;
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i] // for
+        ;
         //sendDebug(Result);
-FINALLY
-strLst.Destroy;
-END;
-END;
+    Finally
+        strLst.Destroy;
+    End;
+End;
 
-FUNCTION GetOwnComboxBoxStyleString(stdStyle: TWxOwnCmbStyleSet): STRING;
-VAR
-I: INTEGER;
-strLst: TStringList;
-BEGIN
+Function GetOwnComboxBoxStyleString(stdStyle: TWxOwnCmbStyleSet): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
 
-strLst := TStringList.Create;
+    strLst := TStringList.Create;
 
-TRY
-IF wxODCB_DCLICK_CYCLES IN stdStyle THEN
-strLst.add('wxODCB_DCLICK_CYCLES');
+    Try
+        If wxODCB_DCLICK_CYCLES In stdStyle Then
+            strLst.add('wxODCB_DCLICK_CYCLES');
 
-IF wxODCB_STD_CONTROL_PAINT IN stdStyle THEN
-strLst.add('wxODCB_STD_CONTROL_PAINT');
+        If wxODCB_STD_CONTROL_PAINT In stdStyle Then
+            strLst.add('wxODCB_STD_CONTROL_PAINT');
 
-IF strLst.Count = 0 THEN
-Result := ''
-ELSE
-FOR I := 0 TO strLst.Count - 1 DO // Iterate
-IF i <> strLst.Count - 1 THEN
-Result := Result + strLst[i] + ' | '
-ELSE
-Result := Result + strLst[i] // for
-;
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i] // for
+        ;
         //sendDebug(Result);
-FINALLY
-strLst.Destroy;
-END;
-END;
+    Finally
+        strLst.Destroy;
+    End;
+End;
 
-FUNCTION GetDlgStyleString(stdStyle: TWxDlgStyleSet;
-wxclassname: STRING): STRING;
-VAR
-I: INTEGER;
-strLst: TStringList;
-BEGIN
+Function GetDlgStyleString(stdStyle: TWxDlgStyleSet;
+    wxclassname: String): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
 
-strLst := TStringList.Create;
+    strLst := TStringList.Create;
 
-TRY
+    Try
 
-IF wxCAPTION IN stdStyle THEN
-strLst.add('wxCAPTION');
+        If wxCAPTION In stdStyle Then
+            strLst.add('wxCAPTION');
 
-IF wxRESIZE_BORDER IN stdStyle THEN
-strLst.add('wxRESIZE_BORDER');
+        If wxRESIZE_BORDER In stdStyle Then
+            strLst.add('wxRESIZE_BORDER');
 
-IF wxSYSTEM_MENU IN stdStyle THEN
-strLst.add('wxSYSTEM_MENU');
+        If wxSYSTEM_MENU In stdStyle Then
+            strLst.add('wxSYSTEM_MENU');
 
-IF wxTHICK_FRAME IN stdStyle THEN
-strLst.add('wxTHICK_FRAME');
+        If wxTHICK_FRAME In stdStyle Then
+            strLst.add('wxTHICK_FRAME');
 
-IF wxSTAY_ON_TOP IN stdStyle THEN
-strLst.add('wxSTAY_ON_TOP');
+        If wxSTAY_ON_TOP In stdStyle Then
+            strLst.add('wxSTAY_ON_TOP');
 
-IF strEqual(wxclassname, 'wxDialog') THEN
-IF wxDIALOG_NO_PARENT IN stdStyle THEN
-strLst.add('wxDIALOG_NO_PARENT');
+        If strEqual(wxclassname, 'wxDialog') Then
+            If wxDIALOG_NO_PARENT In stdStyle Then
+                strLst.add('wxDIALOG_NO_PARENT');
 
-IF wxDIALOG_EX_CONTEXTHELP IN stdStyle THEN
-strLst.add('wxDIALOG_EX_CONTEXTHELP');
+        If wxDIALOG_EX_CONTEXTHELP In stdStyle Then
+            strLst.add('wxDIALOG_EX_CONTEXTHELP');
 
-IF wxFRAME_EX_CONTEXTHELP IN stdStyle THEN
-strLst.add('wxFRAME_EX_CONTEXTHELP');
+        If wxFRAME_EX_CONTEXTHELP In stdStyle Then
+            strLst.add('wxFRAME_EX_CONTEXTHELP');
 
-IF wxMINIMIZE_BOX IN stdStyle THEN
-strLst.add('wxMINIMIZE_BOX');
+        If wxMINIMIZE_BOX In stdStyle Then
+            strLst.add('wxMINIMIZE_BOX');
 
-IF wxMAXIMIZE_BOX IN stdStyle THEN
-strLst.add('wxMAXIMIZE_BOX');
+        If wxMAXIMIZE_BOX In stdStyle Then
+            strLst.add('wxMAXIMIZE_BOX');
 
-IF wxCLOSE_BOX IN stdStyle THEN
-strLst.add('wxCLOSE_BOX');
+        If wxCLOSE_BOX In stdStyle Then
+            strLst.add('wxCLOSE_BOX');
 
-IF wxNO_3D IN stdStyle THEN
-strLst.add('wxNO_3D');
+        If wxNO_3D In stdStyle Then
+            strLst.add('wxNO_3D');
 
-IF wxMINIMIZE IN stdStyle THEN
-strLst.add('wxMINIMIZE');
+        If wxMINIMIZE In stdStyle Then
+            strLst.add('wxMINIMIZE');
 
-IF wxMAXIMIZE IN stdStyle THEN
-strLst.add('wxMAXIMIZE');
+        If wxMAXIMIZE In stdStyle Then
+            strLst.add('wxMAXIMIZE');
 
-IF wxFRAME_TOOL_WINDOW IN stdStyle THEN
-strLst.add('wxFRAME_TOOL_WINDOW');
+        If wxFRAME_TOOL_WINDOW In stdStyle Then
+            strLst.add('wxFRAME_TOOL_WINDOW');
 
-IF wxFRAME_NO_TASKBAR IN stdStyle THEN
-strLst.add('wxFRAME_NO_TASKBAR');
+        If wxFRAME_NO_TASKBAR In stdStyle Then
+            strLst.add('wxFRAME_NO_TASKBAR');
 
-IF wxFRAME_FLOAT_ON_PARENT IN stdStyle THEN
-strLst.add('wxFRAME_FLOAT_ON_PARENT');
+        If wxFRAME_FLOAT_ON_PARENT In stdStyle Then
+            strLst.add('wxFRAME_FLOAT_ON_PARENT');
 
-IF wxFRAME_SHAPED IN stdStyle THEN
-strLst.add('wxFRAME_SHAPED');
+        If wxFRAME_SHAPED In stdStyle Then
+            strLst.add('wxFRAME_SHAPED');
 
-IF strLst.Count = 0 THEN
-Result := ''
-ELSE
-FOR I := 0 TO strLst.Count - 1 DO // Iterate
-IF i <> strLst.Count - 1 THEN
-Result := Result + strLst[i] + ' | '
-ELSE
-Result := Result + strLst[i] // for
-;
-        //sendDebug(Result);
-
-FINALLY
-strLst.Destroy;
-END;
-
-END;
-
-FUNCTION GetAnimationCtrlStyleString(stdStyle:
-TWxAnimationCtrlStyleSet): STRING;
-VAR
-I: INTEGER;
-strLst: TStringList;
-BEGIN
-
-strLst := TStringList.Create;
-
-TRY
-IF wxAC_DEFAULT_STYLE IN stdStyle THEN
-strLst.add('wxAC_DEFAULT_STYLE');
-
-IF wxAC_NO_AUTORESIZE IN stdStyle THEN
-strLst.add('wxAC_NO_AUTORESIZE');
-
-IF strLst.Count = 0 THEN
-Result := ''
-ELSE
-FOR I := 0 TO strLst.Count - 1 DO // Iterate
-IF i <> strLst.Count - 1 THEN
-Result := Result + strLst[i] + ' | '
-ELSE
-Result := Result + strLst[i] // for
-;
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i] // for
+        ;
         //sendDebug(Result);
 
-FINALLY
-strLst.Destroy;
-END;
-END;
+    Finally
+        strLst.Destroy;
+    End;
 
-FUNCTION GetButtonStyleString(stdStyle: TWxBtnStyleSet): STRING;
-VAR
-I: INTEGER;
-strLst: TStringList;
-BEGIN
+End;
 
-strLst := TStringList.Create;
+Function GetAnimationCtrlStyleString(stdStyle:
+    TWxAnimationCtrlStyleSet): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
 
-TRY
-IF wxBU_AUTODRAW IN stdStyle THEN
-strLst.add('wxBU_AUTODRAW');
+    strLst := TStringList.Create;
 
-IF wxBU_LEFT IN stdStyle THEN
-strLst.add('wxBU_LEFT');
+    Try
+        If wxAC_DEFAULT_STYLE In stdStyle Then
+            strLst.add('wxAC_DEFAULT_STYLE');
 
-IF wxBU_TOP IN stdStyle THEN
-strLst.add('wxBU_TOP');
+        If wxAC_NO_AUTORESIZE In stdStyle Then
+            strLst.add('wxAC_NO_AUTORESIZE');
 
-IF wxBU_RIGHT IN stdStyle THEN
-strLst.add('wxBU_RIGHT');
-
-IF wxBU_EXACTFIT IN stdStyle THEN
-strLst.add('wxBU_EXACTFIT');
-
-IF wxBU_BOTTOM IN stdStyle THEN
-strLst.add('wxBU_BOTTOM');
-
-IF strLst.Count = 0 THEN
-Result := ''
-ELSE
-FOR I := 0 TO strLst.Count - 1 DO // Iterate
-IF i <> strLst.Count - 1 THEN
-Result := Result + strLst[i] + ' | '
-ELSE
-Result := Result + strLst[i] // for
-;
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i] // for
+        ;
         //sendDebug(Result);
 
-FINALLY
-strLst.Destroy;
-END;
-END;
+    Finally
+        strLst.Destroy;
+    End;
+End;
 
-FUNCTION GetLbStyleString(stdStyle: TWxLbStyleSet): STRING;
-VAR
-I: INTEGER;
-strLst: TStringList;
-BEGIN
+Function GetButtonStyleString(stdStyle: TWxBtnStyleSet): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
 
-strLst := TStringList.Create;
+    strLst := TStringList.Create;
 
-TRY
+    Try
+        If wxBU_AUTODRAW In stdStyle Then
+            strLst.add('wxBU_AUTODRAW');
 
-IF wxST_ALIGN_LEFT IN stdStyle THEN
-strLst.add('wxALIGN_LEFT');
+        If wxBU_LEFT In stdStyle Then
+            strLst.add('wxBU_LEFT');
 
-IF wxST_ALIGN_RIGHT IN stdStyle THEN
-strLst.add('wxALIGN_RIGHT');
+        If wxBU_TOP In stdStyle Then
+            strLst.add('wxBU_TOP');
 
-IF wxST_ALIGN_CENTRE IN stdStyle THEN
-strLst.add('wxALIGN_CENTRE');
+        If wxBU_RIGHT In stdStyle Then
+            strLst.add('wxBU_RIGHT');
 
-IF wxST_NO_AUTORESIZE IN stdStyle THEN
-strLst.add('wxST_NO_AUTORESIZE');
+        If wxBU_EXACTFIT In stdStyle Then
+            strLst.add('wxBU_EXACTFIT');
 
-IF strLst.Count = 0 THEN
-Result := ''
-ELSE
-FOR I := 0 TO strLst.Count - 1 DO // Iterate
-IF i <> strLst.Count - 1 THEN
-Result := Result + strLst[i] + ' | '
-ELSE
-Result := Result + strLst[i] // for
-;
+        If wxBU_BOTTOM In stdStyle Then
+            strLst.add('wxBU_BOTTOM');
+
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i] // for
+        ;
         //sendDebug(Result);
-FINALLY
-strLst.Destroy;
-END;
 
-END;
+    Finally
+        strLst.Destroy;
+    End;
+End;
 
-FUNCTION GetRichTextStyleString(edtdStyle: TWxRichTextStyleSet): STRING;
-VAR
-I: INTEGER;
-strLst: TStringList;
-BEGIN
+Function GetLbStyleString(stdStyle: TWxLbStyleSet): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
 
-strLst := TStringList.Create;
+    strLst := TStringList.Create;
 
-TRY
+    Try
 
-IF wxRE_READONLY IN edtdStyle THEN
-strLst.add('wxRE_READONLY');
+        If wxST_ALIGN_LEFT In stdStyle Then
+            strLst.add('wxALIGN_LEFT');
 
-IF wxRE_MULTILINE IN edtdStyle THEN
-strLst.add('wxRE_MULTILINE');
+        If wxST_ALIGN_RIGHT In stdStyle Then
+            strLst.add('wxALIGN_RIGHT');
 
-IF strLst.Count = 0 THEN
-Result := ''
-ELSE
-FOR I := 0 TO strLst.Count - 1 DO // Iterate
-IF i <> strLst.Count - 1 THEN
-Result := Result + strLst[i] + ' | '
-ELSE
-Result := Result + strLst[i] // for
-;
+        If wxST_ALIGN_CENTRE In stdStyle Then
+            strLst.add('wxALIGN_CENTRE');
+
+        If wxST_NO_AUTORESIZE In stdStyle Then
+            strLst.add('wxST_NO_AUTORESIZE');
+
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i] // for
+        ;
         //sendDebug(Result);
-FINALLY
-strLst.Destroy;
-END;
+    Finally
+        strLst.Destroy;
+    End;
 
-END;
+End;
 
-FUNCTION GetEdtStyleString(edtdStyle: TWxEdtGeneralStyleSet): STRING;
-VAR
-I: INTEGER;
-strLst: TStringList;
-BEGIN
+Function GetRichTextStyleString(edtdStyle: TWxRichTextStyleSet): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
 
-strLst := TStringList.Create;
+    strLst := TStringList.Create;
 
-TRY
+    Try
 
-IF wxTE_PROCESS_ENTER IN edtdStyle THEN
-strLst.add('wxTE_PROCESS_ENTER');
+        If wxRE_READONLY In edtdStyle Then
+            strLst.add('wxRE_READONLY');
 
-IF wxTE_PROCESS_TAB IN edtdStyle THEN
-strLst.add('wxTE_PROCESS_TAB');
+        If wxRE_MULTILINE In edtdStyle Then
+            strLst.add('wxRE_MULTILINE');
 
-IF wxTE_PASSWORD IN edtdStyle THEN
-strLst.add('wxTE_PASSWORD');
-
-IF wxTE_READONLY IN edtdStyle THEN
-strLst.add('wxTE_READONLY');
-
-IF wxTE_RICH IN edtdStyle THEN
-strLst.add('wxTE_RICH');
-
-IF wxTE_RICH2 IN edtdStyle THEN
-strLst.add('wxTE_RICH2');
-
-IF wxTE_AUTO_URL IN edtdStyle THEN
-strLst.add('wxTE_AUTO_URL');
-
-IF wxTE_NO_VSCROLL IN edtdStyle THEN
-strLst.add('wxTE_NO_VSCROLL');
-
-IF wxTE_NOHIDESEL IN edtdStyle THEN
-strLst.add('wxTE_NOHIDESEL');
-
-IF wxTE_LEFT IN edtdStyle THEN
-strLst.add('wxTE_LEFT');
-
-IF wxTE_CENTRE IN edtdStyle THEN
-strLst.add('wxTE_CENTRE');
-
-IF wxTE_RIGHT IN edtdStyle THEN
-strLst.add('wxTE_RIGHT');
-
-IF wxTE_DONTWRAP IN edtdStyle THEN
-strLst.add('wxTE_DONTWRAP');
-
-IF wxTE_BESTWRAP IN edtdStyle THEN
-strLst.add('wxTE_BESTWRAP');
-
-IF wxTE_CHARWRAP IN edtdStyle THEN
-strLst.add('wxTE_CHARWRAP');
-
-IF wxTE_LINEWRAP IN edtdStyle THEN
-strLst.add('wxTE_LINEWRAP');
-
-IF wxTE_WORDWRAP IN edtdStyle THEN
-strLst.add('wxTE_WORDWRAP');
-
-IF wxTE_CAPITALIZE IN edtdStyle THEN
-strLst.add('wxTE_CAPITALIZE');
-
-IF wxTE_MULTILINE IN edtdStyle THEN
-strLst.add('wxTE_MULTILINE');
-
-IF strLst.Count = 0 THEN
-Result := ''
-ELSE
-FOR I := 0 TO strLst.Count - 1 DO // Iterate
-IF i <> strLst.Count - 1 THEN
-Result := Result + strLst[i] + ' | '
-ELSE
-Result := Result + strLst[i] // for
-;
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i] // for
+        ;
         //sendDebug(Result);
-FINALLY
-strLst.Destroy;
-END;
-END;
+    Finally
+        strLst.Destroy;
+    End;
 
-FUNCTION GetTextEntryDialogStyleString(stdStyle: TWxMessageDialogStyleSet;
-edtStyle: TWxEdtGeneralStyleSet): STRING;
-VAR
-strA, strB: STRING;
-BEGIN
-strA := trim(GetMessageDialogStyleString(stdStyle, TRUE));
-strB := trim(GetEdtStyleString(edtStyle));
+End;
 
-IF strA <> '' THEN
-IF trim(Result) = '' THEN
-Result := strA
-ELSE
-Result := Result + ' | ' + strA;
+Function GetEdtStyleString(edtdStyle: TWxEdtGeneralStyleSet): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
 
-IF strB <> '' THEN
-IF trim(Result) = '' THEN
-Result := strB
-ELSE
-Result := Result + ' | ' + strB;
+    strLst := TStringList.Create;
 
-IF Result <> '' THEN
-BEGIN
-Result := ',' + Result;
-END;
-END;
+    Try
 
-FUNCTION GetEditSpecificStyle(stdstyle: TWxStdStyleSet;
-dlgstyle: TWxEdtGeneralStyleSet): STRING;
-VAR
-strA: STRING;
-BEGIN
-Result := GetStdStyleString(stdstyle);
-strA := trim(GetEdtStyleString(dlgstyle));
-IF strA <> '' THEN
-IF trim(Result) = '' THEN
-Result := strA
-ELSE
-Result := Result + ' | ' + strA;
+        If wxTE_PROCESS_ENTER In edtdStyle Then
+            strLst.add('wxTE_PROCESS_ENTER');
 
-END;
+        If wxTE_PROCESS_TAB In edtdStyle Then
+            strLst.add('wxTE_PROCESS_TAB');
 
-FUNCTION GetRichTextSpecificStyle(stdstyle: TWxStdStyleSet;
-dlgstyle: TWxRichTextStyleSet): STRING;
-VAR
-strA: STRING;
-BEGIN
-Result := GetStdStyleString(stdstyle);
-strA := trim(GetRichTextStyleString(dlgstyle));
-IF strA <> '' THEN
-IF trim(Result) = '' THEN
-Result := strA
-ELSE
-Result := Result + ' | ' + strA;
-END;
+        If wxTE_PASSWORD In edtdStyle Then
+            strLst.add('wxTE_PASSWORD');
 
-FUNCTION GetcomboBoxSpecificStyle(stdstyle: TWxStdStyleSet;
-cmbstyle: TWxCmbStyleSet; edtstyle: TWxEdtGeneralStyleSet): STRING;
-VAR
-strA: STRING;
-strB: STRING;
-BEGIN
-Result := GetStdStyleString(stdstyle);
-strA := trim(GetComboxBoxStyleString(cmbstyle));
-strB := trim(GetEdtStyleString(edtstyle));
-IF strA <> '' THEN
-IF trim(Result) = '' THEN
-Result := strA
-ELSE
-Result := Result + ' | ' + strA;
-IF strB <> '' THEN
-IF trim(Result) = '' THEN
-Result := strB
-ELSE
-Result := Result + ' | ' + strB;
-END;
+        If wxTE_READONLY In edtdStyle Then
+            strLst.add('wxTE_READONLY');
 
-FUNCTION GetOwncomboBoxSpecificStyle(stdstyle: TWxStdStyleSet;
-cmbstyle: TWxCmbStyleSet; edtstyle: TWxEdtGeneralStyleSet;
-owncmbstyle: TWxOwnCmbStyleSet): STRING;
-VAR
-strA: STRING;
-strB: STRING;
-strC: STRING;
-BEGIN
-Result := GetStdStyleString(stdstyle);
-strA := trim(GetComboxBoxStyleString(cmbstyle));
-strB := trim(GetEdtStyleString(edtstyle));
-strC := trim(GetOwnComboxBoxStyleString(Owncmbstyle));
+        If wxTE_RICH In edtdStyle Then
+            strLst.add('wxTE_RICH');
 
-IF strA <> '' THEN
-IF trim(Result) = '' THEN
-Result := strA
-ELSE
-Result := Result + ' | ' + strA;
+        If wxTE_RICH2 In edtdStyle Then
+            strLst.add('wxTE_RICH2');
 
-IF strB <> '' THEN
-IF trim(Result) = '' THEN
-Result := strB
-ELSE
-Result := Result + ' | ' + strB;
+        If wxTE_AUTO_URL In edtdStyle Then
+            strLst.add('wxTE_AUTO_URL');
 
-IF strC <> '' THEN
-IF trim(Result) = '' THEN
-Result := strC
-ELSE
-Result := Result + ' | ' + strC;
-END;
+        If wxTE_NO_VSCROLL In edtdStyle Then
+            strLst.add('wxTE_NO_VSCROLL');
 
-FUNCTION GetListViewStyleString(lstvwstyle: TWxLVStyleSet;
-view: TWxLvView): STRING;
-VAR
-I: INTEGER;
-strLst: TStringList;
-BEGIN
-strLst := TStringList.Create;
+        If wxTE_NOHIDESEL In edtdStyle Then
+            strLst.add('wxTE_NOHIDESEL');
 
-CASE view OF
-wxLC_LIST:
-strLst.add('wxLC_LIST');
-wxLC_REPORT:
-strLst.add('wxLC_REPORT');
-wxLC_VIRTUAL:
-BEGIN
-strLst.add('wxLC_VIRTUAL');
-strLst.add('wxLC_REPORT');
-END;
-wxLC_ICON:
-strLst.add('wxLC_ICON');
-wxLC_SMALL_ICON:
-strLst.add('wxLC_SMALL_ICON');
+        If wxTE_LEFT In edtdStyle Then
+            strLst.add('wxTE_LEFT');
+
+        If wxTE_CENTRE In edtdStyle Then
+            strLst.add('wxTE_CENTRE');
+
+        If wxTE_RIGHT In edtdStyle Then
+            strLst.add('wxTE_RIGHT');
+
+        If wxTE_DONTWRAP In edtdStyle Then
+            strLst.add('wxTE_DONTWRAP');
+
+        If wxTE_BESTWRAP In edtdStyle Then
+            strLst.add('wxTE_BESTWRAP');
+
+        If wxTE_CHARWRAP In edtdStyle Then
+            strLst.add('wxTE_CHARWRAP');
+
+        If wxTE_LINEWRAP In edtdStyle Then
+            strLst.add('wxTE_LINEWRAP');
+
+        If wxTE_WORDWRAP In edtdStyle Then
+            strLst.add('wxTE_WORDWRAP');
+
+        If wxTE_CAPITALIZE In edtdStyle Then
+            strLst.add('wxTE_CAPITALIZE');
+
+        If wxTE_MULTILINE In edtdStyle Then
+            strLst.add('wxTE_MULTILINE');
+
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i] // for
+        ;
+        //sendDebug(Result);
+    Finally
+        strLst.Destroy;
+    End;
+End;
+
+Function GetTextEntryDialogStyleString(stdStyle: TWxMessageDialogStyleSet;
+    edtStyle: TWxEdtGeneralStyleSet): String;
+Var
+    strA, strB: String;
+Begin
+    strA := trim(GetMessageDialogStyleString(stdStyle, True));
+    strB := trim(GetEdtStyleString(edtStyle));
+
+    If strA <> '' Then
+        If trim(Result) = '' Then
+            Result := strA
+        Else
+            Result := Result + ' | ' + strA;
+
+    If strB <> '' Then
+        If trim(Result) = '' Then
+            Result := strB
+        Else
+            Result := Result + ' | ' + strB;
+
+    If Result <> '' Then
+    Begin
+        Result := ',' + Result;
+    End;
+End;
+
+Function GetEditSpecificStyle(stdstyle: TWxStdStyleSet;
+    dlgstyle: TWxEdtGeneralStyleSet): String;
+Var
+    strA: String;
+Begin
+    Result := GetStdStyleString(stdstyle);
+    strA := trim(GetEdtStyleString(dlgstyle));
+    If strA <> '' Then
+        If trim(Result) = '' Then
+            Result := strA
+        Else
+            Result := Result + ' | ' + strA;
+
+End;
+
+Function GetRichTextSpecificStyle(stdstyle: TWxStdStyleSet;
+    dlgstyle: TWxRichTextStyleSet): String;
+Var
+    strA: String;
+Begin
+    Result := GetStdStyleString(stdstyle);
+    strA := trim(GetRichTextStyleString(dlgstyle));
+    If strA <> '' Then
+        If trim(Result) = '' Then
+            Result := strA
+        Else
+            Result := Result + ' | ' + strA;
+End;
+
+Function GetcomboBoxSpecificStyle(stdstyle: TWxStdStyleSet;
+    cmbstyle: TWxCmbStyleSet; edtstyle: TWxEdtGeneralStyleSet): String;
+Var
+    strA: String;
+    strB: String;
+Begin
+    Result := GetStdStyleString(stdstyle);
+    strA := trim(GetComboxBoxStyleString(cmbstyle));
+    strB := trim(GetEdtStyleString(edtstyle));
+    If strA <> '' Then
+        If trim(Result) = '' Then
+            Result := strA
+        Else
+            Result := Result + ' | ' + strA;
+    If strB <> '' Then
+        If trim(Result) = '' Then
+            Result := strB
+        Else
+            Result := Result + ' | ' + strB;
+End;
+
+Function GetOwncomboBoxSpecificStyle(stdstyle: TWxStdStyleSet;
+    cmbstyle: TWxCmbStyleSet; edtstyle: TWxEdtGeneralStyleSet;
+    owncmbstyle: TWxOwnCmbStyleSet): String;
+Var
+    strA: String;
+    strB: String;
+    strC: String;
+Begin
+    Result := GetStdStyleString(stdstyle);
+    strA := trim(GetComboxBoxStyleString(cmbstyle));
+    strB := trim(GetEdtStyleString(edtstyle));
+    strC := trim(GetOwnComboxBoxStyleString(Owncmbstyle));
+
+    If strA <> '' Then
+        If trim(Result) = '' Then
+            Result := strA
+        Else
+            Result := Result + ' | ' + strA;
+
+    If strB <> '' Then
+        If trim(Result) = '' Then
+            Result := strB
+        Else
+            Result := Result + ' | ' + strB;
+
+    If strC <> '' Then
+        If trim(Result) = '' Then
+            Result := strC
+        Else
+            Result := Result + ' | ' + strC;
+End;
+
+Function GetListViewStyleString(lstvwstyle: TWxLVStyleSet;
+    view: TWxLvView): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
+    strLst := TStringList.Create;
+
+    Case view Of
+        wxLC_LIST:
+            strLst.add('wxLC_LIST');
+        wxLC_REPORT:
+            strLst.add('wxLC_REPORT');
+        wxLC_VIRTUAL:
+        Begin
+            strLst.add('wxLC_VIRTUAL');
+            strLst.add('wxLC_REPORT');
+        End;
+        wxLC_ICON:
+            strLst.add('wxLC_ICON');
+        wxLC_SMALL_ICON:
+            strLst.add('wxLC_SMALL_ICON');
 {$IFDEF PRIVATE_BUILD}
 wxLC_TILE:
 strLst.add('wxLC_TILE');
 {$ENDIF}
-END;
+    End;
 
-TRY
-IF wxLC_ALIGN_TOP IN lstvwstyle THEN
-strLst.add('wxLC_ALIGN_TOP');
+    Try
+        If wxLC_ALIGN_TOP In lstvwstyle Then
+            strLst.add('wxLC_ALIGN_TOP');
 
-IF wxLC_ALIGN_LEFT IN lstvwstyle THEN
-strLst.add('wxLC_ALIGN_LEFT');
+        If wxLC_ALIGN_LEFT In lstvwstyle Then
+            strLst.add('wxLC_ALIGN_LEFT');
 
-IF wxLC_AUTOARRANGE IN lstvwstyle THEN
-strLst.add('wxLC_AUTOARRANGE');
+        If wxLC_AUTOARRANGE In lstvwstyle Then
+            strLst.add('wxLC_AUTOARRANGE');
 
-IF wxLC_EDIT_LABELS IN lstvwstyle THEN
-strLst.add('wxLC_EDIT_LABELS');
+        If wxLC_EDIT_LABELS In lstvwstyle Then
+            strLst.add('wxLC_EDIT_LABELS');
 
-IF wxLC_NO_HEADER IN lstvwstyle THEN
-strLst.add('wxLC_NO_HEADER');
+        If wxLC_NO_HEADER In lstvwstyle Then
+            strLst.add('wxLC_NO_HEADER');
 
-IF wxLC_NO_SORT_HEADER IN lstvwstyle THEN
-strLst.add('wxLC_NO_SORT_HEADER');
+        If wxLC_NO_SORT_HEADER In lstvwstyle Then
+            strLst.add('wxLC_NO_SORT_HEADER');
 
-IF wxLC_SINGLE_SEL IN lstvwstyle THEN
-strLst.add('wxLC_SINGLE_SEL');
+        If wxLC_SINGLE_SEL In lstvwstyle Then
+            strLst.add('wxLC_SINGLE_SEL');
 
-IF wxLC_SORT_ASCENDING IN lstvwstyle THEN
-strLst.add('wxLC_SORT_ASCENDING');
+        If wxLC_SORT_ASCENDING In lstvwstyle Then
+            strLst.add('wxLC_SORT_ASCENDING');
 
-IF wxLC_SORT_DESCENDING IN lstvwstyle THEN
-strLst.add('wxLC_SORT_DESCENDING');
+        If wxLC_SORT_DESCENDING In lstvwstyle Then
+            strLst.add('wxLC_SORT_DESCENDING');
 
-IF wxLC_HRULES IN lstvwstyle THEN
-strLst.add('wxLC_HRULES');
+        If wxLC_HRULES In lstvwstyle Then
+            strLst.add('wxLC_HRULES');
 
-IF wxLC_VRULES IN lstvwstyle THEN
-strLst.add('wxLC_VRULES');
+        If wxLC_VRULES In lstvwstyle Then
+            strLst.add('wxLC_VRULES');
 
-IF strLst.Count = 0 THEN
-Result := ''
-ELSE
-FOR I := 0 TO strLst.Count - 1 DO // Iterate
-IF i <> strLst.Count - 1 THEN
-Result := Result + strLst[i] + ' | '
-ELSE
-Result := Result + strLst[i];
-FINALLY
-strLst.Destroy;
-END;
-END;
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i];
+    Finally
+        strLst.Destroy;
+    End;
+End;
 
-FUNCTION GetListViewSpecificStyle(stdstyle: TWxStdStyleSet;
-lstvwstyle: TWxLVStyleSet; view: TWxLvView): STRING;
-VAR
-strA: STRING;
-BEGIN
-Result := GetStdStyleString(stdstyle);
-strA := trim(GetListViewStyleString(lstvwstyle, view));
-IF strA <> '' THEN
-IF trim(Result) = '' THEN
-Result := strA
-ELSE
-IF strA = '' THEN
-Result := Result
-ELSE
-Result := Result + ' | ' + strA;
+Function GetListViewSpecificStyle(stdstyle: TWxStdStyleSet;
+    lstvwstyle: TWxLVStyleSet; view: TWxLvView): String;
+Var
+    strA: String;
+Begin
+    Result := GetStdStyleString(stdstyle);
+    strA := trim(GetListViewStyleString(lstvwstyle, view));
+    If strA <> '' Then
+        If trim(Result) = '' Then
+            Result := strA
+        Else
+        If strA = '' Then
+            Result := Result
+        Else
+            Result := Result + ' | ' + strA;
 
     //if trim(Result) <> '' then
     //Result := ', ' + Result;
-END;
+End;
 
 //Start here
 
-FUNCTION GetCheckboxSpecificStyle(stdstyle: TWxStdStyleSet;
-cbxstyle: TWxcbxStyleSet): STRING;
-VAR
-strA: STRING;
-BEGIN
-Result := GetStdStyleString(stdstyle);
-strA := trim(GetCheckBoxStyleString(cbxstyle));
-IF strA <> '' THEN
-IF trim(Result) = '' THEN
-Result := strA
-ELSE
-Result := Result + ' | ' + strA;
+Function GetCheckboxSpecificStyle(stdstyle: TWxStdStyleSet;
+    cbxstyle: TWxcbxStyleSet): String;
+Var
+    strA: String;
+Begin
+    Result := GetStdStyleString(stdstyle);
+    strA := trim(GetCheckBoxStyleString(cbxstyle));
+    If strA <> '' Then
+        If trim(Result) = '' Then
+            Result := strA
+        Else
+            Result := Result + ' | ' + strA;
 
-END;
+End;
 
-FUNCTION GetTreeviewSpecificStyle(stdstyle: TWxStdStyleSet;
-tvstyle: TWxTVStyleSet): STRING;
-VAR
-strA: STRING;
-BEGIN
-Result := GetStdStyleString(stdstyle);
-strA := trim(GetTreeViewStyleString(tvstyle));
-IF strA <> '' THEN
-IF trim(Result) = '' THEN
-Result := strA
-ELSE
-Result := Result + ' | ' + strA;
+Function GetTreeviewSpecificStyle(stdstyle: TWxStdStyleSet;
+    tvstyle: TWxTVStyleSet): String;
+Var
+    strA: String;
+Begin
+    Result := GetStdStyleString(stdstyle);
+    strA := trim(GetTreeViewStyleString(tvstyle));
+    If strA <> '' Then
+        If trim(Result) = '' Then
+            Result := strA
+        Else
+            Result := Result + ' | ' + strA;
 
-END;
+End;
 
-FUNCTION GetRadiobuttonSpecificStyle(stdstyle: TWxStdStyleSet;
-rbstyle: TWxrbStyleSet): STRING;
-VAR
-strA: STRING;
-BEGIN
-Result := GetStdStyleString(stdstyle);
-strA := trim(GetRadioButtonStyleString(rbstyle));
-IF strA <> '' THEN
-IF trim(Result) = '' THEN
-Result := strA
-ELSE
-Result := Result + ' | ' + strA;
+Function GetRadiobuttonSpecificStyle(stdstyle: TWxStdStyleSet;
+    rbstyle: TWxrbStyleSet): String;
+Var
+    strA: String;
+Begin
+    Result := GetStdStyleString(stdstyle);
+    strA := trim(GetRadioButtonStyleString(rbstyle));
+    If strA <> '' Then
+        If trim(Result) = '' Then
+            Result := strA
+        Else
+            Result := Result + ' | ' + strA;
 
-END;
+End;
 
-FUNCTION GetRTSListCtrlSpecificStyle(stdstyle: TWxStdStyleSet;
-lbxstyle: TwxRichTextSLCStyleSet): STRING;
-VAR
-strA: STRING;
-BEGIN
-Result := GetStdStyleString(stdstyle);
-strA := trim(GetRTSListCtrlStyleString(lbxstyle));
-IF strA <> '' THEN
-IF trim(Result) = '' THEN
-Result := strA
-ELSE
-Result := Result + ' | ' + strA;
+Function GetRTSListCtrlSpecificStyle(stdstyle: TWxStdStyleSet;
+    lbxstyle: TwxRichTextSLCStyleSet): String;
+Var
+    strA: String;
+Begin
+    Result := GetStdStyleString(stdstyle);
+    strA := trim(GetRTSListCtrlStyleString(lbxstyle));
+    If strA <> '' Then
+        If trim(Result) = '' Then
+            Result := strA
+        Else
+            Result := Result + ' | ' + strA;
 
-END;
+End;
 
-FUNCTION GetListboxSpecificStyle(stdstyle: TWxStdStyleSet;
-lbxstyle: TWxlbxStyleSet): STRING;
-VAR
-strA: STRING;
-BEGIN
-Result := GetStdStyleString(stdstyle);
-strA := trim(GetListBoxStyleString(lbxstyle));
-IF strA <> '' THEN
-IF trim(Result) = '' THEN
-Result := strA
-ELSE
-Result := Result + ' | ' + strA;
+Function GetListboxSpecificStyle(stdstyle: TWxStdStyleSet;
+    lbxstyle: TWxlbxStyleSet): String;
+Var
+    strA: String;
+Begin
+    Result := GetStdStyleString(stdstyle);
+    strA := trim(GetListBoxStyleString(lbxstyle));
+    If strA <> '' Then
+        If trim(Result) = '' Then
+            Result := strA
+        Else
+            Result := Result + ' | ' + strA;
 
-END;
+End;
 
-FUNCTION GetGaugeSpecificStyle(stdstyle: TWxStdStyleSet;
-gagstyle: TWxgagStyleSet): STRING;
-VAR
-strA: STRING;
-BEGIN
-Result := GetStdStyleString(stdstyle);
-strA := trim(GetGaugeStyleString(gagstyle));
-IF strA <> '' THEN
-IF trim(Result) = '' THEN
-Result := strA
-ELSE
-Result := Result + ' | ' + strA;
+Function GetGaugeSpecificStyle(stdstyle: TWxStdStyleSet;
+    gagstyle: TWxgagStyleSet): String;
+Var
+    strA: String;
+Begin
+    Result := GetStdStyleString(stdstyle);
+    strA := trim(GetGaugeStyleString(gagstyle));
+    If strA <> '' Then
+        If trim(Result) = '' Then
+            Result := strA
+        Else
+            Result := Result + ' | ' + strA;
 
-END;
+End;
 
-FUNCTION GetScrollbarSpecificStyle(stdstyle: TWxStdStyleSet;
-scbrstyle: TWxsbrStyleSet): STRING;
-VAR
-strA: STRING;
-BEGIN
-Result := GetStdStyleString(stdstyle);
-strA := trim(GetScrollbarStyleString(scbrstyle));
-IF strA <> '' THEN
-IF trim(Result) = '' THEN
-Result := strA
-ELSE
-Result := Result + ' | ' + strA;
+Function GetScrollbarSpecificStyle(stdstyle: TWxStdStyleSet;
+    scbrstyle: TWxsbrStyleSet): String;
+Var
+    strA: String;
+Begin
+    Result := GetStdStyleString(stdstyle);
+    strA := trim(GetScrollbarStyleString(scbrstyle));
+    If strA <> '' Then
+        If trim(Result) = '' Then
+            Result := strA
+        Else
+            Result := Result + ' | ' + strA;
 
-END;
+End;
 
-FUNCTION GetHyperLnkSpecificStyle(stdstyle: TWxStdStyleSet;
-edtstyle: TWxHyperLnkStyleSet): STRING;
-VAR
-strA: STRING;
-BEGIN
-Result := GetStdStyleString(stdstyle);
-strA := trim(GetHyperLnkStyleString(edtstyle));
-IF strA <> '' THEN
-IF trim(Result) = '' THEN
-Result := strA
-ELSE
-Result := Result + ' | ' + strA;
+Function GetHyperLnkSpecificStyle(stdstyle: TWxStdStyleSet;
+    edtstyle: TWxHyperLnkStyleSet): String;
+Var
+    strA: String;
+Begin
+    Result := GetStdStyleString(stdstyle);
+    strA := trim(GetHyperLnkStyleString(edtstyle));
+    If strA <> '' Then
+        If trim(Result) = '' Then
+            Result := strA
+        Else
+            Result := Result + ' | ' + strA;
 
-END;
+End;
 
-FUNCTION GetSpinButtonSpecificStyle(stdstyle: TWxStdStyleSet;
-sbtnstyle: TWxsbtnStyleSet; edtstyle: TWxEdtGeneralStyleSet): STRING;
-VAR
-strA: STRING;
-strB: STRING;
-BEGIN
-Result := GetStdStyleString(stdstyle);
-strA := trim(GetSpinButtonStyleString(sbtnstyle));
-strB := trim(GetEdtStyleString(edtstyle));
-IF strA <> '' THEN
-IF trim(Result) = '' THEN
-Result := strA
-ELSE
-Result := Result + ' | ' + strA;
-IF strB <> '' THEN
-IF trim(Result) = '' THEN
-Result := strB
-ELSE
-Result := Result + ' | ' + strB;
-END;
+Function GetSpinButtonSpecificStyle(stdstyle: TWxStdStyleSet;
+    sbtnstyle: TWxsbtnStyleSet; edtstyle: TWxEdtGeneralStyleSet): String;
+Var
+    strA: String;
+    strB: String;
+Begin
+    Result := GetStdStyleString(stdstyle);
+    strA := trim(GetSpinButtonStyleString(sbtnstyle));
+    strB := trim(GetEdtStyleString(edtstyle));
+    If strA <> '' Then
+        If trim(Result) = '' Then
+            Result := strA
+        Else
+            Result := Result + ' | ' + strA;
+    If strB <> '' Then
+        If trim(Result) = '' Then
+            Result := strB
+        Else
+            Result := Result + ' | ' + strB;
+End;
 
-FUNCTION GetSliderSpecificStyle(stdstyle: TWxStdStyleSet;
-sldrstyle: TWxsldrStyleSet): STRING;
-VAR
-strA: STRING;
-BEGIN
-Result := GetStdStyleString(stdstyle);
-strA := trim(GetSliderStyleString(sldrstyle));
-IF strA <> '' THEN
-IF trim(Result) = '' THEN
-Result := strA
-ELSE
-Result := Result + ' | ' + strA;
+Function GetSliderSpecificStyle(stdstyle: TWxStdStyleSet;
+    sldrstyle: TWxsldrStyleSet): String;
+Var
+    strA: String;
+Begin
+    Result := GetStdStyleString(stdstyle);
+    strA := trim(GetSliderStyleString(sldrstyle));
+    If strA <> '' Then
+        If trim(Result) = '' Then
+            Result := strA
+        Else
+            Result := Result + ' | ' + strA;
 
-END;
+End;
 
 //function GetStaticBitmapSpecificStyle(stdstyle: TWxStdStyleSet;sbtmpstyle:TWxsbtmpStyleSet):String;
 //var
@@ -3695,44 +3694,44 @@ END;
 //    Result := ', ' + Result;
 //end;
 
-FUNCTION GetDateVariableExpansion(value: TDateTime): STRING;
-VAR
-Year, Month, Day: WORD;
-BEGIN
-DecodeDate(value, Year, Month, Day);
-Result := Format('wxDateTime(%d,(wxDateTime::Month)%d,%d)',
-[Day, Month, Year]);
-END;
+Function GetDateVariableExpansion(value: TDateTime): String;
+Var
+    Year, Month, Day: Word;
+Begin
+    DecodeDate(value, Year, Month, Day);
+    Result := Format('wxDateTime(%d,(wxDateTime::Month)%d,%d)',
+        [Day, Month, Year]);
+End;
 
-FUNCTION GetCalendarCtrlSpecificStyle(stdstyle: TWxStdStyleSet;
-calctrlstyle: TWxcalctrlStyleSet): STRING;
-VAR
-strA: STRING;
-BEGIN
-Result := GetStdStyleString(stdstyle);
-strA := trim(GetCalendarCtrlStyleString(calctrlstyle));
-IF strA <> '' THEN
-IF trim(Result) = '' THEN
-Result := strA
-ELSE
-Result := Result + ' | ' + strA;
+Function GetCalendarCtrlSpecificStyle(stdstyle: TWxStdStyleSet;
+    calctrlstyle: TWxcalctrlStyleSet): String;
+Var
+    strA: String;
+Begin
+    Result := GetStdStyleString(stdstyle);
+    strA := trim(GetCalendarCtrlStyleString(calctrlstyle));
+    If strA <> '' Then
+        If trim(Result) = '' Then
+            Result := strA
+        Else
+            Result := Result + ' | ' + strA;
 
-END;
+End;
 
-FUNCTION GetPickCalSpecificStyle(stdstyle: TWxStdStyleSet;
-calctrlstyle: TWxPickCalStyleSet): STRING;
-VAR
-strA: STRING;
-BEGIN
-Result := GetStdStyleString(stdstyle);
-strA := trim(GetPickCalStyleString(calctrlstyle));
-IF strA <> '' THEN
-IF trim(Result) = '' THEN
-Result := strA
-ELSE
-Result := Result + ' | ' + strA;
+Function GetPickCalSpecificStyle(stdstyle: TWxStdStyleSet;
+    calctrlstyle: TWxPickCalStyleSet): String;
+Var
+    strA: String;
+Begin
+    Result := GetStdStyleString(stdstyle);
+    strA := trim(GetPickCalStyleString(calctrlstyle));
+    If strA <> '' Then
+        If trim(Result) = '' Then
+            Result := strA
+        Else
+            Result := Result + ' | ' + strA;
 
-END;
+End;
 
 //function GetChoiceSpecificStyle(stdstyle: TWxStdStyleSet;chstyle:TWxchStyleSet):String;
 //var
@@ -3752,14 +3751,14 @@ END;
 //    Result := ', ' + Result;
 //end;
 
-FUNCTION GetChoicebookSpecificStyle(stdstyle:
-TWxStdStyleSet{;
+Function GetChoicebookSpecificStyle(stdstyle:
+    TWxStdStyleSet{;
   bookalign: TWxchbxAlignStyleItem;
-  cbbxstyle: TWxchbxStyleSet}): STRING;
+  cbbxstyle: TWxchbxStyleSet}): String;
     //var
     //  strA: string;
-BEGIN
-Result := GetStdStyleString(stdstyle);
+Begin
+    Result := GetStdStyleString(stdstyle);
 
     //  Result := Result + ' | ' +  GetChoiceAlignmentString(bookalign);
     {
@@ -3770,47 +3769,47 @@ Result := GetStdStyleString(stdstyle);
     else
       Result := Result + ' | ' + strA;
 }
-END;
+End;
 
-FUNCTION GetChoiceAlignmentString(Value: TWxchbxAlignStyleItem): STRING;
-BEGIN
-Result := '';
-IF Value = wxCHB_BOTTOM THEN
-BEGIN
-Result := 'wxCHB_BOTTOM';
-exit;
-END;
-IF Value = wxCHB_RIGHT THEN
-BEGIN
-Result := 'wxCHB_RIGHT';
-exit;
-END;
-IF Value = wxCHB_LEFT THEN
-BEGIN
-Result := 'wxCHB_LEFT';
-exit;
-END;
-IF Value = wxCHB_TOP THEN
-BEGIN
-Result := 'wxCHB_TOP';
-exit;
-END;
-IF Value = wxCHB_DEFAULT THEN
-BEGIN
-Result := 'wxCHB_DEFAULT';
-exit;
-END;
+Function GetChoiceAlignmentString(Value: TWxchbxAlignStyleItem): String;
+Begin
+    Result := '';
+    If Value = wxCHB_BOTTOM Then
+    Begin
+        Result := 'wxCHB_BOTTOM';
+        exit;
+    End;
+    If Value = wxCHB_RIGHT Then
+    Begin
+        Result := 'wxCHB_RIGHT';
+        exit;
+    End;
+    If Value = wxCHB_LEFT Then
+    Begin
+        Result := 'wxCHB_LEFT';
+        exit;
+    End;
+    If Value = wxCHB_TOP Then
+    Begin
+        Result := 'wxCHB_TOP';
+        exit;
+    End;
+    If Value = wxCHB_DEFAULT Then
+    Begin
+        Result := 'wxCHB_DEFAULT';
+        exit;
+    End;
 
-END;
+End;
 
 {function GetListbookSpecificStyle(stdstyle: TWxStdStyleSet; lbbxstyle: TWxlbbxStyleSet): string;
 }
-FUNCTION GetListbookSpecificStyle(stdstyle:
-TWxStdStyleSet{; bookalign: TWxlbbxAlignStyleItem}): STRING;
+Function GetListbookSpecificStyle(stdstyle:
+    TWxStdStyleSet{; bookalign: TWxlbbxAlignStyleItem}): String;
     //var
     //  strA: string;
-BEGIN
-Result := GetStdStyleString(stdstyle);
+Begin
+    Result := GetStdStyleString(stdstyle);
 
     //  Result := Result + ' | ' +  GetListAlignment(bookalign);
 
@@ -3822,87 +3821,87 @@ Result := GetStdStyleString(stdstyle);
     else
       Result := Result + ' | ' + strA;
 }
-END;
+End;
 
-FUNCTION GetListAlignment(Value: TWxlbbxAlignStyleItem): STRING;
-BEGIN
-Result := '';
-IF Value = wxLB_BOTTOM THEN
-BEGIN
-Result := 'wxLB_BOTTOM';
-exit;
-END;
-IF Value = wxLB_RIGHT THEN
-BEGIN
-Result := 'wxLB_RIGHT';
-exit;
-END;
-IF Value = wxLB_LEFT THEN
-BEGIN
-Result := 'wxLB_LEFT';
-exit;
-END;
-IF Value = wxLB_TOP THEN
-BEGIN
-Result := 'wxLB_TOP';
-exit;
-END;
-IF Value = wxLB_DEFAULT THEN
-BEGIN
-Result := 'wxLB_DEFAULT';
-exit;
-END;
+Function GetListAlignment(Value: TWxlbbxAlignStyleItem): String;
+Begin
+    Result := '';
+    If Value = wxLB_BOTTOM Then
+    Begin
+        Result := 'wxLB_BOTTOM';
+        exit;
+    End;
+    If Value = wxLB_RIGHT Then
+    Begin
+        Result := 'wxLB_RIGHT';
+        exit;
+    End;
+    If Value = wxLB_LEFT Then
+    Begin
+        Result := 'wxLB_LEFT';
+        exit;
+    End;
+    If Value = wxLB_TOP Then
+    Begin
+        Result := 'wxLB_TOP';
+        exit;
+    End;
+    If Value = wxLB_DEFAULT Then
+    Begin
+        Result := 'wxLB_DEFAULT';
+        exit;
+    End;
 
-END;
+End;
 
-FUNCTION GetNotebookSpecificStyle(stdstyle: TWxStdStyleSet;
+Function GetNotebookSpecificStyle(stdstyle: TWxStdStyleSet;
     { bookalign: TWxnbxAlignStyleItem; }
-nbxstyle: TWxnbxStyleSet): STRING;
-VAR
-strA: STRING;
-BEGIN
-Result := GetStdStyleString(stdstyle);
+    nbxstyle: TWxnbxStyleSet): String;
+Var
+    strA: String;
+Begin
+    Result := GetStdStyleString(stdstyle);
 
     {  if Result <> '' then
     Result := GetTabAlignment(bookalign) + ' | ' +  Result
   else
      Result := GetTabAlignment(bookalign);      }
 
-strA := trim(GetNotebookStyleString(nbxstyle));
+    strA := trim(GetNotebookStyleString(nbxstyle));
 
-IF strA <> '' THEN
-IF trim(Result) = '' THEN
-Result := strA
-ELSE
-Result := Result + ' | ' + strA;
+    If strA <> '' Then
+        If trim(Result) = '' Then
+            Result := strA
+        Else
+            Result := Result + ' | ' + strA;
 
-END;
+End;
 
-FUNCTION GetAuiNotebookSpecificStyle(stdstyle: TWxStdStyleSet;
+Function GetAuiNotebookSpecificStyle(stdstyle: TWxStdStyleSet;
     { bookalign: TWxnbxAlignStyleItem; }
-nbxstyle: TWxAuinbxStyleSet): STRING;
-VAR
-strA: STRING;
-BEGIN
-Result := GetStdStyleString(stdstyle);
+    nbxstyle: TWxAuinbxStyleSet): String;
+Var
+    strA: String;
+Begin
+    Result := GetStdStyleString(stdstyle);
 
     {  if Result <> '' then
       Result := GetTabAlignment(bookalign) + ' | ' +  Result
     else
        Result := GetTabAlignment(bookalign);      }
 
-strA := trim(GetAuiNotebookStyleString(nbxstyle));
+    strA := trim(GetAuiNotebookStyleString(nbxstyle));
 
-IF strA <> '' THEN
-IF trim(Result) = '' THEN
-Result := strA
-ELSE
-Result := Result + ' | ' + strA;
+    If strA <> '' Then
+        If trim(Result) = '' Then
+            Result := strA
+        Else
+            Result := Result + ' | ' + strA;
 
-END;
+End;
 
-FUNCTION GetTabAlignmentString(Value: TWxnbxAlignStyleItem): STRING;
-BEGIN
+Function GetTabAlignmentString(Value: TWxnbxAlignStyleItem): String;
+Begin
     {
   //Multiline MUST be set when using left or right placed tabs
   If (wxNB_RIGHT in FWx_NotebookStyle) or (wxNB_LEFT in FWx_NotebookStyle) then
@@ -3930,49 +3929,49 @@ BEGIN
     Self.TabPosition := tpTop;
 
 }
-Result := '';
-IF Value = wxNB_BOTTOM THEN
-BEGIN
-Result := 'wxNB_BOTTOM';
+    Result := '';
+    If Value = wxNB_BOTTOM Then
+    Begin
+        Result := 'wxNB_BOTTOM';
         //    Self.TabPosition :=  tpBottom;
-exit;
-END;
-IF Value = wxNB_RIGHT THEN
-BEGIN
-Result := 'wxNB_RIGHT';
+        exit;
+    End;
+    If Value = wxNB_RIGHT Then
+    Begin
+        Result := 'wxNB_RIGHT';
         //    self.Multiline := True;
         //    Self.TabPosition :=  tpRight;
-exit;
-END;
-IF Value = wxNB_LEFT THEN
-BEGIN
-Result := 'wxNB_LEFT';
+        exit;
+    End;
+    If Value = wxNB_LEFT Then
+    Begin
+        Result := 'wxNB_LEFT';
         //    self.Multiline := True;
         //    Self.TabPosition := tpLeft;
-exit;
-END;
-IF Value = wxNB_TOP THEN
-BEGIN
-Result := 'wxNB_TOP';
+        exit;
+    End;
+    If Value = wxNB_TOP Then
+    Begin
+        Result := 'wxNB_TOP';
         //    Self.TabPosition := tpTop;
-exit;
-END;
-IF Value = wxNB_DEFAULT THEN
-BEGIN
-Result := 'wxNB_DEFAULT';
+        exit;
+    End;
+    If Value = wxNB_DEFAULT Then
+    Begin
+        Result := 'wxNB_DEFAULT';
         //    Self.TabPosition := tpTop;
-exit;
-END;
+        exit;
+    End;
 
-END;
+End;
 
 
-FUNCTION GetToolbookSpecificStyle(stdstyle:
-TWxStdStyleSet{; tlbxstyle: TWxtlbxStyleSet}): STRING;
+Function GetToolbookSpecificStyle(stdstyle:
+    TWxStdStyleSet{; tlbxstyle: TWxtlbxStyleSet}): String;
     //var
     //  strA: string;
-BEGIN
-Result := GetStdStyleString(stdstyle);
+Begin
+    Result := GetStdStyleString(stdstyle);
 
     //  Result := GetToolAlignment(bookalign) + ' | ' +  Result;
 
@@ -3986,14 +3985,14 @@ Result := GetStdStyleString(stdstyle);
       Result := Result + ' | ' + strA;
 }
 
-END;
+End;
 
-FUNCTION GetTreebookSpecificStyle(stdstyle:
-TWxStdStyleSet{; bookalign: TWxtrbxAlignStyleItem}): STRING;
+Function GetTreebookSpecificStyle(stdstyle:
+    TWxStdStyleSet{; bookalign: TWxtrbxAlignStyleItem}): String;
     //var
     //  strA: string;
-BEGIN
-Result := GetStdStyleString(stdstyle);
+Begin
+    Result := GetStdStyleString(stdstyle);
 
     //  Result := GetTreeAlignment(bookalign) + ' | ' +  Result;
 
@@ -4005,68 +4004,68 @@ Result := GetStdStyleString(stdstyle);
     else
       Result := Result + ' | ' + strA;
 }
-END;
+End;
 
-FUNCTION GetTreeAlignment(Value: TWxtrbxAlignStyleItem): STRING;
-BEGIN
-Result := '';
-IF Value = wxBK_BOTTOM THEN
-BEGIN
-Result := 'wxBK_BOTTOM';
-exit;
-END;
-IF Value = wxBK_RIGHT THEN
-BEGIN
-Result := 'wxBK_RIGHT';
-exit;
-END;
-IF Value = wxBK_LEFT THEN
-BEGIN
-Result := 'wxBK_LEFT';
-exit;
-END;
-IF Value = wxBK_TOP THEN
-BEGIN
-Result := 'wxBK_TOP';
-exit;
-END;
-IF Value = wxBK_DEFAULT THEN
-BEGIN
-Result := 'wxBK_DEFAULT';
-exit;
-END;
+Function GetTreeAlignment(Value: TWxtrbxAlignStyleItem): String;
+Begin
+    Result := '';
+    If Value = wxBK_BOTTOM Then
+    Begin
+        Result := 'wxBK_BOTTOM';
+        exit;
+    End;
+    If Value = wxBK_RIGHT Then
+    Begin
+        Result := 'wxBK_RIGHT';
+        exit;
+    End;
+    If Value = wxBK_LEFT Then
+    Begin
+        Result := 'wxBK_LEFT';
+        exit;
+    End;
+    If Value = wxBK_TOP Then
+    Begin
+        Result := 'wxBK_TOP';
+        exit;
+    End;
+    If Value = wxBK_DEFAULT Then
+    Begin
+        Result := 'wxBK_DEFAULT';
+        exit;
+    End;
 
-END;
+End;
 
-FUNCTION GetRadioBoxSpecificStyle(stdstyle: TWxStdStyleSet;
-rbxstyle: TWxrbxStyleSet): STRING;
-VAR
-strA: STRING;
-BEGIN
-Result := GetStdStyleString(stdstyle);
-strA := trim(GetRadioBoxStyleString(rbxstyle));
-IF strA <> '' THEN
-IF trim(Result) = '' THEN
-Result := strA
-ELSE
-Result := Result + ' | ' + strA;
+Function GetRadioBoxSpecificStyle(stdstyle: TWxStdStyleSet;
+    rbxstyle: TWxrbxStyleSet): String;
+Var
+    strA: String;
+Begin
+    Result := GetStdStyleString(stdstyle);
+    strA := trim(GetRadioBoxStyleString(rbxstyle));
+    If strA <> '' Then
+        If trim(Result) = '' Then
+            Result := strA
+        Else
+            Result := Result + ' | ' + strA;
 
-END;
+End;
 
-FUNCTION GetStatusBarSpecificStyle(stdstyle: TWxStdStyleSet;
-sbrstyle: TWxsbrStyleSet): STRING;
-VAR
-strA: STRING;
-BEGIN
-Result := GetStdStyleString(stdstyle);
-strA := trim(GetStatusBarStyleString(sbrstyle));
-IF strA <> '' THEN
-IF trim(Result) = '' THEN
-Result := strA
-ELSE
-Result := Result + ' | ' + strA;
+Function GetStatusBarSpecificStyle(stdstyle: TWxStdStyleSet;
+    sbrstyle: TWxsbrStyleSet): String;
+Var
+    strA: String;
+Begin
+    Result := GetStdStyleString(stdstyle);
+    strA := trim(GetStatusBarStyleString(sbrstyle));
+    If strA <> '' Then
+        If trim(Result) = '' Then
+            Result := strA
+        Else
+            Result := Result + ' | ' + strA;
 
-END;
+End;
 
 //function GetToggleButtonSpecificStyle(stdstyle: TWxStdStyleSet;tbtnstyle:TWxtbtnStyleSet):String;
 //var
@@ -4086,72 +4085,72 @@ END;
 //    Result := ', ' + Result;
 //end;
 
-FUNCTION GetScrolledWindowSpecificStyle(stdstyle: TWxStdStyleSet;
-scrWinStyle: TWxScrWinStyleSet): STRING;
-VAR
-strA: STRING;
-BEGIN
-Result := GetStdStyleString(stdstyle);
-strA := trim(GetScrolledWindowStyleString(scrWinStyle));
-IF strA <> '' THEN
-IF trim(Result) = '' THEN
-Result := strA
-ELSE
-Result := Result + ' | ' + strA;
+Function GetScrolledWindowSpecificStyle(stdstyle: TWxStdStyleSet;
+    scrWinStyle: TWxScrWinStyleSet): String;
+Var
+    strA: String;
+Begin
+    Result := GetStdStyleString(stdstyle);
+    strA := trim(GetScrolledWindowStyleString(scrWinStyle));
+    If strA <> '' Then
+        If trim(Result) = '' Then
+            Result := strA
+        Else
+            Result := Result + ' | ' + strA;
 
-END;
+End;
 
-FUNCTION GetHtmlWindowSpecificStyle(stdstyle: TWxStdStyleSet;
-htmlWinStyle: TWxHtmlWinStyleSet): STRING;
-VAR
-strA: STRING;
-BEGIN
-Result := GetStdStyleString(stdstyle);
-strA := trim(GetHtmlWindowStyleString(htmlWinStyle));
-IF strA <> '' THEN
-IF trim(Result) = '' THEN
-Result := strA
-ELSE
-Result := Result + ' | ' + strA;
+Function GetHtmlWindowSpecificStyle(stdstyle: TWxStdStyleSet;
+    htmlWinStyle: TWxHtmlWinStyleSet): String;
+Var
+    strA: String;
+Begin
+    Result := GetStdStyleString(stdstyle);
+    strA := trim(GetHtmlWindowStyleString(htmlWinStyle));
+    If strA <> '' Then
+        If trim(Result) = '' Then
+            Result := strA
+        Else
+            Result := Result + ' | ' + strA;
 
-END;
+End;
 
-FUNCTION GetSplitterWindowSpecificStyle(stdstyle: TWxStdStyleSet;
-SplitterWinStyle: TWxSplitterWinStyleSet): STRING;
-VAR
-strA: STRING;
-BEGIN
-Result := GetStdStyleString(stdstyle);
-strA := trim(GetSplitterWindowStyleString(SplitterWinStyle));
-IF strA <> '' THEN
-IF trim(Result) = '' THEN
-Result := strA
-ELSE
-Result := Result + ' | ' + strA;
+Function GetSplitterWindowSpecificStyle(stdstyle: TWxStdStyleSet;
+    SplitterWinStyle: TWxSplitterWinStyleSet): String;
+Var
+    strA: String;
+Begin
+    Result := GetStdStyleString(stdstyle);
+    strA := trim(GetSplitterWindowStyleString(SplitterWinStyle));
+    If strA <> '' Then
+        If trim(Result) = '' Then
+            Result := strA
+        Else
+            Result := Result + ' | ' + strA;
 
-END;
+End;
 
-FUNCTION GetToolBarSpecificStyle(stdstyle: TWxStdStyleSet;
-tbrstyle: TWxtbrStyleSet): STRING;
-VAR
-strA: STRING;
-BEGIN
-Result := GetStdStyleString(stdstyle);
-strA := trim(GetToolBarStyleString(tbrstyle));
-IF strA <> '' THEN
-IF trim(Result) = '' THEN
-Result := strA
-ELSE
-Result := Result + ' | ' + strA;
+Function GetToolBarSpecificStyle(stdstyle: TWxStdStyleSet;
+    tbrstyle: TWxtbrStyleSet): String;
+Var
+    strA: String;
+Begin
+    Result := GetStdStyleString(stdstyle);
+    strA := trim(GetToolBarStyleString(tbrstyle));
+    If strA <> '' Then
+        If trim(Result) = '' Then
+            Result := strA
+        Else
+            Result := Result + ' | ' + strA;
 
-END;
+End;
 
-FUNCTION GetAuiToolBarSpecificStyle(stdstyle: TWxStdStyleSet;
-tbrstyle: TWxAuiTbrStyleSet): STRING;
+Function GetAuiToolBarSpecificStyle(stdstyle: TWxStdStyleSet;
+    tbrstyle: TWxAuiTbrStyleSet): String;
     //var
     //  strA: string;
-BEGIN
-Result := GetStdStyleString(stdstyle);
+Begin
+    Result := GetStdStyleString(stdstyle);
     {mn
     strA := trim(GetToolBarStyleString(tbrstyle));
     if strA <> '' then
@@ -4160,250 +4159,250 @@ Result := GetStdStyleString(stdstyle);
       else
         Result := Result + ' | ' + strA;
   }
-END;
+End;
 
 //End here
 
-FUNCTION RGBFormatStrToColor(strColorValue: STRING): TColor;
-VAR
-strLst: TStringList;
-BEGIN
+Function RGBFormatStrToColor(strColorValue: String): TColor;
+Var
+    strLst: TStringList;
+Begin
 
-strLst := TStringList.Create;
+    strLst := TStringList.Create;
 
-TRY
+    Try
 
-strTokenToStrings(strColorValue, ',', strLst);
-IF strLst.Count > 2 THEN
-Result := RGB(StrToInt(strLst[0]), StrToInt(strLst[1]),
-StrToInt(strLst[2]))
-ELSE
-Result := RGB(0, 0, 0);
+        strTokenToStrings(strColorValue, ',', strLst);
+        If strLst.Count > 2 Then
+            Result := RGB(StrToInt(strLst[0]), StrToInt(strLst[1]),
+                StrToInt(strLst[2]))
+        Else
+            Result := RGB(0, 0, 0);
 
-FINALLY
-strLst.Destroy;
-END;
-END;
+    Finally
+        strLst.Destroy;
+    End;
+End;
 
-FUNCTION GetColorFromString(strColorValue: STRING): TColor;
-VAR
-strChoice, strCmd: STRING;
-BEGIN
-strChoice := copy(strColorValue, 5, length(strColorValue));
-strCmd := copy(strColorValue, 0, 4);
-IF AnsiSameText(strCmd, 'CUS:') THEN
-BEGIN
-Result := RGBFormatStrToColor(strChoice);
-exit;
-END;
-Result := GetGeneralColorFromString(strChoice);
-END;
+Function GetColorFromString(strColorValue: String): TColor;
+Var
+    strChoice, strCmd: String;
+Begin
+    strChoice := copy(strColorValue, 5, length(strColorValue));
+    strCmd := copy(strColorValue, 0, 4);
+    If AnsiSameText(strCmd, 'CUS:') Then
+    Begin
+        Result := RGBFormatStrToColor(strChoice);
+        exit;
+    End;
+    Result := GetGeneralColorFromString(strChoice);
+End;
 
-PROCEDURE PopulateGenericProperties(VAR PropertyList: TStringList);
-BEGIN
-PropertyList.Add('Wx_Enabled:' + wx_designer.GetLangString(ID_WX_ENABLED));
-PropertyList.Add('Wx_Class:' + wx_designer.GetLangString(ID_WX_BASECLASS));
-PropertyList.Add('Wx_Hidden:' + wx_designer.GetLangString(ID_WX_HIDDEN));
-PropertyList.Add('Wx_Default:' + wx_designer.GetLangString(ID_WX_DEFAULT));
-PropertyList.Add('Wx_HelpText:' + wx_designer.GetLangString(ID_WX_HELPTEXT));
-PropertyList.Add('Wx_IDName:' + wx_designer.GetLangString(ID_WX_IDNAME));
-PropertyList.Add('Wx_IDValue:' + wx_designer.GetLangString(ID_WX_IDVALUE));
-PropertyList.Add('Wx_ToolTip:' + wx_designer.GetLangString(ID_WX_TOOLTIP));
-PropertyList.Add('Wx_Comments:' + wx_designer.GetLangString(ID_WX_COMMENTS));
-PropertyList.Add('Wx_ProxyValidatorString:'
-+ wx_designer.GetLangString(ID_WX_VALIDATORCODE));
-PropertyList.Add('Wx_ProxyBGColorString:'
-+ wx_designer.GetLangString(ID_WX_BACKGROUNDCOLOR));
-PropertyList.Add('Wx_ProxyFGColorString:'
-+ wx_designer.GetLangString(ID_WX_FOREGROUNDCOLOR));
+Procedure PopulateGenericProperties(Var PropertyList: TStringList);
+Begin
+    PropertyList.Add('Wx_Enabled:' + wx_designer.GetLangString(ID_WX_ENABLED));
+    PropertyList.Add('Wx_Class:' + wx_designer.GetLangString(ID_WX_BASECLASS));
+    PropertyList.Add('Wx_Hidden:' + wx_designer.GetLangString(ID_WX_HIDDEN));
+    PropertyList.Add('Wx_Default:' + wx_designer.GetLangString(ID_WX_DEFAULT));
+    PropertyList.Add('Wx_HelpText:' + wx_designer.GetLangString(ID_WX_HELPTEXT));
+    PropertyList.Add('Wx_IDName:' + wx_designer.GetLangString(ID_WX_IDNAME));
+    PropertyList.Add('Wx_IDValue:' + wx_designer.GetLangString(ID_WX_IDVALUE));
+    PropertyList.Add('Wx_ToolTip:' + wx_designer.GetLangString(ID_WX_TOOLTIP));
+    PropertyList.Add('Wx_Comments:' + wx_designer.GetLangString(ID_WX_COMMENTS));
+    PropertyList.Add('Wx_ProxyValidatorString:'
+        + wx_designer.GetLangString(ID_WX_VALIDATORCODE));
+    PropertyList.Add('Wx_ProxyBGColorString:'
+        + wx_designer.GetLangString(ID_WX_BACKGROUNDCOLOR));
+    PropertyList.Add('Wx_ProxyFGColorString:'
+        + wx_designer.GetLangString(ID_WX_FOREGROUNDCOLOR));
 
-PropertyList.Add('Wx_StretchFactor:'
-+ wx_designer.GetLangString(ID_WX_STRETCHFACTOR));
-PropertyList.Add('Wx_Alignment:' + wx_designer.GetLangString(
-ID_WX_ALIGNMENT));
-PropertyList.Add('wxALIGN_LEFT:wxALIGN_LEFT');
-PropertyList.Add('wxALIGN_RIGHT:wxALIGN_RIGHT');
-PropertyList.Add('wxALIGN_TOP:wxALIGN_TOP');
-PropertyList.Add('wxALIGN_BOTTOM:wxALIGN_BOTTOM');
-PropertyList.Add('wxALIGN_CENTER:wxALIGN_CENTER');
-PropertyList.Add('wxALIGN_CENTER_HORIZONTAL:wxALIGN_CENTER_HORIZONTAL');
-PropertyList.Add('wxALIGN_CENTER_VERTICAL:wxALIGN_CENTER_VERTICAL');
-PropertyList.Add('wxEXPAND:wxEXPAND');
+    PropertyList.Add('Wx_StretchFactor:'
+        + wx_designer.GetLangString(ID_WX_STRETCHFACTOR));
+    PropertyList.Add('Wx_Alignment:' + wx_designer.GetLangString(
+        ID_WX_ALIGNMENT));
+    PropertyList.Add('wxALIGN_LEFT:wxALIGN_LEFT');
+    PropertyList.Add('wxALIGN_RIGHT:wxALIGN_RIGHT');
+    PropertyList.Add('wxALIGN_TOP:wxALIGN_TOP');
+    PropertyList.Add('wxALIGN_BOTTOM:wxALIGN_BOTTOM');
+    PropertyList.Add('wxALIGN_CENTER:wxALIGN_CENTER');
+    PropertyList.Add('wxALIGN_CENTER_HORIZONTAL:wxALIGN_CENTER_HORIZONTAL');
+    PropertyList.Add('wxALIGN_CENTER_VERTICAL:wxALIGN_CENTER_VERTICAL');
+    PropertyList.Add('wxEXPAND:wxEXPAND');
 
-PropertyList.Add('Wx_Border:' + wx_designer.GetLangString(ID_WX_BORDER));
-PropertyList.Add('Wx_BorderAlignment:'
-+ wx_designer.GetLangString(ID_WX_BORDERS));
-PropertyList.Add('wxALL:wxALL');
-PropertyList.Add('wxTOP:wxTOP');
-PropertyList.Add('wxLEFT:wxLEFT');
-PropertyList.Add('wxRIGHT:wxRIGHT');
-PropertyList.Add('wxBOTTOM:wxBOTTOM');
+    PropertyList.Add('Wx_Border:' + wx_designer.GetLangString(ID_WX_BORDER));
+    PropertyList.Add('Wx_BorderAlignment:'
+        + wx_designer.GetLangString(ID_WX_BORDERS));
+    PropertyList.Add('wxALL:wxALL');
+    PropertyList.Add('wxTOP:wxTOP');
+    PropertyList.Add('wxLEFT:wxLEFT');
+    PropertyList.Add('wxRIGHT:wxRIGHT');
+    PropertyList.Add('wxBOTTOM:wxBOTTOM');
 
-PropertyList.Add('Wx_GeneralStyle:'
-+ wx_designer.GetLangString(ID_WX_GENERALSTYLES));
+    PropertyList.Add('Wx_GeneralStyle:'
+        + wx_designer.GetLangString(ID_WX_GENERALSTYLES));
     //PropertyList.Add('wxNO_3D:wxNO_3D'); // EAB: this ain't consistant with the set declaration above of TWxStdStyleItem or wxWidgets documentation.
-PropertyList.Add('wxALWAYS_SHOW_SB:wxALWAYS_SHOW_SB');
-PropertyList.Add('wxNO_BORDER:wxNO_BORDER');
-PropertyList.Add('wxWANTS_CHARS:wxWANTS_CHARS');
-PropertyList.Add('wxCLIP_CHILDREN:wxCLIP_CHILDREN');
-PropertyList.Add('wxSIMPLE_BORDER:wxSIMPLE_BORDER');
-PropertyList.Add('wxDOUBLE_BORDER:wxDOUBLE_BORDER');
-PropertyList.Add('wxSUNKEN_BORDER:wxSUNKEN_BORDER');
-PropertyList.Add('wxRAISED_BORDER:wxRAISED_BORDER');
-PropertyList.Add('wxSTATIC_BORDER:wxSTATIC_BORDER');
-PropertyList.Add('wxTAB_TRAVERSAL:wxTAB_TRAVERSAL');
-PropertyList.Add('wxTRANSPARENT_WINDOW:wxTRANSPARENT_WINDOW');
-PropertyList.Add('wxNO_FULL_REPAINT_ON_RESIZE:wxNO_FULL_REPAINT_ON_RESIZE');
-PropertyList.Add('wxVSCROLL:wxVSCROLL');
-PropertyList.Add('wxHSCROLL:wxHSCROLL');
+    PropertyList.Add('wxALWAYS_SHOW_SB:wxALWAYS_SHOW_SB');
+    PropertyList.Add('wxNO_BORDER:wxNO_BORDER');
+    PropertyList.Add('wxWANTS_CHARS:wxWANTS_CHARS');
+    PropertyList.Add('wxCLIP_CHILDREN:wxCLIP_CHILDREN');
+    PropertyList.Add('wxSIMPLE_BORDER:wxSIMPLE_BORDER');
+    PropertyList.Add('wxDOUBLE_BORDER:wxDOUBLE_BORDER');
+    PropertyList.Add('wxSUNKEN_BORDER:wxSUNKEN_BORDER');
+    PropertyList.Add('wxRAISED_BORDER:wxRAISED_BORDER');
+    PropertyList.Add('wxSTATIC_BORDER:wxSTATIC_BORDER');
+    PropertyList.Add('wxTAB_TRAVERSAL:wxTAB_TRAVERSAL');
+    PropertyList.Add('wxTRANSPARENT_WINDOW:wxTRANSPARENT_WINDOW');
+    PropertyList.Add('wxNO_FULL_REPAINT_ON_RESIZE:wxNO_FULL_REPAINT_ON_RESIZE');
+    PropertyList.Add('wxVSCROLL:wxVSCROLL');
+    PropertyList.Add('wxHSCROLL:wxHSCROLL');
 
-PropertyList.Add('Font:' + wx_designer.GetLangString(ID_WX_FONT));
-PropertyList.Add('Name:' + wx_designer.GetLangString(ID_WX_NAME));
-PropertyList.Add('Width:' + wx_designer.GetLangString(ID_WX_WIDTH));
-PropertyList.Add('Height:' + wx_designer.GetLangString(ID_WX_HEIGHT));
-PropertyList.Add('Left:' + wx_designer.GetLangString(ID_WX_LEFT));
-PropertyList.Add('Top:' + wx_designer.GetLangString(ID_WX_TOP));
-END;
+    PropertyList.Add('Font:' + wx_designer.GetLangString(ID_WX_FONT));
+    PropertyList.Add('Name:' + wx_designer.GetLangString(ID_WX_NAME));
+    PropertyList.Add('Width:' + wx_designer.GetLangString(ID_WX_WIDTH));
+    PropertyList.Add('Height:' + wx_designer.GetLangString(ID_WX_HEIGHT));
+    PropertyList.Add('Left:' + wx_designer.GetLangString(ID_WX_LEFT));
+    PropertyList.Add('Top:' + wx_designer.GetLangString(ID_WX_TOP));
+End;
 
-FUNCTION SizerAlignmentToStr(SizerAlignment: TWxSizerAlignmentSet): STRING;
-VAR
-Styles: TStringList;
-I: INTEGER;
-BEGIN
-Styles := TStringList.Create;
-IF wxALIGN_LEFT IN SizerAlignment THEN
-Styles.Add('wxALIGN_LEFT');
+Function SizerAlignmentToStr(SizerAlignment: TWxSizerAlignmentSet): String;
+Var
+    Styles: TStringList;
+    I: Integer;
+Begin
+    Styles := TStringList.Create;
+    If wxALIGN_LEFT In SizerAlignment Then
+        Styles.Add('wxALIGN_LEFT');
 
-IF wxALIGN_RIGHT IN SizerAlignment THEN
-Styles.Add('wxALIGN_RIGHT');
+    If wxALIGN_RIGHT In SizerAlignment Then
+        Styles.Add('wxALIGN_RIGHT');
 
-IF wxALIGN_TOP IN SizerAlignment THEN
-Styles.Add('wxALIGN_TOP');
+    If wxALIGN_TOP In SizerAlignment Then
+        Styles.Add('wxALIGN_TOP');
 
-IF wxALIGN_BOTTOM IN SizerAlignment THEN
-Styles.Add('wxALIGN_BOTTOM');
+    If wxALIGN_BOTTOM In SizerAlignment Then
+        Styles.Add('wxALIGN_BOTTOM');
 
-IF wxALIGN_CENTER IN SizerAlignment THEN
-Styles.Add('wxALIGN_CENTER');
+    If wxALIGN_CENTER In SizerAlignment Then
+        Styles.Add('wxALIGN_CENTER');
 
-IF wxALIGN_CENTER_HORIZONTAL IN SizerAlignment THEN
-Styles.Add('wxALIGN_CENTER_HORIZONTAL');
+    If wxALIGN_CENTER_HORIZONTAL In SizerAlignment Then
+        Styles.Add('wxALIGN_CENTER_HORIZONTAL');
 
-IF wxALIGN_CENTER_VERTICAL IN SizerAlignment THEN
-Styles.Add('wxALIGN_CENTER_VERTICAL');
+    If wxALIGN_CENTER_VERTICAL In SizerAlignment Then
+        Styles.Add('wxALIGN_CENTER_VERTICAL');
 
-IF wxEXPAND IN SizerAlignment THEN
-Styles.Add('wxEXPAND');
+    If wxEXPAND In SizerAlignment Then
+        Styles.Add('wxEXPAND');
 
-IF Styles.Count = 0 THEN
-Result := '0'
-ELSE
-BEGIN
-Result := Styles[0];
-FOR I := 1 TO Styles.Count - 1 DO
-Result := Result + ' | ' + Styles[I];
-END;
+    If Styles.Count = 0 Then
+        Result := '0'
+    Else
+    Begin
+        Result := Styles[0];
+        For I := 1 To Styles.Count - 1 Do
+            Result := Result + ' | ' + Styles[I];
+    End;
 
-Styles.Free;
-END;
+    Styles.Free;
+End;
 
-FUNCTION BorderAlignmentToStr(BorderAlignment: TWxBorderAlignment): STRING;
-BEGIN
-Result := '';
-IF (wxALL IN BorderAlignment) THEN
-Result := Result + ' | wxALL';
-IF (wxLEFT IN BorderAlignment) THEN
-Result := Result + ' | wxLEFT';
-IF (wxRIGHT IN BorderAlignment) THEN
-Result := Result + ' | wxRIGHT';
-IF (wxTOP IN BorderAlignment) THEN
-Result := Result + ' | wxTOP';
-IF (wxBOTTOM IN BorderAlignment) THEN
-Result := Result + ' | wxBOTTOM';
+Function BorderAlignmentToStr(BorderAlignment: TWxBorderAlignment): String;
+Begin
+    Result := '';
+    If (wxALL In BorderAlignment) Then
+        Result := Result + ' | wxALL';
+    If (wxLEFT In BorderAlignment) Then
+        Result := Result + ' | wxLEFT';
+    If (wxRIGHT In BorderAlignment) Then
+        Result := Result + ' | wxRIGHT';
+    If (wxTOP In BorderAlignment) Then
+        Result := Result + ' | wxTOP';
+    If (wxBOTTOM In BorderAlignment) Then
+        Result := Result + ' | wxBOTTOM';
 
-IF (Length(Result) = 0) THEN
-Result := '0'
-ELSE
-Result := Copy(Result, 4, Length(Result));
-END;
+    If (Length(Result) = 0) Then
+        Result := '0'
+    Else
+        Result := Copy(Result, 4, Length(Result));
+End;
 
-FUNCTION GetStdStyleString(stdStyle: TWxStdStyleSet): STRING;
-VAR
-I: INTEGER;
-strLst: TStringList;
-BEGIN
+Function GetStdStyleString(stdStyle: TWxStdStyleSet): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
 
-strLst := TStringList.Create;
+    strLst := TStringList.Create;
 
-TRY
+    Try
 
-IF wxSIMPLE_BORDER IN stdStyle THEN
-strLst.add('wxSIMPLE_BORDER');
+        If wxSIMPLE_BORDER In stdStyle Then
+            strLst.add('wxSIMPLE_BORDER');
 
-IF wxDOUBLE_BORDER IN stdStyle THEN
-strLst.add('wxDOUBLE_BORDER');
+        If wxDOUBLE_BORDER In stdStyle Then
+            strLst.add('wxDOUBLE_BORDER');
 
-IF wxSUNKEN_BORDER IN stdStyle THEN
-strLst.add('wxSUNKEN_BORDER');
+        If wxSUNKEN_BORDER In stdStyle Then
+            strLst.add('wxSUNKEN_BORDER');
 
-IF wxRAISED_BORDER IN stdStyle THEN
-strLst.add('wxRAISED_BORDER');
+        If wxRAISED_BORDER In stdStyle Then
+            strLst.add('wxRAISED_BORDER');
 
-IF wxSTATIC_BORDER IN stdStyle THEN
-strLst.add('wxSTATIC_BORDER');
+        If wxSTATIC_BORDER In stdStyle Then
+            strLst.add('wxSTATIC_BORDER');
 
-IF wxTRANSPARENT_WINDOW IN stdStyle THEN
-strLst.add('wxTRANSPARENT_WINDOW');
+        If wxTRANSPARENT_WINDOW In stdStyle Then
+            strLst.add('wxTRANSPARENT_WINDOW');
 
-IF wxTAB_TRAVERSAL IN stdStyle THEN
-strLst.add('wxTAB_TRAVERSAL');
+        If wxTAB_TRAVERSAL In stdStyle Then
+            strLst.add('wxTAB_TRAVERSAL');
 
-IF wxWANTS_CHARS IN stdStyle THEN
-strLst.add('wxWANTS_CHARS');
+        If wxWANTS_CHARS In stdStyle Then
+            strLst.add('wxWANTS_CHARS');
 
-IF wxNO_FULL_REPAINT_ON_RESIZE IN stdStyle THEN
-strLst.add('wxNO_FULL_REPAINT_ON_RESIZE');
+        If wxNO_FULL_REPAINT_ON_RESIZE In stdStyle Then
+            strLst.add('wxNO_FULL_REPAINT_ON_RESIZE');
 
-IF wxVSCROLL IN stdStyle THEN
-strLst.add('wxVSCROLL');
+        If wxVSCROLL In stdStyle Then
+            strLst.add('wxVSCROLL');
 
-IF wxHSCROLL IN stdStyle THEN
-strLst.add('wxHSCROLL');
+        If wxHSCROLL In stdStyle Then
+            strLst.add('wxHSCROLL');
 
-IF wxCLIP_CHILDREN IN stdStyle THEN
-strLst.add('wxCLIP_CHILDREN');
+        If wxCLIP_CHILDREN In stdStyle Then
+            strLst.add('wxCLIP_CHILDREN');
 
-IF wxNO_BORDER IN stdStyle THEN
-strLst.add('wxNO_BORDER');
+        If wxNO_BORDER In stdStyle Then
+            strLst.add('wxNO_BORDER');
 
-IF wxALWAYS_SHOW_SB IN stdStyle THEN
-strLst.add('wxALWAYS_SHOW_SB');
+        If wxALWAYS_SHOW_SB In stdStyle Then
+            strLst.add('wxALWAYS_SHOW_SB');
 
-IF wxFULL_REPAINT_ON_RESIZE IN stdStyle THEN
-strLst.add('wxFULL_REPAINT_ON_RESIZE');
+        If wxFULL_REPAINT_ON_RESIZE In stdStyle Then
+            strLst.add('wxFULL_REPAINT_ON_RESIZE');
 
-IF strLst.Count = 0 THEN
-Result := ''
-ELSE
-FOR I := 0 TO strLst.Count - 1 DO // Iterate
-IF i <> strLst.Count - 1 THEN
-Result := Result + strLst[i] + ' | '
-ELSE
-Result := Result + strLst[i] // for
-;
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i] // for
+        ;
         //sendDebug(Result);
-FINALLY
-strLst.Destroy;
-END;
-END;
+    Finally
+        strLst.Destroy;
+    End;
+End;
 
-FUNCTION GetAnimationCtrlSpecificStyle(stdstyle:
-TWxStdStyleSet{;
-  dlgstyle: TWxAnimationCtrlStyleSet}): STRING;
+Function GetAnimationCtrlSpecificStyle(stdstyle:
+    TWxStdStyleSet{;
+  dlgstyle: TWxAnimationCtrlStyleSet}): String;
     //var
     //  strA: string;
-BEGIN
-Result := GetStdStyleString(stdstyle);
+Begin
+    Result := GetStdStyleString(stdstyle);
     {  strA := trim(GetAnimationCtrlStyleString(dlgstyle));
   if strA <> '' then
     if trim(Result) = '' then
@@ -4411,3035 +4410,2791 @@ Result := GetStdStyleString(stdstyle);
     else
       Result := Result + ' | ' + strA;  }//mn all we want at the moment is the standard style string
 
-END;
+End;
 
-FUNCTION GetButtonSpecificStyle(stdstyle: TWxStdStyleSet;
-dlgstyle: TWxBtnStyleSet): STRING;
-VAR
-strA: STRING;
-BEGIN
-Result := GetStdStyleString(stdstyle);
-strA := trim(GetButtonStyleString(dlgstyle));
-IF strA <> '' THEN
-IF trim(Result) = '' THEN
-Result := strA
-ELSE
-Result := Result + ' | ' + strA;
+Function GetButtonSpecificStyle(stdstyle: TWxStdStyleSet;
+    dlgstyle: TWxBtnStyleSet): String;
+Var
+    strA: String;
+Begin
+    Result := GetStdStyleString(stdstyle);
+    strA := trim(GetButtonStyleString(dlgstyle));
+    If strA <> '' Then
+        If trim(Result) = '' Then
+            Result := strA
+        Else
+            Result := Result + ' | ' + strA;
 
-END;
+End;
 
-FUNCTION GetLabelSpecificStyle(stdstyle: TWxStdStyleSet;
-dlgstyle: TWxLbStyleSet): STRING;
-VAR
-strA: STRING;
-BEGIN
-Result := GetStdStyleString(stdstyle);
-strA := trim(GetLbStyleString(dlgstyle));
-IF strA <> '' THEN
-IF trim(Result) = '' THEN
-Result := strA
-ELSE
-Result := Result + ' | ' + strA;
+Function GetLabelSpecificStyle(stdstyle: TWxStdStyleSet;
+    dlgstyle: TWxLbStyleSet): String;
+Var
+    strA: String;
+Begin
+    Result := GetStdStyleString(stdstyle);
+    strA := trim(GetLbStyleString(dlgstyle));
+    If strA <> '' Then
+        If trim(Result) = '' Then
+            Result := strA
+        Else
+            Result := Result + ' | ' + strA;
 
-END;
+End;
 
-FUNCTION GetStdDialogButtonsSpecificStyle(btnstyle:
-TWxStdDialogButtons): STRING;
-BEGIN
-IF wxID_OK IN btnstyle THEN
-Result := Result + ' | wxOK'
-ELSE
-BEGIN
-IF wxID_YES IN btnstyle THEN
-Result := Result + ' | wxYES'
-ELSE
-IF wxID_SAVE IN btnstyle THEN
-Result := Result + ' | wxSAVE';
-END;
-IF wxID_NO IN btnstyle THEN
-Result := Result + ' | wxNO';
-IF wxID_CANCEL IN btnstyle THEN
-Result := Result + ' | wxCANCEL';
-IF wxID_APPLY IN btnstyle THEN
-Result := Result + ' | wxAPPLY';
+Function GetStdDialogButtonsSpecificStyle(btnstyle:
+    TWxStdDialogButtons): String;
+Begin
+    If wxID_OK In btnstyle Then
+        Result := Result + ' | wxOK'
+    Else
+    Begin
+        If wxID_YES In btnstyle Then
+            Result := Result + ' | wxYES'
+        Else
+        If wxID_SAVE In btnstyle Then
+            Result := Result + ' | wxSAVE';
+    End;
+    If wxID_NO In btnstyle Then
+        Result := Result + ' | wxNO';
+    If wxID_CANCEL In btnstyle Then
+        Result := Result + ' | wxCANCEL';
+    If wxID_APPLY In btnstyle Then
+        Result := Result + ' | wxAPPLY';
 
-IF wxID_HELP IN btnstyle THEN
-Result := Result + ' | wxHELP'
-ELSE
-IF wxID_CONTEXT_HELP IN btnstyle THEN
-Result := Result + ' | wxCONTEXTHELP';
+    If wxID_HELP In btnstyle Then
+        Result := Result + ' | wxHELP'
+    Else
+    If wxID_CONTEXT_HELP In btnstyle Then
+        Result := Result + ' | wxCONTEXTHELP';
 
-IF Result <> '' THEN
-Result := Copy(Result, 4, Length(Result))
-ELSE
-Result := '0';
-END;
+    If Result <> '' Then
+        Result := Copy(Result, 4, Length(Result))
+    Else
+        Result := '0';
+End;
 
-FUNCTION GetDialogSpecificStyle(stdstyle: TWxStdStyleSet;
-dlgstyle: TWxDlgStyleSet; wxclassname: STRING): STRING;
-VAR
-strA: STRING;
-BEGIN
-Result := GetStdStyleString(stdstyle);
-strA := trim(GetDlgStyleString(dlgstyle, wxclassname));
-IF strA <> '' THEN
-IF trim(Result) = '' THEN
-Result := strA
-ELSE
-Result := Result + ' | ' + strA;
-END;
+Function GetDialogSpecificStyle(stdstyle: TWxStdStyleSet;
+    dlgstyle: TWxDlgStyleSet; wxclassname: String): String;
+Var
+    strA: String;
+Begin
+    Result := GetStdStyleString(stdstyle);
+    strA := trim(GetDlgStyleString(dlgstyle, wxclassname));
+    If strA <> '' Then
+        If trim(Result) = '' Then
+            Result := strA
+        Else
+            Result := Result + ' | ' + strA;
+End;
 
-FUNCTION IsControlWxWindow(ctrl: TControl): BOOLEAN;
-VAR
-cntIntf: IWxWindowInterface;
-BEGIN
-Result := FALSE;
-IF NOT assigned(ctrl) THEN
-Exit;
-Result := ctrl.GetInterface(IID_IWxWindowInterface, cntIntf);
-END;
+Function IsControlWxWindow(ctrl: TControl): Boolean;
+Var
+    cntIntf: IWxWindowInterface;
+Begin
+    Result := False;
+    If Not assigned(ctrl) Then
+        Exit;
+    Result := ctrl.GetInterface(IID_IWxWindowInterface, cntIntf);
+End;
 
-FUNCTION IsControlWxSizer(ctrl: TControl): BOOLEAN;
-VAR
-cntIntf: IWxContainerAndSizerInterface;
-BEGIN
-Result := FALSE;
-IF NOT assigned(ctrl) THEN
-Exit;
-Result := ctrl.GetInterface(IID_IWxContainerAndSizerInterface, cntIntf);
-END;
+Function IsControlWxSizer(ctrl: TControl): Boolean;
+Var
+    cntIntf: IWxContainerAndSizerInterface;
+Begin
+    Result := False;
+    If Not assigned(ctrl) Then
+        Exit;
+    Result := ctrl.GetInterface(IID_IWxContainerAndSizerInterface, cntIntf);
+End;
 
-FUNCTION IsControlWxContainer(ctrl: TControl): BOOLEAN;
-VAR
-cntIntf: IWxContainerInterface;
-BEGIN
-Result := FALSE;
-IF NOT assigned(ctrl) THEN
-Exit;
-Result := ctrl.GetInterface(IDD_IWxContainerInterface, cntIntf);
-END;
+Function IsControlWxContainer(ctrl: TControl): Boolean;
+Var
+    cntIntf: IWxContainerInterface;
+Begin
+    Result := False;
+    If Not assigned(ctrl) Then
+        Exit;
+    Result := ctrl.GetInterface(IDD_IWxContainerInterface, cntIntf);
+End;
 
-FUNCTION IsControlWxToolBar(ctrl: TControl): BOOLEAN;
-VAR
-cntIntf: IWxToolBarInterface;
-BEGIN
-Result := FALSE;
-IF NOT assigned(ctrl) THEN
-Exit;
-Result := ctrl.GetInterface(IID_IWxToolBarInterface, cntIntf);
-END;
+Function IsControlWxToolBar(ctrl: TControl): Boolean;
+Var
+    cntIntf: IWxToolBarInterface;
+Begin
+    Result := False;
+    If Not assigned(ctrl) Then
+        Exit;
+    Result := ctrl.GetInterface(IID_IWxToolBarInterface, cntIntf);
+End;
 
-FUNCTION IsControlWxStatusBar(ctrl: TControl): BOOLEAN;
-VAR
-cntIntf: IWxStatusBarInterface;
-BEGIN
-Result := FALSE;
-IF NOT assigned(ctrl) THEN
-Exit;
-Result := ctrl.GetInterface(IDD_IWxStatusBarInterface, cntIntf);
-END;
+Function IsControlWxStatusBar(ctrl: TControl): Boolean;
+Var
+    cntIntf: IWxStatusBarInterface;
+Begin
+    Result := False;
+    If Not assigned(ctrl) Then
+        Exit;
+    Result := ctrl.GetInterface(IDD_IWxStatusBarInterface, cntIntf);
+End;
 
-FUNCTION IsControlWxNonVisible(ctrl: TControl): BOOLEAN;
-BEGIN
-Result := ctrl IS TWxNonVisibleBaseComponent;
-END;
+Function IsControlWxNonVisible(ctrl: TControl): Boolean;
+Begin
+    Result := ctrl Is TWxNonVisibleBaseComponent;
+End;
 
-FUNCTION IsControlWxAuiManager(ctrl: TControl): BOOLEAN;
-VAR
-cntIntf: IWxAuiManagerInterface;
-BEGIN
-Result := FALSE;
-IF NOT assigned(ctrl) THEN
-Exit;
-Result := ctrl.GetInterface(IID_IWxAuiManagerInterface, cntIntf);
-END;
+Function IsControlWxAuiManager(ctrl: TControl): Boolean;
+Var
+    cntIntf: IWxAuiManagerInterface;
+Begin
+    Result := False;
+    If Not assigned(ctrl) Then
+        Exit;
+    Result := ctrl.GetInterface(IID_IWxAuiManagerInterface, cntIntf);
+End;
 
-FUNCTION IsControlWxAuiToolBar(ctrl: TControl): BOOLEAN;
-VAR
-cntIntf: IWxAuiToolBarInterface;
-BEGIN
-Result := FALSE;
-IF NOT assigned(ctrl) THEN
-Exit;
-Result := ctrl.GetInterface(IID_IWxAuiToolBarInterface, cntIntf);
-END;
+Function IsControlWxAuiToolBar(ctrl: TControl): Boolean;
+Var
+    cntIntf: IWxAuiToolBarInterface;
+Begin
+    Result := False;
+    If Not assigned(ctrl) Then
+        Exit;
+    Result := ctrl.GetInterface(IID_IWxAuiToolBarInterface, cntIntf);
+End;
 
-FUNCTION GetWxIDString(strID: STRING; intID: LONGINT): STRING;
-BEGIN
-IF intID > 0 THEN
-BEGIN
-IF trim(strID) = '' THEN
-Result := '-1'
-ELSE
-Result := strID;
-END
-ELSE
-Result := '-1';
+Function GetWxIDString(strID: String; intID: Longint): String;
+Begin
+    If intID > 0 Then
+    Begin
+        If trim(strID) = '' Then
+            Result := '-1'
+        Else
+            Result := strID;
+    End
+    Else
+        Result := '-1';
 
-END;
+End;
 
-FUNCTION GetNonVisualComponentCount(frmMainObj: TForm): INTEGER;
-VAR
-I: INTEGER;
-BEGIN
-Result := 0;
-FOR I := 0 TO frmMainObj.ComponentCount - 1 DO // Iterate
-IF frmMainObj.Components[i] IS TWxNonVisibleBaseComponent THEN
-Inc(Result); // for
-END;
+Function GetNonVisualComponentCount(frmMainObj: TForm): Integer;
+Var
+    I: Integer;
+Begin
+    Result := 0;
+    For I := 0 To frmMainObj.ComponentCount - 1 Do // Iterate
+        If frmMainObj.Components[i] Is TWxNonVisibleBaseComponent Then
+            Inc(Result); // for
+End;
 
-FUNCTION AlignmentToStr(taPos: TAlignment): STRING;
-BEGIN
-Result := '';
-CASE taPos OF
-taLeftJustify:
-Result := 'wxLIST_FORMAT_LEFT';
-taRightJustify:
-Result := 'wxLIST_FORMAT_RIGHT';
-taCenter:
-Result := 'wxLIST_FORMAT_CENTER';
-END; // case
-END;
+Function AlignmentToStr(taPos: TAlignment): String;
+Begin
+    Result := '';
+    Case taPos Of
+        taLeftJustify:
+            Result := 'wxLIST_FORMAT_LEFT';
+        taRightJustify:
+            Result := 'wxLIST_FORMAT_RIGHT';
+        taCenter:
+            Result := 'wxLIST_FORMAT_CENTER';
+    End; // case
+End;
 
-PROCEDURE ChangeControlZOrder(Sender: TObject; MoveUp: BOOLEAN = TRUE);
-VAR
-I, Curr: INTEGER;
-Control: TControl;
-List: TList;
-NotebookPage: TTabSheet;
-Notebook: TPageControl;
-ToolbarParent: TToolBar;
-BEGIN
+Procedure ChangeControlZOrder(Sender: TObject; MoveUp: Boolean = True);
+Var
+    I, Curr: Integer;
+    Control: TControl;
+    List: TList;
+    NotebookPage: TTabSheet;
+    Notebook: TPageControl;
+    ToolbarParent: TToolBar;
+Begin
 
-IF Sender IS TControl THEN
-IF (GetTypeData(Sender.ClassInfo)^.ClassType.ClassName =
-'TWxNoteBookPage') OR (GetTypeData(Sender.ClassInfo)^.ClassType.ClassName =
-'TWxAuiNoteBookPage') THEN
-BEGIN
-NotebookPage := Sender AS TTabSheet;
-Notebook := NotebookPage.PageControl;
-Curr := -1;
+    If Sender Is TControl Then
+        If (GetTypeData(Sender.ClassInfo)^.ClassType.ClassName =
+            'TWxNoteBookPage') Or (GetTypeData(Sender.ClassInfo)^.ClassType.ClassName =
+            'TWxAuiNoteBookPage') Then
+        Begin
+            NotebookPage := Sender As TTabSheet;
+            Notebook := NotebookPage.PageControl;
+            Curr := -1;
 
             //Determine the order of the notebook page
-FOR I := 0 TO Pred(Notebook.PageCount) DO
-IF Notebook.Pages[I] = Sender THEN
-BEGIN
-Curr := I;
-Break;
-END;
+            For I := 0 To Pred(Notebook.PageCount) Do
+                If Notebook.Pages[I] = Sender Then
+                Begin
+                    Curr := I;
+                    Break;
+                End;
 
             //Make sure our position is valid
-IF Curr < 0 THEN
-Exit
-ELSE
-IF (Curr = 0) AND (MoveUp <> TRUE) THEN
-Exit
-ELSE
-IF (Curr = Notebook.PageCount - 1) AND (MoveUp = TRUE) THEN
-Exit;
+            If Curr < 0 Then
+                Exit
+            Else
+            If (Curr = 0) And (MoveUp <> True) Then
+                Exit
+            Else
+            If (Curr = Notebook.PageCount - 1) And (MoveUp = True) Then
+                Exit;
 
             //Do the move
-IF (MoveUp = TRUE) THEN
-NotebookPage.PageIndex := NotebookPage.PageIndex + 1
-ELSE
-NotebookPage.PageIndex := NotebookPage.PageIndex - 1;
+            If (MoveUp = True) Then
+                NotebookPage.PageIndex := NotebookPage.PageIndex + 1
+            Else
+                NotebookPage.PageIndex := NotebookPage.PageIndex - 1;
 
-List := TList.Create;
-TRY
-IF MoveUp THEN
-BEGIN
-FOR I := Curr + 1 TO Pred(Notebook.PageCount) DO
+            List := TList.Create;
+            Try
+                If MoveUp Then
+                Begin
+                    For I := Curr + 1 To Pred(Notebook.PageCount) Do
                         // load other controls in group
-List.Add(Notebook.Pages[I]);
-NotebookPage.BringToFront;
-FOR I := 0 TO Pred(List.Count) DO
+                        List.Add(Notebook.Pages[I]);
+                    NotebookPage.BringToFront;
+                    For I := 0 To Pred(List.Count) Do
                         // move other controls to front, too
-TTabSheet(List[I]).BringToFront;
-END
-ELSE
-BEGIN
-FOR I := 0 TO Curr - 1 DO
+                        TTabSheet(List[I]).BringToFront;
+                End
+                Else
+                Begin
+                    For I := 0 To Curr - 1 Do
                         // load other controls in group
-List.Add(Notebook.Pages[I]);
-NotebookPage.SendToBack;
-FOR I := Pred(List.Count) DOWNTO 0 DO
+                        List.Add(Notebook.Pages[I]);
+                    NotebookPage.SendToBack;
+                    For I := Pred(List.Count) Downto 0 Do
                         // move other controls to back, too
-TTabSheet(List[I]).SendToBack;
-END;
-FINALLY
-List.Free;
-END;
-END
-ELSE
-IF Sender IS TControl THEN
-BEGIN
+                        TTabSheet(List[I]).SendToBack;
+                End;
+            Finally
+                List.Free;
+            End;
+        End
+        Else
+        If Sender Is TControl Then
+        Begin
             // only components of type TControl and descendends
             // work
-Control := Sender AS TControl;
+            Control := Sender As TControl;
             // has no parent, cannot move ;-)
-IF Control.Parent = NIL THEN
+            If Control.Parent = Nil Then
                 // quit
-Exit;
+                Exit;
             // determine position in z-order
-Curr := -1;
-FOR I := 0 TO Pred(Control.Parent.ControlCount) DO
-IF Control.Parent.Controls[I] = Sender THEN
-BEGIN
-Curr := I;
-Break;
-END;
-IF Curr < 0 THEN
+            Curr := -1;
+            For I := 0 To Pred(Control.Parent.ControlCount) Do
+                If Control.Parent.Controls[I] = Sender Then
+                Begin
+                    Curr := I;
+                    Break;
+                End;
+            If Curr < 0 Then
                 // position not found, quit
-Exit;
+                Exit;
 
 
-List := TList.Create;
-TRY
-IF MoveUp THEN
-BEGIN
-FOR I := Curr + 2 TO Pred(Control.Parent.ControlCount) DO
+            List := TList.Create;
+            Try
+                If MoveUp Then
+                Begin
+                    For I := Curr + 2 To Pred(Control.Parent.ControlCount) Do
                         // load other controls in group
-List.Add(Control.Parent.Controls[I]);
-Control.BringToFront;
+                        List.Add(Control.Parent.Controls[I]);
+                    Control.BringToFront;
 
-FOR I := 0 TO Pred(List.Count) DO
+                    For I := 0 To Pred(List.Count) Do
                         // move other controls to front, too
-TControl(List[I]).BringToFront;
-END
-ELSE
-BEGIN
-FOR I := 0 TO Curr - 2 DO
+                        TControl(List[I]).BringToFront;
+                End
+                Else
+                Begin
+                    For I := 0 To Curr - 2 Do
                         // load other controls in group
-List.Add(Control.Parent.Controls[I]);
-Control.SendToBack;
-FOR I := Pred(List.Count) DOWNTO 0 DO
+                        List.Add(Control.Parent.Controls[I]);
+                    Control.SendToBack;
+                    For I := Pred(List.Count) Downto 0 Do
                         // move other controls to back, too
-TControl(List[I]).SendToBack;
-END;
-FINALLY
-List.Free;
-END;
+                        TControl(List[I]).SendToBack;
+                End;
+            Finally
+                List.Free;
+            End;
 
-END;
-END;
+        End;
+End;
 
-FUNCTION GetXPMFromTPicture(XPMName: STRING; delphiBitmap: TBitmap): STRING;
-VAR
-I: INTEGER;
-iWidth: INTEGER;
-iHeight: INTEGER;
-xpos, ypos, palindex, cindex, cpp: INTEGER;
-cp: PCHAR;
-pixc: INTEGER;
-outline: ARRAY[0..800] OF CHAR;
-usechrs: ARRAY[0..64] OF CHAR;
-rval: REAL;
-ccol, tcol: TColor;
-lcol: ^TColor;
-image: ^INTEGER;
-cpos: ^INTEGER;
-pal: TList;
-found: BOOLEAN;
-strlst: TStringList;
-strLine: STRING;
-LABEL
-Finish1;
+Function GetXPMFromTPicture(XPMName: String; delphiBitmap: TBitmap): String;
+Var
+    I: Integer;
+    iWidth: Integer;
+    iHeight: Integer;
+    xpos, ypos, palindex, cindex, cpp: Integer;
+    cp: Pchar;
+    pixc: Integer;
+    outline: Array[0..800] Of Char;
+    usechrs: Array[0..64] Of Char;
+    rval: Real;
+    ccol, tcol: TColor;
+    lcol: ^TColor;
+    image: ^Integer;
+    cpos: ^Integer;
+    pal: TList;
+    found: Boolean;
+    strlst: TStringList;
+    strLine: String;
+Label
+    Finish1;
 
-FUNCTION pow(base: INTEGER; index: INTEGER): INTEGER;
-VAR
-retval: INTEGER;
-ittr: INTEGER;
-BEGIN
-retval := 1;
-FOR ittr := 1 TO index DO
-retval := retval * base;
-pow := retval;
-END;
+    Function pow(base: Integer; index: Integer): Integer;
+    Var
+        retval: Integer;
+        ittr: Integer;
+    Begin
+        retval := 1;
+        For ittr := 1 To index Do
+            retval := retval * base;
+        pow := retval;
+    End;
 
-BEGIN
-cindex := 0;
-Result := '';
-Result := GetXPMFromTPictureXXX(XPMName, delphiBitmap);
-exit;
-Result := '';
-BEGIN
+Begin
+
+    cindex := 0;
+
+    Result := '';
+    Begin
         //   Form1.Enabled:=False;
         //   Form2.Gauge1.Progress:=0;
         //   Form2.Show;
-StrPCopy(usechrs,
-' 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ&#');
-pal := TList.Create; { Create TList to form our palette }
+        StrPCopy(usechrs,
+            ' 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ&#');
+        pal := TList.Create; { Create TList to form our palette }
         //  delphiBitmap.Transparent := True;
-iWidth := delphiBitmap.Width;
-iHeight := delphiBitmap.Height;
-        //  if iWidth > 180 then
-        //    iWidth := 180;
-        //  if iHeight > 180 then
-        //    iHeight := 180;
-GetMem(image, SizeOf(INTEGER) * iWidth * iHeight);
-        { Allocate space for image }
-        { Note: Maximum of 65,528 bytes - 2 bytes per pixel }
-cpos := @image^; { This will be a pointer to current position in image }
-FOR ypos := 0 TO iHeight - 1 DO
-FOR xpos := 0 TO iWidth - 1 DO
-BEGIN
-ccol := delphiBitmap.Canvas.Pixels[xpos, ypos];
-found := FALSE;
-FOR palindex := 0 TO pal.Count - 1 DO
-BEGIN { Search palette for color }
-tcol := TColor(pal.Items[palindex]^);
-IF tcol = ccol THEN
-BEGIN { Found it! }
-found := TRUE;
-cindex := palindex; { Remember it's position in palette }
-break;
-END;
-END;
-IF NOT found THEN
-BEGIN { Add new color to our palette }
-New(lcol);
-lcol^ := ccol;
-pal.Add(lcol);
-cindex := pal.Count - 1;
-END;
-cpos^ := cindex; { Store palette index for this pixel }
-Inc(cpos); { Move on to next pixel }
-END //      Form2.Gauge1.Progress:=((ypos+1)*100) div iHeight;
-        //      Application.ProcessMessages;
-        //      If Form2.Cancelled then goto Finish1;     { We have been cancelled! }
-;
-
-        //AssignFile(F,SaveDialog1.Filename);
-        //Rewrite(F);
-rval := ln(pal.Count) / ln(64);
-cpp := trunc(rval);
-IF (cpp <> rval) THEN
-Inc(cpp);
-        //Writeln(F,'/* XPM */');
-Result := Result + '/* XPM */' + #13;
-StrFmt(outline, 'static const char *%s', [XPMName]);
-strLine := outline;
-cp := StrScan(outline, '.');
-IF cp <> NIL THEN
-cp[0] := #0;
-StrCat(outline, '_XPM[]={');
-strLine := outline;
-        //Writeln(F,outline);
-Result := Result + outline + #13;
-Result := Result + '/* ' + XPMName + ' */' + #13;
-
-StrFmt(outline, '"%d %d %d %d",', [iWidth, iHeight, pal.Count, cpp]);
-strLine := outline;
-        //Writeln(F,outline);
-strLine := outline;
-Result := Result + outline + #13;
-FOR palindex := 0 TO pal.Count - 1 DO
-BEGIN
-ccol := TColor(pal.Items[palindex]^);
-ccol := ccol MOD (256 * 256 * 256);
-StrFmt(outline, '"      c #%s%s%s",', [IntToHex(ccol MOD 256, 2),
-IntToHex((ccol DIV 256) MOD 256, 2),
-IntToHex(ccol DIV (256 * 256), 2)]);
-strLine := outline;
-cindex := palindex;
-FOR pixc := 1 TO cpp DO
-BEGIN
-outline[pixc] := usechrs[cindex DIV pow(64, cpp - pixc)];
-cindex := cindex MOD pow(64, cpp - pixc);
-strLine := outline;
-END;
-strLine := outline;
-            //      if AnsiStartsText('"      c #',strLine) then
-            //      begin
-            //        strLine:='"      c #FFFFFF",';
-            //        Result:=Result+strLine+#13;
-            //      end
-            //      else
-BEGIN
-Result := Result + outline + #13;
-END;
-END;
-cpos := @image^;
-FOR ypos := 0 TO iHeight - 1 DO
-BEGIN
-StrPCopy(outline, '"');
-FOR xpos := 0 TO iWidth - 1 DO
-BEGIN
-cindex := cpos^;
-FOR pixc := 1 TO cpp DO
-BEGIN
-outline[xpos * cpp + pixc] :=
-usechrs[cindex DIV pow(64, cpp - pixc)];
-cindex := cindex MOD pow(64, cpp - pixc);
-END;
-Inc(cpos);
-END;
-            //outline[cpp * (xpos + 1) + 1] := #0;  // xpos is undefined after loop
-outline[cpp * (cpos^ + 1) + 1] := #0;
-            // i think cpos is the intended variable instead
-
-IF ypos < iHeight - 1 THEN
-StrCat(outline, '",')
-ELSE
-StrCat(outline, '"};');
-            //Writeln(F,outline);
-Result := Result + outline + #13;
-END;
-        //Finish2:
-        //CloseFile(F);
-
-Finish1:
-FreeMem(image, SizeOf(INTEGER) * iWidth * iHeight);
-FOR palindex := 0 TO pal.Count - 1 DO
-Dispose(pal.Items[palindex]);
-pal.Free;
-        //   Form2.Hide;
-        //   Form1.Enabled:=True;
-strlst := TStringList.Create;
-strlst.Text := Result;
-FOR I := 0 TO strlst.Count - 1 DO // Iterate
-BEGIN
-strLine := trim(strlst[i]);
-            //sendDebug(IntToStr(i)+' Old # = '+IntToStr(Length(strlst[i])));
-
-IF AnsiEndsText('","",', strLine) THEN
-BEGIN
-                //not tested
-strLine := copy(strLine, 0, length(strLine) - 5);
-IF NOT AnsiEndsText('",', strLine) THEN
-strlst[i] := strLine + '",';
-END;
-
-strLine := trim(strlst[i]);
-
-IF AnsiEndsText('"",', strLine) THEN
-BEGIN
-                //tested
-strLine := copy(strLine, 0, length(strLine) - 3);
-IF NOT AnsiEndsText('",', strLine) THEN
-strlst[i] := strLine + '",';
-END;
-
-strLine := trim(strlst[i]);
-IF AnsiEndsText('",",', strLine) THEN
-BEGIN
-                //tested
-strLine := copy(strLine, 0, length(strLine) - 4);
-IF NOT AnsiEndsText('",', strLine) THEN
-strlst[i] := strLine + '",';
-END;
-
-strLine := trim(strlst[i]);
-
-IF AnsiEndsText('",""};', strLine) THEN
-BEGIN
-strLine := copy(strLine, 0, length(strLine) - 6);
-IF NOT AnsiEndsText('"};', strLine) THEN
-strlst[i] := strLine + '"};';
-END;
-
-strLine := trim(strlst[i]);
-IF AnsiEndsText('""};', strLine) THEN
-BEGIN
-                //not test
-strLine := copy(strLine, 0, length(strLine) - 4);
-IF NOT AnsiEndsText('"};', strLine) THEN
-strlst[i] := strLine + '"};';
-END;
-
-strLine := trim(strlst[i]);
-IF AnsiEndsText('","};', strLine) THEN
-BEGIN
-                //not test
-strLine := copy(strLine, 0, length(strLine) - 5);
-IF NOT AnsiEndsText('"};', strLine) THEN
-strlst[i] := strLine + '"};';
-END;
-
-            //sendDebug(IntToStr(i)+' New # = '+IntToStr(Length(strlst[i])));
-
-END; // for
-
-Result := strlst.Text;
-
-strlst.Destroy;
-END;
-END;
-
-FUNCTION GetXPMFromTPictureXXX(XPMName: STRING; delphiBitmap: TBitmap): STRING;
-VAR
-I: INTEGER;
-iWidth: INTEGER;
-iHeight: INTEGER;
-xpos, ypos, palindex, cindex, cpp: INTEGER;
-cp: PCHAR;
-pixc: INTEGER;
-outline: ARRAY[0..800] OF CHAR;
-usechrs: ARRAY[0..64] OF CHAR;
-rval: REAL;
-ccol, tcol: TColor;
-lcol: ^TColor;
-image: ^INTEGER;
-cpos: ^INTEGER;
-pal: TList;
-found: BOOLEAN;
-strlst: TStringList;
-strLine: STRING;
-LABEL
-Finish1;
-
-FUNCTION pow(base: INTEGER; index: INTEGER): INTEGER;
-VAR
-retval: INTEGER;
-ittr: INTEGER;
-BEGIN
-retval := 1;
-FOR ittr := 1 TO index DO
-retval := retval * base;
-pow := retval;
-END;
-
-BEGIN
-
-cindex := 0;
-
-Result := '';
-BEGIN
-        //   Form1.Enabled:=False;
-        //   Form2.Gauge1.Progress:=0;
-        //   Form2.Show;
-StrPCopy(usechrs,
-' 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ&#');
-pal := TList.Create; { Create TList to form our palette }
-        //  delphiBitmap.Transparent := True;
-iWidth := delphiBitmap.Width;
-iHeight := delphiBitmap.Height;
+        iWidth := delphiBitmap.Width;
+        iHeight := delphiBitmap.Height;
         //   if iWidth > 180 then
         //     iWidth := 180;
         //   if iHeight > 180 then
         //     iHeight := 180;
-GetMem(image, SizeOf(INTEGER) * iWidth * iHeight);
+        GetMem(image, SizeOf(Integer) * iWidth * iHeight);
         { Allocate space for image }
         { Note: Maximum of 65,528 bytes - 2 bytes per pixel }
-cpos := @image^; { This will be a pointer to current position in image }
-FOR ypos := 0 TO iHeight - 1 DO
-FOR xpos := 0 TO iWidth - 1 DO
-BEGIN
-ccol := delphiBitmap.Canvas.Pixels[xpos, ypos];
-found := FALSE;
-FOR palindex := 0 TO pal.Count - 1 DO
-BEGIN { Search palette for color }
-tcol := TColor(pal.Items[palindex]^);
-IF tcol = ccol THEN
-BEGIN { Found it! }
-found := TRUE;
-cindex := palindex; { Remember it's position in palette }
-break;
-END;
-END;
-IF NOT found THEN
-BEGIN { Add new color to our palette }
-New(lcol);
-lcol^ := ccol;
-pal.Add(lcol);
-cindex := pal.Count - 1;
-END;
-cpos^ := cindex; { Store palette index for this pixel }
-Inc(cpos); { Move on to next pixel }
-END //      Form2.Gauge1.Progress:=((ypos+1)*100) div iHeight;
+        cpos := @image^; { This will be a pointer to current position in image }
+        For ypos := 0 To iHeight - 1 Do
+            For xpos := 0 To iWidth - 1 Do
+            Begin
+                ccol := delphiBitmap.Canvas.Pixels[xpos, ypos];
+                found := False;
+                For palindex := 0 To pal.Count - 1 Do
+                Begin { Search palette for color }
+                    tcol := TColor(pal.Items[palindex]^);
+                    If tcol = ccol Then
+                    Begin { Found it! }
+                        found := True;
+                        cindex := palindex; { Remember it's position in palette }
+                        break;
+                    End;
+                End;
+                If Not found Then
+                Begin { Add new color to our palette }
+                    New(lcol);
+                    lcol^ := ccol;
+                    pal.Add(lcol);
+                    cindex := pal.Count - 1;
+                End;
+                cpos^ := cindex; { Store palette index for this pixel }
+                Inc(cpos); { Move on to next pixel }
+            End //      Form2.Gauge1.Progress:=((ypos+1)*100) div iHeight;
         //      Application.ProcessMessages;
         //      If Form2.Cancelled then goto Finish1;     { We have been cancelled! }
-;
+        ;
 
         //AssignFile(F,SaveDialog1.Filename);
         //Rewrite(F);
-rval := ln(pal.Count) / ln(64);
-cpp := trunc(rval);
-IF (cpp <> rval) THEN
-Inc(cpp);
+        rval := ln(pal.Count) / ln(64);
+        cpp := trunc(rval);
+        If (cpp <> rval) Then
+            Inc(cpp);
         //Writeln(F,'/* XPM */');
-Result := Result + '/* XPM */' + #13;
-StrFmt(outline, 'static const char *%s', [XPMName]);
-strLine := outline;
-cp := StrScan(outline, '.');
-IF cp <> NIL THEN
-cp[0] := #0;
-StrCat(outline, '_XPM[]={');
-strLine := outline;
+        Result := Result + '/* XPM */' + #13;
+        StrFmt(outline, 'static const char *%s', [XPMName]);
+        strLine := outline;
+        cp := StrScan(outline, '.');
+        If cp <> Nil Then
+            cp[0] := #0;
+        StrCat(outline, '_XPM[]={');
+        strLine := outline;
         //Writeln(F,outline);
-Result := Result + outline + #13;
-Result := Result + '/* ' + XPMName + ' */' + #13;
-StrFmt(outline, '"%d %d %d %d",', [iWidth, iHeight, pal.Count, cpp]);
-strLine := outline;
+        Result := Result + outline + #13;
+        Result := Result + '/* ' + XPMName + ' */' + #13;
+        StrFmt(outline, '"%d %d %d %d",', [iWidth, iHeight, pal.Count, cpp]);
+        strLine := outline;
         //Writeln(F,outline);
-strLine := outline;
-Result := Result + outline + #13;
-FOR palindex := 0 TO pal.Count - 1 DO
-BEGIN
-ccol := TColor(pal.Items[palindex]^);
-ccol := ccol MOD (256 * 256 * 256);
-IF palindex = 0 THEN
-StrFmt(outline, '"      c None",', [''])
-ELSE
-StrFmt(outline, '"      c #%s%s%s",', [IntToHex(ccol MOD 256, 2),
-IntToHex((ccol DIV 256) MOD 256, 2),
-IntToHex(ccol DIV (256 * 256), 2)]);
+        strLine := outline;
+        Result := Result + outline + #13;
+        For palindex := 0 To pal.Count - 1 Do
+        Begin
+            ccol := TColor(pal.Items[palindex]^);
+            ccol := ccol Mod (256 * 256 * 256);
+            If palindex = 0 Then
+                StrFmt(outline, '"      c None",', [''])
+            Else
+                StrFmt(outline, '"      c #%s%s%s",', [IntToHex(ccol Mod 256, 2),
+                    IntToHex((ccol Div 256) Mod 256, 2),
+                    IntToHex(ccol Div (256 * 256), 2)]);
 
-strLine := outline;
-cindex := palindex;
-FOR pixc := 1 TO cpp DO
-BEGIN
-outline[pixc] := usechrs[cindex DIV pow(64, cpp - pixc)];
-cindex := cindex MOD pow(64, cpp - pixc);
-strLine := outline;
-END;
-strLine := outline;
+            strLine := outline;
+            cindex := palindex;
+            For pixc := 1 To cpp Do
+            Begin
+                outline[pixc] := usechrs[cindex Div pow(64, cpp - pixc)];
+                cindex := cindex Mod pow(64, cpp - pixc);
+                strLine := outline;
+            End;
+            strLine := outline;
             //      if AnsiStartsText('"      c #',strLine) then
             //      begin
             //        strLine:='"      c #FFFFFF",';
             //        Result:=Result+strLine+#13;
             //      end
             //      else
-BEGIN
-Result := Result + outline + #13;
-END;
-END;
-cpos := @image^;
-FOR ypos := 0 TO iHeight - 1 DO
-BEGIN
-StrPCopy(outline, '"');
-FOR xpos := 0 TO iWidth - 1 DO
-BEGIN
-cindex := cpos^;
-FOR pixc := 1 TO cpp DO
-BEGIN
-outline[xpos * cpp + pixc] :=
-usechrs[cindex DIV pow(64, cpp - pixc)];
-cindex := cindex MOD pow(64, cpp - pixc);
-END;
-Inc(cpos);
-END;
-outline[cpp * (iWidth) + 1] := #0; // xpos is undefined after loop
+            Begin
+                Result := Result + outline + #13;
+            End;
+        End;
+        cpos := @image^;
+        For ypos := 0 To iHeight - 1 Do
+        Begin
+            StrPCopy(outline, '"');
+            For xpos := 0 To iWidth - 1 Do
+            Begin
+                cindex := cpos^;
+                For pixc := 1 To cpp Do
+                Begin
+                    outline[xpos * cpp + pixc] :=
+                        usechrs[cindex Div pow(64, cpp - pixc)];
+                    cindex := cindex Mod pow(64, cpp - pixc);
+                End;
+                Inc(cpos);
+            End;
+            outline[cpp * (iWidth) + 1] := #0; // xpos is undefined after loop
             //outline[cpp * (xpos + 1) + 1] := #0; // xpos is undefined after loop
-IF ypos < iHeight - 1 THEN
-StrCat(outline, '",')
-ELSE
-StrCat(outline, '"};');
+            If ypos < iHeight - 1 Then
+                StrCat(outline, '",')
+            Else
+                StrCat(outline, '"};');
             //Writeln(F,outline);
-Result := Result + outline + #13;
-END;
+            Result := Result + outline + #13;
+        End;
         //Finish2:
         //CloseFile(F);
 
-Finish1:
-FreeMem(image, SizeOf(INTEGER) * iWidth * iHeight);
-FOR palindex := 0 TO pal.Count - 1 DO
-Dispose(pal.Items[palindex]);
-pal.Free;
+        Finish1:
+            FreeMem(image, SizeOf(Integer) * iWidth * iHeight);
+        For palindex := 0 To pal.Count - 1 Do
+            Dispose(pal.Items[palindex]);
+        pal.Free;
         //   Form2.Hide;
         //   Form1.Enabled:=True;
-strlst := TStringList.Create;
-strlst.Text := Result;
-FOR I := 0 TO strlst.Count - 1 DO // Iterate
-BEGIN
-strLine := trim(strlst[i]);
+        strlst := TStringList.Create;
+        strlst.Text := Result;
+        For I := 0 To strlst.Count - 1 Do // Iterate
+        Begin
+            strLine := trim(strlst[i]);
             //sendDebug(IntToStr(i)+' Old # = '+IntToStr(Length(strlst[i])));
 
-IF AnsiEndsText('","",', strLine) THEN
-BEGIN
+            If AnsiEndsText('","",', strLine) Then
+            Begin
                 //not tested
-strLine := copy(strLine, 0, length(strLine) - 5);
-IF NOT AnsiEndsText('",', strLine) THEN
-strlst[i] := strLine + '",';
-END;
+                strLine := copy(strLine, 0, length(strLine) - 5);
+                If Not AnsiEndsText('",', strLine) Then
+                    strlst[i] := strLine + '",';
+            End;
 
-strLine := trim(strlst[i]);
+            strLine := trim(strlst[i]);
 
-IF AnsiEndsText('"",', strLine) THEN
-BEGIN
+            If AnsiEndsText('"",', strLine) Then
+            Begin
                 //tested
-strLine := copy(strLine, 0, length(strLine) - 3);
-IF NOT AnsiEndsText('",', strLine) THEN
-strlst[i] := strLine + '",';
-END;
+                strLine := copy(strLine, 0, length(strLine) - 3);
+                If Not AnsiEndsText('",', strLine) Then
+                    strlst[i] := strLine + '",';
+            End;
 
-strLine := trim(strlst[i]);
-IF AnsiEndsText('",",', strLine) THEN
-BEGIN
+            strLine := trim(strlst[i]);
+            If AnsiEndsText('",",', strLine) Then
+            Begin
                 //tested
-strLine := copy(strLine, 0, length(strLine) - 4);
-IF NOT AnsiEndsText('",', strLine) THEN
-strlst[i] := strLine + '",';
-END;
+                strLine := copy(strLine, 0, length(strLine) - 4);
+                If Not AnsiEndsText('",', strLine) Then
+                    strlst[i] := strLine + '",';
+            End;
 
-strLine := trim(strlst[i]);
+            strLine := trim(strlst[i]);
 
-IF AnsiEndsText('",""};', strLine) THEN
-BEGIN
-strLine := copy(strLine, 0, length(strLine) - 6);
-IF NOT AnsiEndsText('"};', strLine) THEN
-strlst[i] := strLine + '"};';
-END;
+            If AnsiEndsText('",""};', strLine) Then
+            Begin
+                strLine := copy(strLine, 0, length(strLine) - 6);
+                If Not AnsiEndsText('"};', strLine) Then
+                    strlst[i] := strLine + '"};';
+            End;
 
-strLine := trim(strlst[i]);
-IF AnsiEndsText('""};', strLine) THEN
-BEGIN
+            strLine := trim(strlst[i]);
+            If AnsiEndsText('""};', strLine) Then
+            Begin
                 //not test
-strLine := copy(strLine, 0, length(strLine) - 4);
-IF NOT AnsiEndsText('"};', strLine) THEN
-strlst[i] := strLine + '"};';
-END;
+                strLine := copy(strLine, 0, length(strLine) - 4);
+                If Not AnsiEndsText('"};', strLine) Then
+                    strlst[i] := strLine + '"};';
+            End;
 
-strLine := trim(strlst[i]);
-IF AnsiEndsText('","};', strLine) THEN
-BEGIN
+            strLine := trim(strlst[i]);
+            If AnsiEndsText('","};', strLine) Then
+            Begin
                 //not test
-strLine := copy(strLine, 0, length(strLine) - 5);
-IF NOT AnsiEndsText('"};', strLine) THEN
-strlst[i] := strLine + '"};';
-END;
+                strLine := copy(strLine, 0, length(strLine) - 5);
+                If Not AnsiEndsText('"};', strLine) Then
+                    strlst[i] := strLine + '"};';
+            End;
 
             //sendDebug(IntToStr(i)+' New # = '+IntToStr(Length(strlst[i])));
 
-END; // for
+        End; // for
 
-Result := strlst.Text;
+        Result := strlst.Text;
 
-strlst.Destroy;
-END;
-END;
+        strlst.Destroy;
+    End;
+End;
 
-FUNCTION GetRawXPMFromTPicture(XPMName: STRING; delphiBitmap: TBitmap): STRING;
-VAR
-iWidth: INTEGER;
-iHeight: INTEGER;
-xpos, ypos, palindex, cindex, cpp: INTEGER;
-cp: PCHAR;
-pixc: INTEGER;
-outline: ARRAY[0..800] OF CHAR;
-usechrs: ARRAY[0..64] OF CHAR;
-rval: REAL;
-ccol, tcol: TColor;
-lcol: ^TColor;
-image: ^INTEGER;
-cpos: ^INTEGER;
-pal: TList;
-found: BOOLEAN;
-strLine: STRING;
-LABEL
-Finish1;
+Function GetRawXPMFromTPicture(XPMName: String; delphiBitmap: TBitmap): String;
+Var
+    iWidth: Integer;
+    iHeight: Integer;
+    xpos, ypos, palindex, cindex, cpp: Integer;
+    cp: Pchar;
+    pixc: Integer;
+    outline: Array[0..800] Of Char;
+    usechrs: Array[0..64] Of Char;
+    rval: Real;
+    ccol, tcol: TColor;
+    lcol: ^TColor;
+    image: ^Integer;
+    cpos: ^Integer;
+    pal: TList;
+    found: Boolean;
+    strLine: String;
+Label
+    Finish1;
 
-FUNCTION pow(base: INTEGER; index: INTEGER): INTEGER;
-VAR
-retval: INTEGER;
-ittr: INTEGER;
-BEGIN
-retval := 1;
-FOR ittr := 1 TO index DO
-retval := retval * base;
-pow := retval;
-END;
+    Function pow(base: Integer; index: Integer): Integer;
+    Var
+        retval: Integer;
+        ittr: Integer;
+    Begin
+        retval := 1;
+        For ittr := 1 To index Do
+            retval := retval * base;
+        pow := retval;
+    End;
 
-BEGIN
+Begin
 
-cindex := 0;
+    cindex := 0;
 
-Result := '';
-BEGIN
+    Result := '';
+    Begin
         //   Form1.Enabled:=False;
         //   Form2.Gauge1.Progress:=0;
         //   Form2.Show;
-StrPCopy(usechrs,
-' 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ&#');
-pal := TList.Create; { Create TList to form our palette }
-iWidth := delphiBitmap.Width;
-iHeight := delphiBitmap.Height;
+        StrPCopy(usechrs,
+            ' 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ&#');
+        pal := TList.Create; { Create TList to form our palette }
+        iWidth := delphiBitmap.Width;
+        iHeight := delphiBitmap.Height;
         //  if iWidth > 180 then
         //    iWidth := 180;
         //  if iHeight > 180 then
         //    iHeight := 180;
-GetMem(image, SizeOf(INTEGER) * iWidth * iHeight);
+        GetMem(image, SizeOf(Integer) * iWidth * iHeight);
         { Allocate space for image }
         { Note: Maximum of 65,528 bytes - 2 bytes per pixel }
-cpos := @image^; { This will be a pointer to current position in image }
-FOR ypos := 0 TO iHeight - 1 DO
-FOR xpos := 0 TO iWidth - 1 DO
-BEGIN
-ccol := delphiBitmap.Canvas.Pixels[xpos, ypos];
-found := FALSE;
-FOR palindex := 0 TO pal.Count - 1 DO
-BEGIN { Search palette for color }
-tcol := TColor(pal.Items[palindex]^);
-IF tcol = ccol THEN
-BEGIN { Found it! }
-found := TRUE;
-cindex := palindex; { Remember it's position in palette }
-break;
-END;
-END;
-IF NOT found THEN
-BEGIN { Add new color to our palette }
-New(lcol);
-lcol^ := ccol;
-pal.Add(lcol);
-cindex := pal.Count - 1;
-END;
-cpos^ := cindex; { Store palette index for this pixel }
-Inc(cpos); { Move on to next pixel }
-END //      Form2.Gauge1.Progress:=((ypos+1)*100) div iHeight;
+        cpos := @image^; { This will be a pointer to current position in image }
+        For ypos := 0 To iHeight - 1 Do
+            For xpos := 0 To iWidth - 1 Do
+            Begin
+                ccol := delphiBitmap.Canvas.Pixels[xpos, ypos];
+                found := False;
+                For palindex := 0 To pal.Count - 1 Do
+                Begin { Search palette for color }
+                    tcol := TColor(pal.Items[palindex]^);
+                    If tcol = ccol Then
+                    Begin { Found it! }
+                        found := True;
+                        cindex := palindex; { Remember it's position in palette }
+                        break;
+                    End;
+                End;
+                If Not found Then
+                Begin { Add new color to our palette }
+                    New(lcol);
+                    lcol^ := ccol;
+                    pal.Add(lcol);
+                    cindex := pal.Count - 1;
+                End;
+                cpos^ := cindex; { Store palette index for this pixel }
+                Inc(cpos); { Move on to next pixel }
+            End //      Form2.Gauge1.Progress:=((ypos+1)*100) div iHeight;
         //      Application.ProcessMessages;
         //      If Form2.Cancelled then goto Finish1;     { We have been cancelled! }
-;
+        ;
 
         //AssignFile(F,SaveDialog1.Filename);
         //Rewrite(F);
-rval := ln(pal.Count) / ln(64);
-cpp := trunc(rval);
-IF (cpp <> rval) THEN
-Inc(cpp);
+        rval := ln(pal.Count) / ln(64);
+        cpp := trunc(rval);
+        If (cpp <> rval) Then
+            Inc(cpp);
         //Writeln(F,'/* XPM */');
-Result := Result + '/* XPM */' + #13;
-StrFmt(outline, 'static const char *%s', [XPMName]);
-strLine := outline;
-cp := StrScan(outline, '.');
-IF cp <> NIL THEN
-cp[0] := #0;
-StrCat(outline, '_XPM[]={');
-strLine := outline;
+        Result := Result + '/* XPM */' + #13;
+        StrFmt(outline, 'static const char *%s', [XPMName]);
+        strLine := outline;
+        cp := StrScan(outline, '.');
+        If cp <> Nil Then
+            cp[0] := #0;
+        StrCat(outline, '_XPM[]={');
+        strLine := outline;
         //Writeln(F,outline);
-Result := Result + outline + #13;
-Result := Result + '/* ' + XPMName + ' */' + #13;
-StrFmt(outline, '"%d %d %d %d",', [iWidth, iHeight, pal.Count, cpp]);
-strLine := outline;
+        Result := Result + outline + #13;
+        Result := Result + '/* ' + XPMName + ' */' + #13;
+        StrFmt(outline, '"%d %d %d %d",', [iWidth, iHeight, pal.Count, cpp]);
+        strLine := outline;
         //Writeln(F,outline);
-strLine := outline;
-Result := Result + outline + #13;
-FOR palindex := 0 TO pal.Count - 1 DO
-BEGIN
-ccol := TColor(pal.Items[palindex]^);
-ccol := ccol MOD (256 * 256 * 256);
-StrFmt(outline, '"      c #%s%s%s",', [IntToHex(ccol MOD 256, 2),
-IntToHex((ccol DIV 256) MOD 256, 2),
-IntToHex(ccol DIV (256 * 256), 2)]);
-strLine := outline;
-cindex := palindex;
-FOR pixc := 1 TO cpp DO
-BEGIN
-outline[pixc] := usechrs[cindex DIV pow(64, cpp - pixc)];
-cindex := cindex MOD pow(64, cpp - pixc);
-strLine := outline;
-END;
-strLine := outline;
-Result := Result + outline + #13;
-END;
-cpos := @image^;
-FOR ypos := 0 TO iHeight - 1 DO
-BEGIN
-StrPCopy(outline, '"');
-FOR xpos := 0 TO iWidth - 1 DO
-BEGIN
-cindex := cpos^;
-FOR pixc := 1 TO cpp DO
-BEGIN
-outline[xpos * cpp + pixc] :=
-usechrs[cindex DIV pow(64, cpp - pixc)];
-cindex := cindex MOD pow(64, cpp - pixc);
-END;
-Inc(cpos);
-END;
+        strLine := outline;
+        Result := Result + outline + #13;
+        For palindex := 0 To pal.Count - 1 Do
+        Begin
+            ccol := TColor(pal.Items[palindex]^);
+            ccol := ccol Mod (256 * 256 * 256);
+            StrFmt(outline, '"      c #%s%s%s",', [IntToHex(ccol Mod 256, 2),
+                IntToHex((ccol Div 256) Mod 256, 2),
+                IntToHex(ccol Div (256 * 256), 2)]);
+            strLine := outline;
+            cindex := palindex;
+            For pixc := 1 To cpp Do
+            Begin
+                outline[pixc] := usechrs[cindex Div pow(64, cpp - pixc)];
+                cindex := cindex Mod pow(64, cpp - pixc);
+                strLine := outline;
+            End;
+            strLine := outline;
+            Result := Result + outline + #13;
+        End;
+        cpos := @image^;
+        For ypos := 0 To iHeight - 1 Do
+        Begin
+            StrPCopy(outline, '"');
+            For xpos := 0 To iWidth - 1 Do
+            Begin
+                cindex := cpos^;
+                For pixc := 1 To cpp Do
+                Begin
+                    outline[xpos * cpp + pixc] :=
+                        usechrs[cindex Div pow(64, cpp - pixc)];
+                    cindex := cindex Mod pow(64, cpp - pixc);
+                End;
+                Inc(cpos);
+            End;
 
             //outline[cpp * (xpos + 1) + 1] := #0; // xpos is undefined after loop
-outline[cpp * (cpos^ + 1) + 1] := #0;
+            outline[cpp * (cpos^ + 1) + 1] := #0;
             // i think cpos is the intended variable instead
-IF ypos < iHeight - 1 THEN
-StrCat(outline, '",')
-ELSE
-StrCat(outline, '"};');
+            If ypos < iHeight - 1 Then
+                StrCat(outline, '",')
+            Else
+                StrCat(outline, '"};');
             //Writeln(F,outline);
-Result := Result + outline + #13;
-END;
+            Result := Result + outline + #13;
+        End;
         //Finish2:
         //CloseFile(F);
 
-Finish1:
-FreeMem(image, SizeOf(INTEGER) * iWidth * iHeight);
-FOR palindex := 0 TO pal.Count - 1 DO
-Dispose(pal.Items[palindex]);
-pal.Free;
-END;
-END;
+        Finish1:
+            FreeMem(image, SizeOf(Integer) * iWidth * iHeight);
+        For palindex := 0 To pal.Count - 1 Do
+            Dispose(pal.Items[palindex]);
+        pal.Free;
+    End;
+End;
 
-FUNCTION GenerateXPMDirectly(bmp: TBitmap; strCompName: STRING;
-strParentName: STRING; strFileName: STRING): BOOLEAN;
-VAR
-xpmFileDir, xpmNewFileDir: STRING;
-fileStrlst: TStringList;
-strXPMContent: STRING;
+Function GenerateXPMDirectly(bmp: TBitmap; strCompName: String;
+    strParentName: String; strFileName: String): Boolean;
+Var
+    xpmFileDir, xpmNewFileDir: String;
+    fileStrlst: TStringList;
+    strXPMContent: String;
 
-BEGIN
-Result := FALSE;
-IF bmp = NIL THEN
-Exit;
+Begin
+    Result := False;
+    If bmp = Nil Then
+        Exit;
 
-xpmFileDir := CreateGraphicFileDir(strFileName) + 'Images' + pd;
+    xpmFileDir := CreateGraphicFileDir(strFileName) + 'Images' + pd;
 
-IF bmp.handle <> 0 THEN
-BEGIN
+    If bmp.handle <> 0 Then
+    Begin
 
-fileStrlst := TStringList.Create;
-TRY
-strXPMContent := GetXPMFromTPicture(strParentName + '_' +
-strCompName, bmp);
+        fileStrlst := TStringList.Create;
+        Try
+            strXPMContent := GetXPMFromTPicture(strParentName + '_' +
+                strCompName, bmp);
 
-IF trim(strXPMContent) <> '' THEN
-BEGIN
-            //ShowMessage('Tony: Saving XPM file');
-fileStrlst.Add(strXPMContent);
-fileStrlst.SaveToFile(xpmFileDir + strParentName + '_' +
-strCompName + '_XPM.xpm');
-END;
-EXCEPT
-END;
-fileStrlst.Destroy;
-END;
-Result := TRUE;
-END;
+            If trim(strXPMContent) <> '' Then
+            Begin
+                fileStrlst.Add(strXPMContent);
+                fileStrlst.SaveToFile(xpmFileDir + strParentName + '_' +
+                    strCompName + '_XPM.xpm');
+            End;
+        Except
+        End;
+        fileStrlst.Destroy;
+    End;
+    Result := True;
+End;
 
-FUNCTION GetCommentString(str: STRING): STRING;
-BEGIN
-IF (trim(str) <> '') THEN
-Result := '/* ' + str + ' */' + #13
-ELSE
-Result := ' ';
+Function GetCommentString(str: String): String;
+Begin
+    If (trim(str) <> '') Then
+        Result := '/* ' + str + ' */' + #13
+    Else
+        Result := ' ';
 
-END;
+End;
 
-FUNCTION GetCppString(str: STRING): STRING;
-BEGIN
+Function GetCppString(str: String): String;
+Begin
 
     // If the first character in the text is a &, then
     //    the user wants this to be a literal variable name
     // Otherwise, the user wants this to be a text value
-IF (AnsiPos('&&', str) = 1) THEN
-BEGIN
-Delete(str, 1, 2);
-Result := str;
-END
-ELSE
-BEGIN
-strSearchReplace(str, '\', '\\', [srAll]);
-strSearchReplace(str, '"', '\\"', [srAll]);
-strSearchReplace(str, #10, '\\n', [srAll]);
-strSearchReplace(str, #13, '\\r', [srAll]);
+    If (AnsiPos('&&', str) = 1) Then
+    Begin
+        Delete(str, 1, 2);
+        Result := str;
+    End
+    Else
+    Begin
+        strSearchReplace(str, '\', '\\', [srAll]);
+        strSearchReplace(str, '"', '\\"', [srAll]);
+        strSearchReplace(str, #10, '\\n', [srAll]);
+        strSearchReplace(str, #13, '\\r', [srAll]);
 
         //Replace our escape codes back
-strSearchReplace(str, '\\n', '\n', [srAll]);
-strSearchReplace(str, '\\b', '\b', [srAll]);
-strSearchReplace(str, '\\f', '\f', [srAll]);
-strSearchReplace(str, '\\n', '\n', [srAll]);
-strSearchReplace(str, '\\r', '\r', [srAll]);
-strSearchReplace(str, '\\t', '\t', [srAll]);
-strSearchReplace(str, '\\"', '\"', [srAll]);
-strSearchReplace(str, '\\''', '\''', [srAll]);
-strSearchReplace(str, '\\v', '\v', [srAll]);
-strSearchReplace(str, '\\a', '\a', [srAll]);
-strSearchReplace(str, '\\?', '\?', [srAll]);
-Result := StringFormat + '("' + str + '")';
-END;
-END;
+        strSearchReplace(str, '\\n', '\n', [srAll]);
+        strSearchReplace(str, '\\b', '\b', [srAll]);
+        strSearchReplace(str, '\\f', '\f', [srAll]);
+        strSearchReplace(str, '\\n', '\n', [srAll]);
+        strSearchReplace(str, '\\r', '\r', [srAll]);
+        strSearchReplace(str, '\\t', '\t', [srAll]);
+        strSearchReplace(str, '\\"', '\"', [srAll]);
+        strSearchReplace(str, '\\''', '\''', [srAll]);
+        strSearchReplace(str, '\\v', '\v', [srAll]);
+        strSearchReplace(str, '\\a', '\a', [srAll]);
+        strSearchReplace(str, '\\?', '\?', [srAll]);
+        Result := StringFormat + '("' + str + '")';
+    End;
+End;
 
-FUNCTION GetWxPosition(Left: INTEGER; Top: INTEGER): STRING;
-BEGIN
-IF (UseDefaultPos = TRUE) THEN
-Result := 'wxDefaultPosition'
-ELSE
-Result := Format('wxPoint(%d, %d)', [Left, Top]);
-END;
+Function GetWxPosition(Left: Integer; Top: Integer): String;
+Begin
+    If (UseDefaultPos = True) Then
+        Result := 'wxDefaultPosition'
+    Else
+        Result := Format('wxPoint(%d, %d)', [Left, Top]);
+End;
 
-FUNCTION GetWxSize(Width: INTEGER; Height: INTEGER): STRING;
-BEGIN
-IF (UseDefaultSize = TRUE) THEN
-Result := 'wxDefaultSize'
-ELSE
-Result := Format('wxSize(%d, %d)', [Width, Height]);
-END;
+Function GetWxSize(Width: Integer; Height: Integer): String;
+Begin
+    If (UseDefaultSize = True) Then
+        Result := 'wxDefaultSize'
+    Else
+        Result := Format('wxSize(%d, %d)', [Width, Height]);
+End;
 
-FUNCTION GetWxEnum(Wx_IDValue: INTEGER; Wx_IDName: STRING): STRING;
-BEGIN
-Result := '';
-IF (UseIndividEnums = TRUE) THEN
-BEGIN
-IF (Wx_IDValue > 0) AND (trim(Wx_IDName) <> '') THEN
-Result := Format('%s = %d, ', [Wx_IDName, Wx_IDValue]);
-END
-ELSE
-BEGIN
-IF (Wx_IDValue > 0) AND (trim(Wx_IDName) <> '') THEN
-Result := Format('%s, ', [Wx_IDName]);
-END;
-END;
+Function GetWxEnum(Wx_IDValue: Integer; Wx_IDName: String): String;
+Begin
+    Result := '';
+    If (UseIndividEnums = True) Then
+    Begin
+        If (Wx_IDValue > 0) And (trim(Wx_IDName) <> '') Then
+            Result := Format('%s = %d, ', [Wx_IDName, Wx_IDValue]);
+    End
+    Else
+    Begin
+        If (Wx_IDValue > 0) And (trim(Wx_IDName) <> '') Then
+            Result := Format('%s, ', [Wx_IDName]);
+    End;
+End;
 
-FUNCTION OpenXPMImage(InpImage: TBitmap; strFname: STRING): BOOLEAN;
-TYPE
-TPalRec = RECORD
-chrs: PCHAR;
-color: TColor;
-END;
+Function OpenXPMImage(InpImage: TBitmap; strFname: String): Boolean;
+Type
+    TPalRec = Record
+        chrs: Pchar;
+        color: TColor;
+    End;
 
-FUNCTION HexVal(chr: CHAR): INTEGER;
-BEGIN
-IF (chr >= 'a') AND (chr <= 'f') THEN
-HexVal := Ord(chr) - Ord('a') + 10
-ELSE
-HexVal := Ord(chr) - Ord('0');
-END;
+    Function HexVal(chr: Char): Integer;
+    Begin
+        If (chr >= 'a') And (chr <= 'f') Then
+            HexVal := Ord(chr) - Ord('a') + 10
+        Else
+            HexVal := Ord(chr) - Ord('0');
+    End;
 
-VAR
-iWidth: INTEGER;
-iHeight: INTEGER;
-cpp, colors, col, ypos, xpos, hexc, infield: INTEGER;
-fieldstr: ARRAY[0..256] OF CHAR;
-fieldval: INTEGER;
-rgb1, rgb2, rgb3: INTEGER;
-inpline: ARRAY[0..800] OF CHAR;
-capline: ARRAY[0..256] OF CHAR;
-pal: TList;
-palitem: ^TPalRec;
-cp1, cp2: PCHAR;
-F: TextFile;
-ColorDialog1: TColorDialog;
-LABEL
-Finish1;
-BEGIN
-Result := TRUE;
-iHeight := 0;
-iWidth := 0;
-colors := 0;
-cpp := 0;
-palitem := NIL;
+Var
+    iWidth: Integer;
+    iHeight: Integer;
+    cpp, colors, col, ypos, xpos, hexc, infield: Integer;
+    fieldstr: Array[0..256] Of Char;
+    fieldval: Integer;
+    rgb1, rgb2, rgb3: Integer;
+    inpline: Array[0..800] Of Char;
+    capline: Array[0..256] Of Char;
+    pal: TList;
+    palitem: ^TPalRec;
+    cp1, cp2: Pchar;
+    F: TextFile;
+    ColorDialog1: TColorDialog;
+Label
+    Finish1;
+Begin
+    Result := True;
+    iHeight := 0;
+    iWidth := 0;
+    colors := 0;
+    cpp := 0;
+    palitem := Nil;
 
-BEGIN
-AssignFile(F, strFname);
-Reset(F);
-inpline[0] := #0;
-WHILE inpline[0] <> '"' DO
-Readln(F, inpline);
+    Begin
+        AssignFile(F, strFname);
+        Reset(F);
+        inpline[0] := #0;
+        While inpline[0] <> '"' Do
+            Readln(F, inpline);
 
-infield := 0;
-fieldstr[0] := #0;
-cp1 := inpline + 1;
-WHILE cp1 <= StrScan(inpline + 1, '"') DO
-BEGIN
-IF (cp1[0] = ' ') OR (cp1[0] = '"') THEN
-BEGIN
-IF fieldstr[0] <> #0 THEN
-BEGIN
-Inc(infield);
-fieldval := StrToInt(StrPas(fieldstr));
-fieldstr[0] := #0;
-IF infield = 1 THEN
-iWidth := fieldval;
-IF infield = 2 THEN
-iHeight := fieldval;
-IF infield = 3 THEN
-colors := fieldval;
-IF infield = 4 THEN
-cpp := fieldval;
-END;
-END
-ELSE
-BEGIN
-fieldstr[StrLen(fieldstr) + 1] := #0;
-fieldstr[StrLen(fieldstr)] := cp1[0];
-END;
-Inc(cp1);
-END;
+        infield := 0;
+        fieldstr[0] := #0;
+        cp1 := inpline + 1;
+        While cp1 <= StrScan(inpline + 1, '"') Do
+        Begin
+            If (cp1[0] = ' ') Or (cp1[0] = '"') Then
+            Begin
+                If fieldstr[0] <> #0 Then
+                Begin
+                    Inc(infield);
+                    fieldval := StrToInt(StrPas(fieldstr));
+                    fieldstr[0] := #0;
+                    If infield = 1 Then
+                        iWidth := fieldval;
+                    If infield = 2 Then
+                        iHeight := fieldval;
+                    If infield = 3 Then
+                        colors := fieldval;
+                    If infield = 4 Then
+                        cpp := fieldval;
+                End;
+            End
+            Else
+            Begin
+                fieldstr[StrLen(fieldstr) + 1] := #0;
+                fieldstr[StrLen(fieldstr)] := cp1[0];
+            End;
+            Inc(cp1);
+        End;
 
-pal := TList.Create;
-FOR col := 0 TO colors - 1 DO
-BEGIN
-inpline[0] := #0;
-WHILE inpline[0] <> '"' DO
-Readln(F, inpline);
-inpline[cpp + 1] := #0;
-New(palitem);
-palitem^.chrs := StrAlloc(cpp + 1);
-StrCopy(palitem^.chrs, inpline + 1);
-cp1 := StrScan(inpline + cpp + 2, 'c') + 1;
-cp1 := SysUtils.StrLower(cp1);
-IF StrScan(cp1, '#') = NIL THEN
-BEGIN
-StrCopy(capline, 'What color does "');
-StrCat(capline, cp1);
-StrCat(capline, ' represent?');
-Application.MessageBox(capline, 'Select Color', mb_OK);
-ColorDialog1 := TColorDialog.Create(NIL);
-ColorDialog1.Execute;
-palitem^.color := ColorDialog1.Color;
-END
-ELSE
-BEGIN
-cp1 := StrScan(cp1, '#') + 1;
-cp2 := StrScan(cp1, '"');
-cp2[0] := #0;
-hexc := StrLen(cp1) DIV 3;
-rgb1 := HexVal(cp1[0]) * 16 + HexVal(cp1[1]);
-rgb2 := HexVal(cp1[hexc]) * 16 + HexVal(cp1[hexc + 1]);
-rgb3 := HexVal(cp1[2 * hexc]) * 16 + HexVal(cp1[2 * hexc + 1]);
-palitem^.color := LONGINT(rgb1) + 256 * LONGINT(rgb2) + 256 *
-256 * LONGINT(rgb3);
-END;
-pal.Add(palitem);
-END;
+        pal := TList.Create;
+        For col := 0 To colors - 1 Do
+        Begin
+            inpline[0] := #0;
+            While inpline[0] <> '"' Do
+                Readln(F, inpline);
+            inpline[cpp + 1] := #0;
+            New(palitem);
+            palitem^.chrs := StrAlloc(cpp + 1);
+            StrCopy(palitem^.chrs, inpline + 1);
+            cp1 := StrScan(inpline + cpp + 2, 'c') + 1;
+            cp1 := SysUtils.StrLower(cp1);
+            If StrScan(cp1, '#') = Nil Then
+            Begin
+                StrCopy(capline, 'What color does "');
+                StrCat(capline, cp1);
+                StrCat(capline, ' represent?');
+                Application.MessageBox(capline, 'Select Color', mb_OK);
+                ColorDialog1 := TColorDialog.Create(Nil);
+                ColorDialog1.Execute;
+                palitem^.color := ColorDialog1.Color;
+            End
+            Else
+            Begin
+                cp1 := StrScan(cp1, '#') + 1;
+                cp2 := StrScan(cp1, '"');
+                cp2[0] := #0;
+                hexc := StrLen(cp1) Div 3;
+                rgb1 := HexVal(cp1[0]) * 16 + HexVal(cp1[1]);
+                rgb2 := HexVal(cp1[hexc]) * 16 + HexVal(cp1[hexc + 1]);
+                rgb3 := HexVal(cp1[2 * hexc]) * 16 + HexVal(cp1[2 * hexc + 1]);
+                palitem^.color := Longint(rgb1) + 256 * Longint(rgb2) + 256 *
+                    256 * Longint(rgb3);
+            End;
+            pal.Add(palitem);
+        End;
 
-InpImage.Height := iHeight;
-InpImage.Width := iWidth;
-cp1 := StrAlloc(cpp + 1);
-FOR ypos := 0 TO iHeight - 1 DO
-BEGIN
-inpline[0] := #0;
-WHILE inpline[0] <> '"' DO
-Readln(F, inpline);
-FOR xpos := 0 TO iWidth - 1 DO
-BEGIN
-StrLCopy(cp1, inpline + xpos * cpp + 1, cpp);
-FOR col := 0 TO colors - 1 DO
-BEGIN
-palitem := pal.Items[col];
-IF SysUtils.StrComp(palitem^.chrs, cp1) = 0 THEN
-break;
-END;
-InpImage.Canvas.Pixels[xpos, ypos] := palitem^.color;
-END;
+        InpImage.Height := iHeight;
+        InpImage.Width := iWidth;
+        cp1 := StrAlloc(cpp + 1);
+        For ypos := 0 To iHeight - 1 Do
+        Begin
+            inpline[0] := #0;
+            While inpline[0] <> '"' Do
+                Readln(F, inpline);
+            For xpos := 0 To iWidth - 1 Do
+            Begin
+                StrLCopy(cp1, inpline + xpos * cpp + 1, cpp);
+                For col := 0 To colors - 1 Do
+                Begin
+                    palitem := pal.Items[col];
+                    If SysUtils.StrComp(palitem^.chrs, cp1) = 0 Then
+                        break;
+                End;
+                InpImage.Canvas.Pixels[xpos, ypos] := palitem^.color;
+            End;
             //Form2.Gauge1.Progress:=((ypos+1)*100) div iHeight;
-Application.ProcessMessages;
-END;
+            Application.ProcessMessages;
+        End;
 
-Finish1:
-StrDispose(cp1);
+        Finish1:
+            StrDispose(cp1);
 
-FOR col := 0 TO colors - 1 DO
-BEGIN
-palitem := pal.Items[col];
-StrDispose(palitem^.chrs);
-Dispose(palitem);
-END;
-pal.Free;
+        For col := 0 To colors - 1 Do
+        Begin
+            palitem := pal.Items[col];
+            StrDispose(palitem^.chrs);
+            Dispose(palitem);
+        End;
+        pal.Free;
 
-CloseFile(F);
-END;
+        CloseFile(F);
+    End;
 
-END;
+End;
 
-FUNCTION IcoToBmp(Icon: TIcon): TBitmap;
-BEGIN
-Result := TBitmap.Create;
-Result.Width := Icon.Width;
-Result.Height := Icon.Height;
-Result.Canvas.Draw(0, 0, Icon);
-END;
+Function IcoToBmp(Icon: TIcon): TBitmap;
+Begin
+    Result := TBitmap.Create;
+    Result.Width := Icon.Width;
+    Result.Height := Icon.Height;
+    Result.Canvas.Draw(0, 0, Icon);
+End;
 
-FUNCTION GetwxColorFromString(strValue: STRING): STRING;
-VAR
-strColorValue, strChoice: STRING;
-BEGIN
-Result := '';
-strColorValue := trim(strValue);
-strColorValue := copy(strColorValue, 5, length(strColorValue));
-strChoice := copy(trim(strValue), 0, 4);
+Function GetwxColorFromString(strValue: String): String;
+Var
+    strColorValue, strChoice: String;
+Begin
+    Result := '';
+    strColorValue := trim(strValue);
+    strColorValue := copy(strColorValue, 5, length(strColorValue));
+    strChoice := copy(trim(strValue), 0, 4);
 
-IF AnsiSameText(strChoice, 'CUS:') THEN
-BEGIN
-Result := 'wxColour(' + strColorValue + ')';
-exit;
-END;
+    If AnsiSameText(strChoice, 'CUS:') Then
+    Begin
+        Result := 'wxColour(' + strColorValue + ')';
+        exit;
+    End;
 
-IF AnsiSameText(strChoice, 'DEF:') THEN
-BEGIN
-Result := '';
-exit;
-END;
+    If AnsiSameText(strChoice, 'DEF:') Then
+    Begin
+        Result := '';
+        exit;
+    End;
 
-IF AnsiSameText(strColorValue, 'BLACK') THEN
-BEGIN
-Result := 'wxColour(' + GetCppString(strColorValue) + ')';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'BLUE') THEN
-BEGIN
-Result := 'wxColour(' + GetCppString(strColorValue) + ')';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'CYAN') THEN
-BEGIN
-Result := 'wxColour(' + GetCppString(strColorValue) + ')';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'DARK SLATE GREY') THEN
-BEGIN
-Result := 'wxColour(' + GetCppString(strColorValue) + ')';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'LIGHT GREY') THEN
-BEGIN
-Result := 'wxColour(' + GetCppString(strColorValue) + ')';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'GREEN') THEN
-BEGIN
-Result := 'wxColour(' + GetCppString(strColorValue) + ')';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'GREY') THEN
-BEGIN
-Result := 'wxColour(' + GetCppString(strColorValue) + ')';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'LIME GREEN') THEN
-BEGIN
-Result := 'wxColour(' + GetCppString(strColorValue) + ')';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'MAROON') THEN
-BEGIN
-Result := 'wxColour(' + GetCppString(strColorValue) + ')';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'NAVY') THEN
-BEGIN
-Result := 'wxColour(' + GetCppString(strColorValue) + ')';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'PURPLE') THEN
-BEGIN
-Result := 'wxColour(' + GetCppString(strColorValue) + ')';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'RED') THEN
-BEGIN
-Result := 'wxColour(' + GetCppString(strColorValue) + ')';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'SKY BLUE') THEN
-BEGIN
-Result := 'wxColour(' + GetCppString(strColorValue) + ')';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'YELLOW') THEN
-BEGIN
-Result := 'wxColour(' + GetCppString(strColorValue) + ')';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'WHITE') THEN
-BEGIN
-Result := 'wxColour(' + GetCppString(strColorValue) + ')';
-exit;
-END;
+    If AnsiSameText(strColorValue, 'BLACK') Then
+    Begin
+        Result := 'wxColour(' + GetCppString(strColorValue) + ')';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'BLUE') Then
+    Begin
+        Result := 'wxColour(' + GetCppString(strColorValue) + ')';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'CYAN') Then
+    Begin
+        Result := 'wxColour(' + GetCppString(strColorValue) + ')';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'DARK SLATE GREY') Then
+    Begin
+        Result := 'wxColour(' + GetCppString(strColorValue) + ')';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'LIGHT GREY') Then
+    Begin
+        Result := 'wxColour(' + GetCppString(strColorValue) + ')';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'GREEN') Then
+    Begin
+        Result := 'wxColour(' + GetCppString(strColorValue) + ')';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'GREY') Then
+    Begin
+        Result := 'wxColour(' + GetCppString(strColorValue) + ')';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'LIME GREEN') Then
+    Begin
+        Result := 'wxColour(' + GetCppString(strColorValue) + ')';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'MAROON') Then
+    Begin
+        Result := 'wxColour(' + GetCppString(strColorValue) + ')';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'NAVY') Then
+    Begin
+        Result := 'wxColour(' + GetCppString(strColorValue) + ')';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'PURPLE') Then
+    Begin
+        Result := 'wxColour(' + GetCppString(strColorValue) + ')';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'RED') Then
+    Begin
+        Result := 'wxColour(' + GetCppString(strColorValue) + ')';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'SKY BLUE') Then
+    Begin
+        Result := 'wxColour(' + GetCppString(strColorValue) + ')';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'YELLOW') Then
+    Begin
+        Result := 'wxColour(' + GetCppString(strColorValue) + ')';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'WHITE') Then
+    Begin
+        Result := 'wxColour(' + GetCppString(strColorValue) + ')';
+        exit;
+    End;
 
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_SCROLLBAR') THEN
-BEGIN
-Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_SCROLLBAR)';
-exit;
-END;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_SCROLLBAR') Then
+    Begin
+        Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_SCROLLBAR)';
+        exit;
+    End;
 
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_BACKGROUND') THEN
-BEGIN
-Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_BACKGROUND)';
-exit;
-END;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_BACKGROUND') Then
+    Begin
+        Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_BACKGROUND)';
+        exit;
+    End;
 
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_ACTIVECAPTION') THEN
-BEGIN
-Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_ACTIVECAPTION)';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_INACTIVECAPTION') THEN
-BEGIN
-Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_INACTIVECAPTION)';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_MENU') THEN
-BEGIN
-Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_MENU)';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_WINDOW') THEN
-BEGIN
-Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_WINDOWFRAME') THEN
-BEGIN
-Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWFRAME)';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_MENUTEXT') THEN
-BEGIN
-Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_MENUTEXT)';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_WINDOWTEXT') THEN
-BEGIN
-Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT)';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_CAPTIONTEXT') THEN
-BEGIN
-Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_CAPTIONTEXT)';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_ACTIVEBORDER') THEN
-BEGIN
-Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_ACTIVEBORDER)';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_INACTIVEBORDER') THEN
-BEGIN
-Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_INACTIVEBORDER)';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_APPWORKSPACE') THEN
-BEGIN
-Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE)';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_HIGHLIGHT') THEN
-BEGIN
-Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT)';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_HIGHLIGHTTEXT') THEN
-BEGIN
-Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHTTEXT)';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_BTNFACE') THEN
-BEGIN
-Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE)';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_BTNSHADOW') THEN
-BEGIN
-Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW)';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_GRAYTEXT') THEN
-BEGIN
-Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT)';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_BTNTEXT') THEN
-BEGIN
-Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT)';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_INACTIVECAPTIONTEXT') THEN
-BEGIN
-Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_INACTIVECAPTIONTEXT)';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_BTNHIGHLIGHT') THEN
-BEGIN
-Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_BTNHIGHLIGHT)';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_3DDKSHADOW') THEN
-BEGIN
-Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_3DDKSHADOW)';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_3DLIGHT') THEN
-BEGIN
-Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT)';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_INFOTEXT') THEN
-BEGIN
-Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_INFOTEXT)';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_INFOBK') THEN
-BEGIN
-Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_INFOBK)';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_DESKTOP') THEN
-BEGIN
-Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_DESKTOP)';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_3DFACE') THEN
-BEGIN
-Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE)';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_3DSHADOW') THEN
-BEGIN
-Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_3DSHADOW)';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_3DHIGHLIGHT') THEN
-BEGIN
-Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_3DHIGHLIGHT)';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_3DHILIGHT') THEN
-BEGIN
-Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_3DHILIGHT)';
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_BTNHILIGHT') THEN
-BEGIN
-Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_BTNHILIGHT)';
-exit;
-END;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_ACTIVECAPTION') Then
+    Begin
+        Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_ACTIVECAPTION)';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_INACTIVECAPTION') Then
+    Begin
+        Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_INACTIVECAPTION)';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_MENU') Then
+    Begin
+        Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_MENU)';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_WINDOW') Then
+    Begin
+        Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_WINDOWFRAME') Then
+    Begin
+        Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWFRAME)';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_MENUTEXT') Then
+    Begin
+        Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_MENUTEXT)';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_WINDOWTEXT') Then
+    Begin
+        Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT)';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_CAPTIONTEXT') Then
+    Begin
+        Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_CAPTIONTEXT)';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_ACTIVEBORDER') Then
+    Begin
+        Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_ACTIVEBORDER)';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_INACTIVEBORDER') Then
+    Begin
+        Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_INACTIVEBORDER)';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_APPWORKSPACE') Then
+    Begin
+        Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE)';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_HIGHLIGHT') Then
+    Begin
+        Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT)';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_HIGHLIGHTTEXT') Then
+    Begin
+        Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHTTEXT)';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_BTNFACE') Then
+    Begin
+        Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE)';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_BTNSHADOW') Then
+    Begin
+        Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW)';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_GRAYTEXT') Then
+    Begin
+        Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT)';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_BTNTEXT') Then
+    Begin
+        Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT)';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_INACTIVECAPTIONTEXT') Then
+    Begin
+        Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_INACTIVECAPTIONTEXT)';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_BTNHIGHLIGHT') Then
+    Begin
+        Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_BTNHIGHLIGHT)';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_3DDKSHADOW') Then
+    Begin
+        Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_3DDKSHADOW)';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_3DLIGHT') Then
+    Begin
+        Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT)';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_INFOTEXT') Then
+    Begin
+        Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_INFOTEXT)';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_INFOBK') Then
+    Begin
+        Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_INFOBK)';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_DESKTOP') Then
+    Begin
+        Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_DESKTOP)';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_3DFACE') Then
+    Begin
+        Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE)';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_3DSHADOW') Then
+    Begin
+        Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_3DSHADOW)';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_3DHIGHLIGHT') Then
+    Begin
+        Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_3DHIGHLIGHT)';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_3DHILIGHT') Then
+    Begin
+        Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_3DHILIGHT)';
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_BTNHILIGHT') Then
+    Begin
+        Result := 'wxSystemSettings::GetColour(wxSYS_COLOUR_BTNHILIGHT)';
+        exit;
+    End;
 
-END;
+End;
 
-FUNCTION PaperIDToString(sizeitem: TWxPaperSizeItem): STRING;
-BEGIN
-Result := 'wxPAPER_NONE';
+Function PaperIDToString(sizeitem: TWxPaperSizeItem): String;
+Begin
+    Result := 'wxPAPER_NONE';
 
-IF sizeitem = wxPAPER_NONE THEN
-BEGIN
-Result := 'wxPAPER_NONE';
-Exit;
-END;
+    If sizeitem = wxPAPER_NONE Then
+    Begin
+        Result := 'wxPAPER_NONE';
+        Exit;
+    End;
 
-IF sizeitem = wxPAPER_LETTER THEN
-BEGIN
-Result := 'wxPAPER_LETTER';
-Exit;
-END;
-IF sizeitem = wxPAPER_LEGAL THEN
-BEGIN
-Result := 'wxPAPER_LEGAL';
-Exit;
-END;
-IF sizeitem = wxPAPER_A4 THEN
-BEGIN
-Result := 'wxPAPER_A4';
-Exit;
-END;
-IF sizeitem = wxPAPER_CSHEET THEN
-BEGIN
-Result := 'wxPAPER_CSHEET';
-Exit;
-END;
-IF sizeitem = wxPAPER_DSHEET THEN
-BEGIN
-Result := 'wxPAPER_DSHEET';
-Exit;
-END;
-IF sizeitem = wxPAPER_ESHEET THEN
-BEGIN
-Result := 'wxPAPER_ESHEET';
-Exit;
-END;
-IF sizeitem = wxPAPER_LETTERSMALL THEN
-BEGIN
-Result := 'wxPAPER_LETTERSMALL';
-Exit;
-END;
+    If sizeitem = wxPAPER_LETTER Then
+    Begin
+        Result := 'wxPAPER_LETTER';
+        Exit;
+    End;
+    If sizeitem = wxPAPER_LEGAL Then
+    Begin
+        Result := 'wxPAPER_LEGAL';
+        Exit;
+    End;
+    If sizeitem = wxPAPER_A4 Then
+    Begin
+        Result := 'wxPAPER_A4';
+        Exit;
+    End;
+    If sizeitem = wxPAPER_CSHEET Then
+    Begin
+        Result := 'wxPAPER_CSHEET';
+        Exit;
+    End;
+    If sizeitem = wxPAPER_DSHEET Then
+    Begin
+        Result := 'wxPAPER_DSHEET';
+        Exit;
+    End;
+    If sizeitem = wxPAPER_ESHEET Then
+    Begin
+        Result := 'wxPAPER_ESHEET';
+        Exit;
+    End;
+    If sizeitem = wxPAPER_LETTERSMALL Then
+    Begin
+        Result := 'wxPAPER_LETTERSMALL';
+        Exit;
+    End;
 
-IF sizeitem = wxPAPER_TABLOID THEN
-BEGIN
-Result := 'wxPAPER_TABLOID';
-Exit;
-END;
-IF sizeitem = wxPAPER_LEDGER THEN
-BEGIN
-Result := 'wxPAPER_LEDGER';
-Exit;
-END;
-IF sizeitem = wxPAPER_STATEMENT THEN
-BEGIN
-Result := 'wxPAPER_STATEMENT';
-Exit;
-END;
-IF sizeitem = wxPAPER_EXECUTIVE THEN
-BEGIN
-Result := 'wxPAPER_EXECUTIVE';
-Exit;
-END;
-IF sizeitem = wxPAPER_NOTE THEN
-BEGIN
-Result := 'wxPAPER_NOTE';
-Exit;
-END;
-IF sizeitem = wxPAPER_ENV_9 THEN
-BEGIN
-Result := 'wxPAPER_ENV_9';
-Exit;
-END;
-IF sizeitem = wxPAPER_A3 THEN
-BEGIN
-Result := 'wxPAPER_A3';
-Exit;
-END;
-IF sizeitem = wxPAPER_A4SMALL THEN
-BEGIN
-Result := 'wxPAPER_A4SMALL';
-Exit;
-END;
-IF sizeitem = wxPAPER_A5 THEN
-BEGIN
-Result := 'wxPAPER_A5';
-Exit;
-END;
-IF sizeitem = wxPAPER_B4 THEN
-BEGIN
-Result := 'wxPAPER_B4';
-Exit;
-END;
+    If sizeitem = wxPAPER_TABLOID Then
+    Begin
+        Result := 'wxPAPER_TABLOID';
+        Exit;
+    End;
+    If sizeitem = wxPAPER_LEDGER Then
+    Begin
+        Result := 'wxPAPER_LEDGER';
+        Exit;
+    End;
+    If sizeitem = wxPAPER_STATEMENT Then
+    Begin
+        Result := 'wxPAPER_STATEMENT';
+        Exit;
+    End;
+    If sizeitem = wxPAPER_EXECUTIVE Then
+    Begin
+        Result := 'wxPAPER_EXECUTIVE';
+        Exit;
+    End;
+    If sizeitem = wxPAPER_NOTE Then
+    Begin
+        Result := 'wxPAPER_NOTE';
+        Exit;
+    End;
+    If sizeitem = wxPAPER_ENV_9 Then
+    Begin
+        Result := 'wxPAPER_ENV_9';
+        Exit;
+    End;
+    If sizeitem = wxPAPER_A3 Then
+    Begin
+        Result := 'wxPAPER_A3';
+        Exit;
+    End;
+    If sizeitem = wxPAPER_A4SMALL Then
+    Begin
+        Result := 'wxPAPER_A4SMALL';
+        Exit;
+    End;
+    If sizeitem = wxPAPER_A5 Then
+    Begin
+        Result := 'wxPAPER_A5';
+        Exit;
+    End;
+    If sizeitem = wxPAPER_B4 Then
+    Begin
+        Result := 'wxPAPER_B4';
+        Exit;
+    End;
 
-IF sizeitem = wxPAPER_B5 THEN
-BEGIN
-Result := 'wxPAPER_B5';
-Exit;
-END;
-IF sizeitem = wxPAPER_FOLIO THEN
-BEGIN
-Result := 'wxPAPER_FOLIO';
-Exit;
-END;
-IF sizeitem = wxPAPER_QUARTO THEN
-BEGIN
-Result := 'wxPAPER_QUARTO';
-Exit;
-END;
-IF sizeitem = wxPAPER_10X14 THEN
-BEGIN
-Result := 'wxPAPER_10X14';
-Exit;
-END;
+    If sizeitem = wxPAPER_B5 Then
+    Begin
+        Result := 'wxPAPER_B5';
+        Exit;
+    End;
+    If sizeitem = wxPAPER_FOLIO Then
+    Begin
+        Result := 'wxPAPER_FOLIO';
+        Exit;
+    End;
+    If sizeitem = wxPAPER_QUARTO Then
+    Begin
+        Result := 'wxPAPER_QUARTO';
+        Exit;
+    End;
+    If sizeitem = wxPAPER_10X14 Then
+    Begin
+        Result := 'wxPAPER_10X14';
+        Exit;
+    End;
 
-IF sizeitem = wxPAPER_11X17 THEN
-BEGIN
-Result := 'wxPAPER_11X17';
-Exit;
-END;
-IF sizeitem = wxPAPER_ENV_10 THEN
-BEGIN
-Result := 'wxPAPER_ENV_10';
-Exit;
-END;
-IF sizeitem = wxPAPER_ENV_11 THEN
-BEGIN
-Result := 'wxPAPER_ENV_11';
-Exit;
-END;
-IF sizeitem = wxPAPER_ENV_12 THEN
-BEGIN
-Result := 'wxPAPER_ENV_12';
-Exit;
-END;
-IF sizeitem = wxPAPER_ENV_14 THEN
-BEGIN
-Result := 'wxPAPER_ENV_14';
-Exit;
-END;
-IF sizeitem = wxPAPER_ENV_DL THEN
-BEGIN
-Result := 'wxPAPER_ENV_DL';
-Exit;
-END;
-IF sizeitem = wxPAPER_ENV_C5 THEN
-BEGIN
-Result := 'wxPAPER_ENV_C5';
-Exit;
-END;
-IF sizeitem = wxPAPER_ENV_C3 THEN
-BEGIN
-Result := 'wxPAPER_ENV_C3';
-Exit;
-END;
-IF sizeitem = wxPAPER_ENV_C4 THEN
-BEGIN
-Result := 'wxPAPER_ENV_C4';
-Exit;
-END;
-IF sizeitem = wxPAPER_ENV_C6 THEN
-BEGIN
-Result := 'wxPAPER_ENV_C6';
-Exit;
-END;
-IF sizeitem = wxPAPER_ENV_C65 THEN
-BEGIN
-Result := 'wxPAPER_ENV_C65';
-Exit;
-END;
-IF sizeitem = wxPAPER_ENV_B4 THEN
-BEGIN
-Result := 'wxPAPER_ENV_B4';
-Exit;
-END;
+    If sizeitem = wxPAPER_11X17 Then
+    Begin
+        Result := 'wxPAPER_11X17';
+        Exit;
+    End;
+    If sizeitem = wxPAPER_ENV_10 Then
+    Begin
+        Result := 'wxPAPER_ENV_10';
+        Exit;
+    End;
+    If sizeitem = wxPAPER_ENV_11 Then
+    Begin
+        Result := 'wxPAPER_ENV_11';
+        Exit;
+    End;
+    If sizeitem = wxPAPER_ENV_12 Then
+    Begin
+        Result := 'wxPAPER_ENV_12';
+        Exit;
+    End;
+    If sizeitem = wxPAPER_ENV_14 Then
+    Begin
+        Result := 'wxPAPER_ENV_14';
+        Exit;
+    End;
+    If sizeitem = wxPAPER_ENV_DL Then
+    Begin
+        Result := 'wxPAPER_ENV_DL';
+        Exit;
+    End;
+    If sizeitem = wxPAPER_ENV_C5 Then
+    Begin
+        Result := 'wxPAPER_ENV_C5';
+        Exit;
+    End;
+    If sizeitem = wxPAPER_ENV_C3 Then
+    Begin
+        Result := 'wxPAPER_ENV_C3';
+        Exit;
+    End;
+    If sizeitem = wxPAPER_ENV_C4 Then
+    Begin
+        Result := 'wxPAPER_ENV_C4';
+        Exit;
+    End;
+    If sizeitem = wxPAPER_ENV_C6 Then
+    Begin
+        Result := 'wxPAPER_ENV_C6';
+        Exit;
+    End;
+    If sizeitem = wxPAPER_ENV_C65 Then
+    Begin
+        Result := 'wxPAPER_ENV_C65';
+        Exit;
+    End;
+    If sizeitem = wxPAPER_ENV_B4 Then
+    Begin
+        Result := 'wxPAPER_ENV_B4';
+        Exit;
+    End;
 
-IF sizeitem = wxPAPER_ENV_B5 THEN
-BEGIN
-Result := 'wxPAPER_ENV_B5';
-Exit;
-END;
-IF sizeitem = wxPAPER_ENV_B6 THEN
-BEGIN
-Result := 'wxPAPER_ENV_B6';
-Exit;
-END;
-IF sizeitem = wxPAPER_ENV_ITALY THEN
-BEGIN
-Result := 'wxPAPER_ENV_ITALY';
-Exit;
-END;
-IF sizeitem = wxPAPER_ENV_MONARCH THEN
-BEGIN
-Result := 'wxPAPER_ENV_MONARCH';
-Exit;
-END;
-IF sizeitem = wxPAPER_ENV_PERSONAL THEN
-BEGIN
-Result := 'wxPAPER_ENV_PERSONAL';
-Exit;
-END;
-IF sizeitem = wxPAPER_FANFOLD_US THEN
-BEGIN
-Result := 'wxPAPER_FANFOLD_US';
-Exit;
-END;
-IF sizeitem = wxPAPER_FANFOLD_STD_GERMAN THEN
-BEGIN
-Result := 'wxPAPER_FANFOLD_STD_GERMAN';
-Exit;
-END;
-IF sizeitem = wxPAPER_FANFOLD_LGL_GERMAN THEN
-BEGIN
-Result := 'wxPAPER_FANFOLD_LGL_GERMAN';
-Exit;
-END;
+    If sizeitem = wxPAPER_ENV_B5 Then
+    Begin
+        Result := 'wxPAPER_ENV_B5';
+        Exit;
+    End;
+    If sizeitem = wxPAPER_ENV_B6 Then
+    Begin
+        Result := 'wxPAPER_ENV_B6';
+        Exit;
+    End;
+    If sizeitem = wxPAPER_ENV_ITALY Then
+    Begin
+        Result := 'wxPAPER_ENV_ITALY';
+        Exit;
+    End;
+    If sizeitem = wxPAPER_ENV_MONARCH Then
+    Begin
+        Result := 'wxPAPER_ENV_MONARCH';
+        Exit;
+    End;
+    If sizeitem = wxPAPER_ENV_PERSONAL Then
+    Begin
+        Result := 'wxPAPER_ENV_PERSONAL';
+        Exit;
+    End;
+    If sizeitem = wxPAPER_FANFOLD_US Then
+    Begin
+        Result := 'wxPAPER_FANFOLD_US';
+        Exit;
+    End;
+    If sizeitem = wxPAPER_FANFOLD_STD_GERMAN Then
+    Begin
+        Result := 'wxPAPER_FANFOLD_STD_GERMAN';
+        Exit;
+    End;
+    If sizeitem = wxPAPER_FANFOLD_LGL_GERMAN Then
+    Begin
+        Result := 'wxPAPER_FANFOLD_LGL_GERMAN';
+        Exit;
+    End;
 
-END;
+End;
 //-------------------------------------------------------------------------------
 
-FUNCTION IsDefaultColorStr(strvalue: STRING): BOOLEAN;
-BEGIN
-strvalue := trim(strvalue);
-IF strvalue = '' THEN
-BEGIN
-Result := TRUE;
-exit;
-END;
+Function IsDefaultColorStr(strvalue: String): Boolean;
+Begin
+    strvalue := trim(strvalue);
+    If strvalue = '' Then
+    Begin
+        Result := True;
+        exit;
+    End;
 
-IF UpperCase(copy(strvalue, 0, 4)) = 'DEF:' THEN
-Result := TRUE
-ELSE
-Result := FALSE;
-END;
+    If UpperCase(copy(strvalue, 0, 4)) = 'DEF:' Then
+        Result := True
+    Else
+        Result := False;
+End;
 
-FUNCTION GetGeneralColorFromString(strColorValue: STRING): TColor;
-BEGIN
-strColorValue := trim(strColorValue);
-Result := 0 + clBlack;
-IF AnsiSameText(strColorValue, 'BLACK') THEN
-BEGIN
-Result := clBlack;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'BLUE') THEN
-BEGIN
-Result := clBlue;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'CYAN') THEN
-BEGIN
-Result := clAqua;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'DARK SLATE GREY') THEN
-BEGIN
-Result := clDkGray;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'GREEN') THEN
-BEGIN
-Result := clGreen;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'GREY') THEN
-BEGIN
-Result := clGray;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'LIGHT GREY') THEN
-BEGIN
-Result := clLtGray;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'LIME GREEN') THEN
-BEGIN
-Result := clLime;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'MAROON') THEN
-BEGIN
-Result := clMaroon;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'NAVY') THEN
-BEGIN
-Result := clNavy;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'PURPLE') THEN
-BEGIN
-Result := clPurple;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'RED') THEN
-BEGIN
-Result := clRed;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'SKY BLUE') THEN
-BEGIN
-Result := clSkyBlue;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'YELLOW') THEN
-BEGIN
-Result := clYellow;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'WHITE') THEN
-BEGIN
-Result := clWhite;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_SCROLLBAR') THEN
-BEGIN
-Result := clScrollBar;
-exit;
-END;
+Function GetGeneralColorFromString(strColorValue: String): TColor;
+Begin
+    strColorValue := trim(strColorValue);
+    Result := 0 + clBlack;
+    If AnsiSameText(strColorValue, 'BLACK') Then
+    Begin
+        Result := clBlack;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'BLUE') Then
+    Begin
+        Result := clBlue;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'CYAN') Then
+    Begin
+        Result := clAqua;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'DARK SLATE GREY') Then
+    Begin
+        Result := clDkGray;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'GREEN') Then
+    Begin
+        Result := clGreen;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'GREY') Then
+    Begin
+        Result := clGray;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'LIGHT GREY') Then
+    Begin
+        Result := clLtGray;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'LIME GREEN') Then
+    Begin
+        Result := clLime;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'MAROON') Then
+    Begin
+        Result := clMaroon;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'NAVY') Then
+    Begin
+        Result := clNavy;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'PURPLE') Then
+    Begin
+        Result := clPurple;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'RED') Then
+    Begin
+        Result := clRed;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'SKY BLUE') Then
+    Begin
+        Result := clSkyBlue;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'YELLOW') Then
+    Begin
+        Result := clYellow;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'WHITE') Then
+    Begin
+        Result := clWhite;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_SCROLLBAR') Then
+    Begin
+        Result := clScrollBar;
+        exit;
+    End;
 
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_BACKGROUND') THEN
-BEGIN
-Result := clBackground;
-exit;
-END;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_BACKGROUND') Then
+    Begin
+        Result := clBackground;
+        exit;
+    End;
 
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_ACTIVECAPTION') THEN
-BEGIN
-Result := clActiveCaption;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_INACTIVECAPTION') THEN
-BEGIN
-Result := clInactiveCaption;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_MENU') THEN
-BEGIN
-Result := clMenu;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_WINDOW') THEN
-BEGIN
-Result := clWindow;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_WINDOWFRAME') THEN
-BEGIN
-Result := clWindowFrame;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_MENUTEXT') THEN
-BEGIN
-Result := clMenuText;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_WINDOWTEXT') THEN
-BEGIN
-Result := clWindowText;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_CAPTIONTEXT') THEN
-BEGIN
-Result := clCaptionText;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_ACTIVEBORDER') THEN
-BEGIN
-Result := clActiveBorder;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_INACTIVEBORDER') THEN
-BEGIN
-Result := clInactiveBorder;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_APPWORKSPACE') THEN
-BEGIN
-Result := clAppWorkSpace;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_HIGHLIGHT') THEN
-BEGIN
-Result := clHighlight;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_HIGHLIGHTTEXT') THEN
-BEGIN
-Result := clHighlightText;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_BTNFACE') THEN
-BEGIN
-Result := clBtnFace;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_BTNSHADOW') THEN
-BEGIN
-Result := clBtnShadow;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_GRAYTEXT') THEN
-BEGIN
-Result := clGrayText;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_BTNTEXT') THEN
-BEGIN
-Result := clBtnText;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_INACTIVECAPTIONTEXT') THEN
-BEGIN
-Result := clInactiveCaptionText;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_BTNHIGHLIGHT') THEN
-BEGIN
-Result := clBtnHighlight;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_3DDKSHADOW') THEN
-BEGIN
-Result := cl3DDkShadow;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_3DLIGHT') THEN
-BEGIN
-Result := cl3DLight;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_INFOTEXT') THEN
-BEGIN
-Result := clInfoText;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_INFOBK') THEN
-BEGIN
-Result := clInfoBk;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_DESKTOP') THEN
-BEGIN
-Result := clBackground;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_3DFACE') THEN
-BEGIN
-Result := clBtnFace;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_3DSHADOW') THEN
-BEGIN
-Result := clBtnShadow;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_3DHIGHLIGHT') THEN
-BEGIN
-Result := clBtnHighlight;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_3DHILIGHT') THEN
-BEGIN
-Result := clBtnHighlight;
-exit;
-END;
-IF AnsiSameText(strColorValue, 'wxSYS_COLOUR_BTNHILIGHT') THEN
-BEGIN
-Result := clBtnHighlight;
-exit;
-END;
-END;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_ACTIVECAPTION') Then
+    Begin
+        Result := clActiveCaption;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_INACTIVECAPTION') Then
+    Begin
+        Result := clInactiveCaption;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_MENU') Then
+    Begin
+        Result := clMenu;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_WINDOW') Then
+    Begin
+        Result := clWindow;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_WINDOWFRAME') Then
+    Begin
+        Result := clWindowFrame;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_MENUTEXT') Then
+    Begin
+        Result := clMenuText;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_WINDOWTEXT') Then
+    Begin
+        Result := clWindowText;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_CAPTIONTEXT') Then
+    Begin
+        Result := clCaptionText;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_ACTIVEBORDER') Then
+    Begin
+        Result := clActiveBorder;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_INACTIVEBORDER') Then
+    Begin
+        Result := clInactiveBorder;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_APPWORKSPACE') Then
+    Begin
+        Result := clAppWorkSpace;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_HIGHLIGHT') Then
+    Begin
+        Result := clHighlight;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_HIGHLIGHTTEXT') Then
+    Begin
+        Result := clHighlightText;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_BTNFACE') Then
+    Begin
+        Result := clBtnFace;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_BTNSHADOW') Then
+    Begin
+        Result := clBtnShadow;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_GRAYTEXT') Then
+    Begin
+        Result := clGrayText;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_BTNTEXT') Then
+    Begin
+        Result := clBtnText;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_INACTIVECAPTIONTEXT') Then
+    Begin
+        Result := clInactiveCaptionText;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_BTNHIGHLIGHT') Then
+    Begin
+        Result := clBtnHighlight;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_3DDKSHADOW') Then
+    Begin
+        Result := cl3DDkShadow;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_3DLIGHT') Then
+    Begin
+        Result := cl3DLight;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_INFOTEXT') Then
+    Begin
+        Result := clInfoText;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_INFOBK') Then
+    Begin
+        Result := clInfoBk;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_DESKTOP') Then
+    Begin
+        Result := clBackground;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_3DFACE') Then
+    Begin
+        Result := clBtnFace;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_3DSHADOW') Then
+    Begin
+        Result := clBtnShadow;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_3DHIGHLIGHT') Then
+    Begin
+        Result := clBtnHighlight;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_3DHILIGHT') Then
+    Begin
+        Result := clBtnHighlight;
+        exit;
+    End;
+    If AnsiSameText(strColorValue, 'wxSYS_COLOUR_BTNHILIGHT') Then
+    Begin
+        Result := clBtnHighlight;
+        exit;
+    End;
+End;
 
 //=== {TJvInspectorValidatorItem } ===========================================
 
-CONSTRUCTOR TJvInspectorValidatorItem.Create(
-CONST AParent: TJvCustomInspectorItem;
-CONST AData: TJvCustomInspectorData);
-BEGIN
-INHERITED Create(AParent, AData);
-END;
+Constructor TJvInspectorValidatorItem.Create(
+    Const AParent: TJvCustomInspectorItem;
+    Const AData: TJvCustomInspectorData);
+Begin
+    Inherited Create(AParent, AData);
+End;
 
-PROCEDURE TJvInspectorValidatorItem.SetFlags(CONST Value:
-TInspectorItemFlags);
-VAR
-NewValue: TInspectorItemFlags;
-BEGIN
-NewValue := Value + [iifEditButton];
-INHERITED SetFlags(NewValue);
-END;
+Procedure TJvInspectorValidatorItem.SetFlags(Const Value:
+    TInspectorItemFlags);
+Var
+    NewValue: TInspectorItemFlags;
+Begin
+    NewValue := Value + [iifEditButton];
+    Inherited SetFlags(NewValue);
+End;
 
-PROCEDURE TJvInspectorValidatorItem.ContentsChanged(Sender: TObject);
-VAR
-Obj: TStrings;
-BEGIN
+Procedure TJvInspectorValidatorItem.ContentsChanged(Sender: TObject);
+Var
+    Obj: TStrings;
+Begin
 
-IF NOT Assigned(Data) THEN
-exit;
+    If Not Assigned(Data) Then
+        exit;
 
-Obj := TStrings(Data.AsOrdinal);
-Obj.Text := TMemo(Sender).Lines.Text;
-END;
+    Obj := TStrings(Data.AsOrdinal);
+    Obj.Text := TMemo(Sender).Lines.Text;
+End;
 
-FUNCTION TJvInspectorValidatorItem.GetDisplayValue: STRING;
-BEGIN
-Result := 'Edit Validator';
-END;
+Function TJvInspectorValidatorItem.GetDisplayValue: String;
+Begin
+    Result := 'Edit Validator';
+End;
 
-PROCEDURE TJvInspectorValidatorItem.SetDisplayValue;
-BEGIN
+Procedure TJvInspectorValidatorItem.SetDisplayValue;
+Begin
 
-END;
+End;
 
-CLASS PROCEDURE TJvInspectorValidatorItem.RegisterAsDefaultItem;
-BEGIN
-WITH TJvCustomInspectorData.ItemRegister DO
-IF IndexOf(Self) = -1 THEN
-Add(TJvInspectorTypeInfoRegItem.Create(Self,
-TypeInfo(TWxValidatorString)));
-END;
+Class Procedure TJvInspectorValidatorItem.RegisterAsDefaultItem;
+Begin
+    With TJvCustomInspectorData.ItemRegister Do
+        If IndexOf(Self) = -1 Then
+            Add(TJvInspectorTypeInfoRegItem.Create(Self,
+                TypeInfo(TWxValidatorString)));
+End;
 
-PROCEDURE TJvInspectorValidatorItem.Edit;
-VAR
-ValidatorForm: TwxValidator;
-wxValidatorstring: TWxValidatorString;
-compIntf: IWxValidatorInterface;
-BEGIN
+Procedure TJvInspectorValidatorItem.Edit;
+Var
+    ValidatorForm: TwxValidator;
+    wxValidatorstring: TWxValidatorString;
+    compIntf: IWxValidatorInterface;
+Begin
 
-IF NOT Assigned(TJvInspectorPropData(Self.GetData()).Instance) THEN
-exit;
-IF NOT Assigned(Data) THEN
-exit;
+    If Not Assigned(TJvInspectorPropData(Self.GetData()).Instance) Then
+        exit;
+    If Not Assigned(Data) Then
+        exit;
 
-wxValidatorString := TWxValidatorString(Data.AsOrdinal);
+    wxValidatorString := TWxValidatorString(Data.AsOrdinal);
 
-ValidatorForm := TwxValidator.Create(GetParentForm(Inspector));
-TRY
+    ValidatorForm := TwxValidator.Create(GetParentForm(Inspector));
+    Try
 
-ValidatorForm.SetValidatorString(wxValidatorString.strValidatorValue);
+        ValidatorForm.SetValidatorString(wxValidatorString.strValidatorValue);
 
-IF ValidatorForm.ShowModal = mrOk THEN
-BEGIN
+        If ValidatorForm.ShowModal = mrOk Then
+        Begin
 
-wxValidatorString.FstrValidatorValue :=
-ValidatorForm.GetValidatorString;
+            wxValidatorString.FstrValidatorValue :=
+                ValidatorForm.GetValidatorString;
 
-IF (TJvInspectorPropData(Self.GetData()).Instance).GetInterface(
-IID_IWxValidatorInterface, compIntf) THEN
-BEGIN
-IF AnsiSameText(Data.Name, 'Wx_ProxyValidatorString') THEN
-compIntf.SetValidator(wxValidatorString.FstrValidatorValue);
-END;
+            If (TJvInspectorPropData(Self.GetData()).Instance).GetInterface(
+                IID_IWxValidatorInterface, compIntf) Then
+            Begin
+                If AnsiSameText(Data.Name, 'Wx_ProxyValidatorString') Then
+                    compIntf.SetValidator(wxValidatorString.FstrValidatorValue);
+            End;
 
-IF assigned(TJvInspector(GetInspector).OnDataValueChanged) THEN
-TJvInspector(GetInspector).OnDataValueChanged(NIL, Data);
+            If assigned(TJvInspector(GetInspector).OnDataValueChanged) Then
+                TJvInspector(GetInspector).OnDataValueChanged(Nil, Data);
 
-END;
+        End;
 
-FINALLY
-ValidatorForm.Destroy;
-END;
+    Finally
+        ValidatorForm.Destroy;
+    End;
 
-END;
+End;
 //=== { TJvInspectorTStringsItem } ===========================================
 
-CONSTRUCTOR TWxJvInspectorTStringsItem.Create(
-CONST AParent: TJvCustomInspectorItem;
-CONST AData: TJvCustomInspectorData);
-BEGIN
-INHERITED Create(AParent, AData);
-RowSizing.MinHeight := irsItemHeight;
-Flags := Flags + [iifEditButton];
-END;
+Constructor TWxJvInspectorTStringsItem.Create(
+    Const AParent: TJvCustomInspectorItem;
+    Const AData: TJvCustomInspectorData);
+Begin
+    Inherited Create(AParent, AData);
+    RowSizing.MinHeight := irsItemHeight;
+    Flags := Flags + [iifEditButton];
+End;
 
-PROCEDURE TWxJvInspectorTStringsItem.ContentsChanged(Sender: TObject);
-VAR
-Obj: TStrings;
-BEGIN
-IF NOT Assigned(Data) THEN
-exit;
-Obj := TStrings(Data.AsOrdinal);
-Obj.Text := TMemo(Sender).Lines.Text;
-END;
+Procedure TWxJvInspectorTStringsItem.ContentsChanged(Sender: TObject);
+Var
+    Obj: TStrings;
+Begin
+    If Not Assigned(Data) Then
+        exit;
+    Obj := TStrings(Data.AsOrdinal);
+    Obj.Text := TMemo(Sender).Lines.Text;
+End;
 
-FUNCTION TWxJvInspectorTStringsItem.GetDisplayValue: STRING;
-BEGIN
-Result := 'Edit Strings';
-END;
+Function TWxJvInspectorTStringsItem.GetDisplayValue: String;
+Begin
+    Result := 'Edit Strings';
+End;
 
-PROCEDURE TWxJvInspectorTStringsItem.Edit;
-VAR
-SL: TStrings;
-Form: TStringsForm;
-BEGIN
+Procedure TWxJvInspectorTStringsItem.Edit;
+Var
+    SL: TStrings;
+    Form: TStringsForm;
+Begin
 
-IF NOT Assigned(Data) THEN
-exit;
+    If Not Assigned(Data) Then
+        exit;
 
     //Create the form
-Form := TStringsForm.Create(GetParentForm(Inspector));
+    Form := TStringsForm.Create(GetParentForm(Inspector));
 
-TRY
+    Try
         //Load the strings
-SL := TStrings(Data.AsOrdinal);
-Form.Memo.Lines.Assign(SL);
-IF AutoUpdate THEN
-Form.OnContentsChanged := ContentsChanged;
+        SL := TStrings(Data.AsOrdinal);
+        Form.Memo.Lines.Assign(SL);
+        If AutoUpdate Then
+            Form.OnContentsChanged := ContentsChanged;
 
         //Show the form
-IF Form.ShowModal = mrOk THEN
-BEGIN
-SL.Assign(Form.Memo.Lines);
-IF assigned(TJvInspector(GetInspector).OnDataValueChanged) THEN
-TJvInspector(GetInspector).OnDataValueChanged(NIL, Data);
-END;
-FINALLY
-Form.Destroy;
-END;
-END;
+        If Form.ShowModal = mrOk Then
+        Begin
+            SL.Assign(Form.Memo.Lines);
+            If assigned(TJvInspector(GetInspector).OnDataValueChanged) Then
+                TJvInspector(GetInspector).OnDataValueChanged(Nil, Data);
+        End;
+    Finally
+        Form.Destroy;
+    End;
+End;
 
-PROCEDURE TWxJvInspectorTStringsItem.SetDisplayValue(CONST Value: STRING);
-VAR
-Obj: TObject;
-BEGIN
+Procedure TWxJvInspectorTStringsItem.SetDisplayValue(Const Value: String);
+Var
+    Obj: TObject;
+Begin
 
-IF NOT Assigned(Data) THEN
-exit;
+    If Not Assigned(Data) Then
+        exit;
 
-IF Multiline THEN
-BEGIN
-Obj := TObject(Data.AsOrdinal);
-TStrings(Obj).Text := Value;
-END;
-END;
+    If Multiline Then
+    Begin
+        Obj := TObject(Data.AsOrdinal);
+        TStrings(Obj).Text := Value;
+    End;
+End;
 
-PROCEDURE TWxJvInspectorTStringsItem.SetFlags(
-CONST Value: TInspectorItemFlags);
-VAR
-OldMask: TInspectorItemFlags;
-NewMask: TInspectorItemFlags;
-BEGIN
+Procedure TWxJvInspectorTStringsItem.SetFlags(
+    Const Value: TInspectorItemFlags);
+Var
+    OldMask: TInspectorItemFlags;
+    NewMask: TInspectorItemFlags;
+Begin
     { The item has either an edit button or is multiline. If one of them is set,
     the other one will be removed }
-OldMask := Flags * [iifEditButton, iifMultiLine];
-NewMask := Value * [iifEditButton, iifMultiLine];
-IF OldMask <> NewMask THEN
-BEGIN
-IF Multiline AND NOT (iifEditButton IN OldMask) AND
-(iifEditButton IN NewMask) THEN
-INHERITED SetFlags(Value - [iifMultiLine]) // iifEditButton has changed
-ELSE
-IF NOT Multiline AND (iifEditButton IN OldMask) AND
-(iifMultiLine IN NewMask) THEN
-INHERITED SetFlags(Value - [iifEditButton]) // iifMultiLine has changed
-ELSE
-INHERITED SetFlags(Value);
+    OldMask := Flags * [iifEditButton, iifMultiLine];
+    NewMask := Value * [iifEditButton, iifMultiLine];
+    If OldMask <> NewMask Then
+    Begin
+        If Multiline And Not (iifEditButton In OldMask) And
+            (iifEditButton In NewMask) Then
+            Inherited SetFlags(Value - [iifMultiLine]) // iifEditButton has changed
+        Else
+        If Not Multiline And (iifEditButton In OldMask) And
+            (iifMultiLine In NewMask) Then
+            Inherited SetFlags(Value - [iifEditButton]) // iifMultiLine has changed
+        Else
+            Inherited SetFlags(Value);
         // Neither flag has changed. Should never occur.
-END
-ELSE // Flags have not changed
-INHERITED SetFlags(Value);
-IF RowSizing <> NIL THEN
-BEGIN
-RowSizing.Sizable := Multiline; // Update sizable state
-IF NOT Multiline THEN
-RowSizing.SizingFactor := irsNoReSize
-ELSE
-RowSizing.SizingFactor := irsValueHeight;
-END;
-END;
+    End
+    Else // Flags have not changed
+        Inherited SetFlags(Value);
+    If RowSizing <> Nil Then
+    Begin
+        RowSizing.Sizable := Multiline; // Update sizable state
+        If Not Multiline Then
+            RowSizing.SizingFactor := irsNoReSize
+        Else
+            RowSizing.SizingFactor := irsValueHeight;
+    End;
+End;
 
-CLASS PROCEDURE TWxJvInspectorTStringsItem.RegisterAsDefaultItem;
-BEGIN
-WITH TJvCustomInspectorData.ItemRegister DO
-IF IndexOf(Self) = -1 THEN
-Add(TJvInspectorTypeInfoRegItem.Create(Self, TypeInfo(TStrings)));
-END;
+Class Procedure TWxJvInspectorTStringsItem.RegisterAsDefaultItem;
+Begin
+    With TJvCustomInspectorData.ItemRegister Do
+        If IndexOf(Self) = -1 Then
+            Add(TJvInspectorTypeInfoRegItem.Create(Self, TypeInfo(TStrings)));
+End;
 
 {-------------------------------------------------------}
 
-PROCEDURE TJvInspectorColorEditItem.Edit;
-VAR
-ColorEditForm: TColorEdit;
-strColorValue: STRING;
-compIntf: IWxComponentInterface;
-BEGIN
+Procedure TJvInspectorColorEditItem.Edit;
+Var
+    ColorEditForm: TColorEdit;
+    strColorValue: String;
+    compIntf: IWxComponentInterface;
+Begin
 
-IF NOT Assigned(TJvInspectorPropData(Self.GetData()).Instance) THEN
-exit;
+    If Not Assigned(TJvInspectorPropData(Self.GetData()).Instance) Then
+        exit;
 
-ColorEditForm := TColorEdit.Create(GetParentForm(Inspector));
-TRY
-IF (TJvInspectorPropData(Self.GetData()).Instance).GetInterface(
-IID_IWxComponentInterface, compIntf) THEN
-BEGIN
+    ColorEditForm := TColorEdit.Create(GetParentForm(Inspector));
+    Try
+        If (TJvInspectorPropData(Self.GetData()).Instance).GetInterface(
+            IID_IWxComponentInterface, compIntf) Then
+        Begin
 
-IF AnsiSameText(Data.Name, 'Wx_ProxyBGColorString') THEN
-strColorValue := compIntf.GetBGColor
-ELSE
-IF AnsiSameText(Data.Name, 'Wx_ProxyFGColorString') THEN
-strColorValue := compIntf.GetFGColor
-ELSE
-strColorValue := compIntf.GetGenericColor(Data.Name);
-END;
+            If AnsiSameText(Data.Name, 'Wx_ProxyBGColorString') Then
+                strColorValue := compIntf.GetBGColor
+            Else
+            If AnsiSameText(Data.Name, 'Wx_ProxyFGColorString') Then
+                strColorValue := compIntf.GetFGColor
+            Else
+                strColorValue := compIntf.GetGenericColor(Data.Name);
+        End;
 
-ColorEditForm.SetColorString(strColorValue);
+        ColorEditForm.SetColorString(strColorValue);
 
-IF ColorEditForm.ShowModal = mrOk THEN
-BEGIN
+        If ColorEditForm.ShowModal = mrOk Then
+        Begin
 
-strColorValue := ColorEditForm.GetColorString;
+            strColorValue := ColorEditForm.GetColorString;
 
-IF (TJvInspectorPropData(Self.GetData()).Instance).GetInterface(
-IID_IWxComponentInterface, compIntf) THEN
-BEGIN
-IF AnsiSameText(Data.Name, 'Wx_ProxyBGColorString') THEN
-compIntf.SetBGColor(strColorValue)
-ELSE
-IF AnsiSameText(Data.Name, 'Wx_ProxyFGColorString') THEN
-compIntf.SetFGColor(strColorValue)
-ELSE
-compIntf.SetGenericColor(Data.Name, strColorValue);
-END;
+            If (TJvInspectorPropData(Self.GetData()).Instance).GetInterface(
+                IID_IWxComponentInterface, compIntf) Then
+            Begin
+                If AnsiSameText(Data.Name, 'Wx_ProxyBGColorString') Then
+                    compIntf.SetBGColor(strColorValue)
+                Else
+                If AnsiSameText(Data.Name, 'Wx_ProxyFGColorString') Then
+                    compIntf.SetFGColor(strColorValue)
+                Else
+                    compIntf.SetGenericColor(Data.Name, strColorValue);
+            End;
 
-IF assigned(TJvInspector(GetInspector).OnDataValueChanged) THEN
-TJvInspector(GetInspector).OnDataValueChanged(NIL, Data);
+            If assigned(TJvInspector(GetInspector).OnDataValueChanged) Then
+                TJvInspector(GetInspector).OnDataValueChanged(Nil, Data);
 
-END;
+        End;
 
-FINALLY
-ColorEditForm.Destroy;
-END;
+    Finally
+        ColorEditForm.Destroy;
+    End;
 
-END;
+End;
 
-FUNCTION TJvInspectorColorEditItem.GetDisplayValue: STRING;
-BEGIN
-Result := 'Edit Color';
-END;
+Function TJvInspectorColorEditItem.GetDisplayValue: String;
+Begin
+    Result := 'Edit Color';
+End;
 
-PROCEDURE TJvInspectorColorEditItem.SetDisplayValue(CONST Value: STRING);
-BEGIN
+Procedure TJvInspectorColorEditItem.SetDisplayValue(Const Value: String);
+Begin
 
-END;
+End;
 
-PROCEDURE TJvInspectorColorEditItem.SetFlags(CONST Value: TInspectorItemFlags);
-VAR
-NewValue: TInspectorItemFlags;
-BEGIN
-NewValue := Value + [iifEditButton];
-INHERITED SetFlags(NewValue);
-END;
+Procedure TJvInspectorColorEditItem.SetFlags(Const Value: TInspectorItemFlags);
+Var
+    NewValue: TInspectorItemFlags;
+Begin
+    NewValue := Value + [iifEditButton];
+    Inherited SetFlags(NewValue);
+End;
 
-CLASS PROCEDURE TJvInspectorColorEditItem.RegisterAsDefaultItem;
-BEGIN
-WITH TJvCustomInspectorData.ItemRegister DO
-IF IndexOf(Self) = -1 THEN
-Add(TJvInspectorTypeInfoRegItem.Create(Self, TypeInfo(TWxColorString)));
-END;
+Class Procedure TJvInspectorColorEditItem.RegisterAsDefaultItem;
+Begin
+    With TJvCustomInspectorData.ItemRegister Do
+        If IndexOf(Self) = -1 Then
+            Add(TJvInspectorTypeInfoRegItem.Create(Self, TypeInfo(TWxColorString)));
+End;
 
-CLASS PROCEDURE TJvInspectorFileNameEditItem.RegisterAsDefaultItem;
-BEGIN
-WITH TJvCustomInspectorData.ItemRegister DO
-IF IndexOf(Self) = -1 THEN
-Add(TJvInspectorTypeInfoRegItem.Create(Self,
-TypeInfo(TWxFileNameString)));
-END;
+Class Procedure TJvInspectorFileNameEditItem.RegisterAsDefaultItem;
+Begin
+    With TJvCustomInspectorData.ItemRegister Do
+        If IndexOf(Self) = -1 Then
+            Add(TJvInspectorTypeInfoRegItem.Create(Self,
+                TypeInfo(TWxFileNameString)));
+End;
 
 
-CLASS PROCEDURE TJvInspectorAnimationFileNameEditItem.RegisterAsDefaultItem;
-BEGIN
-WITH TJvCustomInspectorData.ItemRegister DO
-IF IndexOf(Self) = -1 THEN
-Add(TJvInspectorTypeInfoRegItem.Create(Self,
-TypeInfo(TWxAnimationFileNameString)));
-END;
+Class Procedure TJvInspectorAnimationFileNameEditItem.RegisterAsDefaultItem;
+Begin
+    With TJvCustomInspectorData.ItemRegister Do
+        If IndexOf(Self) = -1 Then
+            Add(TJvInspectorTypeInfoRegItem.Create(Self,
+                TypeInfo(TWxAnimationFileNameString)));
+End;
 //-------------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------------
 
-PROCEDURE TJvInspectorListItemsItem.Edit;
-VAR
-ListviewForm: TListviewForm;
-i: INTEGER;
-lstColumn: TListColumn;
-BEGIN
+Procedure TJvInspectorListItemsItem.Edit;
+Var
+    ListviewForm: TListviewForm;
+    i: Integer;
+    lstColumn: TListColumn;
+Begin
 
-IF NOT Assigned(TJvInspectorPropData(Self.GetData()).Instance) THEN
-exit;
+    If Not Assigned(TJvInspectorPropData(Self.GetData()).Instance) Then
+        exit;
 
-ListviewForm := TListviewForm.Create(GetParentForm(Inspector));
-TRY
-ListviewForm.LstViewObj.Columns.Clear;
-FOR i := 0 TO
-TListView(TJvInspectorPropData(Self.GetData()).Instance).Columns.Count
-- 1 DO
-BEGIN
-lstColumn := ListviewForm.LstViewObj.Columns.Add;
-lstColumn.Caption :=
-TListView(TJvInspectorPropData(Self.GetData()).Instance).Columns[i].Caption;
-lstColumn.Width :=
-TListView(TJvInspectorPropData(Self.GetData()).Instance).Columns[i].Width;
-lstColumn.Alignment :=
-TListView(TJvInspectorPropData(Self.GetData()).Instance).Columns[i].Alignment;
-END;
-ListviewForm.fillListInfo;
+    ListviewForm := TListviewForm.Create(GetParentForm(Inspector));
+    Try
+        ListviewForm.LstViewObj.Columns.Clear;
+        For i := 0 To
+            TListView(TJvInspectorPropData(Self.GetData()).Instance).Columns.Count
+            - 1 Do
+        Begin
+            lstColumn := ListviewForm.LstViewObj.Columns.Add;
+            lstColumn.Caption :=
+                TListView(TJvInspectorPropData(Self.GetData()).Instance).Columns[i].Caption;
+            lstColumn.Width :=
+                TListView(TJvInspectorPropData(Self.GetData()).Instance).Columns[i].Width;
+            lstColumn.Alignment :=
+                TListView(TJvInspectorPropData(Self.GetData()).Instance).Columns[i].Alignment;
+        End;
+        ListviewForm.fillListInfo;
 
-IF ListviewForm.ShowModal = mrOk THEN
-BEGIN
-TListView(TJvInspectorPropData(Self.GetData()).Instance).Columns.Clear;
-FOR i := 0 TO ListviewForm.LstViewObj.Columns.Count - 1 DO
-BEGIN
-lstColumn :=
-TListView(TJvInspectorPropData(Self.GetData()).Instance).Columns.Add;
-lstColumn.Caption := ListviewForm.LstViewObj.Columns[i].Caption;
-lstColumn.Width := ListviewForm.LstViewObj.Columns[i].Width;
-lstColumn.Alignment := ListviewForm.LstViewObj.Columns[i].Alignment;
-END;
+        If ListviewForm.ShowModal = mrOk Then
+        Begin
+            TListView(TJvInspectorPropData(Self.GetData()).Instance).Columns.Clear;
+            For i := 0 To ListviewForm.LstViewObj.Columns.Count - 1 Do
+            Begin
+                lstColumn :=
+                    TListView(TJvInspectorPropData(Self.GetData()).Instance).Columns.Add;
+                lstColumn.Caption := ListviewForm.LstViewObj.Columns[i].Caption;
+                lstColumn.Width := ListviewForm.LstViewObj.Columns[i].Width;
+                lstColumn.Alignment := ListviewForm.LstViewObj.Columns[i].Alignment;
+            End;
 
-IF assigned(TJvInspector(GetInspector).OnDataValueChanged) THEN
-TJvInspector(GetInspector).OnDataValueChanged(NIL, Data);
+            If assigned(TJvInspector(GetInspector).OnDataValueChanged) Then
+                TJvInspector(GetInspector).OnDataValueChanged(Nil, Data);
 
-END;
+        End;
 
-FINALLY
-ListviewForm.Destroy;
-END;
+    Finally
+        ListviewForm.Destroy;
+    End;
 
-END;
+End;
 
-FUNCTION TJvInspectorListItemsItem.GetDisplayValue: STRING;
-BEGIN
-Result := 'Edit Items';
-END;
+Function TJvInspectorListItemsItem.GetDisplayValue: String;
+Begin
+    Result := 'Edit Items';
+End;
 
-PROCEDURE TJvInspectorListItemsItem.SetDisplayValue(CONST Value: STRING);
-BEGIN
+Procedure TJvInspectorListItemsItem.SetDisplayValue(Const Value: String);
+Begin
 
-END;
+End;
 
-PROCEDURE TJvInspectorListItemsItem.SetFlags(CONST Value: TInspectorItemFlags);
-VAR
-NewValue: TInspectorItemFlags;
-BEGIN
-NewValue := Value + [iifEditButton];
-INHERITED SetFlags(NewValue);
-END;
+Procedure TJvInspectorListItemsItem.SetFlags(Const Value: TInspectorItemFlags);
+Var
+    NewValue: TInspectorItemFlags;
+Begin
+    NewValue := Value + [iifEditButton];
+    Inherited SetFlags(NewValue);
+End;
 
-CLASS PROCEDURE TJvInspectorListItemsItem.RegisterAsDefaultItem;
-BEGIN
-WITH TJvCustomInspectorData.ItemRegister DO
-IF IndexOf(Self) = -1 THEN
-Add(TJvInspectorTypeInfoRegItem.Create(Self, TypeInfo(TListItems)));
-END;
+Class Procedure TJvInspectorListItemsItem.RegisterAsDefaultItem;
+Begin
+    With TJvCustomInspectorData.ItemRegister Do
+        If IndexOf(Self) = -1 Then
+            Add(TJvInspectorTypeInfoRegItem.Create(Self, TypeInfo(TListItems)));
+End;
 //-------------------------------------------------------------------------------
 
-PROCEDURE TJvInspectorStatusBarItem.Edit;
-VAR
-sbForm: TStatusBarForm;
-i: INTEGER;
-stPnl: TStatusPanel;
-BEGIN
+Procedure TJvInspectorStatusBarItem.Edit;
+Var
+    sbForm: TStatusBarForm;
+    i: Integer;
+    stPnl: TStatusPanel;
+Begin
 
-IF NOT Assigned(TJvInspectorPropData(Self.GetData()).Instance) THEN
-exit;
+    If Not Assigned(TJvInspectorPropData(Self.GetData()).Instance) Then
+        exit;
 
-sbForm := TStatusBarForm.Create(GetParentForm(Inspector));
-TRY
-sbForm.StatusBarObj.Panels.Clear;
-FOR i := 0 TO
-TStatusBar(TJvInspectorPropData(Self.GetData()).Instance).Panels.Count
-- 1 DO
-BEGIN
-stPnl := sbForm.StatusBarObj.Panels.Add;
-stPnl.Text := TStatusBar(TJvInspectorPropData(Self.GetData()).Instance).Panels[i].Text;
-stPnl.Width := TStatusBar(TJvInspectorPropData(Self.GetData()).Instance).Panels[i].Width;
-END;
-sbForm.fillListInfo;
+    sbForm := TStatusBarForm.Create(GetParentForm(Inspector));
+    Try
+        sbForm.StatusBarObj.Panels.Clear;
+        For i := 0 To
+            TStatusBar(TJvInspectorPropData(Self.GetData()).Instance).Panels.Count
+            - 1 Do
+        Begin
+            stPnl := sbForm.StatusBarObj.Panels.Add;
+            stPnl.Text := TStatusBar(TJvInspectorPropData(Self.GetData()).Instance).Panels[i].Text;
+            stPnl.Width := TStatusBar(TJvInspectorPropData(Self.GetData()).Instance).Panels[i].Width;
+        End;
+        sbForm.fillListInfo;
 
-IF sbForm.ShowModal = mrOk THEN
-BEGIN
-TStatusBar(TJvInspectorPropData(Self.GetData()).Instance).panels.Clear;
-FOR i := 0 TO sbForm.StatusBarObj.Panels.Count - 1 DO
-BEGIN
-stPnl :=
-TStatusBar(TJvInspectorPropData(Self.GetData()).Instance).Panels.Add;
-stPnl.Text := sbForm.StatusBarObj.Panels[i].Text;
-stPnl.Width := sbForm.StatusBarObj.Panels[i].Width;
-END;
+        If sbForm.ShowModal = mrOk Then
+        Begin
+            TStatusBar(TJvInspectorPropData(Self.GetData()).Instance).panels.Clear;
+            For i := 0 To sbForm.StatusBarObj.Panels.Count - 1 Do
+            Begin
+                stPnl :=
+                    TStatusBar(TJvInspectorPropData(Self.GetData()).Instance).Panels.Add;
+                stPnl.Text := sbForm.StatusBarObj.Panels[i].Text;
+                stPnl.Width := sbForm.StatusBarObj.Panels[i].Width;
+            End;
 
 
-IF assigned(TJvInspector(GetInspector).OnDataValueChanged) THEN
-TJvInspector(GetInspector).OnDataValueChanged(NIL, Data);
+            If assigned(TJvInspector(GetInspector).OnDataValueChanged) Then
+                TJvInspector(GetInspector).OnDataValueChanged(Nil, Data);
 
-END;
+        End;
 
-FINALLY
-sbForm.Destroy;
-END;
+    Finally
+        sbForm.Destroy;
+    End;
 
-END;
+End;
 
-FUNCTION TJvInspectorStatusBarItem.GetDisplayValue: STRING;
-BEGIN
-Result := 'Edit Fields';
-END;
+Function TJvInspectorStatusBarItem.GetDisplayValue: String;
+Begin
+    Result := 'Edit Fields';
+End;
 
-PROCEDURE TJvInspectorStatusBarItem.SetDisplayValue(CONST Value: STRING);
-BEGIN
+Procedure TJvInspectorStatusBarItem.SetDisplayValue(Const Value: String);
+Begin
 
-END;
+End;
 
-PROCEDURE TJvInspectorStatusBarItem.SetFlags(CONST Value: TInspectorItemFlags);
-VAR
-NewValue: TInspectorItemFlags;
-BEGIN
-NewValue := Value + [iifEditButton];
-INHERITED SetFlags(NewValue);
-END;
+Procedure TJvInspectorStatusBarItem.SetFlags(Const Value: TInspectorItemFlags);
+Var
+    NewValue: TInspectorItemFlags;
+Begin
+    NewValue := Value + [iifEditButton];
+    Inherited SetFlags(NewValue);
+End;
 
-CLASS PROCEDURE TJvInspectorStatusBarItem.RegisterAsDefaultItem;
-BEGIN
-WITH TJvCustomInspectorData.ItemRegister DO
-IF IndexOf(Self) = -1 THEN
-Add(TJvInspectorTypeInfoRegItem.Create(Self, TypeInfo(TStatusPanels)));
-END;
+Class Procedure TJvInspectorStatusBarItem.RegisterAsDefaultItem;
+Begin
+    With TJvCustomInspectorData.ItemRegister Do
+        If IndexOf(Self) = -1 Then
+            Add(TJvInspectorTypeInfoRegItem.Create(Self, TypeInfo(TStatusPanels)));
+End;
 
 //-------------------------------------------------------------------------------
 
-PROCEDURE TJvInspectorListColumnsItem.Edit;
-VAR
-ListviewForm: TListviewForm;
-i: INTEGER;
-lstColumn: TListColumn;
-BEGIN
+Procedure TJvInspectorListColumnsItem.Edit;
+Var
+    ListviewForm: TListviewForm;
+    i: Integer;
+    lstColumn: TListColumn;
+Begin
 
-IF NOT Assigned(TJvInspectorPropData(Self.GetData()).Instance) THEN
-exit;
+    If Not Assigned(TJvInspectorPropData(Self.GetData()).Instance) Then
+        exit;
 
-ListviewForm := TListviewForm.Create(GetParentForm(Inspector));
-TRY
-ListviewForm.LstViewObj.Columns.Clear;
-FOR i := 0 TO
-TListView(TJvInspectorPropData(Self.GetData()).Instance).Columns.Count
-- 1 DO
-BEGIN
-lstColumn := ListviewForm.LstViewObj.Columns.Add;
-lstColumn.Caption :=
-TListView(TJvInspectorPropData(Self.GetData()).Instance).Columns[i].Caption;
-lstColumn.Width :=
-TListView(TJvInspectorPropData(Self.GetData()).Instance).Columns[i].Width;
-lstColumn.Alignment :=
-TListView(TJvInspectorPropData(Self.GetData()).Instance).Columns[i].Alignment;
-END;
-ListviewForm.fillListInfo;
+    ListviewForm := TListviewForm.Create(GetParentForm(Inspector));
+    Try
+        ListviewForm.LstViewObj.Columns.Clear;
+        For i := 0 To
+            TListView(TJvInspectorPropData(Self.GetData()).Instance).Columns.Count
+            - 1 Do
+        Begin
+            lstColumn := ListviewForm.LstViewObj.Columns.Add;
+            lstColumn.Caption :=
+                TListView(TJvInspectorPropData(Self.GetData()).Instance).Columns[i].Caption;
+            lstColumn.Width :=
+                TListView(TJvInspectorPropData(Self.GetData()).Instance).Columns[i].Width;
+            lstColumn.Alignment :=
+                TListView(TJvInspectorPropData(Self.GetData()).Instance).Columns[i].Alignment;
+        End;
+        ListviewForm.fillListInfo;
 
-IF ListviewForm.ShowModal = mrOk THEN
+        If ListviewForm.ShowModal = mrOk Then
 
-BEGIN
-TListView(TJvInspectorPropData(Self.GetData()).Instance).Columns.Clear;
-FOR i := 0 TO ListviewForm.LstViewObj.Columns.Count - 1 DO
-BEGIN
-lstColumn :=
-TListView(TJvInspectorPropData(Self.GetData()).Instance).Columns.Add;
-lstColumn.Caption := ListviewForm.LstViewObj.Columns[i].Caption;
-lstColumn.Width := ListviewForm.LstViewObj.Columns[i].Width;
-lstColumn.Alignment := ListviewForm.LstViewObj.Columns[i].Alignment;
-END;
+        Begin
+            TListView(TJvInspectorPropData(Self.GetData()).Instance).Columns.Clear;
+            For i := 0 To ListviewForm.LstViewObj.Columns.Count - 1 Do
+            Begin
+                lstColumn :=
+                    TListView(TJvInspectorPropData(Self.GetData()).Instance).Columns.Add;
+                lstColumn.Caption := ListviewForm.LstViewObj.Columns[i].Caption;
+                lstColumn.Width := ListviewForm.LstViewObj.Columns[i].Width;
+                lstColumn.Alignment := ListviewForm.LstViewObj.Columns[i].Alignment;
+            End;
 
 
-IF assigned(TJvInspector(GetInspector).OnDataValueChanged) THEN
-TJvInspector(GetInspector).OnDataValueChanged(NIL, Data);
+            If assigned(TJvInspector(GetInspector).OnDataValueChanged) Then
+                TJvInspector(GetInspector).OnDataValueChanged(Nil, Data);
 
-END;
+        End;
 
-FINALLY
-ListviewForm.Destroy;
-END;
+    Finally
+        ListviewForm.Destroy;
+    End;
 
-END;
+End;
 
-FUNCTION TJvInspectorListColumnsItem.GetDisplayValue: STRING;
-BEGIN
-Result := 'Edit Columns';
-END;
+Function TJvInspectorListColumnsItem.GetDisplayValue: String;
+Begin
+    Result := 'Edit Columns';
+End;
 
-PROCEDURE TJvInspectorListColumnsItem.SetDisplayValue(CONST Value: STRING);
-BEGIN
+Procedure TJvInspectorListColumnsItem.SetDisplayValue(Const Value: String);
+Begin
 
-END;
+End;
 
-PROCEDURE TJvInspectorListColumnsItem.SetFlags(
-CONST Value: TInspectorItemFlags);
-VAR
-NewValue: TInspectorItemFlags;
-BEGIN
-NewValue := Value + [iifEditButton];
-INHERITED SetFlags(NewValue);
-END;
+Procedure TJvInspectorListColumnsItem.SetFlags(
+    Const Value: TInspectorItemFlags);
+Var
+    NewValue: TInspectorItemFlags;
+Begin
+    NewValue := Value + [iifEditButton];
+    Inherited SetFlags(NewValue);
+End;
 
-CLASS PROCEDURE TJvInspectorListColumnsItem.RegisterAsDefaultItem;
-BEGIN
-WITH TJvCustomInspectorData.ItemRegister DO
-IF IndexOf(Self) = -1 THEN
-Add(TJvInspectorTypeInfoRegItem.Create(Self, TypeInfo(TListColumns)));
-END;
+Class Procedure TJvInspectorListColumnsItem.RegisterAsDefaultItem;
+Begin
+    With TJvCustomInspectorData.ItemRegister Do
+        If IndexOf(Self) = -1 Then
+            Add(TJvInspectorTypeInfoRegItem.Create(Self, TypeInfo(TListColumns)));
+End;
 //-------------------------------------------------------------------------------
 
-PROCEDURE TJvInspectorTreeNodesItem.Edit;
-VAR
-TreeViewForm: TTreeEditor;
-component1: TWxTreeCtrl;
+Procedure TJvInspectorTreeNodesItem.Edit;
+Var
+    TreeViewForm: TTreeEditor;
+    component1: TWxTreeCtrl;
 
-BEGIN
+Begin
 
-IF NOT Assigned(TJvInspectorPropData(Self.GetData()).Instance) THEN
-exit;
+    If Not Assigned(TJvInspectorPropData(Self.GetData()).Instance) Then
+        exit;
 
     // Call tree editor form
-TreeViewForm := TTreeEditor.Create(GetParentForm(Inspector));
-TRY
+    TreeViewForm := TTreeEditor.Create(GetParentForm(Inspector));
+    Try
 
         // Clear tree
-TreeViewForm.TreeView1.Items.Clear;
+        TreeViewForm.TreeView1.Items.Clear;
 
         // Get Wx_TreeCtrl component being edited
-component1 := TWxTreeCtrl(TJvInspectorPropData(Self.GetData()).Instance);
+        component1 := TWxTreeCtrl(TJvInspectorPropData(Self.GetData()).Instance);
 
-IF (component1.Items <> NIL) THEN
-BEGIN
+        If (component1.Items <> Nil) Then
+        Begin
                 // Copy tree from component to form
-TreeViewForm.TreeView1.Items.BeginUpdate;
-TreeViewForm.TreeView1.Items.Assign(component1.Items);
-TreeViewForm.TreeView1.Items.EndUpdate;
-END;
+            TreeViewForm.TreeView1.Items.BeginUpdate;
+            TreeViewForm.TreeView1.Items.Assign(component1.Items);
+            TreeViewForm.TreeView1.Items.EndUpdate;
+        End;
 
-IF TreeViewForm.ShowModal = mrOk THEN
-BEGIN
+        If TreeViewForm.ShowModal = mrOk Then
+        Begin
 
-component1.Items.BeginUpdate;
-component1.Items.Clear;
-component1.Items.Assign(TreeViewForm.TreeView1.Items);
-component1.Items.EndUpdate;
+            component1.Items.BeginUpdate;
+            component1.Items.Clear;
+            component1.Items.Assign(TreeViewForm.TreeView1.Items);
+            component1.Items.EndUpdate;
 
-IF assigned(TJvInspector(GetInspector).OnDataValueChanged) THEN
-TJvInspector(GetInspector).OnDataValueChanged(NIL, Data);
+            If assigned(TJvInspector(GetInspector).OnDataValueChanged) Then
+                TJvInspector(GetInspector).OnDataValueChanged(Nil, Data);
 
-END;
+        End;
 
-FINALLY
-TreeViewForm.Destroy;
-END;
+    Finally
+        TreeViewForm.Destroy;
+    End;
 
-END;
+End;
 
-FUNCTION TJvInspectorTreeNodesItem.GetDisplayValue: STRING;
-BEGIN
-Result := 'Edit Nodes';
-END;
+Function TJvInspectorTreeNodesItem.GetDisplayValue: String;
+Begin
+    Result := 'Edit Nodes';
+End;
 
-PROCEDURE TJvInspectorTreeNodesItem.SetDisplayValue(CONST Value: STRING);
-BEGIN
+Procedure TJvInspectorTreeNodesItem.SetDisplayValue(Const Value: String);
+Begin
 
-END;
+End;
 
-PROCEDURE TJvInspectorTreeNodesItem.SetFlags(CONST Value: TInspectorItemFlags);
-VAR
-NewValue: TInspectorItemFlags;
-BEGIN
-NewValue := Value + [iifEditButton];
-INHERITED SetFlags(NewValue);
-END;
+Procedure TJvInspectorTreeNodesItem.SetFlags(Const Value: TInspectorItemFlags);
+Var
+    NewValue: TInspectorItemFlags;
+Begin
+    NewValue := Value + [iifEditButton];
+    Inherited SetFlags(NewValue);
+End;
 
-CLASS PROCEDURE TJvInspectorTreeNodesItem.RegisterAsDefaultItem;
-BEGIN
-WITH TJvCustomInspectorData.ItemRegister DO
-IF IndexOf(Self) = -1 THEN
-Add(TJvInspectorTypeInfoRegItem.Create(Self, TypeInfo(TTreeNodes)));
-END;
+Class Procedure TJvInspectorTreeNodesItem.RegisterAsDefaultItem;
+Begin
+    With TJvCustomInspectorData.ItemRegister Do
+        If IndexOf(Self) = -1 Then
+            Add(TJvInspectorTypeInfoRegItem.Create(Self, TypeInfo(TTreeNodes)));
+End;
 //-------------------------------------------------------------------------------
 
-PROCEDURE TJvInspectorBitmapItem.Edit;
-VAR
-PictureEdit: TPictureEdit;
-picObj: Tpicture;
-strClassName: STRING;
-strFileName: STRING;
-BEGIN
+Procedure TJvInspectorBitmapItem.Edit;
+Var
+    PictureEdit: TPictureEdit;
+    picObj: Tpicture;
+    strClassName: String;
+    strFileName: String;
+Begin
 
-IF NOT Assigned(TJvInspectorPropData(Self.GetData()).Instance) THEN
-exit;
+    If Not Assigned(TJvInspectorPropData(Self.GetData()).Instance) Then
+        exit;
 
-PictureEdit := TPictureEdit.Create(GetParentForm(Inspector));
+    PictureEdit := TPictureEdit.Create(GetParentForm(Inspector));
 
-strClassName := UpperCase(
-(TJvInspectorPropData(Self.GetData()).Instance).ClassName);
+    strClassName := UpperCase(
+        (TJvInspectorPropData(Self.GetData()).Instance).ClassName);
 
-IF strClassName = UpperCase('TWxBitmapButton') THEN
-BEGIN
-PictureEdit.Image1.Picture.Assign(TWxBitmapButton(
-TJvInspectorPropData(Self.GetData()).Instance).Wx_Bitmap);
-IF (TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat) THEN
-PictureEdit.KeepFormat.State := cbChecked
-ELSE
-PictureEdit.KeepFormat.State := cbUnchecked;
+    If strClassName = UpperCase('TWxBitmapButton') Then
+    Begin
+        PictureEdit.Image1.Picture.Assign(TWxBitmapButton(
+            TJvInspectorPropData(Self.GetData()).Instance).Wx_Bitmap);
+        If (TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat) Then
+            PictureEdit.KeepFormat.State := cbChecked
+        Else
+            PictureEdit.KeepFormat.State := cbUnchecked;
 
-PictureEdit.FileName.Text :=
-TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).GetGraphicFileName;
-END;
+        PictureEdit.FileName.Text :=
+            TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).GetGraphicFileName;
+    End;
 
-IF strClassName = UpperCase('TWxCustomButton') THEN
-BEGIN
-PictureEdit.Image1.Picture.Assign(TWxCustomButton(
-TJvInspectorPropData(Self.GetData()).Instance).Wx_Bitmap);
-IF (TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat) THEN
-PictureEdit.KeepFormat.State := cbChecked
-ELSE
-PictureEdit.KeepFormat.State := cbUnchecked;
+    If strClassName = UpperCase('TWxCustomButton') Then
+    Begin
+        PictureEdit.Image1.Picture.Assign(TWxCustomButton(
+            TJvInspectorPropData(Self.GetData()).Instance).Wx_Bitmap);
+        If (TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat) Then
+            PictureEdit.KeepFormat.State := cbChecked
+        Else
+            PictureEdit.KeepFormat.State := cbUnchecked;
 
-PictureEdit.FileName.Text :=
-TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).GetGraphicFileName;
+        PictureEdit.FileName.Text :=
+            TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).GetGraphicFileName;
 
-END;
+    End;
 
-IF strClassName = UpperCase('TWxToolButton') THEN
-BEGIN
-PictureEdit.Image1.Picture.Assign(
-TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_Bitmap);
+    If strClassName = UpperCase('TWxToolButton') Then
+    Begin
+        PictureEdit.Image1.Picture.Assign(
+            TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_Bitmap);
 
-IF (TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat) THEN
-PictureEdit.KeepFormat.State := cbChecked
-ELSE
-PictureEdit.KeepFormat.State := cbUnchecked;
+        If (TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat) Then
+            PictureEdit.KeepFormat.State := cbChecked
+        Else
+            PictureEdit.KeepFormat.State := cbUnchecked;
 
-PictureEdit.FileName.Text :=
-TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).GetGraphicFileName;
+        PictureEdit.FileName.Text :=
+            TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).GetGraphicFileName;
 
-END;
+    End;
 
-IF strClassName = UpperCase('TWxStaticBitmap') THEN
-BEGIN
-PictureEdit.Image1.Picture.Assign(TWxStaticBitmap(
-TJvInspectorPropData(Self.GetData()).Instance).picture);
+    If strClassName = UpperCase('TWxStaticBitmap') Then
+    Begin
+        PictureEdit.Image1.Picture.Assign(TWxStaticBitmap(
+            TJvInspectorPropData(Self.GetData()).Instance).picture);
 
-IF (TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat) THEN
-PictureEdit.KeepFormat.State := cbChecked
-ELSE
-PictureEdit.KeepFormat.State := cbUnchecked;
+        If (TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat) Then
+            PictureEdit.KeepFormat.State := cbChecked
+        Else
+            PictureEdit.KeepFormat.State := cbUnchecked;
 
-PictureEdit.FileName.Text :=
-TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).GetGraphicFileName;
+        PictureEdit.FileName.Text :=
+            TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).GetGraphicFileName;
 
-END;
+    End;
 
-IF strClassName = UpperCase('TFrmNewForm') THEN
-BEGIN
-PictureEdit.Image1.Picture.Assign(
-TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).Wx_ICON);
+    If strClassName = UpperCase('TFrmNewForm') Then
+    Begin
+        PictureEdit.Image1.Picture.Assign(
+            TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).Wx_ICON);
 
-IF (TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat) THEN
-PictureEdit.KeepFormat.State := cbChecked
-ELSE
-PictureEdit.KeepFormat.State := cbUnchecked;
+        If (TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat) Then
+            PictureEdit.KeepFormat.State := cbChecked
+        Else
+            PictureEdit.KeepFormat.State := cbUnchecked;
 
-PictureEdit.FileName.Text :=
-TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).GetGraphicFileName;
+        PictureEdit.FileName.Text :=
+            TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).GetGraphicFileName;
 
-END;
+    End;
 
-TRY
-IF PictureEdit.ShowModal = mrOk THEN
-BEGIN
-picObj := TPicture.Create;
-picObj.Bitmap.Assign(PictureEdit.Image1.Picture.Bitmap);
+    Try
+        If PictureEdit.ShowModal = mrOk Then
+        Begin
+            picObj := TPicture.Create;
+            picObj.Bitmap.Assign(PictureEdit.Image1.Picture.Bitmap);
 
-IF strClassName = UpperCase('TWxStaticBitmap') THEN
-BEGIN
-TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).picture.Assign(picObj);
-TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).picture.Bitmap.Transparent := TRUE;
-TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).Width :=
-TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).picture.Bitmap.Width;
-TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).Height :=
-TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).picture.Bitmap.Height;
+            If strClassName = UpperCase('TWxStaticBitmap') Then
+            Begin
+                TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).picture.Assign(picObj);
+                TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).picture.Bitmap.Transparent := True;
+                TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).Width :=
+                    TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).picture.Bitmap.Width;
+                TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).Height :=
+                    TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).picture.Bitmap.Height;
 
-IF (PictureEdit.KeepFormat.State = cbChecked) THEN
-BEGIN
-TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := TRUE;
-TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).SetGraphicFileName(PictureEdit.FileName.Text);
-END
-ELSE
-BEGIN
-TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := FALSE;
+                If (PictureEdit.KeepFormat.State = cbChecked) Then
+                Begin
+                    TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := True;
+                    TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).SetGraphicFileName(PictureEdit.FileName.Text);
+                End
+                Else
+                Begin
+                    TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := False;
                     //strFileName := 'Images' + pd + TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).GetName + '_XPM.xpm';
-TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).SetGraphicFileName('');
-END;
+                    TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).SetGraphicFileName('');
+                End;
 
-strFileName := TWxStaticBitmap(TJvInspectorPropData(
-Self.GetData()).Instance).GetGraphicFileName;
+                strFileName := TWxStaticBitmap(TJvInspectorPropData(
+                    Self.GetData()).Instance).GetGraphicFileName;
 
-END;
+            End;
 
-IF strClassName = UpperCase('TFrmNewForm') THEN
-BEGIN
-TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).Wx_ICON.Assign(picObj);
-TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).Wx_ICON.Bitmap.Transparent := TRUE;
+            If strClassName = UpperCase('TFrmNewForm') Then
+            Begin
+                TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).Wx_ICON.Assign(picObj);
+                TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).Wx_ICON.Bitmap.Transparent := True;
 
-IF (PictureEdit.KeepFormat.State = cbChecked) THEN
-BEGIN
-TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := TRUE;
-TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).SetGraphicFileName(PictureEdit.FileName.Text);
-END
-ELSE
-BEGIN
-TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := FALSE;
-TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).SetGraphicFileName('');
-END;
+                If (PictureEdit.KeepFormat.State = cbChecked) Then
+                Begin
+                    TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := True;
+                    TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).SetGraphicFileName(PictureEdit.FileName.Text);
+                End
+                Else
+                Begin
+                    TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := False;
+                    TFrmNewForm(TJvInspectorPropData(Self.GetData()).Instance).SetGraphicFileName('');
+                End;
 
-strFileName := TFrmNewForm(TJvInspectorPropData(
-Self.GetData()).Instance).GetGraphicFileName;
+                strFileName := TFrmNewForm(TJvInspectorPropData(
+                    Self.GetData()).Instance).GetGraphicFileName;
 
-END;
+            End;
 
-IF strClassName = UpperCase('TWxBitmapButton') THEN
-BEGIN
-TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_BITMAP.Assign(picObj);
-TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_BITMAP.Bitmap.Transparent := TRUE;
-TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).SetButtonBitmap(picObj);
+            If strClassName = UpperCase('TWxBitmapButton') Then
+            Begin
+                TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_BITMAP.Assign(picObj);
+                TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_BITMAP.Bitmap.Transparent := True;
+                TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).SetButtonBitmap(picObj);
 
-IF (PictureEdit.KeepFormat.State = cbChecked) THEN
-BEGIN
-TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := TRUE;
-TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).SetGraphicFileName(PictureEdit.FileName.Text);
-END
-ELSE
-BEGIN
-TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := FALSE;
+                If (PictureEdit.KeepFormat.State = cbChecked) Then
+                Begin
+                    TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := True;
+                    TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).SetGraphicFileName(PictureEdit.FileName.Text);
+                End
+                Else
+                Begin
+                    TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := False;
                     //strFileName := 'Images' + pd + TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).GetName + '_XPM.xpm';
-TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).SetGraphicFileName('');
-END;
+                    TWxBitmapButton(TJvInspectorPropData(Self.GetData()).Instance).SetGraphicFileName('');
+                End;
 
-strFileName := TWxBitmapButton(TJvInspectorPropData(
-Self.GetData()).Instance).GetGraphicFileName;
+                strFileName := TWxBitmapButton(TJvInspectorPropData(
+                    Self.GetData()).Instance).GetGraphicFileName;
 
-END;
+            End;
 
-IF strClassName = UpperCase('TWxCustomButton') THEN
-BEGIN
-TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_BITMAP.Assign(picObj);
-TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_BITMAP.Bitmap.Transparent := TRUE;
-TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).SetButtonBitmap(picObj);
+            If strClassName = UpperCase('TWxCustomButton') Then
+            Begin
+                TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_BITMAP.Assign(picObj);
+                TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_BITMAP.Bitmap.Transparent := True;
+                TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).SetButtonBitmap(picObj);
 
-IF (PictureEdit.KeepFormat.State = cbChecked) THEN
-BEGIN
-TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := TRUE;
-TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).SetGraphicFileName(PictureEdit.FileName.Text);
-END
-ELSE
-BEGIN
-TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := FALSE;
+                If (PictureEdit.KeepFormat.State = cbChecked) Then
+                Begin
+                    TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := True;
+                    TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).SetGraphicFileName(PictureEdit.FileName.Text);
+                End
+                Else
+                Begin
+                    TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := False;
                     //strFileName := 'Images' + pd + TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).GetName + '_XPM.xpm';
-TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).SetGraphicFileName('');
-END;
+                    TWxCustomButton(TJvInspectorPropData(Self.GetData()).Instance).SetGraphicFileName('');
+                End;
 
-strFileName := TWxCustomButton(TJvInspectorPropData(
-Self.GetData()).Instance).GetGraphicFileName;
+                strFileName := TWxCustomButton(TJvInspectorPropData(
+                    Self.GetData()).Instance).GetGraphicFileName;
 
-END;
+            End;
 
-IF strClassName = UpperCase('TWxToolButton') THEN
-BEGIN
-TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_BITMAP.Assign(picObj);
-TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_BITMAP.Bitmap.Transparent := TRUE;
-TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).SetButtonBitmap(picObj);
+            If strClassName = UpperCase('TWxToolButton') Then
+            Begin
+                TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_BITMAP.Assign(picObj);
+                TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).Wx_BITMAP.Bitmap.Transparent := True;
+                TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).SetButtonBitmap(picObj);
 
-IF (PictureEdit.KeepFormat.State = cbChecked) THEN
-BEGIN
-TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := TRUE;
-TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).SetGraphicFileName(PictureEdit.FileName.Text);
-END
-ELSE
-BEGIN
-TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := FALSE;
+                If (PictureEdit.KeepFormat.State = cbChecked) Then
+                Begin
+                    TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := True;
+                    TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).SetGraphicFileName(PictureEdit.FileName.Text);
+                End
+                Else
+                Begin
+                    TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).KeepFormat := False;
                     //strFileName := 'Images' + pd + TWxStaticBitmap(TJvInspectorPropData(Self.GetData()).Instance).GetName + '_XPM.xpm';
-TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).SetGraphicFileName('');
-END;
+                    TWxToolButton(TJvInspectorPropData(Self.GetData()).Instance).SetGraphicFileName('');
+                End;
 
-strFileName := TWxToolButton(TJvInspectorPropData(
-Self.GetData()).Instance).GetGraphicFileName;
+                strFileName := TWxToolButton(TJvInspectorPropData(
+                    Self.GetData()).Instance).GetGraphicFileName;
 
-END;
+            End;
 
-IF assigned(TJvInspector(GetInspector).OnDataValueChanged) THEN
-TJvInspector(GetInspector).OnDataValueChanged(NIL, Data);
-END;
+            If assigned(TJvInspector(GetInspector).OnDataValueChanged) Then
+                TJvInspector(GetInspector).OnDataValueChanged(Nil, Data);
+        End;
 
-FINALLY
-PictureEdit.Destroy;
-END;
-END;
+    Finally
+        PictureEdit.Destroy;
+    End;
+End;
 
-FUNCTION TJvInspectorBitmapItem.GetDisplayValue: STRING;
-BEGIN
-Result := 'Edit Picture';
-END;
+Function TJvInspectorBitmapItem.GetDisplayValue: String;
+Begin
+    Result := 'Edit Picture';
+End;
 
-PROCEDURE TJvInspectorBitmapItem.SetDisplayValue(CONST Value: STRING);
-BEGIN
+Procedure TJvInspectorBitmapItem.SetDisplayValue(Const Value: String);
+Begin
 
-END;
+End;
 
-PROCEDURE TJvInspectorBitmapItem.SetFlags(CONST Value: TInspectorItemFlags);
-VAR
-NewValue: TInspectorItemFlags;
-BEGIN
-NewValue := Value + [iifEditButton];
-INHERITED SetFlags(NewValue);
-END;
+Procedure TJvInspectorBitmapItem.SetFlags(Const Value: TInspectorItemFlags);
+Var
+    NewValue: TInspectorItemFlags;
+Begin
+    NewValue := Value + [iifEditButton];
+    Inherited SetFlags(NewValue);
+End;
 
-CLASS PROCEDURE TJvInspectorBitmapItem.RegisterAsDefaultItem;
-BEGIN
-WITH TJvCustomInspectorData.ItemRegister DO
-IF IndexOf(Self) = -1 THEN
-Add(TJvInspectorTypeInfoRegItem.Create(Self, TypeInfo(TPicture)));
-END;
+Class Procedure TJvInspectorBitmapItem.RegisterAsDefaultItem;
+Begin
+    With TJvCustomInspectorData.ItemRegister Do
+        If IndexOf(Self) = -1 Then
+            Add(TJvInspectorTypeInfoRegItem.Create(Self, TypeInfo(TPicture)));
+End;
 //------------------------------------------------------------------------------
 
-PROCEDURE TJvInspectorMyFontItem.Edit;
-VAR
-FontDlg: TFontDialog;
-fnt: TFont;
-compIntf: IWxComponentInterface;
-prevColor: TColor;
-ColorInt: INTEGER;
-BEGIN
+Procedure TJvInspectorMyFontItem.Edit;
+Var
+    FontDlg: TFontDialog;
+    fnt: TFont;
+    compIntf: IWxComponentInterface;
+    prevColor: TColor;
+    ColorInt: Integer;
+Begin
 
-IF NOT Assigned(Data) THEN
-exit;
+    If Not Assigned(Data) Then
+        exit;
 
-fnt := TFont(Data.AsOrdinal);
+    fnt := TFont(Data.AsOrdinal);
 
-prevColor := fnt.Color;
+    prevColor := fnt.Color;
 
-FontDlg := TFontDialog.Create(GetParentForm(Inspector));
+    FontDlg := TFontDialog.Create(GetParentForm(Inspector));
 
-TRY
-FontDlg.Font.Assign(fnt);
-IF NOT FontDlg.Execute THEN
-exit;
-fnt.Assign(FontDlg.Font);
+    Try
+        FontDlg.Font.Assign(fnt);
+        If Not FontDlg.Execute Then
+            exit;
+        fnt.Assign(FontDlg.Font);
 
-IF prevColor <> fnt.Color THEN
-IF (TJvInspectorPropData(Self.GetData()).Instance).GetInterface(
-IID_IWxComponentInterface, compIntf) THEN
-BEGIN
-ColorInt := ColorToRGB(fnt.Color);
-compIntf.SetFGColor('CUS:' + IntToStr(GetRValue(ColorInt)) +
-',' + IntToStr(GetGValue(ColorInt)) + ',' +
-IntToStr(GetBValue(ColorInt)));
-END;
+        If prevColor <> fnt.Color Then
+            If (TJvInspectorPropData(Self.GetData()).Instance).GetInterface(
+                IID_IWxComponentInterface, compIntf) Then
+            Begin
+                ColorInt := ColorToRGB(fnt.Color);
+                compIntf.SetFGColor('CUS:' + IntToStr(GetRValue(ColorInt)) +
+                    ',' + IntToStr(GetGValue(ColorInt)) + ',' +
+                    IntToStr(GetBValue(ColorInt)));
+            End;
 
-IF assigned(TJvInspector(GetInspector).OnDataValueChanged) THEN
-TJvInspector(GetInspector).OnDataValueChanged(NIL, Data);
+        If assigned(TJvInspector(GetInspector).OnDataValueChanged) Then
+            TJvInspector(GetInspector).OnDataValueChanged(Nil, Data);
 
-FINALLY
-FontDlg.Destroy;
-END;
-END;
+    Finally
+        FontDlg.Destroy;
+    End;
+End;
 
-FUNCTION TJvInspectorMyFontItem.GetDisplayValue: STRING;
-BEGIN
-Result := 'Edit Font';
-END;
+Function TJvInspectorMyFontItem.GetDisplayValue: String;
+Begin
+    Result := 'Edit Font';
+End;
 
-PROCEDURE TJvInspectorMyFontItem.SetDisplayValue(CONST Value: STRING);
-BEGIN
+Procedure TJvInspectorMyFontItem.SetDisplayValue(Const Value: String);
+Begin
 
-END;
+End;
 
-PROCEDURE TJvInspectorMyFontItem.SetFlags(CONST Value: TInspectorItemFlags);
-VAR
-NewValue: TInspectorItemFlags;
-BEGIN
-NewValue := Value + [iifEditButton];
-INHERITED SetFlags(NewValue);
-END;
+Procedure TJvInspectorMyFontItem.SetFlags(Const Value: TInspectorItemFlags);
+Var
+    NewValue: TInspectorItemFlags;
+Begin
+    NewValue := Value + [iifEditButton];
+    Inherited SetFlags(NewValue);
+End;
 
-CLASS PROCEDURE TJvInspectorMyFontItem.RegisterAsDefaultItem;
-BEGIN
-WITH TJvCustomInspectorData.ItemRegister DO
-IF IndexOf(Self) = -1 THEN
-Add(TJvInspectorTypeInfoRegItem.Create(Self, TypeInfo(TFont)));
-END;
+Class Procedure TJvInspectorMyFontItem.RegisterAsDefaultItem;
+Begin
+    With TJvCustomInspectorData.ItemRegister Do
+        If IndexOf(Self) = -1 Then
+            Add(TJvInspectorTypeInfoRegItem.Create(Self, TypeInfo(TFont)));
+End;
 
 //------------------------------------------------------------------------------
 
-PROCEDURE TJvInspectorMenuItem.Edit;
-VAR
-mnuDlg: TMenuItemForm;
-pMenuItem: TWxPopupMenu;
-mbItem: TWxMenuBar;
-maxControlValue: INTEGER;
-MenuName: STRING;
-BEGIN
+Procedure TJvInspectorMenuItem.Edit;
+Var
+    mnuDlg: TMenuItemForm;
+    pMenuItem: TWxPopupMenu;
+    mbItem: TWxMenuBar;
+    maxControlValue: Integer;
+    MenuName: String;
+Begin
 
-IF NOT Assigned(TJvInspectorPropData(Self.GetData()).Instance) THEN
-exit;
-
-
-TRY
-IF (TJvInspectorPropData(Self.GetData()).Instance IS TControl) THEN
-MenuName := TControl(TJvInspectorPropData(
-Self.GetData()).Instance).Name;
-EXCEPT
-END;
-
-IF (TJvInspectorPropData(Self.GetData()).Instance IS TWxPopupMenu) THEN
-BEGIN
-
-mnuDlg := TMenuItemForm.Create(GetParentForm(Inspector), MenuName);
-TRY
-BEGIN
-pMenuItem :=
-TWxPopupMenu(TJvInspectorPropData(
-Self.GetData()).Instance);
-maxControlValue := GetMaxIDofWxForm(pMenuItem.parent);
-mnuDlg.SetMaxID(maxControlValue);
-mnuDlg.SetMenuItemsDes(pMenuItem.Parent, pMenuItem,
-TWxCustomMenuItem(
-pMenuItem.Wx_MenuItems), mnuDlg.FMenuItems);
-
-IF mnuDlg.ShowModal = mrOk THEN
-BEGIN
-
-pMenuItem.Wx_MenuItems.Destroy;
-pMenuItem.Wx_MenuItems :=
-TWxCustomMenuItem.Create(pMenuItem);
-mnuDlg.SetMenuItemsDes(pMenuItem.Parent,
-pMenuItem, mnuDlg.FMenuItems,
-TWxCustomMenuItem(pMenuItem.Wx_MenuItems));
-
-IF assigned(
-TJvInspector(GetInspector).OnDataValueChanged) THEN
-TJvInspector(GetInspector).OnDataValueChanged(
-NIL, Data);
-
-END;
-
-END;
-
-FINALLY
-mnuDlg.Destroy;
-END;
-
-END;
-
-IF (TJvInspectorPropData(Self.GetData()).Instance IS TWxMenuBar) THEN
-BEGIN
-
-mnuDlg := TMenuItemForm.Create(GetParentForm(Inspector), MenuName);
-TRY
-BEGIN
-
-mbItem :=
-TWxMenuBar(TJvInspectorPropData(Self.GetData()).Instance);
-maxControlValue := GetMaxIDofWxForm(mbItem.parent);
-mnuDlg.SetMaxID(maxControlValue);
-mnuDlg.SetMenuItemsDes(mbItem.Parent, mbItem,
-TWxCustomMenuItem(
-mbItem.Wx_MenuItems), mnuDlg.FMenuItems);
-
-IF mnuDlg.ShowModal = mrOk THEN
-BEGIN
-
-mbItem.Wx_MenuItems.Destroy;
-mbItem.Wx_MenuItems :=
-TWxCustomMenuItem.Create(mbItem);
-mnuDlg.SetMenuItemsDes(mbItem.Parent,
-mbItem, mnuDlg.FMenuItems,
-TWxCustomMenuItem(mbItem.Wx_MenuItems));
-mbItem.BuildMenus(mbItem.Wx_MenuItems);
-
-IF assigned(
-TJvInspector(GetInspector).OnDataValueChanged) THEN
-TJvInspector(
-GetInspector).OnDataValueChanged(NIL, Data);
-
-END;
-END;
-FINALLY
-mnuDlg.Destroy;
-END;
-
-END;
-
-END;
+    If Not Assigned(TJvInspectorPropData(Self.GetData()).Instance) Then
+        exit;
 
 
+    Try
+        If (TJvInspectorPropData(Self.GetData()).Instance Is TControl) Then
+            MenuName := TControl(TJvInspectorPropData(
+                Self.GetData()).Instance).Name;
+    Except
+    End;
 
-FUNCTION TJvInspectorMenuItem.GetDisplayValue: STRING;
-BEGIN
-Result := 'Edit MenuItems';
-END;
+    If (TJvInspectorPropData(Self.GetData()).Instance Is TWxPopupMenu) Then
+    Begin
 
-PROCEDURE TJvInspectorMenuItem.SetDisplayValue(CONST Value: STRING);
-BEGIN
+        mnuDlg := TMenuItemForm.Create(GetParentForm(Inspector), MenuName);
+        Try
+            Begin
+                pMenuItem :=
+                    TWxPopupMenu(TJvInspectorPropData(
+                    Self.GetData()).Instance);
+                maxControlValue := GetMaxIDofWxForm(pMenuItem.parent);
+                mnuDlg.SetMaxID(maxControlValue);
+                mnuDlg.SetMenuItemsDes(pMenuItem.Parent, pMenuItem,
+                    TWxCustomMenuItem(
+                    pMenuItem.Wx_MenuItems), mnuDlg.FMenuItems);
 
-END;
+                If mnuDlg.ShowModal = mrOk Then
+                Begin
 
-PROCEDURE TJvInspectorMenuItem.SetFlags(CONST Value: TInspectorItemFlags);
-VAR
-NewValue: TInspectorItemFlags;
-BEGIN
-NewValue := Value + [iifEditButton];
-INHERITED SetFlags(NewValue);
-END;
+                    pMenuItem.Wx_MenuItems.Destroy;
+                    pMenuItem.Wx_MenuItems :=
+                        TWxCustomMenuItem.Create(pMenuItem);
+                    mnuDlg.SetMenuItemsDes(pMenuItem.Parent,
+                        pMenuItem, mnuDlg.FMenuItems,
+                        TWxCustomMenuItem(pMenuItem.Wx_MenuItems));
 
-CLASS PROCEDURE TJvInspectorMenuItem.RegisterAsDefaultItem;
-BEGIN
-WITH TJvCustomInspectorData.ItemRegister DO
-IF IndexOf(Self) = -1 THEN
-Add(TJvInspectorTypeInfoRegItem.Create(Self,
-TypeInfo(TWxCustomMenuItem)));
-END;
+                    If assigned(
+                        TJvInspector(GetInspector).OnDataValueChanged) Then
+                        TJvInspector(GetInspector).OnDataValueChanged(
+                            Nil, Data);
 
-PROCEDURE TJvInspectorFileNameEditItem.Edit;
-VAR
-FileOpenForm: TOpenDialogEx;
-WxFileNameString: TWxFileNameString;
-BEGIN
+                End;
 
-IF NOT Assigned(Data) THEN
-exit;
+            End;
 
-WxFileNameString := TWxFileNameString(Data.AsOrdinal);
+        Finally
+            mnuDlg.Destroy;
+        End;
 
-FileOpenForm := TOpenDialogEx.Create(wx_designer.ownerForm);
-FileOpenForm.Filter := 'All files (*.*)|*.*';
+    End;
 
-IF (FileOpenForm.Execute) THEN // If a file is selected
-WxFileNameString.FstrFileNameValue := FileOpenForm.FileName
-ELSE // If Cancel is pushed, then remove file to load
-WxFileNameString.FstrFileNameValue := '';
+    If (TJvInspectorPropData(Self.GetData()).Instance Is TWxMenuBar) Then
+    Begin
+
+        mnuDlg := TMenuItemForm.Create(GetParentForm(Inspector), MenuName);
+        Try
+            Begin
+
+                mbItem :=
+                    TWxMenuBar(TJvInspectorPropData(Self.GetData()).Instance);
+                maxControlValue := GetMaxIDofWxForm(mbItem.parent);
+                mnuDlg.SetMaxID(maxControlValue);
+                mnuDlg.SetMenuItemsDes(mbItem.Parent, mbItem,
+                    TWxCustomMenuItem(
+                    mbItem.Wx_MenuItems), mnuDlg.FMenuItems);
+
+                If mnuDlg.ShowModal = mrOk Then
+                Begin
+
+                    mbItem.Wx_MenuItems.Destroy;
+                    mbItem.Wx_MenuItems :=
+                        TWxCustomMenuItem.Create(mbItem);
+                    mnuDlg.SetMenuItemsDes(mbItem.Parent,
+                        mbItem, mnuDlg.FMenuItems,
+                        TWxCustomMenuItem(mbItem.Wx_MenuItems));
+                    mbItem.BuildMenus(mbItem.Wx_MenuItems);
+
+                    If assigned(
+                        TJvInspector(GetInspector).OnDataValueChanged) Then
+                        TJvInspector(
+                            GetInspector).OnDataValueChanged(Nil, Data);
+
+                End;
+            End;
+        Finally
+            mnuDlg.Destroy;
+        End;
+
+    End;
+
+End;
+
+
+
+Function TJvInspectorMenuItem.GetDisplayValue: String;
+Begin
+    Result := 'Edit MenuItems';
+End;
+
+Procedure TJvInspectorMenuItem.SetDisplayValue(Const Value: String);
+Begin
+
+End;
+
+Procedure TJvInspectorMenuItem.SetFlags(Const Value: TInspectorItemFlags);
+Var
+    NewValue: TInspectorItemFlags;
+Begin
+    NewValue := Value + [iifEditButton];
+    Inherited SetFlags(NewValue);
+End;
+
+Class Procedure TJvInspectorMenuItem.RegisterAsDefaultItem;
+Begin
+    With TJvCustomInspectorData.ItemRegister Do
+        If IndexOf(Self) = -1 Then
+            Add(TJvInspectorTypeInfoRegItem.Create(Self,
+                TypeInfo(TWxCustomMenuItem)));
+End;
+
+Procedure TJvInspectorFileNameEditItem.Edit;
+Var
+    FileOpenForm: TOpenDialogEx;
+    WxFileNameString: TWxFileNameString;
+Begin
+
+    If Not Assigned(Data) Then
+        exit;
+
+    WxFileNameString := TWxFileNameString(Data.AsOrdinal);
+
+    FileOpenForm := TOpenDialogEx.Create(wx_designer.ownerForm);
+    FileOpenForm.Filter := 'All files (*.*)|*.*';
+
+    If (FileOpenForm.Execute) Then // If a file is selected
+        WxFileNameString.FstrFileNameValue := FileOpenForm.FileName
+    Else // If Cancel is pushed, then remove file to load
+        WxFileNameString.FstrFileNameValue := '';
 
     // if strEqual(UpperCase((TJvInspectorPropData(Self.GetData()).Instance).ClassName), UpperCase('TWxMemo')) then
     //       TWxMemo(TJvInspectorPropData(Self.GetData()).Instance).SetWxFileName(WxFileNameString.FstrFileNameValue);
@@ -7449,96 +7204,96 @@ WxFileNameString.FstrFileNameValue := '';
     // wxform to update. Problem is that I need to invoke SetWxFileName procedure
     // in the calling function (at this point WxMemo). The 2 lines above should
     // do this (TWxMemo(...)), but I compiler complains that it can't find TWxMemo
-IF assigned(TJvInspector(GetInspector).OnDataValueChanged) THEN
-BEGIN
-TJvInspector(GetInspector).OnDataValueChanged(NIL, Data);
-TJvInspector(GetInspector).OnDataValueChanged(NIL, Data);
-END;
+    If assigned(TJvInspector(GetInspector).OnDataValueChanged) Then
+    Begin
+        TJvInspector(GetInspector).OnDataValueChanged(Nil, Data);
+        TJvInspector(GetInspector).OnDataValueChanged(Nil, Data);
+    End;
 
-END;
+End;
 
-FUNCTION TJvInspectorFileNameEditItem.GetDisplayValue: STRING;
-VAR
-WxFileNameString: TWxFileNameString;
-BEGIN
+Function TJvInspectorFileNameEditItem.GetDisplayValue: String;
+Var
+    WxFileNameString: TWxFileNameString;
+Begin
 
-IF NOT Assigned(Data) THEN
-exit;
+    If Not Assigned(Data) Then
+        exit;
 
-WxFileNameString := TWxFileNameString(Data.AsOrdinal);
+    WxFileNameString := TWxFileNameString(Data.AsOrdinal);
 
-Result := 'File to load';
+    Result := 'File to load';
 
-IF trim(WxFileNameString.FstrFileNameValue) <> '' THEN
-Result := WxFileNameString.FstrFileNameValue;
-END;
+    If trim(WxFileNameString.FstrFileNameValue) <> '' Then
+        Result := WxFileNameString.FstrFileNameValue;
+End;
 
-PROCEDURE TJvInspectorFileNameEditItem.SetFlags(
-CONST Value: TInspectorItemFlags);
-VAR
-NewValue: TInspectorItemFlags;
-BEGIN
-NewValue := Value + [iifEditButton];
-INHERITED SetFlags(NewValue);
-END;
+Procedure TJvInspectorFileNameEditItem.SetFlags(
+    Const Value: TInspectorItemFlags);
+Var
+    NewValue: TInspectorItemFlags;
+Begin
+    NewValue := Value + [iifEditButton];
+    Inherited SetFlags(NewValue);
+End;
 
 ///////////////////////////////////
 //mal
 ///////////////////////////////////
-PROCEDURE TJvInspectorAnimationFileNameEditItem.Edit;
-VAR
-FileOpenForm: TOpenDialog;
-WxAnimationFileNameString: TWxAnimationFileNameString;
-BEGIN
+Procedure TJvInspectorAnimationFileNameEditItem.Edit;
+Var
+    FileOpenForm: TOpenDialog;
+    WxAnimationFileNameString: TWxAnimationFileNameString;
+Begin
 
-WxAnimationFileNameString := TWxAnimationFileNameString(Data.AsOrdinal);
+    WxAnimationFileNameString := TWxAnimationFileNameString(Data.AsOrdinal);
 
-FileOpenForm := TOpenDialog.Create(GetParentForm(Inspector));
-FileOpenForm.Filter :=
-'Animated GIF files (*.gif)|*.GIF|Animated Cursor files (*.ani)|*.ANI';
+    FileOpenForm := TOpenDialog.Create(GetParentForm(Inspector));
+    FileOpenForm.Filter :=
+        'Animated GIF files (*.gif)|*.GIF|Animated Cursor files (*.ani)|*.ANI';
 
-IF (FileOpenForm.Execute) THEN // If a file is selected
-WxAnimationFileNameString.FstrFileNameValue := FileOpenForm.FileName
-ELSE // If Cancel is pushed, then remove file to load
-WxAnimationFileNameString.FstrFileNameValue := '';
+    If (FileOpenForm.Execute) Then // If a file is selected
+        WxAnimationFileNameString.FstrFileNameValue := FileOpenForm.FileName
+    Else // If Cancel is pushed, then remove file to load
+        WxAnimationFileNameString.FstrFileNameValue := '';
 
     // Tony 1 May 2008
     // Unfortunately, I need to do the OnDataValueChanged twice to get the
     // wxform to update. Problem is that I need to invoke SetWxFileName procedure
     // in the calling function (at this point WxAnimationCtrl). The 2 lines above should
     // do this (TWxMemo(...)), but I compiler complains that it can't find TWxMemo
-IF assigned(TJvInspector(GetInspector).OnDataValueChanged) THEN
-BEGIN
-TJvInspector(GetInspector).OnDataValueChanged(NIL, Data);
-TJvInspector(GetInspector).OnDataValueChanged(NIL, Data);
-END;
+    If assigned(TJvInspector(GetInspector).OnDataValueChanged) Then
+    Begin
+        TJvInspector(GetInspector).OnDataValueChanged(Nil, Data);
+        TJvInspector(GetInspector).OnDataValueChanged(Nil, Data);
+    End;
 
-END;
+End;
 
-FUNCTION TJvInspectorAnimationFileNameEditItem.GetDisplayValue: STRING;
-VAR
-WxAnimationFileNameString: TWxAnimationFileNameString;
-BEGIN
+Function TJvInspectorAnimationFileNameEditItem.GetDisplayValue: String;
+Var
+    WxAnimationFileNameString: TWxAnimationFileNameString;
+Begin
 
-IF NOT Assigned(Data) THEN
-exit;
+    If Not Assigned(Data) Then
+        exit;
 
-WxAnimationFileNameString := TWxAnimationFileNameString(Data.AsOrdinal);
+    WxAnimationFileNameString := TWxAnimationFileNameString(Data.AsOrdinal);
 
-Result := 'File to load';
+    Result := 'File to load';
 
-IF trim(WxAnimationFileNameString.FstrFileNameValue) <> '' THEN
-Result := WxAnimationFileNameString.FstrFileNameValue;
-END;
+    If trim(WxAnimationFileNameString.FstrFileNameValue) <> '' Then
+        Result := WxAnimationFileNameString.FstrFileNameValue;
+End;
 
-PROCEDURE TJvInspectorAnimationFileNameEditItem.SetFlags(
-CONST Value: TInspectorItemFlags);
-VAR
-NewValue: TInspectorItemFlags;
-BEGIN
-NewValue := Value + [iifEditButton];
-INHERITED SetFlags(NewValue);
-END;
+Procedure TJvInspectorAnimationFileNameEditItem.SetFlags(
+    Const Value: TInspectorItemFlags);
+Var
+    NewValue: TInspectorItemFlags;
+Begin
+    NewValue := Value + [iifEditButton];
+    Inherited SetFlags(NewValue);
+End;
 
 ///////////////////////////////////
 
@@ -7547,167 +7302,167 @@ END;
 // I found this code at the Delphi Central website: http://www.delphi-central.com/tbut.aspx
 //  BEGIN: TMultiLineBtn
 
-CONSTRUCTOR TMultiLineBtn.Create(AOwner: TComponent);
-BEGIN
-INHERITED Create(AOwner);
-fMultiLine := TRUE;
-fHorizAlign := halCentre;
-fVerticalAlign := valCentre;
-END;
+Constructor TMultiLineBtn.Create(AOwner: TComponent);
+Begin
+    Inherited Create(AOwner);
+    fMultiLine := True;
+    fHorizAlign := halCentre;
+    fVerticalAlign := valCentre;
+End;
 
-PROCEDURE TMultiLineBtn.SetVerticalAlign(Value: TVerticalAlign);
-BEGIN
-IF fVerticalAlign <> Value THEN
-BEGIN
-fVerticalAlign := Value;
-RecreateWnd;
-END;
-END;
+Procedure TMultiLineBtn.SetVerticalAlign(Value: TVerticalAlign);
+Begin
+    If fVerticalAlign <> Value Then
+    Begin
+        fVerticalAlign := Value;
+        RecreateWnd;
+    End;
+End;
 
-PROCEDURE TMultiLineBtn.SetHorizAlign(Value: THorizAlign);
-BEGIN
-IF fHorizAlign <> Value THEN
-BEGIN
-fHorizAlign := Value;
-RecreateWnd;
-END;
-END;
+Procedure TMultiLineBtn.SetHorizAlign(Value: THorizAlign);
+Begin
+    If fHorizAlign <> Value Then
+    Begin
+        fHorizAlign := Value;
+        RecreateWnd;
+    End;
+End;
 
-PROCEDURE TMultiLineBtn.SetMultiLine(Value: BOOLEAN);
-BEGIN
-IF fMultiLine <> Value THEN
-BEGIN
-fMultiLine := Value;
-RecreateWnd;
-END;
-END;
+Procedure TMultiLineBtn.SetMultiLine(Value: Boolean);
+Begin
+    If fMultiLine <> Value Then
+    Begin
+        fMultiLine := Value;
+        RecreateWnd;
+    End;
+End;
 
-PROCEDURE TMultiLineBtn.CreateParams(VAR Params: TCreateParams);
-BEGIN
-INHERITED CreateParams(Params);
-CASE VerticalAlign OF
-valTop:
-Params.Style := Params.Style OR BS_TOP;
-valBottom:
-Params.Style := Params.Style OR BS_BOTTOM;
-valCentre:
-Params.Style := Params.Style OR BS_VCENTER;
-END;
+Procedure TMultiLineBtn.CreateParams(Var Params: TCreateParams);
+Begin
+    Inherited CreateParams(Params);
+    Case VerticalAlign Of
+        valTop:
+            Params.Style := Params.Style Or BS_TOP;
+        valBottom:
+            Params.Style := Params.Style Or BS_BOTTOM;
+        valCentre:
+            Params.Style := Params.Style Or BS_VCENTER;
+    End;
 
-CASE HorizAlign OF
-halLeft:
-Params.Style := Params.Style OR BS_LEFT;
-halRight:
-Params.Style := Params.Style OR BS_RIGHT;
-halCentre:
-Params.Style := Params.Style OR BS_CENTER;
-END;
+    Case HorizAlign Of
+        halLeft:
+            Params.Style := Params.Style Or BS_LEFT;
+        halRight:
+            Params.Style := Params.Style Or BS_RIGHT;
+        halCentre:
+            Params.Style := Params.Style Or BS_CENTER;
+    End;
 
-IF MultiLine THEN
-Params.Style := Params.Style OR BS_MULTILINE
-ELSE
-Params.Style := Params.Style AND NOT BS_MULTILINE;
-END;
+    If MultiLine Then
+        Params.Style := Params.Style Or BS_MULTILINE
+    Else
+        Params.Style := Params.Style And Not BS_MULTILINE;
+End;
 
 // END: TMultiLineBtn
 
-FUNCTION CreateBlankXRC: TStringList;
-BEGIN
+Function CreateBlankXRC: TStringList;
+Begin
 
-Result := TStringList.Create;
+    Result := TStringList.Create;
 
-TRY
+    Try
 
-Result.Add('<?xml version="1.0" encoding="ISO-8859-1"?>');
-Result.Add('<resource version="2.3.0.1">');
-Result.Add('<!-- Created by ' + DEVCPP + ' ' + WXDEVCPP_VERSION + ' -->');
+        Result.Add('<?xml version="1.0" encoding="ISO-8859-1"?>');
+        Result.Add('<resource version="2.3.0.1">');
+        Result.Add('<!-- Created by ' + DEVCPP + ' ' + WXDEVCPP_VERSION + ' -->');
 
         // Result.Add(Format('<object class="%s" name="%s">', [frmNewForm.Wx_class, frmNewForm.Wx_Name]));
 
         //Result.Add('</object>');
-Result.Add('</resource>');
+        Result.Add('</resource>');
 
-EXCEPT
-Result.Destroy;
-END;
-END;
+    Except
+        Result.Destroy;
+    End;
+End;
 
-FUNCTION GetExtension(FileName: STRING): STRING;
-BEGIN
-IF (UpperCase(ExtractFileExt(FileName)) = '.JPG') THEN
-Result := 'JPEG'
-ELSE
-IF (UpperCase(ExtractFileExt(FileName)) = '.JPEG') THEN
-Result := 'JPEG'
-ELSE
-IF (UpperCase(ExtractFileExt(FileName)) = '.ICO') THEN
-Result := 'ICO'
-ELSE
-IF (UpperCase(ExtractFileExt(FileName)) = '.BMP') THEN
-Result := 'BMP'
-ELSE
-IF (UpperCase(ExtractFileExt(FileName)) = '.GIF') THEN
-Result := 'GIF'
-ELSE
-IF (UpperCase(ExtractFileExt(FileName)) = '.PNG') THEN
-Result := 'PNG'
-ELSE
-Result := 'XPM';
+Function GetExtension(FileName: String): String;
+Begin
+    If (UpperCase(ExtractFileExt(FileName)) = '.JPG') Then
+        Result := 'JPEG'
+    Else
+    If (UpperCase(ExtractFileExt(FileName)) = '.JPEG') Then
+        Result := 'JPEG'
+    Else
+    If (UpperCase(ExtractFileExt(FileName)) = '.ICO') Then
+        Result := 'ICO'
+    Else
+    If (UpperCase(ExtractFileExt(FileName)) = '.BMP') Then
+        Result := 'BMP'
+    Else
+    If (UpperCase(ExtractFileExt(FileName)) = '.GIF') Then
+        Result := 'GIF'
+    Else
+    If (UpperCase(ExtractFileExt(FileName)) = '.PNG') Then
+        Result := 'PNG'
+    Else
+        Result := 'XPM';
 
-END;
+End;
 
-FUNCTION GetLongName(CONST ShortPathName: STRING): STRING;
-VAR
-hKernel32Dll: THandle;
-fncGetLongPathName: FUNCTION(lpszShortPath: LPCTSTR; lpszLongPath: LPTSTR;
-cchBuffer: DWORD): DWORD STDCALL;
-bSuccess: BOOLEAN;
-szBuffer: ARRAY[0..MAX_PATH] OF CHAR;
-pDesktop: IShellFolder;
-swShortPath: WIDESTRING;
-iEaten: ULONG;
-pItemList: PItemIDList;
-iAttributes: ULONG;
-BEGIN
+Function GetLongName(Const ShortPathName: String): String;
+Var
+    hKernel32Dll: THandle;
+    fncGetLongPathName: Function(lpszShortPath: LPCTSTR; lpszLongPath: LPTSTR;
+        cchBuffer: DWORD): DWORD Stdcall;
+    bSuccess: Boolean;
+    szBuffer: Array[0..MAX_PATH] Of Char;
+    pDesktop: IShellFolder;
+    swShortPath: Widestring;
+    iEaten: ULONG;
+    pItemList: PItemIDList;
+    iAttributes: ULONG;
+Begin
     // try to find the function "GetLongPathNameA" (Windows 98/2000)
-hKernel32Dll := GetModuleHandle('Kernel32.dll');
-IF (hKernel32Dll <> 0) THEN
-@fncGetLongPathName := GetProcAddress(hKernel32Dll, 'GetLongPathNameA')
-ELSE
-@fncGetLongPathName := NIL;
+    hKernel32Dll := GetModuleHandle('Kernel32.dll');
+    If (hKernel32Dll <> 0) Then
+        @fncGetLongPathName := GetProcAddress(hKernel32Dll, 'GetLongPathNameA')
+    Else
+        @fncGetLongPathName := Nil;
     // use the function "GetLongPathNameA" if available
-bSuccess := FALSE;
-IF (Assigned(fncGetLongPathName)) THEN
-BEGIN
-bSuccess := fncGetLongPathName(PCHAR(ShortPathName), szBuffer,
-SizeOf(szBuffer)) > 0;
-IF bSuccess THEN
-Result := szBuffer;
-END;
+    bSuccess := False;
+    If (Assigned(fncGetLongPathName)) Then
+    Begin
+        bSuccess := fncGetLongPathName(Pchar(ShortPathName), szBuffer,
+            SizeOf(szBuffer)) > 0;
+        If bSuccess Then
+            Result := szBuffer;
+    End;
     // use an alternative way of getting the path (Windows 95/NT)
-IF (NOT bSuccess) AND Succeeded(SHGetDesktopFolder(pDesktop)) THEN
-BEGIN
-swShortPath := ShortPathName;
-iAttributes := 0;
-IF Succeeded(pDesktop.ParseDisplayName(0, NIL, POLESTR(swShortPath),
-iEaten, pItemList, iAttributes)) THEN
-BEGIN
-bSuccess := SHGetPathFromIDList(pItemList, szBuffer);
-IF bSuccess THEN
-Result := szBuffer;
+    If (Not bSuccess) And Succeeded(SHGetDesktopFolder(pDesktop)) Then
+    Begin
+        swShortPath := ShortPathName;
+        iAttributes := 0;
+        If Succeeded(pDesktop.ParseDisplayName(0, Nil, POLESTR(swShortPath),
+            iEaten, pItemList, iAttributes)) Then
+        Begin
+            bSuccess := SHGetPathFromIDList(pItemList, szBuffer);
+            If bSuccess Then
+                Result := szBuffer;
             // release ItemIdList (SHGetMalloc is superseded)
-CoTaskMemFree(pItemList);
-END;
-END;
+            CoTaskMemFree(pItemList);
+        End;
+    End;
     // give back the original path if unsuccessful
-IF (NOT bSuccess) THEN
-Result := ShortPathName;
-END;
+    If (Not bSuccess) Then
+        Result := ShortPathName;
+End;
 
-FUNCTION strContains(CONST S1, S2: STRING): BOOLEAN;
-BEGIN
-Result := Pos(S1, S2) > 0;
-END;
+Function strContains(Const S1, S2: String): Boolean;
+Begin
+    Result := Pos(S1, S2) > 0;
+End;
 
 {This unit contains 4 functions designed to validate and correct C++ class names
 and windows file names. The functions are as follows
@@ -7752,667 +7507,667 @@ Example usage of these functions.
 This copyright to Sof.T 2006 and provided under the GPL license version 2 or
 later at your preference.}
 
-FUNCTION ValidateClassName(ClassName: STRING): INTEGER;
-VAR
-NumberOfErrors, LoopIndex: INTEGER;
-ReservedKeywordList: TStrings;
-BEGIN
+Function ValidateClassName(ClassName: String): Integer;
+Var
+    NumberOfErrors, LoopIndex: Integer;
+    ReservedKeywordList: TStrings;
+Begin
 
-NumberOfErrors := 0;
+    NumberOfErrors := 0;
 
     //Check we have a name to work with
-IF Length(ClassName) < 1 THEN
-BEGIN
-NumberOfErrors := NumberOfErrors + 1;
-END
+    If Length(ClassName) < 1 Then
+    Begin
+        NumberOfErrors := NumberOfErrors + 1;
+    End
     //Check the first character is not a number
-ELSE
-IF (ClassName[1] IN ['0'..'9']) THEN
-BEGIN
-NumberOfErrors := NumberOfErrors + 1;
-END;
+    Else
+    If (ClassName[1] In ['0'..'9']) Then
+    Begin
+        NumberOfErrors := NumberOfErrors + 1;
+    End;
 
     //Look for invalid characters in the class name
-FOR LoopIndex := 1 TO Length(ClassName) DO
-BEGIN
+    For LoopIndex := 1 To Length(ClassName) Do
+    Begin
         //if not((ClassName[LoopIndex] in ['a'..'z']) or (ClassName[LoopIndex] in ['A'..'Z']) or (ClassName[LoopIndex] in ['0'..'9']) or (ClassName[LoopIndex] = '_')) then
-IF NOT ((ClassName[LoopIndex] IN ['a'..'z', 'A'..'Z', '0'..'9', '_'])) THEN
-BEGIN
-NumberOfErrors := NumberOfErrors + 1;
-END;
-END;
+        If Not ((ClassName[LoopIndex] In ['a'..'z', 'A'..'Z', '0'..'9', '_'])) Then
+        Begin
+            NumberOfErrors := NumberOfErrors + 1;
+        End;
+    End;
 
     //Check we haven't ended up with a reserved keyword
-ReservedKeywordList := TStringList.Create;
-TRY
+    ReservedKeywordList := TStringList.Create;
+    Try
         //Build the list of reserved keywords
-ReservedKeywordList.Add('asm');
-ReservedKeywordList.Add('do');
-ReservedKeywordList.Add('if');
-ReservedKeywordList.Add('return');
-ReservedKeywordList.Add('typedef');
-ReservedKeywordList.Add('auto');
-ReservedKeywordList.Add('double');
-ReservedKeywordList.Add('inline');
-ReservedKeywordList.Add('short');
-ReservedKeywordList.Add('typeid');
-ReservedKeywordList.Add('bool');
-ReservedKeywordList.Add('dynamic_cast');
-ReservedKeywordList.Add('int');
-ReservedKeywordList.Add('signed');
-ReservedKeywordList.Add('union');
-ReservedKeywordList.Add('break');
-ReservedKeywordList.Add('else');
-ReservedKeywordList.Add('long');
-ReservedKeywordList.Add('sizeof');
-ReservedKeywordList.Add('unsigned');
-ReservedKeywordList.Add('case');
-ReservedKeywordList.Add('enum');
-ReservedKeywordList.Add('mutable');
-ReservedKeywordList.Add('static');
-ReservedKeywordList.Add('using');
-ReservedKeywordList.Add('catch');
-ReservedKeywordList.Add('explicit');
-ReservedKeywordList.Add('namespace');
-ReservedKeywordList.Add('static_cast');
-ReservedKeywordList.Add('virtual');
-ReservedKeywordList.Add('char');
-ReservedKeywordList.Add('export');
-ReservedKeywordList.Add('new');
-ReservedKeywordList.Add('struct');
-ReservedKeywordList.Add('void');
-ReservedKeywordList.Add('class');
-ReservedKeywordList.Add('extern');
-ReservedKeywordList.Add('operator');
-ReservedKeywordList.Add('switch');
-ReservedKeywordList.Add('volatile');
-ReservedKeywordList.Add('const');
-ReservedKeywordList.Add('false');
-ReservedKeywordList.Add('private');
-ReservedKeywordList.Add('template');
-ReservedKeywordList.Add('wchar_t');
-ReservedKeywordList.Add('const_cast');
-ReservedKeywordList.Add('float');
-ReservedKeywordList.Add('protected');
-ReservedKeywordList.Add('this');
-ReservedKeywordList.Add('while');
-ReservedKeywordList.Add('continue');
-ReservedKeywordList.Add('for');
-ReservedKeywordList.Add('public');
-ReservedKeywordList.Add('throw');
-ReservedKeywordList.Add('default');
-ReservedKeywordList.Add('friend');
-ReservedKeywordList.Add('register');
-ReservedKeywordList.Add('true');
-ReservedKeywordList.Add('delete');
-ReservedKeywordList.Add('goto');
-ReservedKeywordList.Add('reinterpret_cast');
-ReservedKeywordList.Add('try');
+        ReservedKeywordList.Add('asm');
+        ReservedKeywordList.Add('do');
+        ReservedKeywordList.Add('if');
+        ReservedKeywordList.Add('return');
+        ReservedKeywordList.Add('typedef');
+        ReservedKeywordList.Add('auto');
+        ReservedKeywordList.Add('double');
+        ReservedKeywordList.Add('inline');
+        ReservedKeywordList.Add('short');
+        ReservedKeywordList.Add('typeid');
+        ReservedKeywordList.Add('bool');
+        ReservedKeywordList.Add('dynamic_cast');
+        ReservedKeywordList.Add('int');
+        ReservedKeywordList.Add('signed');
+        ReservedKeywordList.Add('union');
+        ReservedKeywordList.Add('break');
+        ReservedKeywordList.Add('else');
+        ReservedKeywordList.Add('long');
+        ReservedKeywordList.Add('sizeof');
+        ReservedKeywordList.Add('unsigned');
+        ReservedKeywordList.Add('case');
+        ReservedKeywordList.Add('enum');
+        ReservedKeywordList.Add('mutable');
+        ReservedKeywordList.Add('static');
+        ReservedKeywordList.Add('using');
+        ReservedKeywordList.Add('catch');
+        ReservedKeywordList.Add('explicit');
+        ReservedKeywordList.Add('namespace');
+        ReservedKeywordList.Add('static_cast');
+        ReservedKeywordList.Add('virtual');
+        ReservedKeywordList.Add('char');
+        ReservedKeywordList.Add('export');
+        ReservedKeywordList.Add('new');
+        ReservedKeywordList.Add('struct');
+        ReservedKeywordList.Add('void');
+        ReservedKeywordList.Add('class');
+        ReservedKeywordList.Add('extern');
+        ReservedKeywordList.Add('operator');
+        ReservedKeywordList.Add('switch');
+        ReservedKeywordList.Add('volatile');
+        ReservedKeywordList.Add('const');
+        ReservedKeywordList.Add('false');
+        ReservedKeywordList.Add('private');
+        ReservedKeywordList.Add('template');
+        ReservedKeywordList.Add('wchar_t');
+        ReservedKeywordList.Add('const_cast');
+        ReservedKeywordList.Add('float');
+        ReservedKeywordList.Add('protected');
+        ReservedKeywordList.Add('this');
+        ReservedKeywordList.Add('while');
+        ReservedKeywordList.Add('continue');
+        ReservedKeywordList.Add('for');
+        ReservedKeywordList.Add('public');
+        ReservedKeywordList.Add('throw');
+        ReservedKeywordList.Add('default');
+        ReservedKeywordList.Add('friend');
+        ReservedKeywordList.Add('register');
+        ReservedKeywordList.Add('true');
+        ReservedKeywordList.Add('delete');
+        ReservedKeywordList.Add('goto');
+        ReservedKeywordList.Add('reinterpret_cast');
+        ReservedKeywordList.Add('try');
 
         //Now check our ClassName against list of reserved keywords
-FOR LoopIndex := 0 TO ReservedKeywordList.Count - 1 DO
-BEGIN
-IF (CompareStr(ReservedKeywordList[LoopIndex], ClassName) = 0) THEN
-BEGIN
-NumberOfErrors := NumberOfErrors + 1;
-END;
-END;
+        For LoopIndex := 0 To ReservedKeywordList.Count - 1 Do
+        Begin
+            If (CompareStr(ReservedKeywordList[LoopIndex], ClassName) = 0) Then
+            Begin
+                NumberOfErrors := NumberOfErrors + 1;
+            End;
+        End;
 
-FINALLY
-ReservedKeywordList.Free; { destroy the list object }
-END;
+    Finally
+        ReservedKeywordList.Free; { destroy the list object }
+    End;
 
-Result := NumberOfErrors;
+    Result := NumberOfErrors;
 
-END;
+End;
 
-FUNCTION CreateValidClassName(ClassName: STRING): STRING;
-VAR
-ValidClassName: STRING;
-LoopIndex: INTEGER;
-ReservedKeywordList: TStrings;
-BEGIN
+Function CreateValidClassName(ClassName: String): String;
+Var
+    ValidClassName: String;
+    LoopIndex: Integer;
+    ReservedKeywordList: TStrings;
+Begin
 
-ValidClassName := ClassName;
+    ValidClassName := ClassName;
 
     //Check we have a name to work with, if not then assign a safe one
-IF Length(ValidClassName) < 1 THEN
-ValidClassName := 'DefaultClassName';
+    If Length(ValidClassName) < 1 Then
+        ValidClassName := 'DefaultClassName';
 
     //Look for invalid characters in the class name. Replace with '_'
-FOR LoopIndex := 1 TO Length(ValidClassName) DO
-BEGIN
-IF NOT ((ValidClassName[LoopIndex] IN ['a'..'z', 'A'..'Z',
-'0'..'9', '_'])) THEN
-BEGIN
-ValidClassName[LoopIndex] := '_';
-END;
-END;
+    For LoopIndex := 1 To Length(ValidClassName) Do
+    Begin
+        If Not ((ValidClassName[LoopIndex] In ['a'..'z', 'A'..'Z',
+            '0'..'9', '_'])) Then
+        Begin
+            ValidClassName[LoopIndex] := '_';
+        End;
+    End;
 
     //Check the first character is not a number if so add '_' in front
-IF (ValidClassName[1] IN ['0'..'9']) THEN
-BEGIN
-Insert('_', ValidClassName, 0);
-END;
+    If (ValidClassName[1] In ['0'..'9']) Then
+    Begin
+        Insert('_', ValidClassName, 0);
+    End;
 
     //Check we haven't ended up with a reserved keyword
-ReservedKeywordList := TStringList.Create;
-TRY
+    ReservedKeywordList := TStringList.Create;
+    Try
         //Build the list of reserved keywords
-ReservedKeywordList.Add('asm');
-ReservedKeywordList.Add('do');
-ReservedKeywordList.Add('if');
-ReservedKeywordList.Add('return');
-ReservedKeywordList.Add('typedef');
-ReservedKeywordList.Add('auto');
-ReservedKeywordList.Add('double');
-ReservedKeywordList.Add('inline');
-ReservedKeywordList.Add('short');
-ReservedKeywordList.Add('typeid');
-ReservedKeywordList.Add('bool');
-ReservedKeywordList.Add('dynamic_cast');
-ReservedKeywordList.Add('int');
-ReservedKeywordList.Add('signed');
-ReservedKeywordList.Add('union');
-ReservedKeywordList.Add('break');
-ReservedKeywordList.Add('else');
-ReservedKeywordList.Add('long');
-ReservedKeywordList.Add('sizeof');
-ReservedKeywordList.Add('unsigned');
-ReservedKeywordList.Add('case');
-ReservedKeywordList.Add('enum');
-ReservedKeywordList.Add('mutable');
-ReservedKeywordList.Add('static');
-ReservedKeywordList.Add('using');
-ReservedKeywordList.Add('catch');
-ReservedKeywordList.Add('explicit');
-ReservedKeywordList.Add('namespace');
-ReservedKeywordList.Add('static_cast');
-ReservedKeywordList.Add('virtual');
-ReservedKeywordList.Add('char');
-ReservedKeywordList.Add('export');
-ReservedKeywordList.Add('new');
-ReservedKeywordList.Add('struct');
-ReservedKeywordList.Add('void');
-ReservedKeywordList.Add('class');
-ReservedKeywordList.Add('extern');
-ReservedKeywordList.Add('operator');
-ReservedKeywordList.Add('switch');
-ReservedKeywordList.Add('volatile');
-ReservedKeywordList.Add('const');
-ReservedKeywordList.Add('false');
-ReservedKeywordList.Add('private');
-ReservedKeywordList.Add('template');
-ReservedKeywordList.Add('wchar_t');
-ReservedKeywordList.Add('const_cast');
-ReservedKeywordList.Add('float');
-ReservedKeywordList.Add('protected');
-ReservedKeywordList.Add('this');
-ReservedKeywordList.Add('while');
-ReservedKeywordList.Add('continue');
-ReservedKeywordList.Add('for');
-ReservedKeywordList.Add('public');
-ReservedKeywordList.Add('throw');
-ReservedKeywordList.Add('default');
-ReservedKeywordList.Add('friend');
-ReservedKeywordList.Add('register');
-ReservedKeywordList.Add('true');
-ReservedKeywordList.Add('delete');
-ReservedKeywordList.Add('goto');
-ReservedKeywordList.Add('reinterpret_cast');
-ReservedKeywordList.Add('try');
+        ReservedKeywordList.Add('asm');
+        ReservedKeywordList.Add('do');
+        ReservedKeywordList.Add('if');
+        ReservedKeywordList.Add('return');
+        ReservedKeywordList.Add('typedef');
+        ReservedKeywordList.Add('auto');
+        ReservedKeywordList.Add('double');
+        ReservedKeywordList.Add('inline');
+        ReservedKeywordList.Add('short');
+        ReservedKeywordList.Add('typeid');
+        ReservedKeywordList.Add('bool');
+        ReservedKeywordList.Add('dynamic_cast');
+        ReservedKeywordList.Add('int');
+        ReservedKeywordList.Add('signed');
+        ReservedKeywordList.Add('union');
+        ReservedKeywordList.Add('break');
+        ReservedKeywordList.Add('else');
+        ReservedKeywordList.Add('long');
+        ReservedKeywordList.Add('sizeof');
+        ReservedKeywordList.Add('unsigned');
+        ReservedKeywordList.Add('case');
+        ReservedKeywordList.Add('enum');
+        ReservedKeywordList.Add('mutable');
+        ReservedKeywordList.Add('static');
+        ReservedKeywordList.Add('using');
+        ReservedKeywordList.Add('catch');
+        ReservedKeywordList.Add('explicit');
+        ReservedKeywordList.Add('namespace');
+        ReservedKeywordList.Add('static_cast');
+        ReservedKeywordList.Add('virtual');
+        ReservedKeywordList.Add('char');
+        ReservedKeywordList.Add('export');
+        ReservedKeywordList.Add('new');
+        ReservedKeywordList.Add('struct');
+        ReservedKeywordList.Add('void');
+        ReservedKeywordList.Add('class');
+        ReservedKeywordList.Add('extern');
+        ReservedKeywordList.Add('operator');
+        ReservedKeywordList.Add('switch');
+        ReservedKeywordList.Add('volatile');
+        ReservedKeywordList.Add('const');
+        ReservedKeywordList.Add('false');
+        ReservedKeywordList.Add('private');
+        ReservedKeywordList.Add('template');
+        ReservedKeywordList.Add('wchar_t');
+        ReservedKeywordList.Add('const_cast');
+        ReservedKeywordList.Add('float');
+        ReservedKeywordList.Add('protected');
+        ReservedKeywordList.Add('this');
+        ReservedKeywordList.Add('while');
+        ReservedKeywordList.Add('continue');
+        ReservedKeywordList.Add('for');
+        ReservedKeywordList.Add('public');
+        ReservedKeywordList.Add('throw');
+        ReservedKeywordList.Add('default');
+        ReservedKeywordList.Add('friend');
+        ReservedKeywordList.Add('register');
+        ReservedKeywordList.Add('true');
+        ReservedKeywordList.Add('delete');
+        ReservedKeywordList.Add('goto');
+        ReservedKeywordList.Add('reinterpret_cast');
+        ReservedKeywordList.Add('try');
 
         //Now check our ValidClassName against list of reserved keywords
         //If we find a match flag error and add '_' to the start of the name
-FOR LoopIndex := 0 TO ReservedKeywordList.Count - 1 DO
-BEGIN
-IF (CompareStr(ReservedKeywordList[LoopIndex], ValidClassName) = 0) THEN
-BEGIN
-Insert('_', ValidClassName, 0);
-END;
-END;
+        For LoopIndex := 0 To ReservedKeywordList.Count - 1 Do
+        Begin
+            If (CompareStr(ReservedKeywordList[LoopIndex], ValidClassName) = 0) Then
+            Begin
+                Insert('_', ValidClassName, 0);
+            End;
+        End;
 
-FINALLY
-ReservedKeywordList.Free; { destroy the list object }
-END;
+    Finally
+        ReservedKeywordList.Free; { destroy the list object }
+    End;
 
-Result := ValidClassName;
+    Result := ValidClassName;
 
-END;
+End;
 
-FUNCTION ValidateFileName(FileName: STRING): INTEGER;
-VAR
-NumberOfErrors, LoopIndex: INTEGER;
-BEGIN
+Function ValidateFileName(FileName: String): Integer;
+Var
+    NumberOfErrors, LoopIndex: Integer;
+Begin
 
-NumberOfErrors := 0;
+    NumberOfErrors := 0;
 
-IF Length(FileName) < 1 THEN
-NumberOfErrors := NumberOfErrors + 1;
+    If Length(FileName) < 1 Then
+        NumberOfErrors := NumberOfErrors + 1;
 
     //Look for invalid characters in the file name
-FOR LoopIndex := 1 TO Length(FileName) DO
-BEGIN
-IF ((FileName[LoopIndex] IN ['"', '*', ':', '<', '>', '?', '|'])) THEN
-BEGIN
-NumberOfErrors := NumberOfErrors + 1;
-END;
-END;
+    For LoopIndex := 1 To Length(FileName) Do
+    Begin
+        If ((FileName[LoopIndex] In ['"', '*', ':', '<', '>', '?', '|'])) Then
+        Begin
+            NumberOfErrors := NumberOfErrors + 1;
+        End;
+    End;
 
-Result := NumberOfErrors;
+    Result := NumberOfErrors;
 
-END;
+End;
 
-FUNCTION CreateValidFileName(FileName: STRING): STRING;
-VAR
-ValidFileName: STRING;
-LoopIndex: INTEGER;
-BEGIN
+Function CreateValidFileName(FileName: String): String;
+Var
+    ValidFileName: String;
+    LoopIndex: Integer;
+Begin
 
-ValidFileName := FileName;
+    ValidFileName := FileName;
 
-IF Length(ValidFileName) < 1 THEN
-ValidFileName := 'DefaultFileName';
+    If Length(ValidFileName) < 1 Then
+        ValidFileName := 'DefaultFileName';
 
     //Look for invalid characters in the file name. Replace with '_'
-FOR LoopIndex := 1 TO Length(ValidFileName) DO
-BEGIN
-IF ((ValidFileName[LoopIndex] IN ['"', '*', ':', '<', '>', '?', '|'])) THEN
-BEGIN
-ValidFileName[LoopIndex] := '_';
-END;
-END;
+    For LoopIndex := 1 To Length(ValidFileName) Do
+    Begin
+        If ((ValidFileName[LoopIndex] In ['"', '*', ':', '<', '>', '?', '|'])) Then
+        Begin
+            ValidFileName[LoopIndex] := '_';
+        End;
+    End;
 
-Result := ValidFileName;
+    Result := ValidFileName;
 
-END;
+End;
 
-PROCEDURE PopulateAuiGenericProperties(VAR PropertyList: TStringList);
-BEGIN
+Procedure PopulateAuiGenericProperties(Var PropertyList: TStringList);
+Begin
     //Aui Properties
-PropertyList.add('Wx_AuiManaged: wxAui Managed');
+    PropertyList.add('Wx_AuiManaged: wxAui Managed');
 
-PropertyList.add('Wx_PaneName:wxAui Pane Name');
-PropertyList.add('Wx_PaneCaption:wxAui Pane Caption');
+    PropertyList.add('Wx_PaneName:wxAui Pane Name');
+    PropertyList.add('Wx_PaneCaption:wxAui Pane Caption');
 
-PropertyList.add('Wx_Aui_Dock_Direction:wxAui Dock Direction');
-PropertyList.add('wxAUI_DOCK_NONE:wxAUI_DOCK_NONE');
-PropertyList.add('wxAUI_DOCK_TOP:wxAUI_DOCK_TOP');
-PropertyList.add('wxAUI_DOCK_RIGHT:wxAUI_DOCK_RIGHT');
-PropertyList.add('wxAUI_DOCK_BOTTOM:wxAUI_DOCK_BOTTOM');
-PropertyList.add('wxAUI_DOCK_LEFT:wxAUI_DOCK_LEFT');
-PropertyList.add('wxAUI_DOCK_CENTER:wxAUI_DOCK_CENTER');
+    PropertyList.add('Wx_Aui_Dock_Direction:wxAui Dock Direction');
+    PropertyList.add('wxAUI_DOCK_NONE:wxAUI_DOCK_NONE');
+    PropertyList.add('wxAUI_DOCK_TOP:wxAUI_DOCK_TOP');
+    PropertyList.add('wxAUI_DOCK_RIGHT:wxAUI_DOCK_RIGHT');
+    PropertyList.add('wxAUI_DOCK_BOTTOM:wxAUI_DOCK_BOTTOM');
+    PropertyList.add('wxAUI_DOCK_LEFT:wxAUI_DOCK_LEFT');
+    PropertyList.add('wxAUI_DOCK_CENTER:wxAUI_DOCK_CENTER');
 
-PropertyList.add('Wx_Aui_Dockable_Direction:wxAui Dockable Direction');
-PropertyList.add('TopDockable:TopDockable');
-PropertyList.add('RightDockable:RightDockable');
-PropertyList.add('BottomDockable:BottomDockable');
-PropertyList.add('LeftDockable:LeftDockable');
+    PropertyList.add('Wx_Aui_Dockable_Direction:wxAui Dockable Direction');
+    PropertyList.add('TopDockable:TopDockable');
+    PropertyList.add('RightDockable:RightDockable');
+    PropertyList.add('BottomDockable:BottomDockable');
+    PropertyList.add('LeftDockable:LeftDockable');
 
-PropertyList.add('Wx_Aui_Pane_Style:wxAui Pane Style');
-PropertyList.add('CaptionVisible:CaptionVisible');
-PropertyList.add('DestroyOnClose:DestroyOnClose');
-PropertyList.add('DockFixed:DockFixed');
-PropertyList.add('Floatable:Floatable');
-PropertyList.add('Gripper:Gripper');
-PropertyList.add('GripperTop:GripperTop');
-PropertyList.add('Movable:Movable');
-PropertyList.add('PaneBorder:PaneBorder');
-PropertyList.add('Resizable:Resizable');
-PropertyList.add('CenterPane:CenterPane');
-PropertyList.add('ToolbarPane:ToolbarPane');
+    PropertyList.add('Wx_Aui_Pane_Style:wxAui Pane Style');
+    PropertyList.add('CaptionVisible:CaptionVisible');
+    PropertyList.add('DestroyOnClose:DestroyOnClose');
+    PropertyList.add('DockFixed:DockFixed');
+    PropertyList.add('Floatable:Floatable');
+    PropertyList.add('Gripper:Gripper');
+    PropertyList.add('GripperTop:GripperTop');
+    PropertyList.add('Movable:Movable');
+    PropertyList.add('PaneBorder:PaneBorder');
+    PropertyList.add('Resizable:Resizable');
+    PropertyList.add('CenterPane:CenterPane');
+    PropertyList.add('ToolbarPane:ToolbarPane');
 
-PropertyList.add('Wx_Aui_Pane_Buttons:wxAui Pane Buttons');
-PropertyList.add('CloseButton:CloseButton');
-PropertyList.add('MaximizeButton:MaximizeButton');
-PropertyList.add('MinimizeButton:MinimizeButton');
-PropertyList.add('PinButton:PinButton');
+    PropertyList.add('Wx_Aui_Pane_Buttons:wxAui Pane Buttons');
+    PropertyList.add('CloseButton:CloseButton');
+    PropertyList.add('MaximizeButton:MaximizeButton');
+    PropertyList.add('MinimizeButton:MinimizeButton');
+    PropertyList.add('PinButton:PinButton');
 
-PropertyList.add('Wx_BestSize_Height:wxAui Best Height');
-PropertyList.add('Wx_BestSize_Width:wxAui Best Width');
-PropertyList.add('Wx_MinSize_Height:wxAui Min Height');
-PropertyList.add('Wx_MinSize_Width:wxAui Min Width');
-PropertyList.add('Wx_MaxSize_Height:wxAui Max Height');
-PropertyList.add('Wx_MaxSize_Width:wxAui Max Width');
-PropertyList.add('Wx_Floating_Height:wxAui Floating Height');
-PropertyList.add('Wx_Floating_Width:wxAui Floating Width');
-PropertyList.add('Wx_Floating_X_Pos:wxAui Floating X Pos');
-PropertyList.add('Wx_Floating_Y_Pos:wxAui Floating Y Pos');
+    PropertyList.add('Wx_BestSize_Height:wxAui Best Height');
+    PropertyList.add('Wx_BestSize_Width:wxAui Best Width');
+    PropertyList.add('Wx_MinSize_Height:wxAui Min Height');
+    PropertyList.add('Wx_MinSize_Width:wxAui Min Width');
+    PropertyList.add('Wx_MaxSize_Height:wxAui Max Height');
+    PropertyList.add('Wx_MaxSize_Width:wxAui Max Width');
+    PropertyList.add('Wx_Floating_Height:wxAui Floating Height');
+    PropertyList.add('Wx_Floating_Width:wxAui Floating Width');
+    PropertyList.add('Wx_Floating_X_Pos:wxAui Floating X Pos');
+    PropertyList.add('Wx_Floating_Y_Pos:wxAui Floating Y Pos');
 
-PropertyList.add('Wx_Layer:wxAui Layer');
-PropertyList.add('Wx_Row:wxAui Row');
-PropertyList.add('Wx_Position:wxAui Position');
-END;
+    PropertyList.add('Wx_Layer:wxAui Layer');
+    PropertyList.add('Wx_Row:wxAui Row');
+    PropertyList.add('Wx_Position:wxAui Position');
+End;
 
-FUNCTION GetAuiManagerName(Control: TControl): STRING;
-VAR
-frmMainObj: TCustomForm;
-I: INTEGER;
-BEGIN
-Result := '';
+Function GetAuiManagerName(Control: TControl): String;
+Var
+    frmMainObj: TCustomForm;
+    I: Integer;
+Begin
+    Result := '';
 
-frmMainObj := GetParentForm(Control);
-FOR I := 0 TO frmMainObj.ComponentCount - 1 DO // Iterate
-IF frmMainObj.Components[i] IS TWxAuiManager THEN
-BEGIN
-Result := frmMainObj.Components[i].Name;
-exit;
-END;
+    frmMainObj := GetParentForm(Control);
+    For I := 0 To frmMainObj.ComponentCount - 1 Do // Iterate
+        If frmMainObj.Components[i] Is TWxAuiManager Then
+        Begin
+            Result := frmMainObj.Components[i].Name;
+            exit;
+        End;
 
     //    Result := 'WxAuiManager1';
-END;
+End;
 
-FUNCTION FormHasAuiManager(Control: TControl): BOOLEAN;
-VAR
-frmMainObj: TCustomForm;
-I: INTEGER;
-BEGIN
-Result := FALSE;
+Function FormHasAuiManager(Control: TControl): Boolean;
+Var
+    frmMainObj: TCustomForm;
+    I: Integer;
+Begin
+    Result := False;
 
-frmMainObj := GetParentForm(Control);
-FOR I := 0 TO frmMainObj.ComponentCount - 1 DO // Iterate
-IF frmMainObj.Components[i] IS TWxAuiManager THEN
-BEGIN
-Result := TRUE;
-exit;
-END;
-END;
+    frmMainObj := GetParentForm(Control);
+    For I := 0 To frmMainObj.ComponentCount - 1 Do // Iterate
+        If frmMainObj.Components[i] Is TWxAuiManager Then
+        Begin
+            Result := True;
+            exit;
+        End;
+End;
 
-FUNCTION GetAuiDockDirection(Wx_Aui_Dock_Direction:
-TwxAuiPaneDockDirectionItem): STRING;
-BEGIN
-Result := '';
-IF Wx_Aui_Dock_Direction = wxAUI_DOCK_NONE THEN
-BEGIN
-Result := '';
-exit;
-END;
-IF Wx_Aui_Dock_Direction = wxAUI_DOCK_TOP THEN
-BEGIN
-Result := '.Top()';
-exit;
-END;
-IF Wx_Aui_Dock_Direction = wxAUI_DOCK_RIGHT THEN
-BEGIN
-Result := '.Right()';
-exit;
-END;
-IF Wx_Aui_Dock_Direction = wxAUI_DOCK_BOTTOM THEN
-BEGIN
-Result := '.Bottom()';
-exit;
-END;
-IF Wx_Aui_Dock_Direction = wxAUI_DOCK_LEFT THEN
-BEGIN
-Result := '.Left()';
-exit;
-END;
-IF Wx_Aui_Dock_Direction = wxAUI_DOCK_CENTER THEN
-BEGIN
-Result := '.Center()';
-exit;
-END;
-END;
+Function GetAuiDockDirection(Wx_Aui_Dock_Direction:
+    TwxAuiPaneDockDirectionItem): String;
+Begin
+    Result := '';
+    If Wx_Aui_Dock_Direction = wxAUI_DOCK_NONE Then
+    Begin
+        Result := '';
+        exit;
+    End;
+    If Wx_Aui_Dock_Direction = wxAUI_DOCK_TOP Then
+    Begin
+        Result := '.Top()';
+        exit;
+    End;
+    If Wx_Aui_Dock_Direction = wxAUI_DOCK_RIGHT Then
+    Begin
+        Result := '.Right()';
+        exit;
+    End;
+    If Wx_Aui_Dock_Direction = wxAUI_DOCK_BOTTOM Then
+    Begin
+        Result := '.Bottom()';
+        exit;
+    End;
+    If Wx_Aui_Dock_Direction = wxAUI_DOCK_LEFT Then
+    Begin
+        Result := '.Left()';
+        exit;
+    End;
+    If Wx_Aui_Dock_Direction = wxAUI_DOCK_CENTER Then
+    Begin
+        Result := '.Center()';
+        exit;
+    End;
+End;
 
-FUNCTION GetAui_Pane_Style(Wx_Aui_Pane_Style: TwxAuiPaneStyleSet): STRING;
-BEGIN
-Result := '';
-IF CaptionVisible IN Wx_Aui_Pane_Style THEN
-Result := Result + '.CaptionVisible(true)'
-ELSE
-Result := Result + '.CaptionVisible(false)';
+Function GetAui_Pane_Style(Wx_Aui_Pane_Style: TwxAuiPaneStyleSet): String;
+Begin
+    Result := '';
+    If CaptionVisible In Wx_Aui_Pane_Style Then
+        Result := Result + '.CaptionVisible(true)'
+    Else
+        Result := Result + '.CaptionVisible(false)';
 
-IF DestroyOnClose IN Wx_Aui_Pane_Style THEN
-Result := Result + '.DestroyOnClose(true)'
-ELSE
-Result := Result + '.DestroyOnClose(false)';
+    If DestroyOnClose In Wx_Aui_Pane_Style Then
+        Result := Result + '.DestroyOnClose(true)'
+    Else
+        Result := Result + '.DestroyOnClose(false)';
 
-IF DockFixed IN Wx_Aui_Pane_Style THEN
-Result := Result + '.DockFixed()';
+    If DockFixed In Wx_Aui_Pane_Style Then
+        Result := Result + '.DockFixed()';
 
-IF Floatable IN Wx_Aui_Pane_Style THEN
-Result := Result + '.Floatable(true)'
-ELSE
-Result := Result + '.Floatable(false)';
+    If Floatable In Wx_Aui_Pane_Style Then
+        Result := Result + '.Floatable(true)'
+    Else
+        Result := Result + '.Floatable(false)';
 
-IF Gripper IN Wx_Aui_Pane_Style THEN
-Result := Result + '.Gripper(true)'
-ELSE
-Result := Result + '.Gripper(false)';
+    If Gripper In Wx_Aui_Pane_Style Then
+        Result := Result + '.Gripper(true)'
+    Else
+        Result := Result + '.Gripper(false)';
 
-IF GripperTop IN Wx_Aui_Pane_Style THEN
-Result := Result + '.GripperTop()';
+    If GripperTop In Wx_Aui_Pane_Style Then
+        Result := Result + '.GripperTop()';
 
-IF Movable IN Wx_Aui_Pane_Style THEN
-Result := Result + '.Movable()';
+    If Movable In Wx_Aui_Pane_Style Then
+        Result := Result + '.Movable()';
 
-IF PaneBorder IN Wx_Aui_Pane_Style THEN
-Result := Result + '.PaneBorder()';
+    If PaneBorder In Wx_Aui_Pane_Style Then
+        Result := Result + '.PaneBorder()';
 
-IF ToolbarPane IN Wx_Aui_Pane_Style THEN
-BEGIN
-Result := Result + '.ToolbarPane()';
-END
-ELSE
-BEGIN
-IF Resizable IN Wx_Aui_Pane_Style THEN
-Result := Result + '.Resizable(true)'
-ELSE
-Result := Result + '.Resizable(false)';
-END;
+    If ToolbarPane In Wx_Aui_Pane_Style Then
+    Begin
+        Result := Result + '.ToolbarPane()';
+    End
+    Else
+    Begin
+        If Resizable In Wx_Aui_Pane_Style Then
+            Result := Result + '.Resizable(true)'
+        Else
+            Result := Result + '.Resizable(false)';
+    End;
 
-IF CenterPane IN Wx_Aui_Pane_Style THEN
-Result := Result + '.CenterPane()';
+    If CenterPane In Wx_Aui_Pane_Style Then
+        Result := Result + '.CenterPane()';
 
-END;
+End;
 
-FUNCTION GetAuiDockableDirections(Wx_Aui_Dockable_Direction:
-TwxAuiPaneDockableDirectionSet): STRING;
-BEGIN
-Result := '';
-IF (LeftDockable IN Wx_Aui_Dockable_Direction) AND
-(RightDockable IN Wx_Aui_Dockable_Direction)
-AND (TopDockable IN Wx_Aui_Dockable_Direction) AND
-(BottomDockable IN Wx_Aui_Dockable_Direction) THEN
-BEGIN
-Result := Result + '.Dockable(true)';
-Exit;
-END;
+Function GetAuiDockableDirections(Wx_Aui_Dockable_Direction:
+    TwxAuiPaneDockableDirectionSet): String;
+Begin
+    Result := '';
+    If (LeftDockable In Wx_Aui_Dockable_Direction) And
+        (RightDockable In Wx_Aui_Dockable_Direction)
+        And (TopDockable In Wx_Aui_Dockable_Direction) And
+        (BottomDockable In Wx_Aui_Dockable_Direction) Then
+    Begin
+        Result := Result + '.Dockable(true)';
+        Exit;
+    End;
 
-IF NOT (LeftDockable IN Wx_Aui_Dockable_Direction) AND NOT
-(RightDockable IN Wx_Aui_Dockable_Direction)
-AND NOT (TopDockable IN Wx_Aui_Dockable_Direction) AND NOT
-(BottomDockable IN Wx_Aui_Dockable_Direction) THEN
-BEGIN
-Result := Result + '.Dockable(false)';
-Exit;
-END;
+    If Not (LeftDockable In Wx_Aui_Dockable_Direction) And Not
+        (RightDockable In Wx_Aui_Dockable_Direction)
+        And Not (TopDockable In Wx_Aui_Dockable_Direction) And Not
+        (BottomDockable In Wx_Aui_Dockable_Direction) Then
+    Begin
+        Result := Result + '.Dockable(false)';
+        Exit;
+    End;
 
-IF LeftDockable IN Wx_Aui_Dockable_Direction THEN
-Result := Result + '.LeftDockable(true)'
-ELSE
-Result := Result + '.LeftDockable(false)';
+    If LeftDockable In Wx_Aui_Dockable_Direction Then
+        Result := Result + '.LeftDockable(true)'
+    Else
+        Result := Result + '.LeftDockable(false)';
 
-IF RightDockable IN Wx_Aui_Dockable_Direction THEN
-Result := Result + '.RightDockable(true)'
-ELSE
-Result := Result + '.RightDockable(false)';
+    If RightDockable In Wx_Aui_Dockable_Direction Then
+        Result := Result + '.RightDockable(true)'
+    Else
+        Result := Result + '.RightDockable(false)';
 
-IF TopDockable IN Wx_Aui_Dockable_Direction THEN
-Result := Result + '.TopDockable(true)'
-ELSE
-Result := Result + '.TopDockable(false)';
+    If TopDockable In Wx_Aui_Dockable_Direction Then
+        Result := Result + '.TopDockable(true)'
+    Else
+        Result := Result + '.TopDockable(false)';
 
-IF BottomDockable IN Wx_Aui_Dockable_Direction THEN
-Result := Result + '.BottomDockable(true)'
-ELSE
-Result := Result + '.BottomDockable(false)';
-END;
+    If BottomDockable In Wx_Aui_Dockable_Direction Then
+        Result := Result + '.BottomDockable(true)'
+    Else
+        Result := Result + '.BottomDockable(false)';
+End;
 
-FUNCTION GetAui_Pane_Buttons(Wx_Aui_Pane_Buttons: TwxAuiPaneButtonSet): STRING;
-BEGIN
-Result := '';
+Function GetAui_Pane_Buttons(Wx_Aui_Pane_Buttons: TwxAuiPaneButtonSet): String;
+Begin
+    Result := '';
 
-IF CloseButton IN Wx_Aui_Pane_Buttons THEN
-Result := Result + '.CloseButton()';
+    If CloseButton In Wx_Aui_Pane_Buttons Then
+        Result := Result + '.CloseButton()';
 
-IF MaximizeButton IN Wx_Aui_Pane_Buttons THEN
-Result := Result + '.MaximizeButton()';
+    If MaximizeButton In Wx_Aui_Pane_Buttons Then
+        Result := Result + '.MaximizeButton()';
 
-IF MinimizeButton IN Wx_Aui_Pane_Buttons THEN
-Result := Result + '.MinimizeButton()';
+    If MinimizeButton In Wx_Aui_Pane_Buttons Then
+        Result := Result + '.MinimizeButton()';
 
-IF PinButton IN Wx_Aui_Pane_Buttons THEN
-Result := Result + '.PinButton()';
-END;
+    If PinButton In Wx_Aui_Pane_Buttons Then
+        Result := Result + '.PinButton()';
+End;
 
-FUNCTION GetAuiRow(row: INTEGER): STRING;
-BEGIN
-Result := Format('.Row(%d)', [row]);
-END;
+Function GetAuiRow(row: Integer): String;
+Begin
+    Result := Format('.Row(%d)', [row]);
+End;
 
-FUNCTION GetAuiPosition(position: INTEGER): STRING;
-BEGIN
-Result := Format('.Position(%d)', [position]);
-END;
+Function GetAuiPosition(position: Integer): String;
+Begin
+    Result := Format('.Position(%d)', [position]);
+End;
 
-FUNCTION GetAuiLayer(layer: INTEGER): STRING;
-BEGIN
-Result := Format('.Layer(%d)', [layer]);
-END;
+Function GetAuiLayer(layer: Integer): String;
+Begin
+    Result := Format('.Layer(%d)', [layer]);
+End;
 
-FUNCTION GetAuiPaneBestSize(width: INTEGER; height: INTEGER): STRING;
-BEGIN
-Result := '';
-IF (height > 0) AND (width > 0) THEN
-Result := Format('.BestSize(wxSize(%d, %d))', [width, height]);
-END;
+Function GetAuiPaneBestSize(width: Integer; height: Integer): String;
+Begin
+    Result := '';
+    If (height > 0) And (width > 0) Then
+        Result := Format('.BestSize(wxSize(%d, %d))', [width, height]);
+End;
 
-FUNCTION GetAuiPaneMinSize(width: INTEGER; height: INTEGER): STRING;
-BEGIN
-Result := '';
-IF (height > 0) AND (width > 0) THEN
-Result := Format('.MinSize(wxSize(%d, %d))', [width, height]);
-END;
+Function GetAuiPaneMinSize(width: Integer; height: Integer): String;
+Begin
+    Result := '';
+    If (height > 0) And (width > 0) Then
+        Result := Format('.MinSize(wxSize(%d, %d))', [width, height]);
+End;
 
-FUNCTION GetAuiPaneMaxSize(width: INTEGER; height: INTEGER): STRING;
-BEGIN
-Result := '';
-IF (width > 0) AND (height > 0) THEN
-Result := Format('.MaxSize(wxSize(%d, %d))', [width, height]);
-END;
+Function GetAuiPaneMaxSize(width: Integer; height: Integer): String;
+Begin
+    Result := '';
+    If (width > 0) And (height > 0) Then
+        Result := Format('.MaxSize(wxSize(%d, %d))', [width, height]);
+End;
 
-FUNCTION GetAuiPaneFloatingSize(width: INTEGER; height: INTEGER): STRING;
-BEGIN
-Result := '';
-IF (width > 0) AND (height > 0) THEN
-Result := Format('.FloatingSize(wxSize(%d, %d))', [width, height]);
-END;
+Function GetAuiPaneFloatingSize(width: Integer; height: Integer): String;
+Begin
+    Result := '';
+    If (width > 0) And (height > 0) Then
+        Result := Format('.FloatingSize(wxSize(%d, %d))', [width, height]);
+End;
 
-FUNCTION GetAuiPaneFloatingPos(x: INTEGER; y: INTEGER): STRING;
-BEGIN
-Result := '';
-IF (x > 0) AND (y > 0) THEN
-Result := Format('.FloatingPosition(wxPoint(%d, %d))', [x, y]);
-END;
+Function GetAuiPaneFloatingPos(x: Integer; y: Integer): String;
+Begin
+    Result := '';
+    If (x > 0) And (y > 0) Then
+        Result := Format('.FloatingPosition(wxPoint(%d, %d))', [x, y]);
+End;
 
-FUNCTION GetAuiPaneCaption(caption: STRING): STRING;
-BEGIN
-IF trim(caption) = '' THEN
-Result := ''
-ELSE
-Result := Format('.Caption(wxT("%s"))', [caption]);
-END;
+Function GetAuiPaneCaption(caption: String): String;
+Begin
+    If trim(caption) = '' Then
+        Result := ''
+    Else
+        Result := Format('.Caption(wxT("%s"))', [caption]);
+End;
 
-FUNCTION GetAuiPaneName(name: STRING): STRING;
-BEGIN
-Result := Format('.Name(wxT("%s"))', [name]);
-END;
+Function GetAuiPaneName(name: String): String;
+Begin
+    Result := Format('.Name(wxT("%s"))', [name]);
+End;
 
-FUNCTION HasToolbarPaneStyle(Wx_Aui_Pane_Style: TwxAuiPaneStyleSet): BOOLEAN;
-BEGIN
-Result := ToolbarPane IN Wx_Aui_Pane_Style;
-END;
+Function HasToolbarPaneStyle(Wx_Aui_Pane_Style: TwxAuiPaneStyleSet): Boolean;
+Begin
+    Result := ToolbarPane In Wx_Aui_Pane_Style;
+End;
 
-FUNCTION LocalAppDataPath: STRING;
-CONST
-CSIDL_PERSONAL = $0005;
+Function LocalAppDataPath: String;
+Const
+    CSIDL_PERSONAL = $0005;
     { My Documents.  This is equivalent to CSIDL_MYDOCUMENTS in XP and above }
-VAR
-path: ARRAY [0..MaxChar] OF CHAR;
-BEGIN
-SHGetFolderPath(0, CSIDL_PERSONAL, 0, CSIDL_PERSONAL, @path[0]);
-Result := path;
-END;
+Var
+    path: Array [0..MaxChar] Of Char;
+Begin
+    SHGetFolderPath(0, CSIDL_PERSONAL, 0, CSIDL_PERSONAL, @path[0]);
+    Result := path;
+End;
 
-FUNCTION GetRefinedWxEdtGeneralStyleValue(
-sValue: TWxEdtGeneralStyleSet): TWxEdtGeneralStyleSet;
-BEGIN
-Result := [];
+Function GetRefinedWxEdtGeneralStyleValue(
+    sValue: TWxEdtGeneralStyleSet): TWxEdtGeneralStyleSet;
+Begin
+    Result := [];
 
-TRY
+    Try
 
-IF wxTE_PROCESS_ENTER IN sValue THEN
-Result := Result + [wxTE_PROCESS_ENTER];
+        If wxTE_PROCESS_ENTER In sValue Then
+            Result := Result + [wxTE_PROCESS_ENTER];
 
-IF wxTE_PROCESS_TAB IN sValue THEN
-Result := Result + [wxTE_PROCESS_TAB];
+        If wxTE_PROCESS_TAB In sValue Then
+            Result := Result + [wxTE_PROCESS_TAB];
 
-IF wxTE_PASSWORD IN sValue THEN
-Result := Result + [wxTE_PASSWORD];
+        If wxTE_PASSWORD In sValue Then
+            Result := Result + [wxTE_PASSWORD];
 
-IF wxTE_READONLY IN sValue THEN
-Result := Result + [wxTE_READONLY];
+        If wxTE_READONLY In sValue Then
+            Result := Result + [wxTE_READONLY];
 
-IF wxTE_RICH IN sValue THEN
-Result := Result + [wxTE_RICH];
+        If wxTE_RICH In sValue Then
+            Result := Result + [wxTE_RICH];
 
-IF wxTE_RICH2 IN sValue THEN
-Result := Result + [wxTE_RICH2];
+        If wxTE_RICH2 In sValue Then
+            Result := Result + [wxTE_RICH2];
 
-IF wxTE_NO_VSCROLL IN sValue THEN
-Result := Result + [wxTE_NO_VSCROLL];
+        If wxTE_NO_VSCROLL In sValue Then
+            Result := Result + [wxTE_NO_VSCROLL];
 
-IF wxTE_AUTO_URL IN sValue THEN
-Result := Result + [wxTE_AUTO_URL];
+        If wxTE_AUTO_URL In sValue Then
+            Result := Result + [wxTE_AUTO_URL];
 
-IF wxTE_NOHIDESEL IN sValue THEN
-Result := Result + [wxTE_NOHIDESEL];
+        If wxTE_NOHIDESEL In sValue Then
+            Result := Result + [wxTE_NOHIDESEL];
 
-IF wxTE_LEFT IN sValue THEN
-Result := Result + [wxTE_LEFT];
+        If wxTE_LEFT In sValue Then
+            Result := Result + [wxTE_LEFT];
 
-IF wxTE_CENTRE IN sValue THEN
-Result := Result + [wxTE_CENTRE];
+        If wxTE_CENTRE In sValue Then
+            Result := Result + [wxTE_CENTRE];
 
-IF wxTE_RIGHT IN sValue THEN
-Result := Result + [wxTE_RIGHT];
+        If wxTE_RIGHT In sValue Then
+            Result := Result + [wxTE_RIGHT];
 
-IF wxTE_DONTWRAP IN sValue THEN
-Result := Result + [wxTE_DONTWRAP];
+        If wxTE_DONTWRAP In sValue Then
+            Result := Result + [wxTE_DONTWRAP];
 
-IF wxTE_BESTWRAP IN sValue THEN
-Result := Result + [wxTE_BESTWRAP];
+        If wxTE_BESTWRAP In sValue Then
+            Result := Result + [wxTE_BESTWRAP];
 
-IF wxTE_CHARWRAP IN sValue THEN
-Result := Result + [wxTE_CHARWRAP];
+        If wxTE_CHARWRAP In sValue Then
+            Result := Result + [wxTE_CHARWRAP];
 
-IF wxTE_LINEWRAP IN sValue THEN
-Result := Result + [wxTE_LINEWRAP];
+        If wxTE_LINEWRAP In sValue Then
+            Result := Result + [wxTE_LINEWRAP];
 
-IF wxTE_WORDWRAP IN sValue THEN
-Result := Result + [wxTE_WORDWRAP];
+        If wxTE_WORDWRAP In sValue Then
+            Result := Result + [wxTE_WORDWRAP];
 
-IF wxTE_CAPITALIZE IN sValue THEN
-Result := Result + [wxTE_CAPITALIZE];
+        If wxTE_CAPITALIZE In sValue Then
+            Result := Result + [wxTE_CAPITALIZE];
 
-IF wxTE_MULTILINE IN sValue THEN
-Result := Result + [wxTE_MULTILINE];
+        If wxTE_MULTILINE In sValue Then
+            Result := Result + [wxTE_MULTILINE];
 
-FINALLY
-sValue := [];
-END;
+    Finally
+        sValue := [];
+    End;
 
-END;
+End;
 
-END.
+End.

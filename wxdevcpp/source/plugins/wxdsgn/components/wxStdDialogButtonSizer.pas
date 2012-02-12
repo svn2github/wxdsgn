@@ -7,829 +7,843 @@
 //
 //******************************************************************
 
-unit wxStdDialogButtonSizer;
+Unit wxStdDialogButtonSizer;
 
-interface
+Interface
 
-uses Classes, WinProcs, Messages, WinTypes, SysUtils, StdCtrls, Forms, Controls,
-  wxUtils, WxSizerPanel;
+Uses Classes, WinProcs, Messages, WinTypes, SysUtils, StdCtrls, Forms, Controls,
+    wxUtils, WxSizerPanel;
 
-type
-  TWxStdDialogButtonSizer = class(TWxSizerPanel, IWxComponentInterface)
-  private
-    FWx_Border: integer;
-    FWx_Class: string;
-    FWx_EventList: TStringList;
-    FWx_IDName: string;
-    FWx_IDValue: integer;
-    FWx_StretchFactor: integer;
-    FWx_PropertyList: TStringList;
-    FWx_Buttons: TWxStdDialogButtons;
-    FWx_Alignment: TWxSizerAlignmentSet;
-    FWx_BorderAlignment: TWxBorderAlignment;
-    FInvisibleBGColorString: string;
-    FInvisibleFGColorString: string;
+Type
+    TWxStdDialogButtonSizer = Class(TWxSizerPanel, IWxComponentInterface)
+    Private
+        FWx_Border: Integer;
+        FWx_Class: String;
+        FWx_EventList: TStringList;
+        FWx_IDName: String;
+        FWx_IDValue: Integer;
+        FWx_StretchFactor: Integer;
+        FWx_PropertyList: TStringList;
+        FWx_Buttons: TWxStdDialogButtons;
+        FWx_Alignment: TWxSizerAlignmentSet;
+        FWx_BorderAlignment: TWxBorderAlignment;
+        FInvisibleBGColorString: String;
+        FInvisibleFGColorString: String;
 
-    FEVT_OK_BUTTON: string;
-    FEVT_OK_UPDATE_UI: string;
-    FEVT_YES_BUTTON: string;
-    FEVT_YES_UPDATE_UI: string;
-    FEVT_SAVE_BUTTON: string;
-    FEVT_SAVE_UPDATE_UI: string;
-    FEVT_APPLY_BUTTON: string;
-    FEVT_APPLY_UPDATE_UI: string;
-    FEVT_NO_BUTTON: string;
-    FEVT_NO_UPDATE_UI: string;
-    FEVT_CANCEL_BUTTON: string;
-    FEVT_CANCEL_UPDATE_UI: string;
-    FEVT_HELP_BUTTON: string;
-    FEVT_HELP_UPDATE_UI: string;
-    FEVT_CONTEXT_HELP_BUTTON: string;
-    FEVT_CONTEXT_HELP_UPDATE_UI: string;
+        FEVT_OK_BUTTON: String;
+        FEVT_OK_UPDATE_UI: String;
+        FEVT_YES_BUTTON: String;
+        FEVT_YES_UPDATE_UI: String;
+        FEVT_SAVE_BUTTON: String;
+        FEVT_SAVE_UPDATE_UI: String;
+        FEVT_APPLY_BUTTON: String;
+        FEVT_APPLY_UPDATE_UI: String;
+        FEVT_NO_BUTTON: String;
+        FEVT_NO_UPDATE_UI: String;
+        FEVT_CANCEL_BUTTON: String;
+        FEVT_CANCEL_UPDATE_UI: String;
+        FEVT_HELP_BUTTON: String;
+        FEVT_HELP_UPDATE_UI: String;
+        FEVT_CONTEXT_HELP_BUTTON: String;
+        FEVT_CONTEXT_HELP_UPDATE_UI: String;
 
     { Private methods of TWxStdDialogButtonSizer }
-    procedure AutoInitialize;
-    procedure AutoDestroy;
-    procedure SetWx_EventList(Value: TStringList);
-    procedure SetWx_Buttons(Buttons: TWxStdDialogButtons);
+        Procedure AutoInitialize;
+        Procedure AutoDestroy;
+        Procedure SetWx_EventList(Value: TStringList);
+        Procedure SetWx_Buttons(Buttons: TWxStdDialogButtons);
 
-  protected
+    Protected
     { Protected methods of TWxStdDialogButtonSizer }
-    procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
+        Procedure WMPaint(Var Message: TWMPaint); Message WM_PAINT;
 
-  public
+    Public
     { Public methods of TWxStdDialogButtonSizer }
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    function GenerateControlIDs: string;
-    function GenerateEnumControlIDs: string;
-    function GenerateEventTableEntries(CurrClassName: string): string;
-    function GenerateGUIControlCreation: string;
-    function GenerateXRCControlCreation(IndentString: string): TStringList;
-    function GenerateGUIControlDeclaration: string;
-    function GenerateHeaderInclude: string;
-    function GenerateImageInclude: string;
-    function GetEventList: TStringList;
-    function GetIDName: string;
-    function GetIDValue: integer;
-    function GetParameterFromEventName(EventName: string): string;
-    function GetPropertyList: TStringList;
-    function GetTypeFromEventName(EventName: string): string;
-    function GetWxClassName: string;
-    procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
-    procedure SetIDName(IDName: string);
-    procedure SetIDValue(IDValue: integer);
-    procedure SetWxClassName(wxClassName: string);
-    function GetFGColor: string;
-    procedure SetFGColor(strValue: string);
-    function GetBGColor: string;
-    procedure SetBGColor(strValue: string);
-    function GetGenericColor(strVariableName: string): string;
-    procedure SetGenericColor(strVariableName, strValue: string);
+        Constructor Create(AOwner: TComponent); Override;
+        Destructor Destroy; Override;
+        Function GenerateControlIDs: String;
+        Function GenerateEnumControlIDs: String;
+        Function GenerateEventTableEntries(CurrClassName: String): String;
+        Function GenerateGUIControlCreation: String;
+        Function GenerateXRCControlCreation(IndentString: String): TStringList;
+        Function GenerateGUIControlDeclaration: String;
+        Function GenerateHeaderInclude: String;
+        Function GenerateImageInclude: String;
+        Function GetEventList: TStringList;
+        Function GetIDName: String;
+        Function GetIDValue: Integer;
+        Function GetParameterFromEventName(EventName: String): String;
+        Function GetPropertyList: TStringList;
+        Function GetTypeFromEventName(EventName: String): String;
+        Function GetWxClassName: String;
+        Procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
+        Procedure SetIDName(IDName: String);
+        Procedure SetIDValue(IDValue: Integer);
+        Procedure SetWxClassName(wxClassName: String);
+        Function GetFGColor: String;
+        Procedure SetFGColor(strValue: String);
+        Function GetBGColor: String;
+        Procedure SetBGColor(strValue: String);
+        Function GetGenericColor(strVariableName: String): String;
+        Procedure SetGenericColor(strVariableName, strValue: String);
 
-    function GenerateLastCreationCode: string;
-    function GetBorderAlignment: TWxBorderAlignment;
-    procedure SetBorderAlignment(border: TWxBorderAlignment);
-    function GetBorderWidth: integer;
-    procedure SetBorderWidth(width: integer);
-    function GetStretchFactor: integer;
-    procedure SetStretchFactor(intValue: integer);
-    
-  published
-    property OnClick;
-    property OnDblClick;
-    property OnDragDrop;
-    property OnEnter;
-    property OnExit;
-    property OnKeyDown;
-    property OnKeyPress;
-    property OnKeyUp;
-    property OnMouseDown;
-    property OnMouseMove;
-    property OnMouseUp;
-    property OnResize;
-    property Wx_Class: string Read FWx_Class Write FWx_Class;
-    property Wx_EventList: TStringList Read FWx_EventList Write SetWx_EventList;
-    property Wx_IDName: string Read FWx_IDName Write FWx_IDName;
-    property Wx_IDValue: integer Read FWx_IDValue Write FWx_IDValue default -1;
+        Function GenerateLastCreationCode: String;
+        Function GetBorderAlignment: TWxBorderAlignment;
+        Procedure SetBorderAlignment(border: TWxBorderAlignment);
+        Function GetBorderWidth: Integer;
+        Procedure SetBorderWidth(width: Integer);
+        Function GetStretchFactor: Integer;
+        Procedure SetStretchFactor(intValue: Integer);
 
-    property Wx_Border: integer Read GetBorderWidth Write SetBorderWidth default 5;
-    property Wx_Buttons: TWxStdDialogButtons Read FWx_Buttons Write SetWx_Buttons;
-    property Wx_BorderAlignment: TWxBorderAlignment Read GetBorderAlignment Write SetBorderAlignment default [wxALL];
-    property Wx_Alignment: TWxSizerAlignmentSet Read FWx_Alignment Write FWx_Alignment default [wxALIGN_CENTER];
-    property Wx_StretchFactor: integer Read GetStretchFactor Write SetStretchFactor default 0;
-    
-    property InvisibleBGColorString: string Read FInvisibleBGColorString Write FInvisibleBGColorString;
-    property InvisibleFGColorString: string Read FInvisibleFGColorString Write FInvisibleFGColorString;
+    Published
+        Property OnClick;
+        Property OnDblClick;
+        Property OnDragDrop;
+        Property OnEnter;
+        Property OnExit;
+        Property OnKeyDown;
+        Property OnKeyPress;
+        Property OnKeyUp;
+        Property OnMouseDown;
+        Property OnMouseMove;
+        Property OnMouseUp;
+        Property OnResize;
+        Property Wx_Class: String Read FWx_Class Write FWx_Class;
+        Property Wx_EventList: TStringList Read FWx_EventList Write SetWx_EventList;
+        Property Wx_IDName: String Read FWx_IDName Write FWx_IDName;
+        Property Wx_IDValue: Integer Read FWx_IDValue Write FWx_IDValue Default -1;
 
-    property EVT_OK_BUTTON: string read FEVT_OK_BUTTON write FEVT_OK_BUTTON;
-    property EVT_OK_UPDATE_UI: string read FEVT_OK_UPDATE_UI write FEVT_OK_UPDATE_UI;
-    property EVT_YES_BUTTON: string read FEVT_YES_BUTTON write FEVT_YES_BUTTON;
-    property EVT_YES_UPDATE_UI: string read FEVT_YES_UPDATE_UI write FEVT_YES_UPDATE_UI;
-    property EVT_SAVE_BUTTON: string read FEVT_SAVE_BUTTON write FEVT_SAVE_BUTTON;
-    property EVT_SAVE_UPDATE_UI: string read FEVT_SAVE_UPDATE_UI write FEVT_SAVE_UPDATE_UI;
-    property EVT_APPLY_BUTTON: string read FEVT_APPLY_BUTTON write FEVT_APPLY_BUTTON;
-    property EVT_APPLY_UPDATE_UI: string read FEVT_APPLY_UPDATE_UI write FEVT_APPLY_UPDATE_UI;
-    property EVT_NO_BUTTON: string read FEVT_NO_BUTTON write FEVT_NO_BUTTON;
-    property EVT_NO_UPDATE_UI: string read FEVT_NO_UPDATE_UI write FEVT_NO_UPDATE_UI;
-    property EVT_CANCEL_BUTTON: string read FEVT_CANCEL_BUTTON write FEVT_CANCEL_BUTTON;
-    property EVT_CANCEL_UPDATE_UI: string read FEVT_CANCEL_UPDATE_UI write FEVT_CANCEL_UPDATE_UI;
-    property EVT_HELP_BUTTON: string read FEVT_HELP_BUTTON write FEVT_HELP_BUTTON;
-    property EVT_HELP_UPDATE_UI: string read FEVT_HELP_UPDATE_UI write FEVT_HELP_UPDATE_UI;
-    property EVT_CONTEXT_HELP_BUTTON: string read FEVT_CONTEXT_HELP_BUTTON write FEVT_CONTEXT_HELP_BUTTON;
-    property EVT_CONTEXT_HELP_UPDATE_UI: string read FEVT_CONTEXT_HELP_UPDATE_UI write FEVT_CONTEXT_HELP_UPDATE_UI;
+        Property Wx_Border: Integer Read GetBorderWidth Write SetBorderWidth Default 5;
+        Property Wx_Buttons: TWxStdDialogButtons Read FWx_Buttons Write SetWx_Buttons;
+        Property Wx_BorderAlignment: TWxBorderAlignment Read GetBorderAlignment Write SetBorderAlignment Default [wxALL];
+        Property Wx_Alignment: TWxSizerAlignmentSet Read FWx_Alignment Write FWx_Alignment Default [wxALIGN_CENTER];
+        Property Wx_StretchFactor: Integer Read GetStretchFactor Write SetStretchFactor Default 0;
 
-  end;
+        Property InvisibleBGColorString: String Read FInvisibleBGColorString Write FInvisibleBGColorString;
+        Property InvisibleFGColorString: String Read FInvisibleFGColorString Write FInvisibleFGColorString;
 
-implementation
+        Property EVT_OK_BUTTON: String Read FEVT_OK_BUTTON Write FEVT_OK_BUTTON;
+        Property EVT_OK_UPDATE_UI: String Read FEVT_OK_UPDATE_UI Write FEVT_OK_UPDATE_UI;
+        Property EVT_YES_BUTTON: String Read FEVT_YES_BUTTON Write FEVT_YES_BUTTON;
+        Property EVT_YES_UPDATE_UI: String Read FEVT_YES_UPDATE_UI Write FEVT_YES_UPDATE_UI;
+        Property EVT_SAVE_BUTTON: String Read FEVT_SAVE_BUTTON Write FEVT_SAVE_BUTTON;
+        Property EVT_SAVE_UPDATE_UI: String Read FEVT_SAVE_UPDATE_UI Write FEVT_SAVE_UPDATE_UI;
+        Property EVT_APPLY_BUTTON: String Read FEVT_APPLY_BUTTON Write FEVT_APPLY_BUTTON;
+        Property EVT_APPLY_UPDATE_UI: String Read FEVT_APPLY_UPDATE_UI Write FEVT_APPLY_UPDATE_UI;
+        Property EVT_NO_BUTTON: String Read FEVT_NO_BUTTON Write FEVT_NO_BUTTON;
+        Property EVT_NO_UPDATE_UI: String Read FEVT_NO_UPDATE_UI Write FEVT_NO_UPDATE_UI;
+        Property EVT_CANCEL_BUTTON: String Read FEVT_CANCEL_BUTTON Write FEVT_CANCEL_BUTTON;
+        Property EVT_CANCEL_UPDATE_UI: String Read FEVT_CANCEL_UPDATE_UI Write FEVT_CANCEL_UPDATE_UI;
+        Property EVT_HELP_BUTTON: String Read FEVT_HELP_BUTTON Write FEVT_HELP_BUTTON;
+        Property EVT_HELP_UPDATE_UI: String Read FEVT_HELP_UPDATE_UI Write FEVT_HELP_UPDATE_UI;
+        Property EVT_CONTEXT_HELP_BUTTON: String Read FEVT_CONTEXT_HELP_BUTTON Write FEVT_CONTEXT_HELP_BUTTON;
+        Property EVT_CONTEXT_HELP_UPDATE_UI: String Read FEVT_CONTEXT_HELP_UPDATE_UI Write FEVT_CONTEXT_HELP_UPDATE_UI;
 
-procedure TWxStdDialogButtonSizer.AutoInitialize;
-begin
-  FWx_PropertyList    := TStringList.Create;
-  FWx_Border          := 5;
-  FWx_Class           := 'wxStdDialogButtonSizer';
-  FWx_EventList       := TStringList.Create;
-  FWx_BorderAlignment := [wxAll];
-  FWx_Alignment       := [wxALIGN_CENTER];
-  Wx_Buttons          := [wxID_OK, wxID_CANCEL];
-  FWx_IDValue         := -1;
-  ControlStyle        := [];
-end;
+    End;
 
-procedure TWxStdDialogButtonSizer.AutoDestroy;
-begin
-  FWx_PropertyList.Destroy;
-  FWx_EventList.Destroy;
-end;
+Implementation
 
-procedure TWxStdDialogButtonSizer.SetWx_EventList(Value: TStringList);
-begin
-  FWx_EventList.Assign(Value);
-end;
+Procedure TWxStdDialogButtonSizer.AutoInitialize;
+Begin
+    FWx_PropertyList := TStringList.Create;
+    FWx_Border := 5;
+    FWx_Class := 'wxStdDialogButtonSizer';
+    FWx_EventList := TStringList.Create;
+    FWx_BorderAlignment := [wxAll];
+    FWx_Alignment := [wxALIGN_CENTER];
+    Wx_Buttons := [wxID_OK, wxID_CANCEL];
+    FWx_IDValue := -1;
+    ControlStyle := [];
+End;
 
-constructor TWxStdDialogButtonSizer.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  AutoInitialize;
+Procedure TWxStdDialogButtonSizer.AutoDestroy;
+Begin
+    FWx_PropertyList.Destroy;
+    FWx_EventList.Destroy;
+End;
 
-  FWx_PropertyList.add('Name:Name');
-  FWx_PropertyList.add('Orientation:Orientation');
+Procedure TWxStdDialogButtonSizer.SetWx_EventList(Value: TStringList);
+Begin
+    FWx_EventList.Assign(Value);
+End;
 
-  FWx_PropertyList.add('Wx_StretchFactor:Stretch Factor');
-  FWx_PropertyList.add('Wx_Alignment:Alignment');
-  FWx_PropertyList.Add('wxALIGN_LEFT:wxALIGN_LEFT');
-  FWx_PropertyList.Add('wxALIGN_RIGHT:wxALIGN_RIGHT');
-  FWx_PropertyList.Add('wxALIGN_TOP:wxALIGN_TOP');
-  FWx_PropertyList.Add('wxALIGN_BOTTOM:wxALIGN_BOTTOM');
-  FWx_PropertyList.Add('wxALIGN_CENTER:wxALIGN_CENTER');
-  FWx_PropertyList.Add('wxALIGN_CENTER_HORIZONTAL:wxALIGN_CENTER_HORIZONTAL');
-  FWx_PropertyList.Add('wxALIGN_CENTER_VERTICAL:wxALIGN_CENTER_VERTICAL');
-  FWx_PropertyList.Add('wxEXPAND:wxEXPAND');
-  FWx_PropertyList.add('Wx_Border:Border');
-  FWx_PropertyList.add('Wx_BorderAlignment:Borders');
-  FWx_PropertyList.add('wxALL:wxALL');
-  FWx_PropertyList.add('wxTOP:wxTOP');
-  FWx_PropertyList.add('wxLEFT:wxLEFT');
-  FWx_PropertyList.add('wxRIGHT:wxRIGHT');
-  FWx_PropertyList.add('wxBOTTOM:wxBOTTOM');
+Constructor TWxStdDialogButtonSizer.Create(AOwner: TComponent);
+Begin
+    Inherited Create(AOwner);
+    AutoInitialize;
 
-  FWx_PropertyList.add('Wx_Buttons:Buttons');
-  FWx_PropertyList.add('wxID_OK:wxID_OK');
-  FWx_PropertyList.add('wxID_YES:wxID_YES');
-  FWx_PropertyList.add('wxID_SAVE:wxID_SAVE');
-  FWx_PropertyList.add('wxID_APPLY:wxID_APPLY');
-  FWx_PropertyList.add('wxID_NO:wxID_NO');
-  FWx_PropertyList.add('wxID_CANCEL:wxID_CANCEL');
-  FWx_PropertyList.add('wxID_HELP:wxID_HELP');
-  FWx_PropertyList.add('wxID_CONTEXT_HELP:wxID_CONTEXT_HELP');
+    FWx_PropertyList.add('Name:Name');
+    FWx_PropertyList.add('Orientation:Orientation');
 
-  FWx_EventList.add('EVT_OK_BUTTON:OnOkClick');
-  FWx_EventList.add('EVT_OK_UPDATE_UI:OnOkUpdateUI');
-  FWx_EventList.add('EVT_YES_BUTTON:OnYesClick');
-  FWx_EventList.add('EVT_YES_UPDATE_UI:OnYesUpdateUI');
-  FWx_EventList.add('EVT_SAVE_BUTTON:OnSaveClick');
-  FWx_EventList.add('EVT_SAVE_UPDATE_UI:OnSaveUpdateUI');
-  FWx_EventList.add('EVT_APPLY_BUTTON:OnApplyClick');
-  FWx_EventList.add('EVT_APPLY_UPDATE_UI:OnApplyUpdateUI');
-  FWx_EventList.add('EVT_NO_BUTTON:OnNoClick');
-  FWx_EventList.add('EVT_NO_UPDATE_UI:OnNoUpdateUI');
-  FWx_EventList.add('EVT_CANCEL_BUTTON:OnCancelClick');
-  FWx_EventList.add('EVT_CANCEL_UPDATE_UI:OnCancelUpdateUI');
-  FWx_EventList.add('EVT_HELP_BUTTON:OnHelpClick');
-  FWx_EventList.add('EVT_HELP_UPDATE_UI:OnHelpUpdateUI');
-  FWx_EventList.add('EVT_CONTEXT_HELP_BUTTON:OnContextHelpClick');
-  FWx_EventList.add('EVT_CONTEXT_HELP_UPDATE_UI:OnContextHelpUpdateUI');
+    FWx_PropertyList.add('Wx_StretchFactor:Stretch Factor');
+    FWx_PropertyList.add('Wx_Alignment:Alignment');
+    FWx_PropertyList.Add('wxALIGN_LEFT:wxALIGN_LEFT');
+    FWx_PropertyList.Add('wxALIGN_RIGHT:wxALIGN_RIGHT');
+    FWx_PropertyList.Add('wxALIGN_TOP:wxALIGN_TOP');
+    FWx_PropertyList.Add('wxALIGN_BOTTOM:wxALIGN_BOTTOM');
+    FWx_PropertyList.Add('wxALIGN_CENTER:wxALIGN_CENTER');
+    FWx_PropertyList.Add('wxALIGN_CENTER_HORIZONTAL:wxALIGN_CENTER_HORIZONTAL');
+    FWx_PropertyList.Add('wxALIGN_CENTER_VERTICAL:wxALIGN_CENTER_VERTICAL');
+    FWx_PropertyList.Add('wxEXPAND:wxEXPAND');
+    FWx_PropertyList.add('Wx_Border:Border');
+    FWx_PropertyList.add('Wx_BorderAlignment:Borders');
+    FWx_PropertyList.add('wxALL:wxALL');
+    FWx_PropertyList.add('wxTOP:wxTOP');
+    FWx_PropertyList.add('wxLEFT:wxLEFT');
+    FWx_PropertyList.add('wxRIGHT:wxRIGHT');
+    FWx_PropertyList.add('wxBOTTOM:wxBOTTOM');
 
-end;
+    FWx_PropertyList.add('Wx_Buttons:Buttons');
+    FWx_PropertyList.add('wxID_OK:wxID_OK');
+    FWx_PropertyList.add('wxID_YES:wxID_YES');
+    FWx_PropertyList.add('wxID_SAVE:wxID_SAVE');
+    FWx_PropertyList.add('wxID_APPLY:wxID_APPLY');
+    FWx_PropertyList.add('wxID_NO:wxID_NO');
+    FWx_PropertyList.add('wxID_CANCEL:wxID_CANCEL');
+    FWx_PropertyList.add('wxID_HELP:wxID_HELP');
+    FWx_PropertyList.add('wxID_CONTEXT_HELP:wxID_CONTEXT_HELP');
 
-destructor TWxStdDialogButtonSizer.Destroy;
-begin
-  AutoDestroy;
-  inherited Destroy;
-end;
+    FWx_EventList.add('EVT_OK_BUTTON:OnOkClick');
+    FWx_EventList.add('EVT_OK_UPDATE_UI:OnOkUpdateUI');
+    FWx_EventList.add('EVT_YES_BUTTON:OnYesClick');
+    FWx_EventList.add('EVT_YES_UPDATE_UI:OnYesUpdateUI');
+    FWx_EventList.add('EVT_SAVE_BUTTON:OnSaveClick');
+    FWx_EventList.add('EVT_SAVE_UPDATE_UI:OnSaveUpdateUI');
+    FWx_EventList.add('EVT_APPLY_BUTTON:OnApplyClick');
+    FWx_EventList.add('EVT_APPLY_UPDATE_UI:OnApplyUpdateUI');
+    FWx_EventList.add('EVT_NO_BUTTON:OnNoClick');
+    FWx_EventList.add('EVT_NO_UPDATE_UI:OnNoUpdateUI');
+    FWx_EventList.add('EVT_CANCEL_BUTTON:OnCancelClick');
+    FWx_EventList.add('EVT_CANCEL_UPDATE_UI:OnCancelUpdateUI');
+    FWx_EventList.add('EVT_HELP_BUTTON:OnHelpClick');
+    FWx_EventList.add('EVT_HELP_UPDATE_UI:OnHelpUpdateUI');
+    FWx_EventList.add('EVT_CONTEXT_HELP_BUTTON:OnContextHelpClick');
+    FWx_EventList.add('EVT_CONTEXT_HELP_UPDATE_UI:OnContextHelpUpdateUI');
 
-function TWxStdDialogButtonSizer.GenerateXRCControlCreation(IndentString: string): TStringList;
- var
-  i: integer;
-  wxcompInterface: IWxComponentInterface;
-  tempstring: TStringList;
-begin
-  Result := TStringList.Create;
+End;
+
+Destructor TWxStdDialogButtonSizer.Destroy;
+Begin
+    AutoDestroy;
+    Inherited Destroy;
+End;
+
+Function TWxStdDialogButtonSizer.GenerateXRCControlCreation(IndentString: String): TStringList;
+Var
+    i: Integer;
+    wxcompInterface: IWxComponentInterface;
+    tempstring: TStringList;
+Begin
+    Result := TStringList.Create;
   //NUKLEAR ZELPH no creation without sizer parent, check unneded
-  Result.Add(IndentString + Format('<object class="%s" name="%s">',
-      [self.Wx_Class, self.Name]));
-   
-  if wxID_OK in Wx_Buttons then
-  begin
-    Result.Add(IndentString + '  <object class="button">');
-    Result.Add(IndentString + '  <flag>' + SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment)  + '</flag>');
-    Result.Add(IndentString + '  <border>' + IntToStr(wxcompInterface.GetBorderWidth) + '</border>');
-    Result.Add(IndentString + '    <object class="wxButton" name="wxID_OK">');
-    Result.Add(IndentString + '    <label>&amp;Ok</label>');
-    Result.Add(IndentString + '    </object>');
-    Result.Add(IndentString + '  </object>');
-          end
-	  
-  else if wxID_YES in Wx_Buttons then
-  begin
-    Result.Add(IndentString + '  <object class="button">');
-    Result.Add(IndentString + '  <flag>' + SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment)  + '</flag>');
-    Result.Add(IndentString + '  <border>' + IntToStr(wxcompInterface.GetBorderWidth) + '</border>');
-    Result.Add(IndentString + '    <object class="wxButton" name="wxID_YES">');
-    Result.Add(IndentString + '    <label>&amp;Yes</label>');
-    Result.Add(IndentString + '    </object>');
-    Result.Add(IndentString + '  </object>');
-  end
+    Result.Add(IndentString + Format('<object class="%s" name="%s">',
+        [self.Wx_Class, self.Name]));
 
-  else if wxID_SAVE in Wx_Buttons then
-  begin
-    Result.Add(IndentString + '  <object class="button">');
-    Result.Add(IndentString + '  <flag>' + SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment)  + '</flag>');
-    Result.Add(IndentString + '  <border>' + IntToStr(wxcompInterface.GetBorderWidth) + '</border>');
-    Result.Add(IndentString + '    <object class="wxButton" name="wxID_SAVE">');
-    Result.Add(IndentString + '    <label>&amp;Save</label>');
-    Result.Add(IndentString + '    </object>');
-    Result.Add(IndentString + '  </object>');
-  end;
+    If wxID_OK In Wx_Buttons Then
+    Begin
+        Result.Add(IndentString + '  <object class="button">');
+        Result.Add(IndentString + '  <flag>' + SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment) + '</flag>');
+        Result.Add(IndentString + '  <border>' + IntToStr(wxcompInterface.GetBorderWidth) + '</border>');
+        Result.Add(IndentString + '    <object class="wxButton" name="wxID_OK">');
+        Result.Add(IndentString + '    <label>&amp;Ok</label>');
+        Result.Add(IndentString + '    </object>');
+        Result.Add(IndentString + '  </object>');
+    End
 
-  if wxID_APPLY in Wx_Buttons then
-  begin
-    Result.Add(IndentString + '  <object class="button">');
-    Result.Add(IndentString + '  <flag>' + SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment)  + '</flag>');
-    Result.Add(IndentString + '  <border>' + IntToStr(wxcompInterface.GetBorderWidth) + '</border>');
-    Result.Add(IndentString + '    <object class="wxButton" name="wxID_APPLY">');
-    Result.Add(IndentString + '    <label>&amp;Apply</label>');
-    Result.Add(IndentString + '    </object>');
-    Result.Add(IndentString + '  </object>');
-  end;
+    Else
+    If wxID_YES In Wx_Buttons Then
+    Begin
+        Result.Add(IndentString + '  <object class="button">');
+        Result.Add(IndentString + '  <flag>' + SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment) + '</flag>');
+        Result.Add(IndentString + '  <border>' + IntToStr(wxcompInterface.GetBorderWidth) + '</border>');
+        Result.Add(IndentString + '    <object class="wxButton" name="wxID_YES">');
+        Result.Add(IndentString + '    <label>&amp;Yes</label>');
+        Result.Add(IndentString + '    </object>');
+        Result.Add(IndentString + '  </object>');
+    End
 
-  if wxID_NO in Wx_Buttons then
-  begin
-    Result.Add(IndentString + '  <object class="button">');
-    Result.Add(IndentString + '  <flag>' + SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment)  + '</flag>');
-    Result.Add(IndentString + '  <border>' + IntToStr(wxcompInterface.GetBorderWidth) + '</border>');
-    Result.Add(IndentString + '    <object class="wxButton" name="wxID_NO">');
-    Result.Add(IndentString + '    <label>&amp;No</label>');
-    Result.Add(IndentString + '    </object>');
-    Result.Add(IndentString + '  </object>');
-  end;
+    Else
+    If wxID_SAVE In Wx_Buttons Then
+    Begin
+        Result.Add(IndentString + '  <object class="button">');
+        Result.Add(IndentString + '  <flag>' + SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment) + '</flag>');
+        Result.Add(IndentString + '  <border>' + IntToStr(wxcompInterface.GetBorderWidth) + '</border>');
+        Result.Add(IndentString + '    <object class="wxButton" name="wxID_SAVE">');
+        Result.Add(IndentString + '    <label>&amp;Save</label>');
+        Result.Add(IndentString + '    </object>');
+        Result.Add(IndentString + '  </object>');
+    End;
 
-  if wxID_CANCEL in Wx_Buttons then
-  begin
-    Result.Add(IndentString + '  <object class="button">');
-    Result.Add(IndentString + '  <flag>' + SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment)  + '</flag>');
-    Result.Add(IndentString + '  <border>' + IntToStr(wxcompInterface.GetBorderWidth) + '</border>');
-    Result.Add(IndentString + '    <object class="wxButton" name="wxID_CANCEL">');
-    Result.Add(IndentString + '    <label>&amp;Cancel</label>');
-    Result.Add(IndentString + '    </object>');
-    Result.Add(IndentString + '  </object>');
-  end;
+    If wxID_APPLY In Wx_Buttons Then
+    Begin
+        Result.Add(IndentString + '  <object class="button">');
+        Result.Add(IndentString + '  <flag>' + SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment) + '</flag>');
+        Result.Add(IndentString + '  <border>' + IntToStr(wxcompInterface.GetBorderWidth) + '</border>');
+        Result.Add(IndentString + '    <object class="wxButton" name="wxID_APPLY">');
+        Result.Add(IndentString + '    <label>&amp;Apply</label>');
+        Result.Add(IndentString + '    </object>');
+        Result.Add(IndentString + '  </object>');
+    End;
 
-  if wxID_HELP in Wx_Buttons then
-  begin
-    Result.Add(IndentString + '  <object class="button">');
-    Result.Add(IndentString + '  <flag>' + SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment)  + '</flag>');
-    Result.Add(IndentString + '  <border>' + IntToStr(wxcompInterface.GetBorderWidth) + '</border>');
-    Result.Add(IndentString + '    <object class="wxButton" name="wxID_HELP">');
-    Result.Add(IndentString + '    <label>&amp;Help</label>');
-    Result.Add(IndentString + '    </object>');
-    Result.Add(IndentString + '  </object>');
-  end
+    If wxID_NO In Wx_Buttons Then
+    Begin
+        Result.Add(IndentString + '  <object class="button">');
+        Result.Add(IndentString + '  <flag>' + SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment) + '</flag>');
+        Result.Add(IndentString + '  <border>' + IntToStr(wxcompInterface.GetBorderWidth) + '</border>');
+        Result.Add(IndentString + '    <object class="wxButton" name="wxID_NO">');
+        Result.Add(IndentString + '    <label>&amp;No</label>');
+        Result.Add(IndentString + '    </object>');
+        Result.Add(IndentString + '  </object>');
+    End;
 
-  else if wxID_CONTEXT_HELP in Wx_Buttons then
-  begin
-    Result.Add(IndentString + '  <object class="button">');
-    Result.Add(IndentString + '  <flag>' + SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment)  + '</flag>');
-    Result.Add(IndentString + '  <border>' + IntToStr(wxcompInterface.GetBorderWidth) + '</border>');
-    Result.Add(IndentString + '    <object class="wxButton" name="wxID_CONTEXT_HELP">');
-    Result.Add(IndentString + '    <label>?</label>');
-    Result.Add(IndentString + '    </object>');
-    Result.Add(IndentString + '  </object>');
-  end;
- 
+    If wxID_CANCEL In Wx_Buttons Then
+    Begin
+        Result.Add(IndentString + '  <object class="button">');
+        Result.Add(IndentString + '  <flag>' + SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment) + '</flag>');
+        Result.Add(IndentString + '  <border>' + IntToStr(wxcompInterface.GetBorderWidth) + '</border>');
+        Result.Add(IndentString + '    <object class="wxButton" name="wxID_CANCEL">');
+        Result.Add(IndentString + '    <label>&amp;Cancel</label>');
+        Result.Add(IndentString + '    </object>');
+        Result.Add(IndentString + '  </object>');
+    End;
+
+    If wxID_HELP In Wx_Buttons Then
+    Begin
+        Result.Add(IndentString + '  <object class="button">');
+        Result.Add(IndentString + '  <flag>' + SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment) + '</flag>');
+        Result.Add(IndentString + '  <border>' + IntToStr(wxcompInterface.GetBorderWidth) + '</border>');
+        Result.Add(IndentString + '    <object class="wxButton" name="wxID_HELP">');
+        Result.Add(IndentString + '    <label>&amp;Help</label>');
+        Result.Add(IndentString + '    </object>');
+        Result.Add(IndentString + '  </object>');
+    End
+
+    Else
+    If wxID_CONTEXT_HELP In Wx_Buttons Then
+    Begin
+        Result.Add(IndentString + '  <object class="button">');
+        Result.Add(IndentString + '  <flag>' + SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment) + '</flag>');
+        Result.Add(IndentString + '  <border>' + IntToStr(wxcompInterface.GetBorderWidth) + '</border>');
+        Result.Add(IndentString + '    <object class="wxButton" name="wxID_CONTEXT_HELP">');
+        Result.Add(IndentString + '    <label>?</label>');
+        Result.Add(IndentString + '    </object>');
+        Result.Add(IndentString + '  </object>');
+    End;
+
    //NUKLEAR ZELPH no creation without sizer parent, check unneeded
-    Result.Add(IndentString + '</object>')
-end;
+    Result.Add(IndentString + '</object>');
+End;
 
-function TWxStdDialogButtonSizer.GenerateGUIControlCreation: string;
-var
-  strAlignment: string;
-begin
+Function TWxStdDialogButtonSizer.GenerateGUIControlCreation: String;
+Var
+    strAlignment: String;
+Begin
 
-  if trim(Result) <> '' then
-          Result := Result + #13;
+    If trim(Result) <> '' Then
+        Result := Result + #13;
 
-  if not (XRCGEN) then //Nuklear Zelph
-  begin
+    If Not (XRCGEN) Then //Nuklear Zelph
+    Begin
   //Create the sizer
-  Result := Format('%s = new %s;', [self.Name, self.wx_Class]);
-    if wxID_OK in FWx_Buttons then
-    begin
-      Result := Result + #13 + 'btnOK = new wxButton( this, wxID_OK );';
-      Result := Result + #13 + Format('%s->AddButton( btnOK );',[self.Name]);
-    end
-    else if wxID_YES in FWx_Buttons then
-    begin
-      Result := Result + #13 + 'btnYES = new wxButton( this, wxID_YES );';
-      Result := Result + #13 + Format('%s->AddButton( btnYES );',[self.Name]);
-    end
-    else if wxID_SAVE in FWx_Buttons then
-    begin
-      Result := Result + #13 + 'btnSAVE = new wxButton( this, wxID_SAVE );';
-      Result := Result + #13 + Format('%s->AddButton( btnSAVE );',[self.Name]);
-    end;
+        Result := Format('%s = new %s;', [self.Name, self.wx_Class]);
+        If wxID_OK In FWx_Buttons Then
+        Begin
+            Result := Result + #13 + 'btnOK = new wxButton( this, wxID_OK );';
+            Result := Result + #13 + Format('%s->AddButton( btnOK );', [self.Name]);
+        End
+        Else
+        If wxID_YES In FWx_Buttons Then
+        Begin
+            Result := Result + #13 + 'btnYES = new wxButton( this, wxID_YES );';
+            Result := Result + #13 + Format('%s->AddButton( btnYES );', [self.Name]);
+        End
+        Else
+        If wxID_SAVE In FWx_Buttons Then
+        Begin
+            Result := Result + #13 + 'btnSAVE = new wxButton( this, wxID_SAVE );';
+            Result := Result + #13 + Format('%s->AddButton( btnSAVE );', [self.Name]);
+        End;
 
-    if wxID_APPLY in FWx_Buttons then
-    begin
-      Result := Result + #13 + 'btnAPPLY = new wxButton( this, wxID_APPLY );';
-      Result := Result + #13 + Format('%s->AddButton( btnAPPLY );',[self.Name]);
-    end;
+        If wxID_APPLY In FWx_Buttons Then
+        Begin
+            Result := Result + #13 + 'btnAPPLY = new wxButton( this, wxID_APPLY );';
+            Result := Result + #13 + Format('%s->AddButton( btnAPPLY );', [self.Name]);
+        End;
 
-    if wxID_NO in FWx_Buttons then
-    begin
-      Result := Result + #13 + 'btnNO = new wxButton( this, wxID_NO );';
-      Result := Result + #13 + Format('%s->AddButton( btnNO );',[self.Name]);
-    end;
+        If wxID_NO In FWx_Buttons Then
+        Begin
+            Result := Result + #13 + 'btnNO = new wxButton( this, wxID_NO );';
+            Result := Result + #13 + Format('%s->AddButton( btnNO );', [self.Name]);
+        End;
 
-    if wxID_CANCEL in FWx_Buttons then
-    begin
-      Result := Result + #13 + 'btnCANCEL = new wxButton( this, wxID_CANCEL );';
-      Result := Result + #13 + Format('%s->AddButton( btnCANCEL );',[self.Name]);
-    end;
+        If wxID_CANCEL In FWx_Buttons Then
+        Begin
+            Result := Result + #13 + 'btnCANCEL = new wxButton( this, wxID_CANCEL );';
+            Result := Result + #13 + Format('%s->AddButton( btnCANCEL );', [self.Name]);
+        End;
 
-    if wxID_HELP in FWx_Buttons then
-    begin
-      Result := Result + #13 + 'btnHELP = new wxButton( this, wxID_HELP );';
-      Result := Result + #13 + Format('%s->AddButton( btnHELP );',[self.Name]);
-    end
+        If wxID_HELP In FWx_Buttons Then
+        Begin
+            Result := Result + #13 + 'btnHELP = new wxButton( this, wxID_HELP );';
+            Result := Result + #13 + Format('%s->AddButton( btnHELP );', [self.Name]);
+        End
 
-    else if wxID_CONTEXT_HELP in FWx_Buttons then
-    begin
-      Result := Result + #13 + 'btnCtxHELP = new wxButton( this, wxID_CONTEXT_HELP );';
-      Result := Result + #13 + Format('%s->AddButton( btnCtxHELP );',[self.Name]);
-  end;
-  Result := Result + #13 + Format('%s->Realize();',[self.Name]);
+        Else
+        If wxID_CONTEXT_HELP In FWx_Buttons Then
+        Begin
+            Result := Result + #13 + 'btnCtxHELP = new wxButton( this, wxID_CONTEXT_HELP );';
+            Result := Result + #13 + Format('%s->AddButton( btnCtxHELP );', [self.Name]);
+        End;
+        Result := Result + #13 + Format('%s->Realize();', [self.Name]);
 
   //Add the sizer unto our global sizer
-  strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
-  Result := Result + #13 + Format('%s->Add(%s, %d, %s, %d);',
-    [self.Parent.Name, self.Name, self.Wx_StretchFactor, strAlignment,
-    self.Wx_Border]);
-  end;//Nuklear Zelph
-end;
+        strAlignment := SizerAlignmentToStr(Wx_Alignment) + ' | ' + BorderAlignmentToStr(Wx_BorderAlignment);
+        Result := Result + #13 + Format('%s->Add(%s, %d, %s, %d);',
+            [self.Parent.Name, self.Name, self.Wx_StretchFactor, strAlignment,
+            self.Wx_Border]);
+    End;//Nuklear Zelph
+End;
 
-procedure TWxStdDialogButtonSizer.SetWx_Buttons(Buttons: TWxStdDialogButtons);
-  procedure CreateButton(capt: string);
-  var
-    Button: TButton;
-  begin
-    Button := TButton.Create(Self);
-    Button.Parent := Self;
-    Button.Caption := capt;
-    Button.Height := 23;
-    Button.Show;
-  end;
-begin
+Procedure TWxStdDialogButtonSizer.SetWx_Buttons(Buttons: TWxStdDialogButtons);
+    Procedure CreateButton(capt: String);
+    Var
+        Button: TButton;
+    Begin
+        Button := TButton.Create(Self);
+        Button.Parent := Self;
+        Button.Caption := capt;
+        Button.Height := 23;
+        Button.Show;
+    End;
+Begin
   //Set the buttons
-  FWx_Buttons := Buttons;
+    FWx_Buttons := Buttons;
 
   //Clear the current buttons that we have
-  while ControlCount > 0 do
-    Controls[0].Destroy;
+    While ControlCount > 0 Do
+        Controls[0].Destroy;
 
   //Then add the buttons. Buttons are always added affirmative, negative, cancel,
   //apply the help under Windows.
-  if wxID_OK in Buttons then
-    CreateButton('OK')
-  else
-  begin
-  if wxID_YES in Buttons then
-      CreateButton('Yes')
-    else if wxID_SAVE in Buttons then
-      CreateButton('Save');
-  end;
+    If wxID_OK In Buttons Then
+        CreateButton('OK')
+    Else
+    Begin
+        If wxID_YES In Buttons Then
+            CreateButton('Yes')
+        Else
+        If wxID_SAVE In Buttons Then
+            CreateButton('Save');
+    End;
 
-  if wxID_NO in Buttons then
-    CreateButton('No');
-  if wxID_CANCEL in Buttons then
-    CreateButton('Cancel');
-  if wxID_APPLY in Buttons then
-    CreateButton('Apply');
+    If wxID_NO In Buttons Then
+        CreateButton('No');
+    If wxID_CANCEL In Buttons Then
+        CreateButton('Cancel');
+    If wxID_APPLY In Buttons Then
+        CreateButton('Apply');
 
-  if wxID_HELP in Buttons then
-    CreateButton('Help')
-  else if wxID_CONTEXT_HELP in Buttons then
-    CreateButton('?');
+    If wxID_HELP In Buttons Then
+        CreateButton('Help')
+    Else
+    If wxID_CONTEXT_HELP In Buttons Then
+        CreateButton('?');
 
   //Force a redraw
-  Refresh;
-  Update;
-end;
+    Refresh;
+    Update;
+End;
 
-function TWxStdDialogButtonSizer.GenerateEnumControlIDs: string;
-begin
-  Result := '';
-end;
+Function TWxStdDialogButtonSizer.GenerateEnumControlIDs: String;
+Begin
+    Result := '';
+End;
 
-function TWxStdDialogButtonSizer.GenerateControlIDs: string;
-begin
-  Result := '';
-end;
+Function TWxStdDialogButtonSizer.GenerateControlIDs: String;
+Begin
+    Result := '';
+End;
 
-function TWxStdDialogButtonSizer.GenerateEventTableEntries(CurrClassName: string): string;
-begin
-  Result := '';
+Function TWxStdDialogButtonSizer.GenerateEventTableEntries(CurrClassName: String): String;
+Begin
+    Result := '';
 
-    if wxID_OK in FWx_Buttons then
-    begin
-      if trim(EVT_OK_BUTTON) <> '' then
-        Result := Format('EVT_BUTTON(%s, %s::%s)', ['wxID_OK', CurrClassName,
-          EVT_OK_BUTTON]) + '';
+    If wxID_OK In FWx_Buttons Then
+    Begin
+        If trim(EVT_OK_BUTTON) <> '' Then
+            Result := Format('EVT_BUTTON(%s, %s::%s)', ['wxID_OK', CurrClassName,
+                EVT_OK_BUTTON]) + '';
 
-      if trim(EVT_OK_UPDATE_UI) <> '' then
-        Result := Result + #13 + Format('EVT_UPDATE_UI(%s, %s::%s)',
-          ['wxID_OK', CurrClassName, EVT_OK_UPDATE_UI]) + '';
-    end
-    else if wxID_YES in FWx_Buttons then
-    begin
-      if trim(EVT_YES_BUTTON) <> '' then
-      begin
-      if trim(Result) <> '' then
-          Result := Result + #13;
+        If trim(EVT_OK_UPDATE_UI) <> '' Then
+            Result := Result + #13 + Format('EVT_UPDATE_UI(%s, %s::%s)',
+                ['wxID_OK', CurrClassName, EVT_OK_UPDATE_UI]) + '';
+    End
+    Else
+    If wxID_YES In FWx_Buttons Then
+    Begin
+        If trim(EVT_YES_BUTTON) <> '' Then
+        Begin
+            If trim(Result) <> '' Then
+                Result := Result + #13;
 
-        Result := Result + Format('EVT_BUTTON(%s, %s::%s)', ['wxID_YES', CurrClassName,
-          EVT_YES_BUTTON]) + '';
-      end;
+            Result := Result + Format('EVT_BUTTON(%s, %s::%s)', ['wxID_YES', CurrClassName,
+                EVT_YES_BUTTON]) + '';
+        End;
 
-      if trim(EVT_YES_UPDATE_UI) <> '' then
-        Result := Result + #13 + Format('EVT_UPDATE_UI(%s, %s::%s)',
-          ['wxID_YES', CurrClassName, EVT_YES_UPDATE_UI]) + '';
-    end
-    else if wxID_SAVE in FWx_Buttons then
-    begin
-      if trim(EVT_SAVE_BUTTON) <> '' then
-      begin
-      if trim(Result) <> '' then
-          Result := Result + #13;
+        If trim(EVT_YES_UPDATE_UI) <> '' Then
+            Result := Result + #13 + Format('EVT_UPDATE_UI(%s, %s::%s)',
+                ['wxID_YES', CurrClassName, EVT_YES_UPDATE_UI]) + '';
+    End
+    Else
+    If wxID_SAVE In FWx_Buttons Then
+    Begin
+        If trim(EVT_SAVE_BUTTON) <> '' Then
+        Begin
+            If trim(Result) <> '' Then
+                Result := Result + #13;
 
-        Result := Result + Format('EVT_BUTTON(%s, %s::%s)', ['wxID_SAVE', CurrClassName,
-          EVT_SAVE_BUTTON]) + '';
-      end;
+            Result := Result + Format('EVT_BUTTON(%s, %s::%s)', ['wxID_SAVE', CurrClassName,
+                EVT_SAVE_BUTTON]) + '';
+        End;
 
-      if trim(EVT_YES_UPDATE_UI) <> '' then
-        Result := Result + #13 + Format('EVT_UPDATE_UI(%s, %s::%s)',
-          ['wxID_SAVE', CurrClassName, EVT_SAVE_UPDATE_UI]) + '';
-    end;
+        If trim(EVT_YES_UPDATE_UI) <> '' Then
+            Result := Result + #13 + Format('EVT_UPDATE_UI(%s, %s::%s)',
+                ['wxID_SAVE', CurrClassName, EVT_SAVE_UPDATE_UI]) + '';
+    End;
 
-    if wxID_APPLY in FWx_Buttons then
-    begin
-      if trim(EVT_APPLY_BUTTON) <> '' then
-      begin
-        if trim(Result) <> '' then
-          Result := Result + #13;
+    If wxID_APPLY In FWx_Buttons Then
+    Begin
+        If trim(EVT_APPLY_BUTTON) <> '' Then
+        Begin
+            If trim(Result) <> '' Then
+                Result := Result + #13;
 
-        Result := Result + Format('EVT_BUTTON(%s, %s::%s)', ['wxID_APPLY', CurrClassName,
-          EVT_APPLY_BUTTON]) + '';
-      end;
+            Result := Result + Format('EVT_BUTTON(%s, %s::%s)', ['wxID_APPLY', CurrClassName,
+                EVT_APPLY_BUTTON]) + '';
+        End;
 
-      if trim(EVT_APPLY_UPDATE_UI) <> '' then
-        Result := Result + #13 + Format('EVT_UPDATE_UI(%s, %s::%s)',
-          ['wxID_APPLY', CurrClassName, EVT_APPLY_UPDATE_UI]) + '';
-    end;
+        If trim(EVT_APPLY_UPDATE_UI) <> '' Then
+            Result := Result + #13 + Format('EVT_UPDATE_UI(%s, %s::%s)',
+                ['wxID_APPLY', CurrClassName, EVT_APPLY_UPDATE_UI]) + '';
+    End;
 
-    if wxID_NO in FWx_Buttons then
-    begin
-      if trim(EVT_NO_BUTTON) <> '' then
-      begin
-        if trim(Result) <> '' then
-          Result := Result + #13;
+    If wxID_NO In FWx_Buttons Then
+    Begin
+        If trim(EVT_NO_BUTTON) <> '' Then
+        Begin
+            If trim(Result) <> '' Then
+                Result := Result + #13;
 
-        Result := Result + Format('EVT_BUTTON(%s, %s::%s)', ['wxID_NO', CurrClassName,
-          EVT_NO_BUTTON]) + '';
-      end;
+            Result := Result + Format('EVT_BUTTON(%s, %s::%s)', ['wxID_NO', CurrClassName,
+                EVT_NO_BUTTON]) + '';
+        End;
 
-      if trim(EVT_NO_UPDATE_UI) <> '' then
-        Result := Result + #13 + Format('EVT_UPDATE_UI(%s, %s::%s)',
-          ['wxID_NO', CurrClassName, EVT_NO_UPDATE_UI]) + '';
-    end;
+        If trim(EVT_NO_UPDATE_UI) <> '' Then
+            Result := Result + #13 + Format('EVT_UPDATE_UI(%s, %s::%s)',
+                ['wxID_NO', CurrClassName, EVT_NO_UPDATE_UI]) + '';
+    End;
 
-    if wxID_CANCEL in FWx_Buttons then
-    begin
-      if trim(EVT_CANCEL_BUTTON) <> '' then
-      begin
-        if trim(Result) <> '' then
-          Result := Result + #13;
+    If wxID_CANCEL In FWx_Buttons Then
+    Begin
+        If trim(EVT_CANCEL_BUTTON) <> '' Then
+        Begin
+            If trim(Result) <> '' Then
+                Result := Result + #13;
 
-        Result := Result + Format('EVT_BUTTON(%s, %s::%s)', ['wxID_CANCEL', CurrClassName,
-          EVT_CANCEL_BUTTON]) + '';
-      end;
+            Result := Result + Format('EVT_BUTTON(%s, %s::%s)', ['wxID_CANCEL', CurrClassName,
+                EVT_CANCEL_BUTTON]) + '';
+        End;
 
-      if trim(EVT_CANCEL_UPDATE_UI) <> '' then
-        Result := Result + #13 + Format('EVT_UPDATE_UI(%s, %s::%s)',
-          ['wxID_CANCEL', CurrClassName, EVT_CANCEL_UPDATE_UI]) + '';
-    end;
+        If trim(EVT_CANCEL_UPDATE_UI) <> '' Then
+            Result := Result + #13 + Format('EVT_UPDATE_UI(%s, %s::%s)',
+                ['wxID_CANCEL', CurrClassName, EVT_CANCEL_UPDATE_UI]) + '';
+    End;
 
-    if wxID_HELP in FWx_Buttons then
-    begin
-      if trim(EVT_HELP_BUTTON) <> '' then
-      begin
-        if trim(Result) <> '' then
-          Result := Result + #13;
+    If wxID_HELP In FWx_Buttons Then
+    Begin
+        If trim(EVT_HELP_BUTTON) <> '' Then
+        Begin
+            If trim(Result) <> '' Then
+                Result := Result + #13;
 
-        Result := Result + Format('EVT_BUTTON(%s, %s::%s)', ['wxID_HELP', CurrClassName,
-          EVT_HELP_BUTTON]) + '';
-      end;
-      if trim(EVT_HELP_UPDATE_UI) <> '' then
-        Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
-          ['wxID_HELP', CurrClassName, EVT_HELP_UPDATE_UI]) + '';
-    end
-    
-    else if wxID_CONTEXT_HELP in FWx_Buttons then
-    begin
-      if trim(EVT_CONTEXT_HELP_BUTTON) <> '' then
-      begin
-        if trim(Result) <> '' then
-          Result := Result + #13;
+            Result := Result + Format('EVT_BUTTON(%s, %s::%s)', ['wxID_HELP', CurrClassName,
+                EVT_HELP_BUTTON]) + '';
+        End;
+        If trim(EVT_HELP_UPDATE_UI) <> '' Then
+            Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
+                ['wxID_HELP', CurrClassName, EVT_HELP_UPDATE_UI]) + '';
+    End
 
-        Result := Result + Format('EVT_BUTTON(%s, %s::%s)', ['wxID_CONTEXT_HELP', CurrClassName,
-          EVT_HELP_BUTTON]) + '';
-      end;
-      if trim(EVT_HELP_UPDATE_UI) <> '' then
-        Result := Result + #13 + Format('EVT_UPDATE_UI(%s, %s::%s)',
-          ['wxID_CONTEXT_HELP', CurrClassName, EVT_HELP_UPDATE_UI]) + '';
-  end;
+    Else
+    If wxID_CONTEXT_HELP In FWx_Buttons Then
+    Begin
+        If trim(EVT_CONTEXT_HELP_BUTTON) <> '' Then
+        Begin
+            If trim(Result) <> '' Then
+                Result := Result + #13;
 
-end;
+            Result := Result + Format('EVT_BUTTON(%s, %s::%s)', ['wxID_CONTEXT_HELP', CurrClassName,
+                EVT_HELP_BUTTON]) + '';
+        End;
+        If trim(EVT_HELP_UPDATE_UI) <> '' Then
+            Result := Result + #13 + Format('EVT_UPDATE_UI(%s, %s::%s)',
+                ['wxID_CONTEXT_HELP', CurrClassName, EVT_HELP_UPDATE_UI]) + '';
+    End;
 
-function TWxStdDialogButtonSizer.GenerateGUIControlDeclaration: string;
-begin
-  Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
-      if wxID_OK in FWx_Buttons then
-    begin
-      Result := Result + #13 + 'wxButton *btnOK;';
-    end
-    else if wxID_YES in FWx_Buttons then
-    begin
-      Result := Result + #13 + 'wxButton *btnYES;';
-    end
-    else if wxID_SAVE in FWx_Buttons then
-    begin
-      Result := Result + #13 + 'wxButton *btnSAVE;';
-    end;
+End;
 
-    if wxID_APPLY in FWx_Buttons then
-    begin
-      Result := Result + #13 + 'wxButton *btnAPPLY;';
-    end;
+Function TWxStdDialogButtonSizer.GenerateGUIControlDeclaration: String;
+Begin
+    Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
+    If wxID_OK In FWx_Buttons Then
+    Begin
+        Result := Result + #13 + 'wxButton *btnOK;';
+    End
+    Else
+    If wxID_YES In FWx_Buttons Then
+    Begin
+        Result := Result + #13 + 'wxButton *btnYES;';
+    End
+    Else
+    If wxID_SAVE In FWx_Buttons Then
+    Begin
+        Result := Result + #13 + 'wxButton *btnSAVE;';
+    End;
 
-    if wxID_NO in FWx_Buttons then
-    begin
-      Result := Result + #13 + 'wxButton *btnNO;';
-    end;
+    If wxID_APPLY In FWx_Buttons Then
+    Begin
+        Result := Result + #13 + 'wxButton *btnAPPLY;';
+    End;
 
-    if wxID_CANCEL in FWx_Buttons then
-    begin
-      Result := Result + #13 + 'wxButton *btnCANCEL;';
-    end;
+    If wxID_NO In FWx_Buttons Then
+    Begin
+        Result := Result + #13 + 'wxButton *btnNO;';
+    End;
 
-    if wxID_HELP in FWx_Buttons then
-    begin
-      Result := Result + #13 + 'wxButton *btnHELP;';
-    end
+    If wxID_CANCEL In FWx_Buttons Then
+    Begin
+        Result := Result + #13 + 'wxButton *btnCANCEL;';
+    End;
 
-    else if wxID_CONTEXT_HELP in FWx_Buttons then
-    begin
-      Result := Result + #13 + 'wxButton *btnCtxHELP;';
-  end;
+    If wxID_HELP In FWx_Buttons Then
+    Begin
+        Result := Result + #13 + 'wxButton *btnHELP;';
+    End
 
-end;
+    Else
+    If wxID_CONTEXT_HELP In FWx_Buttons Then
+    Begin
+        Result := Result + #13 + 'wxButton *btnCtxHELP;';
+    End;
 
-function TWxStdDialogButtonSizer.GenerateHeaderInclude: string;
-begin
-  Result := '#include <wx/sizer.h>';
-end;
+End;
 
-function TWxStdDialogButtonSizer.GenerateImageInclude: string;
-begin
-end;
+Function TWxStdDialogButtonSizer.GenerateHeaderInclude: String;
+Begin
+    Result := '#include <wx/sizer.h>';
+End;
 
-function TWxStdDialogButtonSizer.GetEventList: TStringList;
-begin
-  Result := Wx_EventList;
-end;
+Function TWxStdDialogButtonSizer.GenerateImageInclude: String;
+Begin
+End;
 
-function TWxStdDialogButtonSizer.GetIDName: string;
-begin
-  Result := '';
-end;
+Function TWxStdDialogButtonSizer.GetEventList: TStringList;
+Begin
+    Result := Wx_EventList;
+End;
 
-function TWxStdDialogButtonSizer.GetIDValue: integer;
-begin
-  Result := wx_IDValue;
-end;
+Function TWxStdDialogButtonSizer.GetIDName: String;
+Begin
+    Result := '';
+End;
 
-function TWxStdDialogButtonSizer.GetParameterFromEventName(EventName: string): string;
-begin
-  if EventName = 'EVT_BUTTON' then
-  begin
-    Result := 'wxCommandEvent& event';
-    exit;
-  end;
-  if EventName = 'EVT_UPDATE_UI' then
-  begin
-    Result := 'wxUpdateUIEvent& event';
-    exit;
-  end;
-end;
+Function TWxStdDialogButtonSizer.GetIDValue: Integer;
+Begin
+    Result := wx_IDValue;
+End;
 
-function TWxStdDialogButtonSizer.GetPropertyList: TStringList;
-begin
-  Result := FWx_PropertyList;
-end;
+Function TWxStdDialogButtonSizer.GetParameterFromEventName(EventName: String): String;
+Begin
+    If EventName = 'EVT_BUTTON' Then
+    Begin
+        Result := 'wxCommandEvent& event';
+        exit;
+    End;
+    If EventName = 'EVT_UPDATE_UI' Then
+    Begin
+        Result := 'wxUpdateUIEvent& event';
+        exit;
+    End;
+End;
 
-function TWxStdDialogButtonSizer.GetStretchFactor: integer;
-begin
-  Result := FWx_StretchFactor;
-end;
+Function TWxStdDialogButtonSizer.GetPropertyList: TStringList;
+Begin
+    Result := FWx_PropertyList;
+End;
 
-function TWxStdDialogButtonSizer.GetTypeFromEventName(EventName: string): string;
-begin
+Function TWxStdDialogButtonSizer.GetStretchFactor: Integer;
+Begin
+    Result := FWx_StretchFactor;
+End;
 
-end;
+Function TWxStdDialogButtonSizer.GetTypeFromEventName(EventName: String): String;
+Begin
 
-function TWxStdDialogButtonSizer.GetBorderAlignment: TWxBorderAlignment;
-begin
-  Result := FWx_BorderAlignment;
-end;
+End;
 
-procedure TWxStdDialogButtonSizer.SetBorderAlignment(border: TWxBorderAlignment);
-begin
-  FWx_BorderAlignment := border;
-end;
+Function TWxStdDialogButtonSizer.GetBorderAlignment: TWxBorderAlignment;
+Begin
+    Result := FWx_BorderAlignment;
+End;
 
-function TWxStdDialogButtonSizer.GetBorderWidth: integer;
-begin
-  Result := FWx_Border;
-end;
+Procedure TWxStdDialogButtonSizer.SetBorderAlignment(border: TWxBorderAlignment);
+Begin
+    FWx_BorderAlignment := border;
+End;
 
-procedure TWxStdDialogButtonSizer.SetBorderWidth(width: integer);
-begin
-  FWx_Border := width;
-end;
+Function TWxStdDialogButtonSizer.GetBorderWidth: Integer;
+Begin
+    Result := FWx_Border;
+End;
 
-function TWxStdDialogButtonSizer.GetWxClassName: string;
-begin
-  if trim(wx_Class) = '' then
-    wx_Class := 'wxStdDialogButtonSizer';
-  Result := wx_Class;
-end;
+Procedure TWxStdDialogButtonSizer.SetBorderWidth(width: Integer);
+Begin
+    FWx_Border := width;
+End;
 
-procedure TWxStdDialogButtonSizer.SaveControlOrientation(ControlOrientation: TWxControlOrientation);
-begin
-end;
+Function TWxStdDialogButtonSizer.GetWxClassName: String;
+Begin
+    If trim(wx_Class) = '' Then
+        wx_Class := 'wxStdDialogButtonSizer';
+    Result := wx_Class;
+End;
 
-procedure TWxStdDialogButtonSizer.SetIDName(IDName: string);
-begin
-  wx_IDName := IDName;
-end;
+Procedure TWxStdDialogButtonSizer.SaveControlOrientation(ControlOrientation: TWxControlOrientation);
+Begin
+End;
 
-procedure TWxStdDialogButtonSizer.SetIDValue(IDValue: integer);
-begin
-  Wx_IDValue := IDVAlue;
-end;
+Procedure TWxStdDialogButtonSizer.SetIDName(IDName: String);
+Begin
+    wx_IDName := IDName;
+End;
 
-procedure TWxStdDialogButtonSizer.SetStretchFactor(intValue: integer);
-begin
-  FWx_StretchFactor := intValue;
-end;
+Procedure TWxStdDialogButtonSizer.SetIDValue(IDValue: Integer);
+Begin
+    Wx_IDValue := IDVAlue;
+End;
 
-procedure TWxStdDialogButtonSizer.SetWxClassName(wxClassName: string);
-begin
-  wx_Class := wxClassName;
-end;
+Procedure TWxStdDialogButtonSizer.SetStretchFactor(intValue: Integer);
+Begin
+    FWx_StretchFactor := intValue;
+End;
 
-procedure TWxStdDialogButtonSizer.WMPaint(var Message: TWMPaint);
-var
-  maxHeight: integer;
-  totalmaxWidth: integer;
-  startX: integer;
-  i: integer;
-  coordTop: integer;
-  cntIntf: IWxContainerInterface;
-  splitIntf: IWxSplitterInterface;  
-begin
-  totalmaxWidth := 0;
-  maxHeight     := 0;
-  self.Caption  := '';
+Procedure TWxStdDialogButtonSizer.SetWxClassName(wxClassName: String);
+Begin
+    wx_Class := wxClassName;
+End;
 
-  for i := 0 to self.ControlCount - 1 do
-  begin
+Procedure TWxStdDialogButtonSizer.WMPaint(Var Message: TWMPaint);
+Var
+    maxHeight: Integer;
+    totalmaxWidth: Integer;
+    startX: Integer;
+    i: Integer;
+    coordTop: Integer;
+    cntIntf: IWxContainerInterface;
+    splitIntf: IWxSplitterInterface;
+Begin
+    totalmaxWidth := 0;
+    maxHeight := 0;
+    self.Caption := '';
+
+    For i := 0 To self.ControlCount - 1 Do
+    Begin
     //Calculate how much space this child component needs
-    totalmaxWidth := totalmaxWidth + Controls[i].Width + 5;
-    if Controls[i].Height > maxHeight then
-      maxHeight := Controls[i].Height;
-  end;
+        totalmaxWidth := totalmaxWidth + Controls[i].Width + 5;
+        If Controls[i].Height > maxHeight Then
+            maxHeight := Controls[i].Height;
+    End;
 
   //Remove the extra 5 pixels at the end
-  if totalmaxWidth > 0 then
-    totalmaxWidth := totalmaxWidth - 5;
+    If totalmaxWidth > 0 Then
+        totalmaxWidth := totalmaxWidth - 5;
 
-  if self.parent.GetInterface(IDD_IWxContainerInterface, cntIntf) then
-  begin
-    if self.parent.GetInterface(IID_IWxSplitterInterface, splitIntf) then
-      self.Align := alNone
-    else
-      self.Align := alClient;
-  end
-  else
-    self.Align := alNone;
+    If self.parent.GetInterface(IDD_IWxContainerInterface, cntIntf) Then
+    Begin
+        If self.parent.GetInterface(IID_IWxSplitterInterface, splitIntf) Then
+            self.Align := alNone
+        Else
+            self.Align := alClient;
+    End
+    Else
+        self.Align := alNone;
 
-  if totalmaxWidth = 0 then
-    self.Width := 20
-  else
-    self.Width := totalmaxWidth;
+    If totalmaxWidth = 0 Then
+        self.Width := 20
+    Else
+        self.Width := totalmaxWidth;
 
-  if maxHeight = 0 then
-    self.Height := 20
-  else
-    self.Height := maxHeight;
+    If maxHeight = 0 Then
+        self.Height := 20
+    Else
+        self.Height := maxHeight;
 
   //Initialize the starting coordinates
-  startX := 0;
+    startX := 0;
 
-  for i := 0 to self.ControlCount - 1 do
-  begin
-    if IsControlWxNonVisible(Controls[i]) then
-      continue;
+    For i := 0 To self.ControlCount - 1 Do
+    Begin
+        If IsControlWxNonVisible(Controls[i]) Then
+            continue;
 
     //Set the raw available width
-    coordTop := maxHeight - self.Controls[i].Height;
+        coordTop := maxHeight - self.Controls[i].Height;
 
     //Shift the controls
-    self.Controls[i].Top := coordTop div 2;
-    self.Controls[i].left := startX;
+        self.Controls[i].Top := coordTop Div 2;
+        self.Controls[i].left := startX;
 
     //Add the width to the total width
-    startX := startX + self.Controls[i].Width + 5;
-  end;
+        startX := startX + self.Controls[i].Width + 5;
+    End;
 
   //Fix the parent's height and width
-  if Self.Height > parent.Height then
-    parent.Height := Self.Height;
+    If Self.Height > parent.Height Then
+        parent.Height := Self.Height;
 
-  if Self.Width > parent.Width then
-    parent.Width := Self.Width;
+    If Self.Width > parent.Width Then
+        parent.Width := Self.Width;
 
   //Call the base class' paint handler
-  inherited;
-end;
+    Inherited;
+End;
 
-function TWxStdDialogButtonSizer.GetGenericColor(strVariableName:String): string;
-begin
-end;
+Function TWxStdDialogButtonSizer.GetGenericColor(strVariableName: String): String;
+Begin
+End;
 
-procedure TWxStdDialogButtonSizer.SetGenericColor(strVariableName,strValue: string);
-begin
-end;
+Procedure TWxStdDialogButtonSizer.SetGenericColor(strVariableName, strValue: String);
+Begin
+End;
 
-function TWxStdDialogButtonSizer.GetFGColor: string;
-begin
-end;
+Function TWxStdDialogButtonSizer.GetFGColor: String;
+Begin
+End;
 
-procedure TWxStdDialogButtonSizer.SetFGColor(strValue: string);
-begin
-end;
+Procedure TWxStdDialogButtonSizer.SetFGColor(strValue: String);
+Begin
+End;
 
-function TWxStdDialogButtonSizer.GetBGColor: string;
-begin
-end;
+Function TWxStdDialogButtonSizer.GetBGColor: String;
+Begin
+End;
 
-procedure TWxStdDialogButtonSizer.SetBGColor(strValue: string);
-begin
-end;
+Procedure TWxStdDialogButtonSizer.SetBGColor(strValue: String);
+Begin
+End;
 
-function TWxStdDialogButtonSizer.GenerateLastCreationCode: string;
-begin
-end;
+Function TWxStdDialogButtonSizer.GenerateLastCreationCode: String;
+Begin
+End;
 
-end.
+End.

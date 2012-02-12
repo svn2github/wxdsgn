@@ -34,917 +34,923 @@ Version  : 1.92
 {Contact gururamnath@yahoo.com for details                           }
 { ****************************************************************** }
 
-unit wxCalendarBase;
+Unit wxCalendarBase;
 
-interface
+Interface
 
-uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, Grids, Buttons;
+Uses
+    Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+    StdCtrls, ExtCtrls, Grids, Buttons;
 
-type
-  TrmCustomCalendar = class;
-  
-  TCurrentDateValue = (cdvYear, cdvMonth, cdvDay);
+Type
+    TrmCustomCalendar = Class;
 
-  TPaintCellEvent = procedure(Sender:TObject; ARow, ACol:Longint;  Rect: TRect; State: TGridDrawState; Date:TDate) of object;
+    TCurrentDateValue = (cdvYear, cdvMonth, cdvDay);
 
-  TrmCalendarColors = class(TPersistent)
-  private
-    fWeekendText: TColor;
-    fWeekdaybackground: TColor;
-    fDayNamesBackground: TColor;
-    fWeekdayText: TColor;
-    fTodayText: TColor;
-    fWeekendBackground: TColor;
-    fDayNamesText: TColor;
-    fOtherMonthDayBackground: TColor;
-    fOtherMonthDayText: TColor;
-    fCustomCalendar: TrmCustomCalendar;
-    procedure SetDayNamesBackground(const Value: TColor);
-    procedure SetDayNamesText(const Value: TColor);
-    procedure SetOtherMonthDayBackground(const value : TColor);
-    procedure SetOtherMonthDayText(const Value: TColor);
-    procedure SetTodayText(const Value: TColor);
-    procedure Setweekdaybackground(const Value: TColor);
-    procedure SetWeekdayText(const Value: TColor);
-    procedure SetWeekendBackground(const Value: TColor);
-    procedure SetWeekendText(const Value: TColor);
-    procedure UpdateController;
-  public
-    constructor create;
-    procedure Assign(Source: TPersistent); override;
-    property CustomCalendar : TrmCustomCalendar read fCustomCalendar write fCustomCalendar;
-  published
-    property WeekdayBackgroundColor : TColor read fWeekdaybackground write Setweekdaybackground default clwindow;
-    property WeekdayTextColor : TColor read fWeekdayText write SetWeekdayText default clWindowText;
-    property WeekendBackgroundColor : TColor read fWeekendBackground write SetWeekendBackground default $00E1E1E1;
-    property WeekendTextColor : TColor  read fWeekendText write SetWeekendText default clTeal;
-    property DayNamesBackgroundColor : TColor read fDayNamesBackground write SetDayNamesBackground default clBtnFace;
-    property DayNamesTextColor : TColor read fDayNamesText write SetDayNamesText default clBtnText;
-    property TodayTextColor : TColor read fTodayText write SetTodayText default clRed;
-    property OtherMonthDayTextColor : TColor read fOtherMonthDayText write SetOtherMonthDayText default clBtnFace;
-    property OtherMonthDayBackgroundColor : TColor read fOtherMonthDayBackground write SetOtherMonthDayBackground default clWindow;
-  end;
+    TPaintCellEvent = Procedure(Sender: TObject; ARow, ACol: Longint; Rect: TRect; State: TGridDrawState; Date: TDate) Of Object;
 
-  TrmCustomCalendar = class(TCustomPanel)
-  private
+    TrmCalendarColors = Class(TPersistent)
+    Private
+        fWeekendText: TColor;
+        fWeekdaybackground: TColor;
+        fDayNamesBackground: TColor;
+        fWeekdayText: TColor;
+        fTodayText: TColor;
+        fWeekendBackground: TColor;
+        fDayNamesText: TColor;
+        fOtherMonthDayBackground: TColor;
+        fOtherMonthDayText: TColor;
+        fCustomCalendar: TrmCustomCalendar;
+        Procedure SetDayNamesBackground(Const Value: TColor);
+        Procedure SetDayNamesText(Const Value: TColor);
+        Procedure SetOtherMonthDayBackground(Const value: TColor);
+        Procedure SetOtherMonthDayText(Const Value: TColor);
+        Procedure SetTodayText(Const Value: TColor);
+        Procedure Setweekdaybackground(Const Value: TColor);
+        Procedure SetWeekdayText(Const Value: TColor);
+        Procedure SetWeekendBackground(Const Value: TColor);
+        Procedure SetWeekendText(Const Value: TColor);
+        Procedure UpdateController;
+    Public
+        Constructor create;
+        Procedure Assign(Source: TPersistent); Override;
+        Property CustomCalendar: TrmCustomCalendar Read fCustomCalendar Write fCustomCalendar;
+    Published
+        Property WeekdayBackgroundColor: TColor Read fWeekdaybackground Write Setweekdaybackground Default clwindow;
+        Property WeekdayTextColor: TColor Read fWeekdayText Write SetWeekdayText Default clWindowText;
+        Property WeekendBackgroundColor: TColor Read fWeekendBackground Write SetWeekendBackground Default $00E1E1E1;
+        Property WeekendTextColor: TColor Read fWeekendText Write SetWeekendText Default clTeal;
+        Property DayNamesBackgroundColor: TColor Read fDayNamesBackground Write SetDayNamesBackground Default clBtnFace;
+        Property DayNamesTextColor: TColor Read fDayNamesText Write SetDayNamesText Default clBtnText;
+        Property TodayTextColor: TColor Read fTodayText Write SetTodayText Default clRed;
+        Property OtherMonthDayTextColor: TColor Read fOtherMonthDayText Write SetOtherMonthDayText Default clBtnFace;
+        Property OtherMonthDayBackgroundColor: TColor Read fOtherMonthDayBackground Write SetOtherMonthDayBackground Default clWindow;
+    End;
+
+    TrmCustomCalendar = Class(TCustomPanel)
+    Private
     { Private declarations }
-    fCalendarGrid: TDrawGrid;
-    fLabel1: TLabel;
-    fShowWeekends: boolean;
-    wYear, //Working Year
-      wMonth, //Working Month
-      wDay, //Working Day
-      wfdow, //Working First Day of the Month (index into sun, mon, tue...)
-      wdom: word; //Working Days of Month
-    fSelectionValid,
-      fBoldSysdate: boolean;
-    fSelectedDate,
-      fMinSelectDate,
-      fMaxSelectDate,
-      fworkingdate: TDate;
-    fOnWorkingDateChange: TNotifyEvent;
-    fOnSelectedDateChange: TNotifyEvent;
-    fCalendarFont: TFont;
-    fUseDateRanges: boolean;
-    fOnPaintCell: TPaintCellEvent;
-    fCalendarColors: TrmCalendarColors;
-    fShowGridLines: boolean;
-    procedure setShowWeekends(const Value: boolean);
-    procedure SetSelectedDate(const Value: TDate);
-    procedure SetWorkingDate(const Value: TDate);
-    procedure SetCalendarFont(const Value: TFont);
-    procedure SetMaxDate(const Value: TDate);
-    procedure SetMinDate(const Value: TDate);
-    procedure SetUseDateRanges(const Value: boolean);
-    procedure GetRowColInfo(wDate: TDate; var Row, Col: integer);
-    function CheckDateRange(wDate: TDate): TDate;
+        fCalendarGrid: TDrawGrid;
+        fLabel1: TLabel;
+        fShowWeekends: Boolean;
+        wYear, //Working Year
+        wMonth, //Working Month
+        wDay, //Working Day
+        wfdow, //Working First Day of the Month (index into sun, mon, tue...)
+        wdom: Word; //Working Days of Month
+        fSelectionValid,
+        fBoldSysdate: Boolean;
+        fSelectedDate,
+        fMinSelectDate,
+        fMaxSelectDate,
+        fworkingdate: TDate;
+        fOnWorkingDateChange: TNotifyEvent;
+        fOnSelectedDateChange: TNotifyEvent;
+        fCalendarFont: TFont;
+        fUseDateRanges: Boolean;
+        fOnPaintCell: TPaintCellEvent;
+        fCalendarColors: TrmCalendarColors;
+        fShowGridLines: Boolean;
+        Procedure setShowWeekends(Const Value: Boolean);
+        Procedure SetSelectedDate(Const Value: TDate);
+        Procedure SetWorkingDate(Const Value: TDate);
+        Procedure SetCalendarFont(Const Value: TFont);
+        Procedure SetMaxDate(Const Value: TDate);
+        Procedure SetMinDate(Const Value: TDate);
+        Procedure SetUseDateRanges(Const Value: Boolean);
+        Procedure GetRowColInfo(wDate: TDate; Var Row, Col: Integer);
+        Function CheckDateRange(wDate: TDate): TDate;
 
-    function ValidateDOW(row, col: integer; var daynumber: integer): boolean;
-    function MyEncodeDate(year, month, day: word): TDateTime;
-    function CurrentDateValue(Value: TCurrentDateValue): word;
+        Function ValidateDOW(row, col: Integer; Var daynumber: Integer): Boolean;
+        Function MyEncodeDate(year, month, day: Word): TDateTime;
+        Function CurrentDateValue(Value: TCurrentDateValue): Word;
 
-    procedure wmSize(var Msg: TMessage); message WM_Size;
-    procedure wmEraseBkgrnd(var Msg:TMessage); message WM_EraseBkgnd;
-    procedure CalendarSelectDate(Sender: TObject; Col, Row: Integer;
-      var CanSelect: Boolean);
-    procedure SetBoldSystemDate(const Value: boolean);
-    function GetCellCanvas: TCanvas;
-    procedure SetCalendarColors(const Value: TrmCalendarColors);
-    procedure SetGridLines(const Value: boolean);
-  protected
+        Procedure wmSize(Var Msg: TMessage); Message WM_Size;
+        Procedure wmEraseBkgrnd(Var Msg: TMessage); Message WM_EraseBkgnd;
+        Procedure CalendarSelectDate(Sender: TObject; Col, Row: Integer;
+            Var CanSelect: Boolean);
+        Procedure SetBoldSystemDate(Const Value: Boolean);
+        Function GetCellCanvas: TCanvas;
+        Procedure SetCalendarColors(Const Value: TrmCalendarColors);
+        Procedure SetGridLines(Const Value: Boolean);
+    Protected
     { Protected declarations }
-    procedure SetCellSizes;
-    procedure PaintCalendarCell(Sender: TObject; Col, Row: Longint; Rect: TRect; State: TGridDrawState);
+        Procedure SetCellSizes;
+        Procedure PaintCalendarCell(Sender: TObject; Col, Row: Longint; Rect: TRect; State: TGridDrawState);
 
-    procedure CalendarDblClick(Sender: TObject); virtual;
-    procedure CalendarGridKeyPress(Sender: TObject; var Key: Char); virtual;
-    procedure CalendarKeyMovement(Sender: TObject; var Key: Word; Shift: TShiftState); virtual;
+        Procedure CalendarDblClick(Sender: TObject); Virtual;
+        Procedure CalendarGridKeyPress(Sender: TObject; Var Key: Char); Virtual;
+        Procedure CalendarKeyMovement(Sender: TObject; Var Key: Word; Shift: TShiftState); Virtual;
 
-    property ShowGridLines : boolean read fShowGridLines write SetGridLines default false;
-    property CalendarColors : TrmCalendarColors read fCalendarColors write SetCalendarColors;
-    property BoldSystemDate : boolean read fboldsysdate write SetBoldSystemDate default true;
-    property UseDateRanges: boolean read fUseDateRanges write SetUseDateRanges default false;
-    property MinDate: TDate read fMinSelectDate write SetMinDate;
-    property MaxDate: TDate read fMaxSelectDate write SetMaxDate;
-    property CalendarFont: TFont read fCalendarFont write SetCalendarFont;
-    property SelectedDate: TDate read fSelectedDate write SetSelectedDate;
-    property WorkingDate: TDate read fworkingdate;
-    property ShowWeekends: boolean read fShowWeekends write SetShowWeekends default true;
-    property OnWorkingDateChange: TNotifyEvent read fOnWorkingDateChange write fOnWorkingDateChange;
-    property OnSelectedDateChange: TNotifyEvent read fOnSelectedDateChange write fOnSelectedDateChange;
-    property OnPaintCell : TPaintCellEvent read fOnPaintCell write fOnPaintCell;
-  public
+        Property ShowGridLines: Boolean Read fShowGridLines Write SetGridLines Default False;
+        Property CalendarColors: TrmCalendarColors Read fCalendarColors Write SetCalendarColors;
+        Property BoldSystemDate: Boolean Read fboldsysdate Write SetBoldSystemDate Default True;
+        Property UseDateRanges: Boolean Read fUseDateRanges Write SetUseDateRanges Default False;
+        Property MinDate: TDate Read fMinSelectDate Write SetMinDate;
+        Property MaxDate: TDate Read fMaxSelectDate Write SetMaxDate;
+        Property CalendarFont: TFont Read fCalendarFont Write SetCalendarFont;
+        Property SelectedDate: TDate Read fSelectedDate Write SetSelectedDate;
+        Property WorkingDate: TDate Read fworkingdate;
+        Property ShowWeekends: Boolean Read fShowWeekends Write SetShowWeekends Default True;
+        Property OnWorkingDateChange: TNotifyEvent Read fOnWorkingDateChange Write fOnWorkingDateChange;
+        Property OnSelectedDateChange: TNotifyEvent Read fOnSelectedDateChange Write fOnSelectedDateChange;
+        Property OnPaintCell: TPaintCellEvent Read fOnPaintCell Write fOnPaintCell;
+    Public
     { Public declarations }
-    constructor create(AOwner: TComponent); override;
-    destructor destroy; override;
-    property CellCanvas : TCanvas read GetCellCanvas;
-    procedure NextMonth;
-    procedure PrevMonth;
-    procedure NextYear;
-    procedure PrevYear;
-    function GoodCalendarSize(NewWidth:integer): boolean;
-    procedure Invalidate; override;
-  end;
+        Constructor create(AOwner: TComponent); Override;
+        Destructor destroy; Override;
+        Property CellCanvas: TCanvas Read GetCellCanvas;
+        Procedure NextMonth;
+        Procedure PrevMonth;
+        Procedure NextYear;
+        Procedure PrevYear;
+        Function GoodCalendarSize(NewWidth: Integer): Boolean;
+        Procedure Invalidate; Override;
+    End;
 
-  TrmCalendar = class(TrmCustomCalendar)
-  public
+    TrmCalendar = Class(TrmCustomCalendar)
+    Public
     { Public declarations }
-  published
+    Published
     { Published declarations }
-    property Align;
-    property Anchors;
-    property BorderStyle default bsSingle;
-    property BevelInner default bvNone;
-    property BevelOuter default bvNone;
+        Property Align;
+        Property Anchors;
+        Property BorderStyle Default bsSingle;
+        Property BevelInner Default bvNone;
+        Property BevelOuter Default bvNone;
 
-    property CalendarColors;
-    property CalendarFont;
-    property SelectedDate;
-    property WorkingDate;
-    property ShowWeekends;
-    property UseDateRanges;
-    property MinDate;
-    property MaxDate;
-    property ShowGridLines;
-    property OnWorkingDateChange;
-    property OnSelectedDateChange;
-    property OnPaintCell;
-  end;
+        Property CalendarColors;
+        Property CalendarFont;
+        Property SelectedDate;
+        Property WorkingDate;
+        Property ShowWeekends;
+        Property UseDateRanges;
+        Property MinDate;
+        Property MaxDate;
+        Property ShowGridLines;
+        Property OnWorkingDateChange;
+        Property OnSelectedDateChange;
+        Property OnPaintCell;
+    End;
 
-const
-  WX_DaysOfMonth: array[0..13] of integer = (31, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31, 31); //Wrapped for proper month calculations...
-  WX_WeekDay: array[0..8] of string = ('Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun');
-  WX_MonthOfYear: array[0..13] of string = ('December', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', 'January');
-
-
-implementation
+Const
+    WX_DaysOfMonth: Array[0..13] Of Integer = (31, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31, 31); //Wrapped for proper month calculations...
+    WX_WeekDay: Array[0..8] Of String = ('Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun');
+    WX_MonthOfYear: Array[0..13] Of String = ('December', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', 'January');
 
 
-constructor TrmCustomCalendar.create(AOwner: TComponent);
-begin
-  inherited create(AOwner);
+Implementation
 
-  ControlStyle := ControlStyle + [csOpaque]; 
 
-  fCalendarColors := TrmCalendarColors.create;
-  fCalendarColors.CustomCalendar := self;
+Constructor TrmCustomCalendar.create(AOwner: TComponent);
+Begin
+    Inherited create(AOwner);
 
-  BorderWidth := 1;
-  BorderStyle := bsSingle;
-  BevelOuter := bvNone;
-  BevelInner := bvNone;
-  width := 205;
-  height := 158;
-  fUseDateRanges := false;
-  fMinSelectDate := Now - 365; //Default it to be 1 year back
-  fMaxSelectDate := Now + 365; //Default it to be 1 year ahead
-  fBoldSysDate := true;
+    ControlStyle := ControlStyle + [csOpaque];
 
-  fCalendarFont := tfont.create;
-  fCalendarFont.assign(self.font);
+    fCalendarColors := TrmCalendarColors.create;
+    fCalendarColors.CustomCalendar := self;
 
-  fLabel1 := TLabel.create(self);
-  with fLabel1 do
-  begin
-    ParentFont := false;
-    Parent := self;
-    Align := alTop;
-    Caption := WX_MonthOfYear[CurrentDateValue(cdvMonth)] + ' ' + inttostr(CurrentDateValue(cdvYear));
-    Alignment := taCenter;
-    Font.Size := self.font.size;
-    Font.Style := [];
-    TabStop := false;
-  end;
+    BorderWidth := 1;
+    BorderStyle := bsSingle;
+    BevelOuter := bvNone;
+    BevelInner := bvNone;
+    width := 205;
+    height := 158;
+    fUseDateRanges := False;
+    fMinSelectDate := Now - 365; //Default it to be 1 year back
+    fMaxSelectDate := Now + 365; //Default it to be 1 year ahead
+    fBoldSysDate := True;
 
-  fShowGridLines := false;
+    fCalendarFont := tfont.create;
+    fCalendarFont.assign(self.font);
 
-  fCalendarGrid := TDrawGrid.Create(self);
-  with FCalendarGrid do
-  begin
-    ParentFont := false;
-    Parent := self;
-    ControlStyle := ControlStyle - [csDesignInteractive];
-    Align := alClient;
-    BorderStyle := bsNone;
-    ColCount := 7;
-    FixedCols := 0;
-    fixedRows := 0;
-    RowCount := 7;
-    ScrollBars := ssNone;
-    Options := [];
-    OnDrawCell := PaintCalendarCell;
-    OnSelectCell := CalendarSelectDate;
-    OnDblClick := CalendarDblClick;
-    OnKeyPress := CalendarGridKeyPress;
-    OnKeyDown := CalendarKeyMovement;
-  end;
+    fLabel1 := TLabel.create(self);
+    With fLabel1 Do
+    Begin
+        ParentFont := False;
+        Parent := self;
+        Align := alTop;
+        Caption := WX_MonthOfYear[CurrentDateValue(cdvMonth)] + ' ' + inttostr(CurrentDateValue(cdvYear));
+        Alignment := taCenter;
+        Font.Size := self.font.size;
+        Font.Style := [];
+        TabStop := False;
+    End;
 
-  fShowWeekends := true;
+    fShowGridLines := False;
 
-  SetCellSizes;
-  SelectedDate := Now;
-end;
+    fCalendarGrid := TDrawGrid.Create(self);
+    With FCalendarGrid Do
+    Begin
+        ParentFont := False;
+        Parent := self;
+        ControlStyle := ControlStyle - [csDesignInteractive];
+        Align := alClient;
+        BorderStyle := bsNone;
+        ColCount := 7;
+        FixedCols := 0;
+        fixedRows := 0;
+        RowCount := 7;
+        ScrollBars := ssNone;
+        Options := [];
+        OnDrawCell := PaintCalendarCell;
+        OnSelectCell := CalendarSelectDate;
+        OnDblClick := CalendarDblClick;
+        OnKeyPress := CalendarGridKeyPress;
+        OnKeyDown := CalendarKeyMovement;
+    End;
 
-destructor TrmCustomCalendar.destroy;
-begin
-  fCalendarGrid.free;
-  fCalendarGrid:=nil;
-  fLabel1.free;
-  fCalendarFont.free;
-  fCalendarColors.free;
-  inherited;
-end;
+    fShowWeekends := True;
 
-procedure TrmCustomCalendar.PaintCalendarCell(Sender: TObject; Col, Row: Integer;
-  Rect: TRect; State: TGridDrawState);
-var
-  TextToPaint: string;
-  xpos, ypos, wdom, Daynumber: integer;
-  NewDayNumber: integer;
-  wPaintDate : boolean;
-  wPDate : TDate;
-begin
-  wPDate := now;  //useless, only required to get past a compiler warning in D6
-  wPaintDate := false;
-  case row of
-    0:
-      begin
-        fCalendarGrid.canvas.brush.color := fCalendarColors.DayNamesBackgroundColor; //clbtnface;
-        if ((col = 0) or (col = 6)) and fShowWeekends then
-          fCalendarGrid.canvas.font.color := fCalendarColors.WeekendTextColor//fWeekendColor
-        else
-          fCalendarGrid.canvas.font.color := fCalendarColors.DayNamesTextColor;//clbtntext;
-        TextToPaint := WX_WeekDay[col + 1];
-      end;
-  else
-    begin
-      if ValidateDOW(row, col, DayNumber) then
-      begin
-        if (gdFocused in state) then fSelectionValid := true;
-        TextToPaint := inttostr(DayNumber);
-        wPaintDate := true;
-        wPDate := encodeDate(wyear, wmonth, DayNumber);
-        if (gdSelected in state) then
-        begin
-          fCalendarGrid.canvas.font.color := clHighlightText;
-          fCalendarGrid.canvas.brush.color := clHighlight;
-          fworkingdate := MyEncodeDate(wYear, wMonth, DayNumber);
-        end
-        else
-        begin
-          if (((col = 0) or (col = 6)) and fShowWeekends) then
-          begin
-            fCalendarGrid.canvas.font.color := fCalendarColors.WeekendTextColor; //fWeekendColor;
-            fCalendarGrid.canvas.brush.color := fCalendarColors.WeekendBackgroundColor;//fweekendBkColor;
-          end
-          else
-          begin
-            fCalendarGrid.canvas.font.color := fCalendarColors.WeekdayTextColor;//clWindowText;
-            fCalendarGrid.canvas.brush.color := fCalendarColors.WeekdayBackgroundColor;//clwindow;
-          end;
-        end;
-      end
-      else
-      begin
-        fCalendarGrid.canvas.font.color := fCalendarColors.OtherMonthDayTextColor; //clBtnFace;
-        fCalendarGrid.canvas.brush.color := fCalendarColors.OtherMonthDayBackgroundColor;//clWindow;
-        wdom := WX_DaysOfMonth[wmonth];
-        if (IsLeapYear(wyear)) and (wmonth = 2) then inc(wdom);
-        if daynumber > wdom then
-        begin
-          NewDayNumber := daynumber - wdom;
-          if NewDayNumber > wdom then
-          begin
-            fCalendarGrid.canvas.brush.color := clInactiveCaption;
-            fCalendarGrid.canvas.brush.style := bsDiagCross;
-            fCalendarGrid.canvas.pen.Style := psClear;
-            fCalendarGrid.canvas.Rectangle(rect.left, rect.Top, rect.right + 1, rect.bottom + 1);
-            fCalendarGrid.canvas.brush.style := bsClear;
-            NewDayNumber := DayNumber;
-          end;
-        end
-        else
-        begin
-          if (wmonth = 3) and IsLeapYear(wyear) then
-          begin
-            NewDayNumber := (daynumber + WX_DaysOfMonth[wmonth - 1] + 1);
-            if (NewDayNumber > WX_DaysOfMonth[wmonth - 1] + 1) then
-            begin
-              fCalendarGrid.canvas.brush.color := clInactiveCaption;
-              fCalendarGrid.canvas.brush.style := bsDiagCross;
-              fCalendarGrid.canvas.pen.Style := psClear;
-              fCalendarGrid.canvas.Rectangle(rect.left, rect.Top, rect.right + 1, rect.bottom + 1);
-              fCalendarGrid.canvas.brush.style := bsClear;
-              NewDayNumber := DayNumber;
-            end;
-          end
-          else
-          begin
-            NewDayNumber := (daynumber + WX_DaysOfMonth[wmonth - 1]);
-            if (NewDayNumber > WX_DaysOfMonth[wmonth - 1]) then
-            begin
-              fCalendarGrid.canvas.brush.color := clInactiveCaption;
-              fCalendarGrid.canvas.brush.style := bsDiagCross;
-              fCalendarGrid.canvas.pen.Style := psClear;
-              fCalendarGrid.canvas.Rectangle(rect.left, rect.Top, rect.right + 1, rect.bottom + 1);
-              fCalendarGrid.canvas.brush.style := bsClear;
-              NewDayNumber := DayNumber;
-            end;
-          end;
-        end;
+    SetCellSizes;
+    SelectedDate := Now;
+End;
 
-        TextToPaint := inttostr(NewDayNumber);
-      end;
-      if (CurrentDateValue(cdvYear) = wyear) and (CurrentDateValue(cdvMonth) = wmonth) and (CurrentDateValue(cdvDay) = daynumber) then
-      begin
-         if (fboldsysdate) then
-           fCalendarGrid.canvas.font.Style := [fsBold]
-         else
-           fCalendarGrid.canvas.font.Style := [];
-         if not (gdSelected in state) then
-            fCalendarGrid.Canvas.Font.Color := fCalendarColors.TodayTextColor;
-      end;
-    end;
-  end;
-  xpos := rect.Left + ((rect.right - rect.left) shr 1) - (fCalendarGrid.canvas.textwidth(TextToPaint) shr 1);
-  ypos := rect.Top + ((rect.bottom - rect.top) shr 1) - (fCalendarGrid.canvas.textheight(TextToPaint) shr 1);
+Destructor TrmCustomCalendar.destroy;
+Begin
+    fCalendarGrid.free;
+    fCalendarGrid := Nil;
+    fLabel1.free;
+    fCalendarFont.free;
+    fCalendarColors.free;
+    Inherited;
+End;
 
-  if TextToPaint <> '' then
-     fCalendarGrid.canvas.TextRect(rect, xpos, ypos, TextToPaint);
+Procedure TrmCustomCalendar.PaintCalendarCell(Sender: TObject; Col, Row: Integer;
+    Rect: TRect; State: TGridDrawState);
+Var
+    TextToPaint: String;
+    xpos, ypos, wdom, Daynumber: Integer;
+    NewDayNumber: Integer;
+    wPaintDate: Boolean;
+    wPDate: TDate;
+Begin
+    wPDate := now;  //useless, only required to get past a compiler warning in D6
+    wPaintDate := False;
+    Case row Of
+        0:
+        Begin
+            fCalendarGrid.canvas.brush.color := fCalendarColors.DayNamesBackgroundColor; //clbtnface;
+            If ((col = 0) Or (col = 6)) And fShowWeekends Then
+                fCalendarGrid.canvas.font.color := fCalendarColors.WeekendTextColor//fWeekendColor
+            Else
+                fCalendarGrid.canvas.font.color := fCalendarColors.DayNamesTextColor;//clbtntext;
+            TextToPaint := WX_WeekDay[col + 1];
+        End;
+    Else
+    Begin
+        If ValidateDOW(row, col, DayNumber) Then
+        Begin
+            If (gdFocused In state) Then
+                fSelectionValid := True;
+            TextToPaint := inttostr(DayNumber);
+            wPaintDate := True;
+            wPDate := encodeDate(wyear, wmonth, DayNumber);
+            If (gdSelected In state) Then
+            Begin
+                fCalendarGrid.canvas.font.color := clHighlightText;
+                fCalendarGrid.canvas.brush.color := clHighlight;
+                fworkingdate := MyEncodeDate(wYear, wMonth, DayNumber);
+            End
+            Else
+            Begin
+                If (((col = 0) Or (col = 6)) And fShowWeekends) Then
+                Begin
+                    fCalendarGrid.canvas.font.color := fCalendarColors.WeekendTextColor; //fWeekendColor;
+                    fCalendarGrid.canvas.brush.color := fCalendarColors.WeekendBackgroundColor;//fweekendBkColor;
+                End
+                Else
+                Begin
+                    fCalendarGrid.canvas.font.color := fCalendarColors.WeekdayTextColor;//clWindowText;
+                    fCalendarGrid.canvas.brush.color := fCalendarColors.WeekdayBackgroundColor;//clwindow;
+                End;
+            End;
+        End
+        Else
+        Begin
+            fCalendarGrid.canvas.font.color := fCalendarColors.OtherMonthDayTextColor; //clBtnFace;
+            fCalendarGrid.canvas.brush.color := fCalendarColors.OtherMonthDayBackgroundColor;//clWindow;
+            wdom := WX_DaysOfMonth[wmonth];
+            If (IsLeapYear(wyear)) And (wmonth = 2) Then
+                inc(wdom);
+            If daynumber > wdom Then
+            Begin
+                NewDayNumber := daynumber - wdom;
+                If NewDayNumber > wdom Then
+                Begin
+                    fCalendarGrid.canvas.brush.color := clInactiveCaption;
+                    fCalendarGrid.canvas.brush.style := bsDiagCross;
+                    fCalendarGrid.canvas.pen.Style := psClear;
+                    fCalendarGrid.canvas.Rectangle(rect.left, rect.Top, rect.right + 1, rect.bottom + 1);
+                    fCalendarGrid.canvas.brush.style := bsClear;
+                    NewDayNumber := DayNumber;
+                End;
+            End
+            Else
+            Begin
+                If (wmonth = 3) And IsLeapYear(wyear) Then
+                Begin
+                    NewDayNumber := (daynumber + WX_DaysOfMonth[wmonth - 1] + 1);
+                    If (NewDayNumber > WX_DaysOfMonth[wmonth - 1] + 1) Then
+                    Begin
+                        fCalendarGrid.canvas.brush.color := clInactiveCaption;
+                        fCalendarGrid.canvas.brush.style := bsDiagCross;
+                        fCalendarGrid.canvas.pen.Style := psClear;
+                        fCalendarGrid.canvas.Rectangle(rect.left, rect.Top, rect.right + 1, rect.bottom + 1);
+                        fCalendarGrid.canvas.brush.style := bsClear;
+                        NewDayNumber := DayNumber;
+                    End;
+                End
+                Else
+                Begin
+                    NewDayNumber := (daynumber + WX_DaysOfMonth[wmonth - 1]);
+                    If (NewDayNumber > WX_DaysOfMonth[wmonth - 1]) Then
+                    Begin
+                        fCalendarGrid.canvas.brush.color := clInactiveCaption;
+                        fCalendarGrid.canvas.brush.style := bsDiagCross;
+                        fCalendarGrid.canvas.pen.Style := psClear;
+                        fCalendarGrid.canvas.Rectangle(rect.left, rect.Top, rect.right + 1, rect.bottom + 1);
+                        fCalendarGrid.canvas.brush.style := bsClear;
+                        NewDayNumber := DayNumber;
+                    End;
+                End;
+            End;
 
-  if wPaintDate and assigned(fonPaintCell) then
-     fOnPaintCell(Sender, Col, Row, Rect, State, wPDate);
-end;
+            TextToPaint := inttostr(NewDayNumber);
+        End;
+        If (CurrentDateValue(cdvYear) = wyear) And (CurrentDateValue(cdvMonth) = wmonth) And (CurrentDateValue(cdvDay) = daynumber) Then
+        Begin
+            If (fboldsysdate) Then
+                fCalendarGrid.canvas.font.Style := [fsBold]
+            Else
+                fCalendarGrid.canvas.font.Style := [];
+            If Not (gdSelected In state) Then
+                fCalendarGrid.Canvas.Font.Color := fCalendarColors.TodayTextColor;
+        End;
+    End;
+    End;
+    xpos := rect.Left + ((rect.right - rect.left) Shr 1) - (fCalendarGrid.canvas.textwidth(TextToPaint) Shr 1);
+    ypos := rect.Top + ((rect.bottom - rect.top) Shr 1) - (fCalendarGrid.canvas.textheight(TextToPaint) Shr 1);
 
-procedure TrmCustomCalendar.SetCellSizes;
-var
-  loop: integer;
-  h, w: integer;
-  mh, mw: integer;
-begin
-  h := fCalendarGrid.Height div 7;
-  mh := fCalendarGrid.Height mod 7;
-  w := fCalendarGrid.Width div 7;
-  mw := fCalendarGrid.Width mod 7;
+    If TextToPaint <> '' Then
+        fCalendarGrid.canvas.TextRect(rect, xpos, ypos, TextToPaint);
 
-  for loop := 0 to 6 do
-  begin
-    if mw > 0 then
-    begin
-      dec(mw);
-      if fShowGridLines then
-         fCalendarGrid.ColWidths[loop] := w
-      else
-         fCalendarGrid.ColWidths[loop] := w + 1;
-    end
-    else
-      fCalendarGrid.ColWidths[loop] := w;
+    If wPaintDate And assigned(fonPaintCell) Then
+        fOnPaintCell(Sender, Col, Row, Rect, State, wPDate);
+End;
 
-    if mh > 0 then
-    begin
-      dec(mh);
-      if fShowGridLines then
-         fCalendarGrid.RowHeights[loop] := h
-      else
-         fCalendarGrid.RowHeights[loop] := h + 1;
-    end
-    else
-      fCalendarGrid.RowHeights[loop] := h;
-  end;
-end;
+Procedure TrmCustomCalendar.SetCellSizes;
+Var
+    loop: Integer;
+    h, w: Integer;
+    mh, mw: Integer;
+Begin
+    h := fCalendarGrid.Height Div 7;
+    mh := fCalendarGrid.Height Mod 7;
+    w := fCalendarGrid.Width Div 7;
+    mw := fCalendarGrid.Width Mod 7;
 
-procedure TrmCustomCalendar.SetShowWeekends(const Value: boolean);
-begin
-  fShowWeekends := value;
-  fCalendarGrid.invalidate;
-end;
+    For loop := 0 To 6 Do
+    Begin
+        If mw > 0 Then
+        Begin
+            dec(mw);
+            If fShowGridLines Then
+                fCalendarGrid.ColWidths[loop] := w
+            Else
+                fCalendarGrid.ColWidths[loop] := w + 1;
+        End
+        Else
+            fCalendarGrid.ColWidths[loop] := w;
 
-procedure TrmCustomCalendar.wmSize(var Msg: TMessage);
-begin
-  inherited;
-  SetCellSizes;
-end;
+        If mh > 0 Then
+        Begin
+            dec(mh);
+            If fShowGridLines Then
+                fCalendarGrid.RowHeights[loop] := h
+            Else
+                fCalendarGrid.RowHeights[loop] := h + 1;
+        End
+        Else
+            fCalendarGrid.RowHeights[loop] := h;
+    End;
+End;
 
-function TrmCustomCalendar.ValidateDOW(row, col: integer;
-  var daynumber: integer): boolean;
-begin
-  daynumber := ((col + ((row - 1) * 7)) - wfdow) + 2;
-  if (daynumber >= 1) and (daynumber <= wdom) then
-    result := true
-  else
-    result := false;
+Procedure TrmCustomCalendar.SetShowWeekends(Const Value: Boolean);
+Begin
+    fShowWeekends := value;
+    fCalendarGrid.invalidate;
+End;
 
-  if result and fUseDateRanges then
-  begin
-    result := (MyEncodeDate(wYear, wMonth, daynumber) >= fMinSelectDate) and
-      (MyEncodeDate(wYear, wMonth, daynumber) <= fMaxSelectDate);
-  end;
-end;
+Procedure TrmCustomCalendar.wmSize(Var Msg: TMessage);
+Begin
+    Inherited;
+    SetCellSizes;
+End;
 
-function TrmCustomCalendar.MyEncodeDate(year, month, day: word): TDateTime;
-begin
-  if day > WX_DaysOfMonth[month] then
-  begin
-    if (month = 2) and IsLeapYear(year) and (day >= 29) then
-      day := 29
-    else
-      day := WX_DaysOfMonth[month];
-  end;
-  result := encodedate(year, month, day);
-end;
+Function TrmCustomCalendar.ValidateDOW(row, col: Integer;
+    Var daynumber: Integer): Boolean;
+Begin
+    daynumber := ((col + ((row - 1) * 7)) - wfdow) + 2;
+    If (daynumber >= 1) And (daynumber <= wdom) Then
+        result := True
+    Else
+        result := False;
 
-function TrmCustomCalendar.CurrentDateValue(
-  Value: TCurrentDateValue): word;
-var
-  y, m, d: word;
-begin
-  decodeDate(Now, y, m, d);
-  case value of
-    cdvYear: result := y;
-    cdvMonth: result := m;
-    cdvDay: result := d;
-  else
-    raise exception.create('Unknown parameter');
-  end;
-end;
+    If result And fUseDateRanges Then
+    Begin
+        result := (MyEncodeDate(wYear, wMonth, daynumber) >= fMinSelectDate) And
+            (MyEncodeDate(wYear, wMonth, daynumber) <= fMaxSelectDate);
+    End;
+End;
 
-procedure TrmCustomCalendar.SetSelectedDate(const Value: TDate);
-var
-  row, col: integer;
-begin
-  fSelectedDate := CheckDateRange(value);
+Function TrmCustomCalendar.MyEncodeDate(year, month, day: Word): TDateTime;
+Begin
+    If day > WX_DaysOfMonth[month] Then
+    Begin
+        If (month = 2) And IsLeapYear(year) And (day >= 29) Then
+            day := 29
+        Else
+            day := WX_DaysOfMonth[month];
+    End;
+    result := encodedate(year, month, day);
+End;
 
-  GetRowColInfo(fSelectedDate, row, Col);
-  DecodeDate(fSelectedDate, wYear, wMonth, wDay);
-  wdom := WX_DaysOfMonth[wmonth];
-  wfdow := DayOfWeek(MyEncodeDate(wyear, wmonth, 1));
-  if (isleapyear(wyear)) and (wmonth = 2) then inc(wdom);
+Function TrmCustomCalendar.CurrentDateValue(
+    Value: TCurrentDateValue): Word;
+Var
+    y, m, d: Word;
+Begin
+    decodeDate(Now, y, m, d);
+    Case value Of
+        cdvYear:
+            result := y;
+        cdvMonth:
+            result := m;
+        cdvDay:
+            result := d;
+    Else
+        Raise exception.create('Unknown parameter');
+    End;
+End;
 
-  fLabel1.Caption := WX_MonthOfYear[wMonth] + ' ' + inttostr(wYear);
+Procedure TrmCustomCalendar.SetSelectedDate(Const Value: TDate);
+Var
+    row, col: Integer;
+Begin
+    fSelectedDate := CheckDateRange(value);
 
-  fCalendarGrid.Selection := TGridRect(rect(col, row, col, row));
-  fCalendarGrid.Invalidate;
+    GetRowColInfo(fSelectedDate, row, Col);
+    DecodeDate(fSelectedDate, wYear, wMonth, wDay);
+    wdom := WX_DaysOfMonth[wmonth];
+    wfdow := DayOfWeek(MyEncodeDate(wyear, wmonth, 1));
+    If (isleapyear(wyear)) And (wmonth = 2) Then
+        inc(wdom);
 
-  if fworkingdate <> fSelectedDate then
-  begin
-    fworkingdate := fSelectedDate;
-    if assigned(fOnWorkingDateChange) then
-      fOnWorkingDateChange(self);
-  end;
+    fLabel1.Caption := WX_MonthOfYear[wMonth] + ' ' + inttostr(wYear);
 
-  if assigned(fOnSelectedDateChange) then
-    fOnSelectedDateChange(self);
-end;
+    fCalendarGrid.Selection := TGridRect(rect(col, row, col, row));
+    fCalendarGrid.Invalidate;
 
-procedure TrmCustomCalendar.CalendarDblClick(Sender: TObject);
-begin
-  if fSelectionValid then
-    SetSelectedDate(fWorkingDate);
-end;
+    If fworkingdate <> fSelectedDate Then
+    Begin
+        fworkingdate := fSelectedDate;
+        If assigned(fOnWorkingDateChange) Then
+            fOnWorkingDateChange(self);
+    End;
 
-procedure TrmCustomCalendar.CalendarGridKeyPress(Sender: TObject;
-  var Key: Char);
-begin
-  if (key = #13) and fSelectionValid then
-    SetSelectedDate(fWorkingDate);
-end;
+    If assigned(fOnSelectedDateChange) Then
+        fOnSelectedDateChange(self);
+End;
 
-procedure TrmCustomCalendar.CalendarKeyMovement(Sender: TObject;
-  var Key: Word; Shift: TShiftState);
-var
-  sday, smonth, syear: word;
-  dummy: boolean;
-  row, col: integer;
-begin
-  fCalendarGrid.setfocus;
-  if key in [vk_left, vk_right, vk_up, vk_down] then
+Procedure TrmCustomCalendar.CalendarDblClick(Sender: TObject);
+Begin
+    If fSelectionValid Then
+        SetSelectedDate(fWorkingDate);
+End;
+
+Procedure TrmCustomCalendar.CalendarGridKeyPress(Sender: TObject;
+    Var Key: Char);
+Begin
+    If (key = #13) And fSelectionValid Then
+        SetSelectedDate(fWorkingDate);
+End;
+
+Procedure TrmCustomCalendar.CalendarKeyMovement(Sender: TObject;
+    Var Key: Word; Shift: TShiftState);
+Var
+    sday, smonth, syear: Word;
+    dummy: Boolean;
+    row, col: Integer;
+Begin
+    fCalendarGrid.setfocus;
+    If key In [vk_left, vk_right, vk_up, vk_down] Then
+        decodedate(fworkingdate, syear, smonth, sday);
+    Case key Of
+        vk_Left:
+        Begin
+            If ssCtrl In Shift Then
+            Begin
+                PrevMonth;
+                Key := 0;
+            End
+            Else
+            Begin
+                If (fCalendarGrid.col - 1 = -1) Then
+                Begin
+                    If sDay - 1 >= 1 Then
+                    Begin
+                        GetRowColInfo(MyEncodeDate(sYear, sMonth, sDay - 1), Row, Col);
+                        CalendarSelectDate(self, Col, Row, dummy);
+                    End;
+                    Key := 0;
+                End;
+            End;
+        End;
+        vk_Right:
+        Begin
+            If ssCtrl In Shift Then
+            Begin
+                NextMonth;
+                Key := 0;
+            End
+            Else
+            Begin
+                If (fCalendarGrid.col + 1 = 7) Then
+                Begin
+                    If sDay + 1 <= wdom Then
+                    Begin
+                        GetRowColInfo(MyEncodeDate(sYear, sMonth, sDay + 1), Row, Col);
+                        CalendarSelectDate(self, Col, Row, dummy);
+                    End;
+                    Key := 0;
+                End;
+            End;
+        End;
+        vk_Up:
+        Begin
+            If ssCtrl In Shift Then
+            Begin
+                PrevYear;
+                key := 0;
+            End
+            Else
+            Begin
+            End;
+        End;
+        vk_Down:
+        Begin
+            If ssCtrl In Shift Then
+            Begin
+                NextYear;
+                key := 0;
+            End
+            Else
+            Begin
+            End;
+        End;
+    End;
+End;
+
+Procedure TrmCustomCalendar.CalendarSelectDate(Sender: TObject; Col,
+    Row: Integer; Var CanSelect: Boolean);
+Var
+    day: Integer;
+Begin
+    canselect := ValidateDOW(row, col, day);
+    If canselect Then
+        SetWorkingDate(MyEncodeDate(wyear, wmonth, day));
+End;
+
+Procedure TrmCustomCalendar.SetCalendarFont(Const Value: TFont);
+Begin
+    fCalendarFont.assign(value);
+    fCalendarGrid.font.assign(fCalendarFont);
+    fLabel1.font.assign(fCalendarFont);
+    fLabel1.Font.size := fLabel1.Font.size + 4;
+    fLabel1.Font.Style := fLabel1.Font.Style + [fsBold];
+End;
+
+Procedure TrmCustomCalendar.SetMaxDate(Const Value: TDate);
+Var
+    wDate: TDate;
+Begin
+    wDate := trunc(value);
+    If wDate <> fMaxSelectDate Then
+    Begin
+        If wDate <= fMinSelectDate Then
+            Raise Exception.Create('MaxDate value can''t be less than or equal to the MinDate value');
+        fMaxSelectDate := wDate;
+        If UseDateRanges And (SelectedDate > fMaxSelectDate) Then
+            SelectedDate := fMaxSelectDate;
+        fCalendarGrid.Invalidate;
+    End;
+End;
+
+Procedure TrmCustomCalendar.SetMinDate(Const Value: TDate);
+Var
+    wDate: TDate;
+Begin
+    wDate := trunc(value);
+    If wDate <> fMinSelectDate Then
+    Begin
+        If wDate >= fMaxSelectDate Then
+            Raise Exception.Create('MinDate value can''t be greater than or equal to the MaxDate value');
+        fMinSelectDate := wDate;
+        If UseDateRanges And (SelectedDate < fMinSelectDate) Then
+            SelectedDate := fMinSelectDate;
+        fCalendarGrid.Invalidate;
+    End;
+End;
+
+Procedure TrmCustomCalendar.SetUseDateRanges(Const Value: Boolean);
+Begin
+    If value <> fUseDateRanges Then
+    Begin
+        fUseDateRanges := Value;
+
+        If fUseDateRanges Then
+        Begin
+            If SelectedDate < fMinSelectDate Then
+                SelectedDate := fMinSelectDate;
+
+            If SelectedDate > fMaxSelectDate Then
+                SelectedDate := fMaxSelectDate;
+        End;
+        fCalendarGrid.Invalidate;
+    End;
+End;
+
+Procedure TrmCustomCalendar.NextMonth;
+Var
+    sday, smonth, syear: Word;
+Begin
     decodedate(fworkingdate, syear, smonth, sday);
-  case key of
-    vk_Left:
-      begin
-        if ssCtrl in Shift then
-        begin
-          PrevMonth;
-          Key := 0;
-        end
-        else
-        begin
-          if (fCalendarGrid.col - 1 = -1) then
-          begin
-            if sDay - 1 >= 1 then
-            begin
-              GetRowColInfo(MyEncodeDate(sYear, sMonth, sDay - 1), Row, Col);
-              CalendarSelectDate(self, Col, Row, dummy);
-            end;
-            Key := 0;
-          end;
-        end;
-      end;
-    vk_Right:
-      begin
-        if ssCtrl in Shift then
-        begin
-          NextMonth;
-          Key := 0;
-        end
-        else
-        begin
-          if (fCalendarGrid.col + 1 = 7) then
-          begin
-            if sDay + 1 <= wdom then
-            begin
-              GetRowColInfo(MyEncodeDate(sYear, sMonth, sDay + 1), Row, Col);
-              CalendarSelectDate(self, Col, Row, dummy);
-            end;
-            Key := 0;
-          end;
-        end;
-      end;
-    vk_Up:
-      begin
-        if ssCtrl in Shift then
-        begin
-          PrevYear;
-          key := 0;
-        end
-        else
-        begin
-        end;
-      end;
-    vk_Down:
-      begin
-        if ssCtrl in Shift then
-        begin
-          NextYear;
-          key := 0;
-        end
-        else
-        begin
-        end;
-      end;
-  end;
-end;
+    inc(sMonth);
+    If sMonth > 12 Then
+    Begin
+        sMonth := 1;
+        inc(sYear);
+    End;
+    SetWorkingDate(MyEncodeDate(sYear, sMonth, sDay));
+End;
 
-procedure TrmCustomCalendar.CalendarSelectDate(Sender: TObject; Col,
-  Row: Integer; var CanSelect: Boolean);
-var
-  day: integer;
-begin
-  canselect := ValidateDOW(row, col, day);
-  if canselect then
-    SetWorkingDate(MyEncodeDate(wyear, wmonth, day));
-end;
+Procedure TrmCustomCalendar.NextYear;
+Var
+    sday, smonth, syear: Word;
+Begin
+    decodedate(fworkingdate, syear, smonth, sday);
+    SetWorkingDate(MyEncodeDate(sYear + 1, sMonth, sDay));
+End;
 
-procedure TrmCustomCalendar.SetCalendarFont(const Value: TFont);
-begin
-  fCalendarFont.assign(value);
-  fCalendarGrid.font.assign(fCalendarFont);
-  fLabel1.font.assign(fCalendarFont);
-  fLabel1.Font.size := fLabel1.Font.size + 4;
-  fLabel1.Font.Style := fLabel1.Font.Style + [fsBold];
-end;
+Procedure TrmCustomCalendar.PrevMonth;
+Var
+    sday, smonth, syear: Word;
+Begin
+    decodedate(fworkingdate, syear, smonth, sday);
 
-procedure TrmCustomCalendar.SetMaxDate(const Value: TDate);
-var
-  wDate: TDate;
-begin
-  wDate := trunc(value);
-  if wDate <> fMaxSelectDate then
-  begin
-    if wDate <= fMinSelectDate then
-      raise Exception.Create('MaxDate value can''t be less than or equal to the MinDate value');
-    fMaxSelectDate := wDate;
-    if UseDateRanges and (SelectedDate > fMaxSelectDate) then
-      SelectedDate := fMaxSelectDate;
+    dec(sMonth);
+    If sMonth < 1 Then
+    Begin
+        sMonth := 12;
+        dec(sYear);
+    End;
+
+    SetWorkingDate(MyEncodeDate(sYear, sMonth, sDay));
+End;
+
+Procedure TrmCustomCalendar.PrevYear;
+Var
+    sday, smonth, syear: Word;
+Begin
+    decodedate(fworkingdate, syear, smonth, sday);
+    SetWorkingDate(MyEncodeDate(sYear - 1, sMonth, sDay));
+End;
+
+Procedure TrmCustomCalendar.GetRowColInfo(wDate: TDate; Var Row,
+    Col: Integer);
+Var
+    wyear, wmonth, wday: Word;
+    wfdow: Integer;
+Begin
+    decodedate(wDate, wYear, wMonth, wDay);
+    wfdow := DayOfWeek(MyEncodeDate(wyear, wmonth, 1));
+    row := (((wday - 2) + wfdow) Div 7) + 1;
+    col := (((wday - 2) + wfdow) Mod 7);
+End;
+
+Function TrmCustomCalendar.CheckDateRange(wDate: TDate): TDate;
+Begin
+    If fUseDateRanges Then
+    Begin
+        result := trunc(wDate);
+
+        If (result < fMinSelectDate) Then
+            result := fMinSelectDate;
+
+        If (result > fMaxSelectDate) Then
+            result := fMaxSelectDate;
+    End
+    Else
+        result := trunc(wDate);
+End;
+
+Procedure TrmCustomCalendar.SetWorkingDate(Const Value: TDate);
+Var
+    row, col: Integer;
+Begin
+    fworkingdate := CheckDateRange(value);
+
+    GetRowColInfo(fWorkingDate, row, col);
+
+    DecodeDate(fworkingdate, wYear, wMonth, wDay);
+    wdom := WX_DaysOfMonth[wmonth];
+    wfdow := DayOfWeek(MyEncodeDate(wyear, wmonth, 1));
+    If (isleapyear(wyear)) And (wmonth = 2) Then
+        inc(wdom);
+
+    fLabel1.Caption := WX_MonthOfYear[wMonth] + ' ' + inttostr(wYear);
+
+    fCalendarGrid.Selection := TGridRect(rect(col, row, col, row));
     fCalendarGrid.Invalidate;
-  end;
-end;
+    If assigned(fOnWorkingDateChange) Then
+        fOnWorkingDateChange(self);
+End;
 
-procedure TrmCustomCalendar.SetMinDate(const Value: TDate);
-var
-  wDate: TDate;
-begin
-  wDate := trunc(value);
-  if wDate <> fMinSelectDate then
-  begin
-    if wDate >= fMaxSelectDate then
-      raise Exception.Create('MinDate value can''t be greater than or equal to the MaxDate value');
-    fMinSelectDate := wDate;
-    if UseDateRanges and (SelectedDate < fMinSelectDate) then
-      SelectedDate := fMinSelectDate;
+Procedure TrmCustomCalendar.SetBoldSystemDate(Const Value: Boolean);
+Begin
+    fboldsysdate := Value;
+    invalidate;
+End;
+
+Function TrmCustomCalendar.GetCellCanvas: TCanvas;
+Begin
+    result := fCalendarGrid.Canvas;
+End;
+
+Procedure TrmCustomCalendar.SetCalendarColors(
+    Const Value: TrmCalendarColors);
+Begin
+    fCalendarColors.Assign(Value);
     fCalendarGrid.Invalidate;
-  end;
-end;
+End;
 
-procedure TrmCustomCalendar.SetUseDateRanges(const Value: boolean);
-begin
-  if value <> fUseDateRanges then
-  begin
-    fUseDateRanges := Value;
+Procedure TrmCustomCalendar.SetGridLines(Const Value: Boolean);
+Begin
+    If fShowGridLines <> Value Then
+    Begin
+        fShowGridLines := Value;
+        If fShowGridLines Then
+            fCalendarGrid.Options := [goVertLine, goHorzLine]
+        Else
+            fCalendarGrid.Options := [];
+        SetCellSizes;
+    End;
+End;
 
-    if fUseDateRanges then
-    begin
-      if SelectedDate < fMinSelectDate then
-        SelectedDate := fMinSelectDate;
+Function TrmCustomCalendar.GoodCalendarSize(NewWidth: Integer): Boolean;
+Begin
+    Result := (NewWidth Mod 7) = 0;
+End;
 
-      if SelectedDate > fMaxSelectDate then
-        SelectedDate := fMaxSelectDate;
-    end;
-    fCalendarGrid.Invalidate;
-  end;
-end;
+Procedure TrmCustomCalendar.wmEraseBkgrnd(Var Msg: TMessage);
+Begin
+    msg.result := 1;
+End;
 
-procedure TrmCustomCalendar.NextMonth;
-var
-  sday, smonth, syear: word;
-begin
-  decodedate(fworkingdate, syear, smonth, sday);
-  inc(sMonth);
-  if sMonth > 12 then
-  begin
-    sMonth := 1;
-    inc(sYear);
-  end;
-  SetWorkingDate(MyEncodeDate(sYear, sMonth, sDay));
-end;
-
-procedure TrmCustomCalendar.NextYear;
-var
-  sday, smonth, syear: word;
-begin
-  decodedate(fworkingdate, syear, smonth, sday);
-  SetWorkingDate(MyEncodeDate(sYear + 1, sMonth, sDay));
-end;
-
-procedure TrmCustomCalendar.PrevMonth;
-var
-  sday, smonth, syear: word;
-begin
-  decodedate(fworkingdate, syear, smonth, sday);
-
-  dec(sMonth);
-  if sMonth < 1 then
-  begin
-    sMonth := 12;
-    dec(sYear);
-  end;
-
-  SetWorkingDate(MyEncodeDate(sYear, sMonth, sDay));
-end;
-
-procedure TrmCustomCalendar.PrevYear;
-var
-  sday, smonth, syear: word;
-begin
-  decodedate(fworkingdate, syear, smonth, sday);
-  SetWorkingDate(MyEncodeDate(sYear - 1, sMonth, sDay));
-end;
-
-procedure TrmCustomCalendar.GetRowColInfo(wDate: TDate; var Row,
-  Col: integer);
-var
-  wyear, wmonth, wday: word;
-  wfdow: integer;
-begin
-  decodedate(wDate, wYear, wMonth, wDay);
-  wfdow := DayOfWeek(MyEncodeDate(wyear, wmonth, 1));
-  row := (((wday - 2) + wfdow) div 7) + 1;
-  col := (((wday - 2) + wfdow) mod 7);
-end;
-
-function TrmCustomCalendar.CheckDateRange(wDate: TDate): TDate;
-begin
-  if fUseDateRanges then
-  begin
-    result := trunc(wDate);
-
-    if (result < fMinSelectDate) then
-      result := fMinSelectDate;
-
-    if (result > fMaxSelectDate) then
-      result := fMaxSelectDate;
-  end
-  else
-    result := trunc(wDate);
-end;
-
-procedure TrmCustomCalendar.SetWorkingDate(const Value: TDate);
-var
-  row, col: integer;
-begin
-  fworkingdate := CheckDateRange(value);
-
-  GetRowColInfo(fWorkingDate, row, col);
-
-  DecodeDate(fworkingdate, wYear, wMonth, wDay);
-  wdom := WX_DaysOfMonth[wmonth];
-  wfdow := DayOfWeek(MyEncodeDate(wyear, wmonth, 1));
-  if (isleapyear(wyear)) and (wmonth = 2) then inc(wdom);
-
-  fLabel1.Caption := WX_MonthOfYear[wMonth] + ' ' + inttostr(wYear);
-
-  fCalendarGrid.Selection := TGridRect(rect(col, row, col, row));
-  fCalendarGrid.Invalidate;
-  if assigned(fOnWorkingDateChange) then
-    fOnWorkingDateChange(self);
-end;
-
-procedure TrmCustomCalendar.SetBoldSystemDate(const Value: boolean);
-begin
-  fboldsysdate := Value;
-  invalidate;
-end;
-
-function TrmCustomCalendar.GetCellCanvas: TCanvas;
-begin
-   result := fCalendarGrid.Canvas;
-end;
-
-procedure TrmCustomCalendar.SetCalendarColors(
-  const Value: TrmCalendarColors);
-begin
-  fCalendarColors.Assign(Value);
-  fCalendarGrid.Invalidate;
-end;
-
-procedure TrmCustomCalendar.SetGridLines(const Value: boolean);
-begin
-  if fShowGridLines <> Value then
-  begin
-     fShowGridLines := Value;
-     if fShowGridLines then
-        fCalendarGrid.Options := [goVertLine, goHorzLine]
-     else
-        fCalendarGrid.Options := [];
-     SetCellSizes;
-  end;
-end;
-
-function TrmCustomCalendar.GoodCalendarSize(NewWidth:integer): boolean;
-begin
-   Result := (NewWidth mod 7) = 0;
-end;
-
-procedure TrmCustomCalendar.wmEraseBkgrnd(var Msg: TMessage);
-begin
-   msg.result := 1;
-end;
-
-procedure TrmCustomCalendar.Invalidate;
-begin
-  if fCalendarGrid <> nil then
-     fCalendarGrid.Invalidate;
-  inherited;
-end;
+Procedure TrmCustomCalendar.Invalidate;
+Begin
+    If fCalendarGrid <> Nil Then
+        fCalendarGrid.Invalidate;
+    Inherited;
+End;
 
 { TrmCalendarColors }
 
-procedure TrmCalendarColors.Assign(Source: TPersistent);
-var
-   wColors : TrmCalendarColors;
-begin
-  inherited;
-  if source is TrmCalendarColors then
-  begin
-     wColors := TrmCalendarColors(source);
-     fWeekendText := wColors.WeekdayTextColor;
-     fWeekdaybackground := wColors.WeekdayBackgroundColor;
-     fDayNamesBackground := wColors.DayNamesBackgroundColor;
-     fDayNamesText := wColors.DayNamesTextColor;
-     fWeekdayText := wColors.WeekdayTextColor;
-     fTodayText := wColors.TodayTextColor;
-     fWeekendBackground := wColors.WeekendBackgroundColor;
-     fOtherMonthDayBackground := wColors.OtherMonthDayBackgroundColor;
-     fOtherMonthDayText := wColors.OtherMonthDayTextColor;
-     
-     UpdateController;
-  end;
-end;
+Procedure TrmCalendarColors.Assign(Source: TPersistent);
+Var
+    wColors: TrmCalendarColors;
+Begin
+    Inherited;
+    If source Is TrmCalendarColors Then
+    Begin
+        wColors := TrmCalendarColors(source);
+        fWeekendText := wColors.WeekdayTextColor;
+        fWeekdaybackground := wColors.WeekdayBackgroundColor;
+        fDayNamesBackground := wColors.DayNamesBackgroundColor;
+        fDayNamesText := wColors.DayNamesTextColor;
+        fWeekdayText := wColors.WeekdayTextColor;
+        fTodayText := wColors.TodayTextColor;
+        fWeekendBackground := wColors.WeekendBackgroundColor;
+        fOtherMonthDayBackground := wColors.OtherMonthDayBackgroundColor;
+        fOtherMonthDayText := wColors.OtherMonthDayTextColor;
 
-constructor TrmCalendarColors.create;
-begin
-  inherited;
-  fWeekendText := clTeal;
-  fWeekdaybackground := clWindow;
-  fDayNamesBackground := clBtnFace;
-  fDayNamesText := clBtnText;
-  fWeekdayText := clWindowText;
-  fTodayText := clRed;
-  fWeekendBackground := $00E1E1E1;
-  fOtherMonthDayBackground := clWindow;
-  fOtherMonthDayText := clBtnFace;
-end;
+        UpdateController;
+    End;
+End;
 
-procedure TrmCalendarColors.SetDayNamesBackground(const Value: TColor);
-begin
-  if fDayNamesBackground <> Value then
-  begin
-     fDayNamesBackground := Value;
-     fCustomCalendar.fLabel1.Color := Value;
-     UpdateController;
-  end;
-end;
+Constructor TrmCalendarColors.create;
+Begin
+    Inherited;
+    fWeekendText := clTeal;
+    fWeekdaybackground := clWindow;
+    fDayNamesBackground := clBtnFace;
+    fDayNamesText := clBtnText;
+    fWeekdayText := clWindowText;
+    fTodayText := clRed;
+    fWeekendBackground := $00E1E1E1;
+    fOtherMonthDayBackground := clWindow;
+    fOtherMonthDayText := clBtnFace;
+End;
 
-procedure TrmCalendarColors.SetDayNamesText(const Value: TColor);
-begin
-  if fDayNamesText <> Value then
-  begin
-     fDayNamesText := Value;
-     fCustomCalendar.fLabel1.Font.color := Value;
-     UpdateController;
-  end;
-end;
+Procedure TrmCalendarColors.SetDayNamesBackground(Const Value: TColor);
+Begin
+    If fDayNamesBackground <> Value Then
+    Begin
+        fDayNamesBackground := Value;
+        fCustomCalendar.fLabel1.Color := Value;
+        UpdateController;
+    End;
+End;
 
-procedure TrmCalendarColors.SetOtherMonthDayBackground(const Value: TColor);
-begin
-  if (fOtherMonthDayBackground <> value) then
-  begin
-     fOtherMonthDayBackground := value;
-     UpdateController;
-  end;
-end;
+Procedure TrmCalendarColors.SetDayNamesText(Const Value: TColor);
+Begin
+    If fDayNamesText <> Value Then
+    Begin
+        fDayNamesText := Value;
+        fCustomCalendar.fLabel1.Font.color := Value;
+        UpdateController;
+    End;
+End;
 
-procedure TrmCalendarColors.SetOtherMonthDayText(const Value: TColor);
-begin
-  if fOtherMonthDayText <> Value then
-  begin
-     fOtherMonthDayText := Value;
-     UpdateController;
-  end;
-end;
+Procedure TrmCalendarColors.SetOtherMonthDayBackground(Const Value: TColor);
+Begin
+    If (fOtherMonthDayBackground <> value) Then
+    Begin
+        fOtherMonthDayBackground := value;
+        UpdateController;
+    End;
+End;
 
-procedure TrmCalendarColors.SetTodayText(const Value: TColor);
-begin
-  if fTodayText <> Value then
-  begin
-     fTodayText := Value;
-     UpdateController;
-  end;
-end;
+Procedure TrmCalendarColors.SetOtherMonthDayText(Const Value: TColor);
+Begin
+    If fOtherMonthDayText <> Value Then
+    Begin
+        fOtherMonthDayText := Value;
+        UpdateController;
+    End;
+End;
 
-procedure TrmCalendarColors.Setweekdaybackground(const Value: TColor);
-begin
-  if fWeekdaybackground <> Value then
-  begin
-     fWeekdaybackground := Value;
-     UpdateController;
-  end;
-end;
+Procedure TrmCalendarColors.SetTodayText(Const Value: TColor);
+Begin
+    If fTodayText <> Value Then
+    Begin
+        fTodayText := Value;
+        UpdateController;
+    End;
+End;
 
-procedure TrmCalendarColors.SetWeekdayText(const Value: TColor);
-begin
-  if fWeekdayText <> Value then
-  begin
-     fWeekdayText := Value;
-     UpdateController;
-  end;
-end;
+Procedure TrmCalendarColors.Setweekdaybackground(Const Value: TColor);
+Begin
+    If fWeekdaybackground <> Value Then
+    Begin
+        fWeekdaybackground := Value;
+        UpdateController;
+    End;
+End;
 
-procedure TrmCalendarColors.SetWeekendBackground(const Value: TColor);
-begin
-  if fWeekendBackground <> Value then
-  begin
-     fWeekendBackground := Value;
-     UpdateController;
-  end;
-end;
+Procedure TrmCalendarColors.SetWeekdayText(Const Value: TColor);
+Begin
+    If fWeekdayText <> Value Then
+    Begin
+        fWeekdayText := Value;
+        UpdateController;
+    End;
+End;
 
-procedure TrmCalendarColors.SetWeekendText(const Value: TColor);
-begin
-  if fWeekendText <> Value then
-  begin
-     fWeekendText := Value;
-     UpdateController;
-  end;
-end;
+Procedure TrmCalendarColors.SetWeekendBackground(Const Value: TColor);
+Begin
+    If fWeekendBackground <> Value Then
+    Begin
+        fWeekendBackground := Value;
+        UpdateController;
+    End;
+End;
 
-procedure TrmCalendarColors.UpdateController;
-begin
-   if assigned(fCustomCalendar) then
-      fcustomCalendar.fCalendarGrid.Invalidate;
-end;
+Procedure TrmCalendarColors.SetWeekendText(Const Value: TColor);
+Begin
+    If fWeekendText <> Value Then
+    Begin
+        fWeekendText := Value;
+        UpdateController;
+    End;
+End;
 
-end.
+Procedure TrmCalendarColors.UpdateController;
+Begin
+    If assigned(fCustomCalendar) Then
+        fcustomCalendar.fCalendarGrid.Invalidate;
+End;
 
+End.

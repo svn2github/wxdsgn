@@ -17,189 +17,195 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-unit devShortcutsEditorForm;
+Unit devShortcutsEditorForm;
 
-interface
+Interface
 
-uses
+Uses
 {$IFDEF WIN32}
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls, ComCtrls, StdCtrls, Menus, XPMenu;
+    Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+    Dialogs, ExtCtrls, ComCtrls, StdCtrls, Menus, XPMenu;
 {$ENDIF}
 {$IFDEF LINUX}
   SysUtils, Variants, Classes, QGraphics, QControls, QForms,
   QDialogs, QExtCtrls, QComCtrls, QStdCtrls, QMenus;
 {$ENDIF}
 
-type
-  TfrmShortcutsEditor = class(TForm)
-    lvShortcuts: TListView;
-    Panel1: TPanel;
-    btnOk: TButton;
-    btnCancel: TButton;
-    pnlTitle: TPanel;
-    lblTip: TLabel;
-    lblTitle: TLabel;
-    procedure lvShortcutsKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
-    procedure lvShortcutsCustomDrawItem(Sender: TCustomListView;
-      Item: TListItem; State: TCustomDrawState; var DefaultDraw: Boolean);
-    procedure lvShortcutsCustomDrawSubItem(Sender: TCustomListView;
-      Item: TListItem; SubItem: Integer; State: TCustomDrawState;
-      var DefaultDraw: Boolean);
-    procedure FormCreate(Sender: TObject);
-  private
+Type
+    TfrmShortcutsEditor = Class(TForm)
+        lvShortcuts: TListView;
+        Panel1: TPanel;
+        btnOk: TButton;
+        btnCancel: TButton;
+        pnlTitle: TPanel;
+        lblTip: TLabel;
+        lblTitle: TLabel;
+        Procedure lvShortcutsKeyDown(Sender: TObject; Var Key: Word;
+            Shift: TShiftState);
+        Procedure lvShortcutsCustomDrawItem(Sender: TCustomListView;
+            Item: TListItem; State: TCustomDrawState; Var DefaultDraw: Boolean);
+        Procedure lvShortcutsCustomDrawSubItem(Sender: TCustomListView;
+            Item: TListItem; SubItem: Integer; State: TCustomDrawState;
+            Var DefaultDraw: Boolean);
+        Procedure FormCreate(Sender: TObject);
+    Private
     { Private declarations }
-    function GetItem(Index: integer): TMenuItem;
-    function GetShortCut(Index: integer): TShortCut;
-  public
+        Function GetItem(Index: Integer): TMenuItem;
+        Function GetShortCut(Index: Integer): TShortCut;
+    Public
     { Public declarations }
-    AltColor: TColor;
-    procedure AddShortcut(M: TMenuItem; MenuName:string);
-    procedure Clear;
-    function Count: integer;
-    property Items[Index: integer]: TMenuItem read GetItem;
-    property ShortCuts[Index: integer]: TShortCut read GetShortCut;
-  protected
-    procedure CreateParams(var Params: TCreateParams); override;
-  end;
+        AltColor: TColor;
+        Procedure AddShortcut(M: TMenuItem; MenuName: String);
+        Procedure Clear;
+        Function Count: Integer;
+        Property Items[Index: Integer]: TMenuItem Read GetItem;
+        Property ShortCuts[Index: Integer]: TShortCut Read GetShortCut;
+    Protected
+        Procedure CreateParams(Var Params: TCreateParams); Override;
+    End;
 
-var
-  frmShortcutsEditor: TfrmShortcutsEditor;
+Var
+    frmShortcutsEditor: TfrmShortcutsEditor;
 
-implementation
+Implementation
 
-uses StrUtils;
+Uses StrUtils;
 
 {$R *.dfm}
 
-procedure TfrmShortcutsEditor.FormCreate(Sender: TObject);
-begin
-  DesktopFont := True;
-  lblTitle.Font.Style := [fsBold];
-  lblTitle.Font.Color := clCream;
-  lblTitle.Font.Size := 10;
-  lblTip.Font.Color := clSilver;
-end;
+Procedure TfrmShortcutsEditor.FormCreate(Sender: TObject);
+Begin
+    DesktopFont := True;
+    lblTitle.Font.Style := [fsBold];
+    lblTitle.Font.Color := clCream;
+    lblTitle.Font.Size := 10;
+    lblTip.Font.Color := clSilver;
+End;
 
-procedure TfrmShortcutsEditor.AddShortcut(M: TMenuItem; MenuName:string);
-begin
-  if (M.Action <> nil) and (LeftStr(M.Action.Name, 6) = 'dynact') then
-    Exit;
-  with lvShortcuts.Items.Add do begin
-    Caption := StripHotkey(MenuName + ' | ' + (M.Caption));
-    SubItems.Add(ShortCutToText(M.ShortCut));
-    Data := M;
-  end;
-end;
+Procedure TfrmShortcutsEditor.AddShortcut(M: TMenuItem; MenuName: String);
+Begin
+    If (M.Action <> Nil) And (LeftStr(M.Action.Name, 6) = 'dynact') Then
+        Exit;
+    With lvShortcuts.Items.Add Do
+    Begin
+        Caption := StripHotkey(MenuName + ' | ' + (M.Caption));
+        SubItems.Add(ShortCutToText(M.ShortCut));
+        Data := M;
+    End;
+End;
 
-procedure TfrmShortcutsEditor.Clear;
-begin
-  lvShortcuts.Clear;
-end;
+Procedure TfrmShortcutsEditor.Clear;
+Begin
+    lvShortcuts.Clear;
+End;
 
-function TfrmShortcutsEditor.Count: integer;
-begin
-  Result := lvShortcuts.Items.Count;
-end;
+Function TfrmShortcutsEditor.Count: Integer;
+Begin
+    Result := lvShortcuts.Items.Count;
+End;
 
-function TfrmShortcutsEditor.GetItem(Index: integer): TMenuItem;
-begin
-  Result := TMenuItem(lvShortcuts.Items[Index].Data);
-end;
+Function TfrmShortcutsEditor.GetItem(Index: Integer): TMenuItem;
+Begin
+    Result := TMenuItem(lvShortcuts.Items[Index].Data);
+End;
 
-function TfrmShortcutsEditor.GetShortCut(Index: integer): TShortCut;
-begin
-  Result := TextToShortCut(lvShortcuts.Items[Index].SubItems[0]);
-end;
+Function TfrmShortcutsEditor.GetShortCut(Index: Integer): TShortCut;
+Begin
+    Result := TextToShortCut(lvShortcuts.Items[Index].SubItems[0]);
+End;
 
-procedure TfrmShortcutsEditor.lvShortcutsKeyDown(Sender: TObject;
-  var Key: Word; Shift: TShiftState);
-var
-  I: integer;
-  sct: string;
-begin
-  if lvShortcuts.Selected = nil then
-    Exit;
-  if (Key = 27) and (Shift = []) then begin // clear shortcut
-    lvShortcuts.Selected.SubItems[0] := '';
-    Exit;
-  end;
-  if (Key > 27) and (Key <= 90) and (Shift = []) then // if "normal" key, expect a shiftstate
-    Exit;
-  if (Key < 27) and (Shift = []) then // control key by itself
-    Exit;
+Procedure TfrmShortcutsEditor.lvShortcutsKeyDown(Sender: TObject;
+    Var Key: Word; Shift: TShiftState);
+Var
+    I: Integer;
+    sct: String;
+Begin
+    If lvShortcuts.Selected = Nil Then
+        Exit;
+    If (Key = 27) And (Shift = []) Then
+    Begin // clear shortcut
+        lvShortcuts.Selected.SubItems[0] := '';
+        Exit;
+    End;
+    If (Key > 27) And (Key <= 90) And (Shift = []) Then // if "normal" key, expect a shiftstate
+        Exit;
+    If (Key < 27) And (Shift = []) Then // control key by itself
+        Exit;
 
   //Make sure the user does not select same-key combinations
 {$IFDEF WIN32}
-  if ((Key = VK_CONTROL) and (ssCtrl in Shift)) or
-     ((Key = VK_SHIFT) and (ssShift in Shift)) or
-     ((Key in [VK_MENU, VK_LMENU, VK_RMENU]) and (ssAlt in Shift)) then
+    If ((Key = VK_CONTROL) And (ssCtrl In Shift)) Or
+        ((Key = VK_SHIFT) And (ssShift In Shift)) Or
+        ((Key In [VK_MENU, VK_LMENU, VK_RMENU]) And (ssAlt In Shift)) Then
 {$ENDIF}
 {$IFDEF LINUX}
   if ((Key = XK_CONTROL) and (ssCtrl in Shift)) or
      ((Key = XK_SHIFT) and (ssShift in Shift)) or
      ((Key in [XK_MENU, XK_LMENU, XK_RMENU]) and (ssAlt in Shift)) then
 {$ENDIF}
-    Exit;
+        Exit;
 
-  sct := ShortCutToText(ShortCut(Key, Shift));
-  lvShortcuts.Selected.SubItems[0] := sct;
+    sct := ShortCutToText(ShortCut(Key, Shift));
+    lvShortcuts.Selected.SubItems[0] := sct;
 
   // search for other entries using this shortcut, and clear them
-  for I := 0 to lvShortcuts.Items.Count - 1 do
-    if lvShortcuts.Items[I] <> lvShortcuts.Selected then
-      if lvShortcuts.Items[I].SubItems[0] = sct then
-        lvShortcuts.Items[I].SubItems[0] := '';
+    For I := 0 To lvShortcuts.Items.Count - 1 Do
+        If lvShortcuts.Items[I] <> lvShortcuts.Selected Then
+            If lvShortcuts.Items[I].SubItems[0] = sct Then
+                lvShortcuts.Items[I].SubItems[0] := '';
 
   // don't let the keystroke propagate
-  Key := 0;
-  Shift := [];
-end;
+    Key := 0;
+    Shift := [];
+End;
 
-procedure TfrmShortcutsEditor.lvShortcutsCustomDrawItem(
-  Sender: TCustomListView; Item: TListItem; State: TCustomDrawState;
-  var DefaultDraw: Boolean);
-begin
-  with TCustomListView(Sender).Canvas do begin
-    if not (cdsSelected in State) then begin
-      if Item.Index mod 2 = 0 then
-        Brush.Color := clWhite
-      else
-        Brush.Color := AltColor;
-      Pen.Color := clBlack;
-    end;
-  end;
-  DefaultDraw := True;
-end;
+Procedure TfrmShortcutsEditor.lvShortcutsCustomDrawItem(
+    Sender: TCustomListView; Item: TListItem; State: TCustomDrawState;
+    Var DefaultDraw: Boolean);
+Begin
+    With TCustomListView(Sender).Canvas Do
+    Begin
+        If Not (cdsSelected In State) Then
+        Begin
+            If Item.Index Mod 2 = 0 Then
+                Brush.Color := clWhite
+            Else
+                Brush.Color := AltColor;
+            Pen.Color := clBlack;
+        End;
+    End;
+    DefaultDraw := True;
+End;
 
-procedure TfrmShortcutsEditor.lvShortcutsCustomDrawSubItem(
-  Sender: TCustomListView; Item: TListItem; SubItem: Integer;
-  State: TCustomDrawState; var DefaultDraw: Boolean);
-begin
-  with TCustomListView(Sender).Canvas do begin
-    if not (cdsSelected in State) then begin
-      if Item.Index mod 2 = 0 then
-        Brush.Color := clWhite
-      else
-        Brush.Color := AltColor;
-      Pen.Color := clBlack;
-    end;
-  end;
-  DefaultDraw := True;
-end;
+Procedure TfrmShortcutsEditor.lvShortcutsCustomDrawSubItem(
+    Sender: TCustomListView; Item: TListItem; SubItem: Integer;
+    State: TCustomDrawState; Var DefaultDraw: Boolean);
+Begin
+    With TCustomListView(Sender).Canvas Do
+    Begin
+        If Not (cdsSelected In State) Then
+        Begin
+            If Item.Index Mod 2 = 0 Then
+                Brush.Color := clWhite
+            Else
+                Brush.Color := AltColor;
+            Pen.Color := clBlack;
+        End;
+    End;
+    DefaultDraw := True;
+End;
 
-procedure TfrmShortcutsEditor.CreateParams(var Params: TCreateParams);
-begin
-  inherited;
-  if (Parent <> nil) or (ParentWindow <> 0) then
-    Exit;  // must not mess with wndparent if form is embedded
+Procedure TfrmShortcutsEditor.CreateParams(Var Params: TCreateParams);
+Begin
+    Inherited;
+    If (Parent <> Nil) Or (ParentWindow <> 0) Then
+        Exit;  // must not mess with wndparent if form is embedded
 
-  if Assigned(Owner) and (Owner is TWincontrol) then
-    Params.WndParent := TWinControl(Owner).handle
-  else if Assigned(Screen.Activeform) then
-    Params.WndParent := Screen.Activeform.Handle;
-end;
+    If Assigned(Owner) And (Owner Is TWincontrol) Then
+        Params.WndParent := TWinControl(Owner).handle
+    Else
+    If Assigned(Screen.Activeform) Then
+        Params.WndParent := Screen.Activeform.Handle;
+End;
 
-end.
-
+End.

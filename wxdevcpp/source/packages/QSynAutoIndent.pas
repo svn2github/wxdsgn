@@ -1,4 +1,4 @@
-unit QSynAutoIndent;
+Unit QSynAutoIndent;
 
 {$DEFINE SYN_CLX}
 {$DEFINE QSYNAUTOINDENT}

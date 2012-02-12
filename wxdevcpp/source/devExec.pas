@@ -17,11 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-unit devExec;
+Unit devExec;
 
-interface
+Interface
 
-uses
+Uses
 {$IFDEF WIN32}
     Windows, Classes;
 {$ENDIF}
@@ -29,114 +29,114 @@ uses
   Classes;
 {$ENDIF}
 
-type
-    TExecThread = class(TThread)
-    private
-        fFile: string;
-        fPath: string;
-        fParams: string;
+Type
+    TExecThread = Class(TThread)
+    Private
+        fFile: String;
+        fPath: String;
+        fParams: String;
         fTimeOut: Cardinal;
         fProcess: Cardinal;
-        fVisible: boolean;
-        procedure ExecAndWait;
-    public
-        procedure Execute; override;
-    published
-        property FileName: string read fFile write fFile;
-        property Path: string read fPath write fPath;
-        property Params: string read fParams write fParams;
-        property TimeOut: Cardinal read fTimeOut write fTimeOut;
-        property Visible: boolean read fVisible write fVisible;
-        property Process: Cardinal read fProcess;
-    end;
+        fVisible: Boolean;
+        Procedure ExecAndWait;
+    Public
+        Procedure Execute; Override;
+    Published
+        Property FileName: String Read fFile Write fFile;
+        Property Path: String Read fPath Write fPath;
+        Property Params: String Read fParams Write fParams;
+        Property TimeOut: Cardinal Read fTimeOut Write fTimeOut;
+        Property Visible: Boolean Read fVisible Write fVisible;
+        Property Process: Cardinal Read fProcess;
+    End;
 
-    TdevExecutor = class(TPersistent)
-    private
+    TdevExecutor = Class(TPersistent)
+    Private
         fExec: TExecThread;
-        fIsRunning: boolean;
+        fIsRunning: Boolean;
         fOnTermEvent: TNotifyEvent;
-        procedure TerminateEvent(Sender: TObject);
-    public
-        class function devExecutor: TdevExecutor;
-        procedure Reset;
-        procedure ExecuteAndWatch(sFileName, sParams, sPath: string;
-            bVisible: boolean; iTimeOut: Cardinal; OnTermEvent: TNotifyEvent);
-    published
-        property Running: boolean read fIsRunning;
-    end;
+        Procedure TerminateEvent(Sender: TObject);
+    Public
+        Class Function devExecutor: TdevExecutor;
+        Procedure Reset;
+        Procedure ExecuteAndWatch(sFileName, sParams, sPath: String;
+            bVisible: Boolean; iTimeOut: Cardinal; OnTermEvent: TNotifyEvent);
+    Published
+        Property Running: Boolean Read fIsRunning;
+    End;
 
-function devExecutor: TdevExecutor;
+Function devExecutor: TdevExecutor;
 
-implementation
+Implementation
 
 { TExecThread }
 
-procedure TExecThread.Execute;
-begin
-    inherited;
+Procedure TExecThread.Execute;
+Begin
+    Inherited;
     ExecAndWait;
-end;
+End;
 
-procedure TExecThread.ExecAndWait;
+Procedure TExecThread.ExecAndWait;
 // Author    : Francis Parlant.
 // Update    : Bill Rinko-Gay
 // Adaptation: Yiannis Mandravellos
-var
+Var
     StartupInfo: TStartupInfo;
     ProcessInfo: TProcessInformation;
-begin
+Begin
     FillChar(StartupInfo, SizeOf(TStartupInfo), 0);
-    with StartupInfo do
-    begin
+    With StartupInfo Do
+    Begin
         cb := SizeOf(TStartupInfo);
-        dwFlags := STARTF_USESHOWWINDOW or STARTF_FORCEONFEEDBACK;
-        if fVisible then
+        dwFlags := STARTF_USESHOWWINDOW Or STARTF_FORCEONFEEDBACK;
+        If fVisible Then
             wShowWindow := SW_SHOW
-        else
+        Else
             wShowWindow := SW_HIDE;
-    end;
-    if CreateProcess(nil, PChar(fFile + ' ' + fParams), nil, nil, false,
-        NORMAL_PRIORITY_CLASS, nil, PChar(fPath),
-        StartupInfo, ProcessInfo) then
-    begin
+    End;
+    If CreateProcess(Nil, Pchar(fFile + ' ' + fParams), Nil, Nil, False,
+        NORMAL_PRIORITY_CLASS, Nil, Pchar(fPath),
+        StartupInfo, ProcessInfo) Then
+    Begin
         fProcess := ProcessInfo.hProcess;
         WaitForSingleObject(ProcessInfo.hProcess, fTimeOut);
-    end;
+    End;
     CloseHandle(ProcessInfo.hProcess);
     CloseHandle(ProcessInfo.hThread);
-end;
+End;
 
-var
-    fDevExecutor: TdevExecutor = nil;
+Var
+    fDevExecutor: TdevExecutor = Nil;
 
-function devExecutor: TdevExecutor;
-begin
-    if not Assigned(fDevExecutor) then
-    begin
-        try
+Function devExecutor: TdevExecutor;
+Begin
+    If Not Assigned(fDevExecutor) Then
+    Begin
+        Try
             fDevExecutor := TdevExecutor.Create;
-        finally
-        end;
-    end;
+        Finally
+        End;
+    End;
     Result := fDevExecutor;
-end;
+End;
 
 { TdevExecutor }
 
-class function TdevExecutor.devExecutor: TdevExecutor;
-begin
+Class Function TdevExecutor.devExecutor: TdevExecutor;
+Begin
     Result := devExec.devExecutor;
-end;
+End;
 
-procedure TdevExecutor.ExecuteAndWatch(sFileName, sParams, sPath: string;
-    bVisible: boolean; iTimeOut: Cardinal; OnTermEvent: TNotifyEvent);
-begin
+Procedure TdevExecutor.ExecuteAndWatch(sFileName, sParams, sPath: String;
+    bVisible: Boolean; iTimeOut: Cardinal; OnTermEvent: TNotifyEvent);
+Begin
 
     fIsRunning := True;
     fOnTermEvent := OnTermEvent;
     fExec := TExecThread.Create(True);
-    with fExec do
-    begin
+    With fExec Do
+    Begin
         FileName := sFileName;
         Params := sParams;
         Path := sPath;
@@ -145,31 +145,31 @@ begin
         OnTerminate := TerminateEvent;
         FreeOnTerminate := True;
         Resume;
-    end;
-end;
+    End;
+End;
 
-procedure TdevExecutor.Reset;
-begin
-    if Assigned(fExec) then
-    begin
+Procedure TdevExecutor.Reset;
+Begin
+    If Assigned(fExec) Then
+    Begin
         TerminateProcess(fExec.Process, 0);
-    end;
+    End;
     fIsRunning := False;
 
-end;
+End;
 
-procedure TdevExecutor.TerminateEvent(Sender: TObject);
-begin
+Procedure TdevExecutor.TerminateEvent(Sender: TObject);
+Begin
 
     fIsRunning := False;
-    if Assigned(fOnTermEvent) then
+    If Assigned(fOnTermEvent) Then
         fOnTermEvent(Self);
-end;
+End;
 
-initialization
+Initialization
 
-finalization
-if Assigned(fDevExecutor) then
-    fDevExecutor.Free;
+Finalization
+    If Assigned(fDevExecutor) Then
+        fDevExecutor.Free;
 
-end.
+End.

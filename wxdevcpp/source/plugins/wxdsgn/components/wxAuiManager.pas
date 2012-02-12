@@ -23,162 +23,162 @@
 {Contact gururamnath@yahoo.com for details                           }
 { ****************************************************************** }
 
-unit wxAuiManager;
+Unit wxAuiManager;
 
-interface
+Interface
 
-uses
-  Windows, Messages, SysUtils, Classes, wxUtils, WxNonVisibleBaseComponent;
+Uses
+    Windows, Messages, SysUtils, Classes, wxUtils, WxNonVisibleBaseComponent;
 
-type
-  TWxAuiManager = class(TWxNonVisibleBaseComponent, IWxComponentInterface, IWxAuiManagerInterface)
-  private
+Type
+    TWxAuiManager = Class(TWxNonVisibleBaseComponent, IWxComponentInterface, IWxAuiManagerInterface)
+    Private
     { Private declarations }
-    FWx_Class: string;
-    FWx_PropertyList: TStringList;
-    FWx_Comments: TStrings;
-    FWx_EventList: TStringList;
-    FWx_AuiManagerStyle: TwxAuiManagerFlagSet;
+        FWx_Class: String;
+        FWx_PropertyList: TStringList;
+        FWx_Comments: TStrings;
+        FWx_EventList: TStringList;
+        FWx_AuiManagerStyle: TwxAuiManagerFlagSet;
 
-    FEVT_AUI_PANE_BUTTON: string;
-    FEVT_AUI_PANE_CLOSE: string;
-    FEVT_AUI_PANE_MAXIMIZE: string;
-    FEVT_AUI_PANE_RESTORE: string;
-    FEVT_AUI_RENDER: string;
-    FEVT_AUI_FIND_MANAGER: string;
-    FEVT_UPDATE_UI: string;
+        FEVT_AUI_PANE_BUTTON: String;
+        FEVT_AUI_PANE_CLOSE: String;
+        FEVT_AUI_PANE_MAXIMIZE: String;
+        FEVT_AUI_PANE_RESTORE: String;
+        FEVT_AUI_RENDER: String;
+        FEVT_AUI_FIND_MANAGER: String;
+        FEVT_UPDATE_UI: String;
 
-    procedure AutoInitialize;
-    procedure AutoDestroy;
+        Procedure AutoInitialize;
+        Procedure AutoDestroy;
 
-  protected
+    Protected
 
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    function GenerateControlIDs: string;
-    function GenerateEnumControlIDs: string;
-    function GenerateEventTableEntries(CurrClassName: string): string;
-    function GenerateGUIControlCreation: string;
-    function GenerateXRCControlCreation(IndentString: string): TStringList;
-    function GenerateGUIControlDeclaration: string;
-    function GenerateHeaderInclude: string;
-    function GenerateImageInclude: string;
-    function GetEventList: TStringList;
-    function GetIDName: string;
-    function GetIDValue: integer;
-    function GetParameterFromEventName(EventName: string): string;
-    function GetPropertyList: TStringList;
-    function GetTypeFromEventName(EventName: string): string;
-    function GetWxClassName: string;
-    procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
-    procedure SetIDName(IDName: string);
-    procedure SetIDValue(IDValue: integer);
-    procedure SetWxClassName(wxClassName: string);
-    function GetFGColor: string;
-    procedure SetFGColor(strValue: string);
-    function GetBGColor: string;
-    procedure SetBGColor(strValue: string);
-    procedure SetProxyFGColorString(Value: string);
-    procedure SetProxyBGColorString(Value: string);
+    Public
+        Constructor Create(AOwner: TComponent); Override;
+        Destructor Destroy; Override;
+        Function GenerateControlIDs: String;
+        Function GenerateEnumControlIDs: String;
+        Function GenerateEventTableEntries(CurrClassName: String): String;
+        Function GenerateGUIControlCreation: String;
+        Function GenerateXRCControlCreation(IndentString: String): TStringList;
+        Function GenerateGUIControlDeclaration: String;
+        Function GenerateHeaderInclude: String;
+        Function GenerateImageInclude: String;
+        Function GetEventList: TStringList;
+        Function GetIDName: String;
+        Function GetIDValue: Integer;
+        Function GetParameterFromEventName(EventName: String): String;
+        Function GetPropertyList: TStringList;
+        Function GetTypeFromEventName(EventName: String): String;
+        Function GetWxClassName: String;
+        Procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
+        Procedure SetIDName(IDName: String);
+        Procedure SetIDValue(IDValue: Integer);
+        Procedure SetWxClassName(wxClassName: String);
+        Function GetFGColor: String;
+        Procedure SetFGColor(strValue: String);
+        Function GetBGColor: String;
+        Procedure SetBGColor(strValue: String);
+        Procedure SetProxyFGColorString(Value: String);
+        Procedure SetProxyBGColorString(Value: String);
 
-    function GetGenericColor(strVariableName: string): string;
-    procedure SetGenericColor(strVariableName, strValue: string);
+        Function GetGenericColor(strVariableName: String): String;
+        Procedure SetGenericColor(strVariableName, strValue: String);
 
-    function GetBorderAlignment: TWxBorderAlignment;
-    procedure SetBorderAlignment(border: TWxBorderAlignment);
-    function GetBorderWidth: integer;
-    procedure SetBorderWidth(width: integer);
-    function GetStretchFactor: integer;
-    procedure SetStretchFactor(intValue: integer);
+        Function GetBorderAlignment: TWxBorderAlignment;
+        Procedure SetBorderAlignment(border: TWxBorderAlignment);
+        Function GetBorderWidth: Integer;
+        Procedure SetBorderWidth(width: Integer);
+        Function GetStretchFactor: Integer;
+        Procedure SetStretchFactor(intValue: Integer);
 
-    function GetAuiManagerFlags(Wx_AuiManagerStyles: TwxAuiManagerFlagSet): string;
+        Function GetAuiManagerFlags(Wx_AuiManagerStyles: TwxAuiManagerFlagSet): String;
 
-  published
+    Published
     { Published declarations }
-    property Wx_Class: string read FWx_Class write FWx_Class;
-    property Wx_Comments: TStrings read FWx_Comments write FWx_Comments;
-    property Wx_EventList: TStringList read FWx_EventList write FWx_EventList;
-    property Wx_AuiManagerStyle: TwxAuiManagerFlagSet read FWx_AuiManagerStyle write FWx_AuiManagerStyle;
+        Property Wx_Class: String Read FWx_Class Write FWx_Class;
+        Property Wx_Comments: TStrings Read FWx_Comments Write FWx_Comments;
+        Property Wx_EventList: TStringList Read FWx_EventList Write FWx_EventList;
+        Property Wx_AuiManagerStyle: TwxAuiManagerFlagSet Read FWx_AuiManagerStyle Write FWx_AuiManagerStyle;
 
-    property EVT_AUI_PANE_BUTTON: string Read FEVT_AUI_PANE_BUTTON Write FEVT_AUI_PANE_BUTTON;
-    property EVT_AUI_PANE_CLOSE: string Read FEVT_AUI_PANE_CLOSE Write FEVT_AUI_PANE_CLOSE;
-    property EVT_AUI_PANE_MAXIMIZE: string Read FEVT_AUI_PANE_MAXIMIZE Write FEVT_AUI_PANE_MAXIMIZE;
-    property EVT_AUI_PANE_RESTORE: string Read FEVT_AUI_PANE_RESTORE Write FEVT_AUI_PANE_RESTORE;
-    property EVT_AUI_RENDER: string Read FEVT_AUI_RENDER Write FEVT_AUI_RENDER;
-    property EVT_AUI_FIND_MANAGER: string Read FEVT_AUI_FIND_MANAGER Write FEVT_AUI_FIND_MANAGER;
-    property EVT_UPDATE_UI: string Read FEVT_UPDATE_UI Write FEVT_UPDATE_UI;
-  end;
+        Property EVT_AUI_PANE_BUTTON: String Read FEVT_AUI_PANE_BUTTON Write FEVT_AUI_PANE_BUTTON;
+        Property EVT_AUI_PANE_CLOSE: String Read FEVT_AUI_PANE_CLOSE Write FEVT_AUI_PANE_CLOSE;
+        Property EVT_AUI_PANE_MAXIMIZE: String Read FEVT_AUI_PANE_MAXIMIZE Write FEVT_AUI_PANE_MAXIMIZE;
+        Property EVT_AUI_PANE_RESTORE: String Read FEVT_AUI_PANE_RESTORE Write FEVT_AUI_PANE_RESTORE;
+        Property EVT_AUI_RENDER: String Read FEVT_AUI_RENDER Write FEVT_AUI_RENDER;
+        Property EVT_AUI_FIND_MANAGER: String Read FEVT_AUI_FIND_MANAGER Write FEVT_AUI_FIND_MANAGER;
+        Property EVT_UPDATE_UI: String Read FEVT_UPDATE_UI Write FEVT_UPDATE_UI;
+    End;
 
-procedure Register;
+Procedure Register;
 
-implementation
+Implementation
 
-procedure Register;
-begin
-  RegisterComponents('wxWidgets', [TWxAuiManager]);
-end;
+Procedure Register;
+Begin
+    RegisterComponents('wxWidgets', [TWxAuiManager]);
+End;
 
 { Method to set variable and property values and create objects }
 
-procedure TWxAuiManager.AutoInitialize;
-begin
-  FWx_PropertyList := TStringList.Create;
-  FWx_Class := 'wxAuiManager';
-  FWx_Comments := TStringList.Create;
-  FWx_EventList := TStringList.Create;
-  Glyph.Handle := LoadBitmap(hInstance, 'TWxAuiManager');
-  FWx_AuiManagerStyle := [wxAUI_MGR_ALLOW_FLOATING, wxAUI_MGR_TRANSPARENT_HINT, wxAUI_MGR_HINT_FADE, wxAUI_MGR_NO_VENETIAN_BLINDS_FADE];
-end; { of AutoInitialize }
+Procedure TWxAuiManager.AutoInitialize;
+Begin
+    FWx_PropertyList := TStringList.Create;
+    FWx_Class := 'wxAuiManager';
+    FWx_Comments := TStringList.Create;
+    FWx_EventList := TStringList.Create;
+    Glyph.Handle := LoadBitmap(hInstance, 'TWxAuiManager');
+    FWx_AuiManagerStyle := [wxAUI_MGR_ALLOW_FLOATING, wxAUI_MGR_TRANSPARENT_HINT, wxAUI_MGR_HINT_FADE, wxAUI_MGR_NO_VENETIAN_BLINDS_FADE];
+End; { of AutoInitialize }
 
 { Method to free any objects created by AutoInitialize }
 
-procedure TWxAuiManager.AutoDestroy;
-begin
-  FWx_PropertyList.Destroy;
-  FWx_Comments.Destroy;
-  FWx_EventList.Destroy;
-  Glyph.Assign(nil);
-end; { of AutoDestroy }
+Procedure TWxAuiManager.AutoDestroy;
+Begin
+    FWx_PropertyList.Destroy;
+    FWx_Comments.Destroy;
+    FWx_EventList.Destroy;
+    Glyph.Assign(Nil);
+End; { of AutoDestroy }
 
-constructor TWxAuiManager.Create(AOwner: TComponent);
-begin
+Constructor TWxAuiManager.Create(AOwner: TComponent);
+Begin
   { Call the Create method of the container's parent class       }
-  inherited Create(AOwner);
+    Inherited Create(AOwner);
 
   { AutoInitialize method is generated by Component Create.      }
-  AutoInitialize;
+    AutoInitialize;
 
   { Code to perform other tasks when the component is created }
   { Code to perform other tasks when the component is created }
-  FWx_PropertyList.add('Name:Name');
-  FWx_PropertyList.add('Wx_Class:Base Class');
-  FWx_PropertyList.add('Wx_Comments:Comments');
-  FWx_PropertyList.add('Wx_AuiManagerStyle:wxAuiManager Styles');
-  FWx_PropertyList.add('wxAUI_MGR_ALLOW_FLOATING:wxAUI_MGR_ALLOW_FLOATING');
-  FWx_PropertyList.add('wxAUI_MGR_ALLOW_ACTIVE_PANE:wxAUI_MGR_ALLOW_ACTIVE_PANE');
-  FWx_PropertyList.add('wxAUI_MGR_TRANSPARENT_DRAG:wxAUI_MGR_TRANSPARENT_DRAG');
-  FWx_PropertyList.add('wxAUI_MGR_TRANSPARENT_HINT:wxAUI_MGR_TRANSPARENT_HINT');
-  FWx_PropertyList.add('wxAUI_MGR_VENETIAN_BLINDS_HINT:wxAUI_MGR_VENETIAN_BLINDS_HINT');
-  FWx_PropertyList.add('wxAUI_MGR_RECTANGLE_HINT:wxAUI_MGR_RECTANGLE_HINT');
-  FWx_PropertyList.add('wxAUI_MGR_HINT_FADE:wxAUI_MGR_HINT_FADE');
-  FWx_PropertyList.add('wxAUI_MGR_NO_VENETIAN_BLINDS_FADE:wxAUI_MGR_NO_VENETIAN_BLINDS_FADE');
+    FWx_PropertyList.add('Name:Name');
+    FWx_PropertyList.add('Wx_Class:Base Class');
+    FWx_PropertyList.add('Wx_Comments:Comments');
+    FWx_PropertyList.add('Wx_AuiManagerStyle:wxAuiManager Styles');
+    FWx_PropertyList.add('wxAUI_MGR_ALLOW_FLOATING:wxAUI_MGR_ALLOW_FLOATING');
+    FWx_PropertyList.add('wxAUI_MGR_ALLOW_ACTIVE_PANE:wxAUI_MGR_ALLOW_ACTIVE_PANE');
+    FWx_PropertyList.add('wxAUI_MGR_TRANSPARENT_DRAG:wxAUI_MGR_TRANSPARENT_DRAG');
+    FWx_PropertyList.add('wxAUI_MGR_TRANSPARENT_HINT:wxAUI_MGR_TRANSPARENT_HINT');
+    FWx_PropertyList.add('wxAUI_MGR_VENETIAN_BLINDS_HINT:wxAUI_MGR_VENETIAN_BLINDS_HINT');
+    FWx_PropertyList.add('wxAUI_MGR_RECTANGLE_HINT:wxAUI_MGR_RECTANGLE_HINT');
+    FWx_PropertyList.add('wxAUI_MGR_HINT_FADE:wxAUI_MGR_HINT_FADE');
+    FWx_PropertyList.add('wxAUI_MGR_NO_VENETIAN_BLINDS_FADE:wxAUI_MGR_NO_VENETIAN_BLINDS_FADE');
 
-  FWx_EventList.add('EVT_AUI_PANE_BUTTON:OnPaneButton');
-  FWx_EventList.add('EVT_AUI_PANE_CLOSE:OnPaneClose');
-  FWx_EventList.add('EVT_AUI_PANE_MAXIMIZE:OnPaneMaximize');
-  FWx_EventList.add('EVT_AUI_PANE_RESTORE:OnPaneRestore');
-  FWx_EventList.add('EVT_AUI_RENDER:OnRender');
-  FWx_EventList.add('EVT_AUI_FIND_MANAGER:OnFindManager');
+    FWx_EventList.add('EVT_AUI_PANE_BUTTON:OnPaneButton');
+    FWx_EventList.add('EVT_AUI_PANE_CLOSE:OnPaneClose');
+    FWx_EventList.add('EVT_AUI_PANE_MAXIMIZE:OnPaneMaximize');
+    FWx_EventList.add('EVT_AUI_PANE_RESTORE:OnPaneRestore');
+    FWx_EventList.add('EVT_AUI_RENDER:OnRender');
+    FWx_EventList.add('EVT_AUI_FIND_MANAGER:OnFindManager');
 //mn  FWx_EventList.add('EVT_UPDATE_UI:OnUpdateUI');
 
-end;
+End;
 
-destructor TWxAuiManager.Destroy;
-begin
+Destructor TWxAuiManager.Destroy;
+Begin
   { AutoDestroy, which is generated by Component Create, frees any   }
   { objects created by AutoInitialize.                               }
-  AutoDestroy;
+    AutoDestroy;
 
   { Here, free any other dynamic objects that the component methods  }
   { created but have not yet freed.  Also perform any other clean-up }
@@ -186,48 +186,48 @@ begin
 
   { Last, free the component by calling the Destroy method of the    }
   { parent class.                                                    }
-  inherited Destroy;
-end;
+    Inherited Destroy;
+End;
 
-function TWxAuiManager.GenerateControlIDs: string;
-begin
-  Result := '';
-end;
+Function TWxAuiManager.GenerateControlIDs: String;
+Begin
+    Result := '';
+End;
 
-function TWxAuiManager.GenerateEnumControlIDs: string;
-begin
-  Result := '';
-end;
+Function TWxAuiManager.GenerateEnumControlIDs: String;
+Begin
+    Result := '';
+End;
 
-function TWxAuiManager.GenerateEventTableEntries(CurrClassName: string): string;
-begin
-  Result := '';
+Function TWxAuiManager.GenerateEventTableEntries(CurrClassName: String): String;
+Begin
+    Result := '';
 
-  if (XRCGEN) then
- begin
-  if trim(EVT_AUI_PANE_BUTTON) <> '' then
-    Result := Format('EVT_AUI_PANE_BUTTON(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName,
-      EVT_AUI_PANE_BUTTON]) + '';
+    If (XRCGEN) Then
+    Begin
+        If trim(EVT_AUI_PANE_BUTTON) <> '' Then
+            Result := Format('EVT_AUI_PANE_BUTTON(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName,
+                EVT_AUI_PANE_BUTTON]) + '';
 
-  if trim(EVT_AUI_PANE_CLOSE) <> '' then
-    Result := Format('EVT_AUI_PANE_CLOSE(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName,
-      EVT_AUI_PANE_CLOSE]) + '';
+        If trim(EVT_AUI_PANE_CLOSE) <> '' Then
+            Result := Format('EVT_AUI_PANE_CLOSE(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName,
+                EVT_AUI_PANE_CLOSE]) + '';
 
-  if trim(EVT_AUI_PANE_MAXIMIZE) <> '' then
-    Result := Format('EVT_AUI_PANE_MAXIMIZE(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName,
-      EVT_AUI_PANE_MAXIMIZE]) + '';
+        If trim(EVT_AUI_PANE_MAXIMIZE) <> '' Then
+            Result := Format('EVT_AUI_PANE_MAXIMIZE(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName,
+                EVT_AUI_PANE_MAXIMIZE]) + '';
 
-  if trim(EVT_AUI_PANE_RESTORE) <> '' then
-    Result := Format('EVT_AUI_PANE_RESTORE(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName,
-      EVT_AUI_PANE_RESTORE]) + '';
+        If trim(EVT_AUI_PANE_RESTORE) <> '' Then
+            Result := Format('EVT_AUI_PANE_RESTORE(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName,
+                EVT_AUI_PANE_RESTORE]) + '';
 
-  if trim(EVT_AUI_RENDER) <> '' then
-    Result := Format('EVT_AUI_RENDER(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName,
-      EVT_AUI_RENDER]) + '';
+        If trim(EVT_AUI_RENDER) <> '' Then
+            Result := Format('EVT_AUI_RENDER(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName,
+                EVT_AUI_RENDER]) + '';
 
-  if trim(EVT_AUI_FIND_MANAGER) <> '' then
-    Result := Format('EVT_AUI_FIND_MANAGER(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName,
-      EVT_AUI_FIND_MANAGER]) + '';
+        If trim(EVT_AUI_FIND_MANAGER) <> '' Then
+            Result := Format('EVT_AUI_FIND_MANAGER(XRCID(%s("%s")),%s::%s)', [StringFormat, self.Name, CurrClassName,
+                EVT_AUI_FIND_MANAGER]) + '';
 
 {
   if trim(EVT_UPDATE_UI) <> '' then
@@ -235,287 +235,287 @@ begin
       [StringFormat, self.Name, CurrClassName, EVT_UPDATE_UI]) + '';        \
 
 }
- end
- else
- begin
-  if trim(EVT_AUI_PANE_BUTTON) <> '' then
-    Result := Format('EVT_AUI_PANE_BUTTON(%s::%s)', [CurrClassName,
-      EVT_AUI_PANE_BUTTON]) + '';
+    End
+    Else
+    Begin
+        If trim(EVT_AUI_PANE_BUTTON) <> '' Then
+            Result := Format('EVT_AUI_PANE_BUTTON(%s::%s)', [CurrClassName,
+                EVT_AUI_PANE_BUTTON]) + '';
 
-  if trim(EVT_AUI_PANE_CLOSE) <> '' then
-    Result := Format('EVT_AUI_PANE_CLOSE(%s::%s)', [CurrClassName,
-      EVT_AUI_PANE_CLOSE]) + '';
+        If trim(EVT_AUI_PANE_CLOSE) <> '' Then
+            Result := Format('EVT_AUI_PANE_CLOSE(%s::%s)', [CurrClassName,
+                EVT_AUI_PANE_CLOSE]) + '';
 
-  if trim(EVT_AUI_PANE_MAXIMIZE) <> '' then
-    Result := Format('EVT_AUI_PANE_MAXIMIZE(%s::%s)', [CurrClassName,
-      EVT_AUI_PANE_MAXIMIZE]) + '';
+        If trim(EVT_AUI_PANE_MAXIMIZE) <> '' Then
+            Result := Format('EVT_AUI_PANE_MAXIMIZE(%s::%s)', [CurrClassName,
+                EVT_AUI_PANE_MAXIMIZE]) + '';
 
-  if trim(EVT_AUI_PANE_RESTORE) <> '' then
-    Result := Format('EVT_AUI_PANE_RESTORE(%s::%s)', [CurrClassName,
-      EVT_AUI_PANE_RESTORE]) + '';
+        If trim(EVT_AUI_PANE_RESTORE) <> '' Then
+            Result := Format('EVT_AUI_PANE_RESTORE(%s::%s)', [CurrClassName,
+                EVT_AUI_PANE_RESTORE]) + '';
 
-  if trim(EVT_AUI_RENDER) <> '' then
-    Result := Format('EVT_AUI_RENDER(%s::%s)', [CurrClassName,
-      EVT_AUI_RENDER]) + '';
+        If trim(EVT_AUI_RENDER) <> '' Then
+            Result := Format('EVT_AUI_RENDER(%s::%s)', [CurrClassName,
+                EVT_AUI_RENDER]) + '';
 
-  if trim(EVT_AUI_FIND_MANAGER) <> '' then
-    Result := Format('EVT_AUI_FIND_MANAGER(%s::%s)', [CurrClassName,
-      EVT_AUI_FIND_MANAGER]) + '';
+        If trim(EVT_AUI_FIND_MANAGER) <> '' Then
+            Result := Format('EVT_AUI_FIND_MANAGER(%s::%s)', [CurrClassName,
+                EVT_AUI_FIND_MANAGER]) + '';
 
 {
   if trim(EVT_UPDATE_UI) <> '' then
     Result := Result + #13 + Format('EVT_UPDATE_UI(%s,%s::%s)',
       [WX_IDName, CurrClassName, EVT_UPDATE_UI]) + '';
 }
- end;
+    End;
 
-end;
+End;
 
-function TWxAuiManager.GenerateXRCControlCreation(IndentString: string): TStringList;
-begin
+Function TWxAuiManager.GenerateXRCControlCreation(IndentString: String): TStringList;
+Begin
 
-  Result := TStringList.Create;
+    Result := TStringList.Create;
 
-  try
-    Result.Add(IndentString + Format('<object class="%s" name="%s">',
-      [self.Wx_Class, self.Name]));
-    Result.Add(IndentString + '</object>');
+    Try
+        Result.Add(IndentString + Format('<object class="%s" name="%s">',
+            [self.Wx_Class, self.Name]));
+        Result.Add(IndentString + '</object>');
 
-  except
-    Result.Free;
-    raise;
-  end;
+    Except
+        Result.Free;
+        Raise;
+    End;
 
-end;
+End;
 
-function TWxAuiManager.GenerateGUIControlCreation: string;
-begin
+Function TWxAuiManager.GenerateGUIControlCreation: String;
+Begin
 
-  Result := '';
-  Result := GetCommentString(self.FWx_Comments.Text);
+    Result := '';
+    Result := GetCommentString(self.FWx_Comments.Text);
 
-  Result := Result + #13 + Format('%s = new %s(this, %s);',
-    [self.Name, self.wx_Class, GetAuiManagerFlags(self.Wx_AuiManagerStyle)]);
+    Result := Result + #13 + Format('%s = new %s(this, %s);',
+        [self.Name, self.wx_Class, GetAuiManagerFlags(self.Wx_AuiManagerStyle)]);
 
-end;
+End;
 
-function TWxAuiManager.GenerateGUIControlDeclaration: string;
-begin
-  Result := '';
-  Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
-end;
+Function TWxAuiManager.GenerateGUIControlDeclaration: String;
+Begin
+    Result := '';
+    Result := Format('%s *%s;', [trim(Self.Wx_Class), trim(Self.Name)]);
+End;
 
-function TWxAuiManager.GenerateHeaderInclude: string;
-begin
-  Result := '';
-  Result := '#include <wx/aui/aui.h>';
-end;
+Function TWxAuiManager.GenerateHeaderInclude: String;
+Begin
+    Result := '';
+    Result := '#include <wx/aui/aui.h>';
+End;
 
-function TWxAuiManager.GenerateImageInclude: string;
-begin
+Function TWxAuiManager.GenerateImageInclude: String;
+Begin
 
-end;
+End;
 
-function TWxAuiManager.GetEventList: TStringList;
-begin
-  Result := Wx_EventList;
-end;
+Function TWxAuiManager.GetEventList: TStringList;
+Begin
+    Result := Wx_EventList;
+End;
 
-function TWxAuiManager.GetIDName: string;
-begin
+Function TWxAuiManager.GetIDName: String;
+Begin
 
-end;
+End;
 
-function TWxAuiManager.GetIDValue: integer;
-begin
-  Result := 0;
-end;
+Function TWxAuiManager.GetIDValue: Integer;
+Begin
+    Result := 0;
+End;
 
-function TWxAuiManager.GetParameterFromEventName(EventName: string): string;
-begin
-  if EventName = 'EVT_AUI_PANE_BUTTON' then
-  begin
-    Result := 'wxAuiManagerEvent& event';
-    exit;
-  end;
-  if EventName = 'EVT_AUI_PANE_CLOSE' then
-  begin
-    Result := 'wxAuiManagerEvent& event';
-    exit;
-  end;
-  if EventName = 'EVT_AUI_PANE_MAXIMIZE' then
-  begin
-    Result := 'wxAuiManagerEvent& event';
-    exit;
-  end;
-  if EventName = 'EVT_AUI_PANE_RESTORE' then
-  begin
-    Result := 'wxAuiManagerEvent& event';
-    exit;
-  end;
-  if EventName = 'EVT_AUI_RENDER' then
-  begin
-    Result := 'wxAuiManagerEvent& event';
-    exit;
-  end;
-  if EventName = 'EVT_AUI_FIND_MANAGER' then
-  begin
-    Result := 'wxAuiManagerEvent& event';
-    exit;
-  end;
-  if EventName = 'EVT_UPDATE_UI' then
-  begin
-    Result := 'wxUpdateUIEvent& event';
-    exit;
-  end;
-end;
+Function TWxAuiManager.GetParameterFromEventName(EventName: String): String;
+Begin
+    If EventName = 'EVT_AUI_PANE_BUTTON' Then
+    Begin
+        Result := 'wxAuiManagerEvent& event';
+        exit;
+    End;
+    If EventName = 'EVT_AUI_PANE_CLOSE' Then
+    Begin
+        Result := 'wxAuiManagerEvent& event';
+        exit;
+    End;
+    If EventName = 'EVT_AUI_PANE_MAXIMIZE' Then
+    Begin
+        Result := 'wxAuiManagerEvent& event';
+        exit;
+    End;
+    If EventName = 'EVT_AUI_PANE_RESTORE' Then
+    Begin
+        Result := 'wxAuiManagerEvent& event';
+        exit;
+    End;
+    If EventName = 'EVT_AUI_RENDER' Then
+    Begin
+        Result := 'wxAuiManagerEvent& event';
+        exit;
+    End;
+    If EventName = 'EVT_AUI_FIND_MANAGER' Then
+    Begin
+        Result := 'wxAuiManagerEvent& event';
+        exit;
+    End;
+    If EventName = 'EVT_UPDATE_UI' Then
+    Begin
+        Result := 'wxUpdateUIEvent& event';
+        exit;
+    End;
+End;
 
-function TWxAuiManager.GetStretchFactor: integer;
-begin
-  Result := 1;
-end;
+Function TWxAuiManager.GetStretchFactor: Integer;
+Begin
+    Result := 1;
+End;
 
-function TWxAuiManager.GetPropertyList: TStringList;
-begin
-  Result := FWx_PropertyList;
-end;
+Function TWxAuiManager.GetPropertyList: TStringList;
+Begin
+    Result := FWx_PropertyList;
+End;
 
-function TWxAuiManager.GetBorderAlignment: TWxBorderAlignment;
-begin
-  Result := [];
-end;
+Function TWxAuiManager.GetBorderAlignment: TWxBorderAlignment;
+Begin
+    Result := [];
+End;
 
-procedure TWxAuiManager.SetBorderAlignment(border: TWxBorderAlignment);
-begin
-end;
+Procedure TWxAuiManager.SetBorderAlignment(border: TWxBorderAlignment);
+Begin
+End;
 
-function TWxAuiManager.GetBorderWidth: integer;
-begin
-  Result := 0;
-end;
+Function TWxAuiManager.GetBorderWidth: Integer;
+Begin
+    Result := 0;
+End;
 
-procedure TWxAuiManager.SetBorderWidth(width: integer);
-begin
-end;
+Procedure TWxAuiManager.SetBorderWidth(width: Integer);
+Begin
+End;
 
-function TWxAuiManager.GetTypeFromEventName(EventName: string): string;
-begin
+Function TWxAuiManager.GetTypeFromEventName(EventName: String): String;
+Begin
 
-end;
+End;
 
-function TWxAuiManager.GetWxClassName: string;
-begin
-  if trim(wx_Class) = '' then
-    wx_Class := 'wxAuiManager';
-  Result := wx_Class;
-end;
+Function TWxAuiManager.GetWxClassName: String;
+Begin
+    If trim(wx_Class) = '' Then
+        wx_Class := 'wxAuiManager';
+    Result := wx_Class;
+End;
 
-procedure TWxAuiManager.SaveControlOrientation(
-  ControlOrientation: TWxControlOrientation);
-begin
+Procedure TWxAuiManager.SaveControlOrientation(
+    ControlOrientation: TWxControlOrientation);
+Begin
 
-end;
+End;
 
-procedure TWxAuiManager.SetIDName(IDName: string);
-begin
+Procedure TWxAuiManager.SetIDName(IDName: String);
+Begin
 
-end;
+End;
 
-procedure TWxAuiManager.SetIDValue(IDValue: integer);
-begin
+Procedure TWxAuiManager.SetIDValue(IDValue: Integer);
+Begin
 
-end;
+End;
 
-procedure TWxAuiManager.SetStretchFactor(intValue: integer);
-begin
-end;
+Procedure TWxAuiManager.SetStretchFactor(intValue: Integer);
+Begin
+End;
 
-procedure TWxAuiManager.SetWxClassName(wxClassName: string);
-begin
-  wx_Class := wxClassName;
-end;
+Procedure TWxAuiManager.SetWxClassName(wxClassName: String);
+Begin
+    wx_Class := wxClassName;
+End;
 
-function TWxAuiManager.GetFGColor: string;
-begin
+Function TWxAuiManager.GetFGColor: String;
+Begin
 
-end;
+End;
 
-procedure TWxAuiManager.SetFGColor(strValue: string);
-begin
-end;
+Procedure TWxAuiManager.SetFGColor(strValue: String);
+Begin
+End;
 
-function TWxAuiManager.GetBGColor: string;
-begin
-end;
+Function TWxAuiManager.GetBGColor: String;
+Begin
+End;
 
-procedure TWxAuiManager.SetBGColor(strValue: string);
-begin
-end;
+Procedure TWxAuiManager.SetBGColor(strValue: String);
+Begin
+End;
 
-procedure TWxAuiManager.SetProxyFGColorString(Value: string);
-begin
-end;
+Procedure TWxAuiManager.SetProxyFGColorString(Value: String);
+Begin
+End;
 
-procedure TWxAuiManager.SetProxyBGColorString(Value: string);
-begin
-end;
+Procedure TWxAuiManager.SetProxyBGColorString(Value: String);
+Begin
+End;
 
-function TWxAuiManager.GetGenericColor(strVariableName: string): string;
-begin
-end;
+Function TWxAuiManager.GetGenericColor(strVariableName: String): String;
+Begin
+End;
 
-procedure TWxAuiManager.SetGenericColor(strVariableName, strValue: string);
-begin
+Procedure TWxAuiManager.SetGenericColor(strVariableName, strValue: String);
+Begin
 
-end;
+End;
 
-function TWxAuiManager.GetAuiManagerFlags(Wx_AuiManagerStyles: TwxAuiManagerFlagSet): string;
-var
-  I: integer;
-  strLst: TStringList;
-begin
-  strLst := TStringList.Create;
+Function TWxAuiManager.GetAuiManagerFlags(Wx_AuiManagerStyles: TwxAuiManagerFlagSet): String;
+Var
+    I: Integer;
+    strLst: TStringList;
+Begin
+    strLst := TStringList.Create;
 
-  try
+    Try
 
-    if wxAUI_MGR_ALLOW_FLOATING in Wx_AuiManagerStyles then
-      strLst.add('wxAUI_MGR_ALLOW_FLOATING ');
+        If wxAUI_MGR_ALLOW_FLOATING In Wx_AuiManagerStyles Then
+            strLst.add('wxAUI_MGR_ALLOW_FLOATING ');
 
-    if wxAUI_MGR_ALLOW_ACTIVE_PANE in Wx_AuiManagerStyles then
-      strLst.add('wxAUI_MGR_ALLOW_ACTIVE_PANE ');
+        If wxAUI_MGR_ALLOW_ACTIVE_PANE In Wx_AuiManagerStyles Then
+            strLst.add('wxAUI_MGR_ALLOW_ACTIVE_PANE ');
 
-    if wxAUI_MGR_TRANSPARENT_DRAG in Wx_AuiManagerStyles then
-      strLst.add('wxAUI_MGR_TRANSPARENT_DRAG ');
+        If wxAUI_MGR_TRANSPARENT_DRAG In Wx_AuiManagerStyles Then
+            strLst.add('wxAUI_MGR_TRANSPARENT_DRAG ');
 
-    if wxAUI_MGR_TRANSPARENT_HINT in Wx_AuiManagerStyles then
-      strLst.add('wxAUI_MGR_TRANSPARENT_HINT ');
+        If wxAUI_MGR_TRANSPARENT_HINT In Wx_AuiManagerStyles Then
+            strLst.add('wxAUI_MGR_TRANSPARENT_HINT ');
 
-    if wxAUI_MGR_VENETIAN_BLINDS_HINT in Wx_AuiManagerStyles then
-      strLst.add('wxAUI_MGR_VENETIAN_BLINDS_HINT ');
+        If wxAUI_MGR_VENETIAN_BLINDS_HINT In Wx_AuiManagerStyles Then
+            strLst.add('wxAUI_MGR_VENETIAN_BLINDS_HINT ');
 
-    if wxAUI_MGR_RECTANGLE_HINT in Wx_AuiManagerStyles then
-      strLst.add('wxAUI_MGR_RECTANGLE_HINT ');
+        If wxAUI_MGR_RECTANGLE_HINT In Wx_AuiManagerStyles Then
+            strLst.add('wxAUI_MGR_RECTANGLE_HINT ');
 
-    if wxAUI_MGR_HINT_FADE in Wx_AuiManagerStyles then
-      strLst.add('wxAUI_MGR_HINT_FADE ');
+        If wxAUI_MGR_HINT_FADE In Wx_AuiManagerStyles Then
+            strLst.add('wxAUI_MGR_HINT_FADE ');
 
-    if wxAUI_MGR_NO_VENETIAN_BLINDS_FADE in Wx_AuiManagerStyles then
-      strLst.add('wxAUI_MGR_NO_VENETIAN_BLINDS_FADE ');
+        If wxAUI_MGR_NO_VENETIAN_BLINDS_FADE In Wx_AuiManagerStyles Then
+            strLst.add('wxAUI_MGR_NO_VENETIAN_BLINDS_FADE ');
 
-    if strLst.Count = 0 then
-      Result := ''
-    else
-      for I := 0 to strLst.Count - 1 do // Iterate
-        if i <> strLst.Count - 1 then
-          Result := Result + strLst[i] + ' | '
-        else
-          Result := Result + strLst[i] // for
-          ;
+        If strLst.Count = 0 Then
+            Result := ''
+        Else
+            For I := 0 To strLst.Count - 1 Do // Iterate
+                If i <> strLst.Count - 1 Then
+                    Result := Result + strLst[i] + ' | '
+                Else
+                    Result := Result + strLst[i] // for
+        ;
     //sendDebug(Result);
-  finally
-    strLst.Destroy;
-  end;
-end;
+    Finally
+        strLst.Destroy;
+    End;
+End;
 
-end.
+End.
  

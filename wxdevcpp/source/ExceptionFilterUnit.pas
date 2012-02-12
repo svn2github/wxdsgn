@@ -1,12 +1,12 @@
 // $Id: ExceptionFilterUnit.pas 488 2006-10-14 00:42:36Z lowjoel $
 //
-unit ExceptionFilterUnit;
+Unit ExceptionFilterUnit;
 
-interface
+Interface
 
-implementation
+Implementation
 
-uses Classes, Windows, madExcept, JvInspector, ELDsgnr, sysutils, Forms;
+Uses Classes, Windows, madExcept, JvInspector, ELDsgnr, sysutils, Forms;
 
 // GAR 1/8/06
 // Looks like this needs to be the procedure definition for the newer versions of madExcept (> 2.8)
@@ -17,8 +17,8 @@ uses Classes, Windows, madExcept, JvInspector, ELDsgnr, sysutils, Forms;
 // those exceptions through to this procedure instead (where we define our custom exception handler windows).
 // For all other exception classes, have madExcept handle it with the "Show an assistant", type "SaveAssistant".
 //
-procedure ExceptionFilter(const exceptIntf: IMEException;
-    var Handled: Boolean);
+Procedure ExceptionFilter(Const exceptIntf: IMEException;
+    Var Handled: Boolean);
 
 // This was the old (< version 2.8) definition
 //procedure ExceptionFilter( frozen          : boolean;
@@ -30,39 +30,39 @@ procedure ExceptionFilter(const exceptIntf: IMEException;
 //                          var canContinue : boolean;
 //                          var handled     : boolean);
 
-    procedure ShowError(AMessage: string);
-    begin
-        MessageBox(Application.MainForm.Handle, PChar(AMessage),
-            PChar(Application.Title), MB_ICONERROR or MB_TASKMODAL);
+    Procedure ShowError(AMessage: String);
+    Begin
+        MessageBox(Application.MainForm.Handle, Pchar(AMessage),
+            Pchar(Application.Title), MB_ICONERROR Or MB_TASKMODAL);
         Handled := True;
-    end;
+    End;
 
-const
+Const
     PromptMsg = #13#10#13#10'Please press Escape to restore the previous value.';
-begin
+Begin
     //Do we have an ACTIVE exception?!
-    if exceptObject = nil then
+    If exceptObject = Nil Then
         Exit;
 
     //This is for People who try to enter caption or Label information in the Name Property
-    if exceptObject is EComponentError then
-        ShowError(EComponentError(exceptObject).Message + PromptMsg)
+    If exceptObject Is EComponentError Then
+        ShowError(EComponentError(exceptObject).Message + PromptMsg + 'exceptObject error TR2')
     //This is for screwing up some Property Inspector Editor specifics like Entering Data
     //in the Orientation Information
-    else
-    if exceptObject is EJvInspectorItem then
-        ShowError(EComponentError(exceptObject).Message + PromptMsg)
+    Else
+    If exceptObject Is EJvInspectorItem Then
+        ShowError(EComponentError(exceptObject).Message + PromptMsg + 'Inspector error TR3')
     //For some weird designer errors.
-    else
-    if exceptObject is EELDesigner then
+    Else
+    If exceptObject Is EELDesigner Then
         ShowError(EELDesigner(exceptObject).Message)
     //If user accidently entered text to a Integer field
-    else
-    if exceptObject is EConvertError then
-        ShowError(EConvertError(exceptObject).Message + PromptMsg);
-end;
+    Else
+    If exceptObject Is EConvertError Then
+        ShowError(EConvertError(exceptObject).Message + PromptMsg + 'Convert error TR4');
+End;
 
-initialization
+Initialization
     RegisterExceptionHandler(ExceptionFilter, stTrySyncCallOnSuccess);
 
-end.
+End.

@@ -23,186 +23,186 @@
 { ****************************************************************** }
 // $Id
 
-unit UStatusbar;
+Unit UStatusbar;
 
-interface
+Interface
 
-uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ComCtrls, Buttons, ExtCtrls, XPMenu;
+Uses
+    Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+    StdCtrls, ComCtrls, Buttons, ExtCtrls, XPMenu;
 
-type
-  TStatusBarForm = class(TForm)
-    GroupBox1: TGroupBox;
-    GroupBox2: TGroupBox;
-    Label2: TLabel;
-    Label4: TLabel;
-    txtCaption: TEdit;
-    txtWidth: TEdit;
-    btMoveDown: TButton;
-    btMoveUp: TButton;
-    btDelete: TButton;
-    btAdd: TButton;
-    lbxColumnNames: TListBox;
-    StatusBarObj: TStatusBar;
-    XPMenu: TXPMenu;
-    btnOK: TBitBtn;
-    btnCancel: TBitBtn;
-    procedure btAddClick(Sender: TObject);
-    procedure btDeleteClick(Sender: TObject);
-    procedure lbxColumnNamesClick(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
-    procedure btMoveUpClick(Sender: TObject);
-    procedure btMoveDownClick(Sender: TObject);
-  private
+Type
+    TStatusBarForm = Class(TForm)
+        GroupBox1: TGroupBox;
+        GroupBox2: TGroupBox;
+        Label2: TLabel;
+        Label4: TLabel;
+        txtCaption: TEdit;
+        txtWidth: TEdit;
+        btMoveDown: TButton;
+        btMoveUp: TButton;
+        btDelete: TButton;
+        btAdd: TButton;
+        lbxColumnNames: TListBox;
+        StatusBarObj: TStatusBar;
+        XPMenu: TXPMenu;
+        btnOK: TBitBtn;
+        btnCancel: TBitBtn;
+        Procedure btAddClick(Sender: TObject);
+        Procedure btDeleteClick(Sender: TObject);
+        Procedure lbxColumnNamesClick(Sender: TObject);
+        Procedure FormCreate(Sender: TObject);
+        Procedure btMoveUpClick(Sender: TObject);
+        Procedure btMoveDownClick(Sender: TObject);
+    Private
     { Private declarations }
-    lastIdx: Integer;
-    
-  public
+        lastIdx: Integer;
+
+    Public
     { Public declarations }
-    lstColumns: TListColumns;
-    procedure fillListInfo;
-  end;
+        lstColumns: TListColumns;
+        Procedure fillListInfo;
+    End;
 
-var
-  StatusBarForm: TStatusBarForm;
+Var
+    StatusBarForm: TStatusBarForm;
 
-implementation
+Implementation
 {$R *.DFM}
 {uses
   devCfg;} // EAB TODO: Fix this
 
-procedure TStatusBarForm.FormCreate(Sender: TObject);
-begin
-  DesktopFont := True;
+Procedure TStatusBarForm.FormCreate(Sender: TObject);
+Begin
+    DesktopFont := True;
   //XPMenu.Active := devData.XPTheme;
-  lastIdx := -1;
-end;
+    lastIdx := -1;
+End;
 
-procedure TStatusBarForm.fillListInfo;
-var
-  I: integer;
-begin
-  lbxColumnNames.Items.BeginUpdate;
-  lbxColumnNames.Items.Clear;
-  for I := 0 to StatusBarObj.Panels.Count - 1 do // Iterate
-    lbxColumnNames.Items.Add(StatusBarObj.Panels[i].Text); // for
-  lbxColumnNames.Items.EndUpdate;
-end;
+Procedure TStatusBarForm.fillListInfo;
+Var
+    I: Integer;
+Begin
+    lbxColumnNames.Items.BeginUpdate;
+    lbxColumnNames.Items.Clear;
+    For I := 0 To StatusBarObj.Panels.Count - 1 Do // Iterate
+        lbxColumnNames.Items.Add(StatusBarObj.Panels[i].Text); // for
+    lbxColumnNames.Items.EndUpdate;
+End;
 
-procedure TStatusBarForm.btAddClick(Sender: TObject);
-var
-  lstColumn: TStatusPanel;
-begin
+Procedure TStatusBarForm.btAddClick(Sender: TObject);
+Var
+    lstColumn: TStatusPanel;
+Begin
   //update the status bar
-  lstColumn       := StatusBarObj.Panels.Add;
-  lstColumn.Text  := txtCaption.Text;
-  lstColumn.Width := StrToInt(txtWidth.Text);
+    lstColumn := StatusBarObj.Panels.Add;
+    lstColumn.Text := txtCaption.Text;
+    lstColumn.Width := StrToInt(txtWidth.Text);
 
   //update the listbox
-  lbxColumnNames.Items.Add(txtCaption.Text);
-  lbxColumnNames.ItemIndex := lbxColumnNames.Count - 1;
-  lastIdx := lbxColumnNames.ItemIndex;
-end;
+    lbxColumnNames.Items.Add(txtCaption.Text);
+    lbxColumnNames.ItemIndex := lbxColumnNames.Count - 1;
+    lastIdx := lbxColumnNames.ItemIndex;
+End;
 
-procedure TStatusBarForm.btDeleteClick(Sender: TObject);
-var
-  intColPos: integer;
-begin
-  intColPos := lbxColumnNames.ItemIndex;
-  if intColPos = -1 then
-    Exit;
+Procedure TStatusBarForm.btDeleteClick(Sender: TObject);
+Var
+    intColPos: Integer;
+Begin
+    intColPos := lbxColumnNames.ItemIndex;
+    If intColPos = -1 Then
+        Exit;
 
-  lbxColumnNames.DeleteSelected;
-  StatusBarObj.Panels.Delete(intColPos);
+    lbxColumnNames.DeleteSelected;
+    StatusBarObj.Panels.Delete(intColPos);
 
-  if lbxColumnNames.ItemIndex > lbxColumnNames.Items.Count then
-    lbxColumnNames.ItemIndex := 0
-  else
-    lbxColumnNames.ItemIndex := -1;
-  lbxColumnNamesClick(lbxColumnNames);
-end;
+    If lbxColumnNames.ItemIndex > lbxColumnNames.Items.Count Then
+        lbxColumnNames.ItemIndex := 0
+    Else
+        lbxColumnNames.ItemIndex := -1;
+    lbxColumnNamesClick(lbxColumnNames);
+End;
 
-procedure TStatusBarForm.lbxColumnNamesClick(Sender: TObject);
-begin
+Procedure TStatusBarForm.lbxColumnNamesClick(Sender: TObject);
+Begin
   //Should we enable the buttons?
-  btDelete.Enabled   := lbxColumnNames.ItemIndex <> -1;
-  btMoveUp.Enabled   := lbxColumnNames.ItemIndex > 0;
-  btMoveDown.Enabled := (lbxColumnNames.ItemIndex <> -1) and
-                        (lbxColumnNames.ItemIndex <> lbxColumnNames.Count - 1);
+    btDelete.Enabled := lbxColumnNames.ItemIndex <> -1;
+    btMoveUp.Enabled := lbxColumnNames.ItemIndex > 0;
+    btMoveDown.Enabled := (lbxColumnNames.ItemIndex <> -1) And
+        (lbxColumnNames.ItemIndex <> lbxColumnNames.Count - 1);
 
-  if lbxColumnNames.ItemIndex = -1 then
-  begin
-    lastIdx := -1;
-    Exit;
-  end;
+    If lbxColumnNames.ItemIndex = -1 Then
+    Begin
+        lastIdx := -1;
+        Exit;
+    End;
 
   //Save the old panel
-  if lastIdx <> -1 then
-  begin
-    lbxColumnNames.Items[lastIdx]      := txtCaption.Text;
-    StatusBarObj.Panels[lastIdx].Text  := txtCaption.Text;
-    StatusBarObj.Panels[lastIdx].Width := StrToInt(txtWidth.Text);
-  end;
+    If lastIdx <> -1 Then
+    Begin
+        lbxColumnNames.Items[lastIdx] := txtCaption.Text;
+        StatusBarObj.Panels[lastIdx].Text := txtCaption.Text;
+        StatusBarObj.Panels[lastIdx].Width := StrToInt(txtWidth.Text);
+    End;
 
   //Set the new strings
-  lastIdx         := lbxColumnNames.ItemIndex;
-  txtCaption.Text := StatusBarObj.Panels[lbxColumnNames.ItemIndex].Text;
-  txtWidth.Text   := IntToStr(StatusBarObj.Panels[lbxColumnNames.ItemIndex].Width);
-end;
+    lastIdx := lbxColumnNames.ItemIndex;
+    txtCaption.Text := StatusBarObj.Panels[lbxColumnNames.ItemIndex].Text;
+    txtWidth.Text := IntToStr(StatusBarObj.Panels[lbxColumnNames.ItemIndex].Width);
+End;
 
-procedure TStatusBarForm.btMoveUpClick(Sender: TObject);
-var
-tmpString: string;
-tmpWidth: Integer;
-begin
+Procedure TStatusBarForm.btMoveUpClick(Sender: TObject);
+Var
+    tmpString: String;
+    tmpWidth: Integer;
+Begin
   //Get the old panel
-  tmpString := StatusBarObj.Panels.Items[lastIdx - 1].Text;
-  tmpWidth  := StatusBarObj.Panels.Items[lastIdx - 1].Width;
+    tmpString := StatusBarObj.Panels.Items[lastIdx - 1].Text;
+    tmpWidth := StatusBarObj.Panels.Items[lastIdx - 1].Width;
 
   //Perform a swap
-  StatusBarObj.Panels.Items[lastIdx - 1] := StatusBarObj.Panels.Items[lastIdx];
-  
+    StatusBarObj.Panels.Items[lastIdx - 1] := StatusBarObj.Panels.Items[lastIdx];
+
   //Then set the current panel as the backed up on
-  StatusBarObj.Panels.Items[lastIdx].Text  := tmpString;
-  StatusBarObj.Panels.Items[lastIdx].Width := tmpWidth;
+    StatusBarObj.Panels.Items[lastIdx].Text := tmpString;
+    StatusBarObj.Panels.Items[lastIdx].Width := tmpWidth;
 
   //set the new listbox selection
-  lbxColumnNames.Items.Move(lastIdx, lastIdx - 1);
-  lbxColumnNames.ItemIndex := lastIdx - 1;
-  lastIdx := lastIdx - 1;
+    lbxColumnNames.Items.Move(lastIdx, lastIdx - 1);
+    lbxColumnNames.ItemIndex := lastIdx - 1;
+    lastIdx := lastIdx - 1;
 
   //Lastly, do the button enabling
-  btDelete.Enabled   := lastIdx <> -1;
-  btMoveUp.Enabled   := lastIdx > 0;
-  btMoveDown.Enabled := lastIdx < lbxColumnNames.Count - 1;
-end;
+    btDelete.Enabled := lastIdx <> -1;
+    btMoveUp.Enabled := lastIdx > 0;
+    btMoveDown.Enabled := lastIdx < lbxColumnNames.Count - 1;
+End;
 
-procedure TStatusBarForm.btMoveDownClick(Sender: TObject);
-var
-tmpString: string;
-tmpWidth: Integer;
-begin
+Procedure TStatusBarForm.btMoveDownClick(Sender: TObject);
+Var
+    tmpString: String;
+    tmpWidth: Integer;
+Begin
   //Get the old panel
-  tmpString := StatusBarObj.Panels.Items[lastIdx + 1].Text;
-  tmpWidth  := StatusBarObj.Panels.Items[lastIdx + 1].Width;
+    tmpString := StatusBarObj.Panels.Items[lastIdx + 1].Text;
+    tmpWidth := StatusBarObj.Panels.Items[lastIdx + 1].Width;
 
   //Perform a swap
-  StatusBarObj.Panels.Items[lastIdx + 1] := StatusBarObj.Panels.Items[lastIdx];
-  
+    StatusBarObj.Panels.Items[lastIdx + 1] := StatusBarObj.Panels.Items[lastIdx];
+
   //Then set the current panel as the backed up on
-  StatusBarObj.Panels.Items[lastIdx].Text  := tmpString;
-  StatusBarObj.Panels.Items[lastIdx].Width := tmpWidth;
+    StatusBarObj.Panels.Items[lastIdx].Text := tmpString;
+    StatusBarObj.Panels.Items[lastIdx].Width := tmpWidth;
 
   //set the new listbox selection
-  lbxColumnNames.Items.Move(lastIdx, lastIdx + 1);
-  lbxColumnNames.ItemIndex := lastIdx + 1;
-  lastIdx := lastIdx + 1;
+    lbxColumnNames.Items.Move(lastIdx, lastIdx + 1);
+    lbxColumnNames.ItemIndex := lastIdx + 1;
+    lastIdx := lastIdx + 1;
 
   //Lastly, do the button enabling
-  btDelete.Enabled   := lastIdx <> -1;
-  btMoveUp.Enabled   := lastIdx > 0;
-  btMoveDown.Enabled := lastIdx < lbxColumnNames.Count - 1;
-end;
+    btDelete.Enabled := lastIdx <> -1;
+    btMoveUp.Enabled := lastIdx > 0;
+    btMoveDown.Enabled := lastIdx < lbxColumnNames.Count - 1;
+End;
 
-end.
+End.

@@ -56,195 +56,195 @@ end;
 
 }
 
-unit VistaAltFixUnit;
+Unit VistaAltFixUnit;
 
-interface
-uses
-  ExtCtrls, Classes, Contnrs, AppEvnts;
+Interface
+Uses
+    ExtCtrls, Classes, Contnrs, AppEvnts;
 
-type
-  TVistaAltFix = class(TComponent)
-  private
-    FList: TObjectList;
-    FApplicationEvents: TApplicationEvents;
-    FRepaintAll: Boolean;
-    procedure ApplicationEventsIdle(Sender: TObject; var Done: Boolean);
-    function VistaWithTheme: Boolean;
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-  published
-    property RepaintAll: Boolean read FRepaintAll write FRepaintAll default True;
-  end;
+Type
+    TVistaAltFix = Class(TComponent)
+    Private
+        FList: TObjectList;
+        FApplicationEvents: TApplicationEvents;
+        FRepaintAll: Boolean;
+        Procedure ApplicationEventsIdle(Sender: TObject; Var Done: Boolean);
+        Function VistaWithTheme: Boolean;
+    Public
+        Constructor Create(AOwner: TComponent); Override;
+        Destructor Destroy; Override;
+    Published
+        Property RepaintAll: Boolean Read FRepaintAll Write FRepaintAll Default True;
+    End;
 
-procedure Register;
+Procedure Register;
 
-implementation
-uses
-  Forms, Windows, Messages, Buttons, ComCtrls, Controls, StdCtrls;//, Themes;
+Implementation
+Uses
+    Forms, Windows, Messages, Buttons, ComCtrls, Controls, StdCtrls;//, Themes;
 
-type
-  TFormObj = class(TObject)
-  private
-    procedure WndProc(var Message: TMessage);
-  public
-    Form: TForm;
-    OrgProc: TWndMethod;
-    Used: Boolean;
-    NeedRepaint: Boolean;
-    RepaintAll: Boolean;
-    constructor Create(aForm: TForm; aRepaintAll: Boolean);
-    procedure DoRepaint;
-  end;
+Type
+    TFormObj = Class(TObject)
+    Private
+        Procedure WndProc(Var Message: TMessage);
+    Public
+        Form: TForm;
+        OrgProc: TWndMethod;
+        Used: Boolean;
+        NeedRepaint: Boolean;
+        RepaintAll: Boolean;
+        Constructor Create(aForm: TForm; aRepaintAll: Boolean);
+        Procedure DoRepaint;
+    End;
 
-procedure Register;
-begin
-  RegisterComponents('MEP', [TVistaAltFix]);
-end;
+Procedure Register;
+Begin
+    RegisterComponents('MEP', [TVistaAltFix]);
+End;
 
 { TVistaAltFix }
 
-procedure TVistaAltFix.ApplicationEventsIdle(Sender: TObject;
-  var Done: Boolean);
-var
-  I: Integer;
-  J: Integer;
-  TestForm: TForm;
-begin
+Procedure TVistaAltFix.ApplicationEventsIdle(Sender: TObject;
+    Var Done: Boolean);
+Var
+    I: Integer;
+    J: Integer;
+    TestForm: TForm;
+Begin
   // Initialize
-  for I := 0 to FList.Count - 1 do
-    TFormObj(FList[i]).Used := False;
+    For I := 0 To FList.Count - 1 Do
+        TFormObj(FList[i]).Used := False;
 
   // Check for new forms
-  for I := 0 to Screen.FormCount - 1 do
-  begin
-    TestForm := Screen.Forms[i];
-    for J := 0 to FList.Count - 1 do
-    begin
-      if TFormObj(FList[J]).Form = TestForm then
-      begin
-        TFormObj(FList[J]).Used := True;
-        TestForm := nil;
-        Break;
-      end;
-    end;
-    if Assigned(TestForm) then
-      FList.Add(TFormObj.Create(TestForm, RepaintAll));
-  end;
+    For I := 0 To Screen.FormCount - 1 Do
+    Begin
+        TestForm := Screen.Forms[i];
+        For J := 0 To FList.Count - 1 Do
+        Begin
+            If TFormObj(FList[J]).Form = TestForm Then
+            Begin
+                TFormObj(FList[J]).Used := True;
+                TestForm := Nil;
+                Break;
+            End;
+        End;
+        If Assigned(TestForm) Then
+            FList.Add(TFormObj.Create(TestForm, RepaintAll));
+    End;
 
   // Remove destroyed forms, repaint others if needed.
-  for I := FList.Count - 1 downto 0 do
-  begin
-    if not TFormObj(FList[i]).Used then
-      FList.Delete(i)
-    else
-      TFormObj(FList[i]).DoRepaint;
-  end;
-end;
+    For I := FList.Count - 1 Downto 0 Do
+    Begin
+        If Not TFormObj(FList[i]).Used Then
+            FList.Delete(i)
+        Else
+            TFormObj(FList[i]).DoRepaint;
+    End;
+End;
 
-constructor TVistaAltFix.Create(AOwner: TComponent);
-begin
-  inherited;
-  FRepaintAll := True;
+Constructor TVistaAltFix.Create(AOwner: TComponent);
+Begin
+    Inherited;
+    FRepaintAll := True;
   //if VistaWithTheme and not (csDesigning in ComponentState) then
-  if not (csDesigning in ComponentState) then
-  begin
-    FList := TObjectList.Create;
-    FApplicationEvents := TApplicationEvents.Create(nil);
-    FApplicationEvents.OnIdle := ApplicationEventsIdle;
-  end;
-end;
+    If Not (csDesigning In ComponentState) Then
+    Begin
+        FList := TObjectList.Create;
+        FApplicationEvents := TApplicationEvents.Create(Nil);
+        FApplicationEvents.OnIdle := ApplicationEventsIdle;
+    End;
+End;
 
-destructor TVistaAltFix.Destroy;
-begin
-  FApplicationEvents.Free;
-  FList.Free;
-  inherited;
-end;
+Destructor TVistaAltFix.Destroy;
+Begin
+    FApplicationEvents.Free;
+    FList.Free;
+    Inherited;
+End;
 
-function TVistaAltFix.VistaWithTheme: Boolean;
-var
-  OSVersionInfo: TOSVersionInfo;
-begin
-  OSVersionInfo.dwOSVersionInfoSize := SizeOf(OSVersionInfo);
+Function TVistaAltFix.VistaWithTheme: Boolean;
+Var
+    OSVersionInfo: TOSVersionInfo;
+Begin
+    OSVersionInfo.dwOSVersionInfoSize := SizeOf(OSVersionInfo);
   //if GetVersionEx(OSVersionInfo) and
 //     (OSVersionInfo.dwMajorVersion >= 6) and
  //    ThemeServices.ThemesEnabled then
  //   Result := True
  // else
     Result := False;
-end;
+End;
 
 { TFormObj }
 
-constructor TFormObj.Create(aForm: TForm; aRepaintAll: Boolean);
-begin
-  inherited Create;
-  Form := aForm;
-  RepaintAll := aRepaintAll;
-  Used := True;
-  OrgProc := Form.WindowProc;
-  Form.WindowProc := WndProc;
-end;
+Constructor TFormObj.Create(aForm: TForm; aRepaintAll: Boolean);
+Begin
+    Inherited Create;
+    Form := aForm;
+    RepaintAll := aRepaintAll;
+    Used := True;
+    OrgProc := Form.WindowProc;
+    Form.WindowProc := WndProc;
+End;
 
-procedure TFormObj.DoRepaint;
-  procedure RepaintBtnControls(TheCtrl: TControl);
+Procedure TFormObj.DoRepaint;
+    Procedure RepaintBtnControls(TheCtrl: TControl);
   // This method made by J Hamblin - Qtools Software.
-  var
-    i: integer;
-  begin
-    if not (TheCtrl is TWinControl) or (TheCtrl is TBitBtn) then
-      exit;
+    Var
+        i: Integer;
+    Begin
+        If Not (TheCtrl Is TWinControl) Or (TheCtrl Is TBitBtn) Then
+            exit;
 
     // repaint only controls of affected type
-    if (TheCtrl is TButtonControl) or (TheCtrl is TStaticText) then
-    begin
-      TWinControl(TheCtrl).Repaint;
-      exit; // TButtonControls, TStaticText do not contain controls so skip rest
-    end;
+        If (TheCtrl Is TButtonControl) Or (TheCtrl Is TStaticText) Then
+        Begin
+            TWinControl(TheCtrl).Repaint;
+            exit; // TButtonControls, TStaticText do not contain controls so skip rest
+        End;
 
     //
 
-    for i := 0 to TWinControl(TheCtrl).ControlCount - 1 do
-    begin
+        For i := 0 To TWinControl(TheCtrl).ControlCount - 1 Do
+        Begin
       // only paint controls on active tabsheet of page control
-      if (TheCtrl is TTabSheet) and
-          (TTabSheet(TheCtrl).PageIndex <> TTabSheet(TheCtrl).PageControl.ActivePageIndex) then
-        continue;
+            If (TheCtrl Is TTabSheet) And
+                (TTabSheet(TheCtrl).PageIndex <> TTabSheet(TheCtrl).PageControl.ActivePageIndex) Then
+                continue;
       // recurse
-      RepaintBtnControls(TWinControl(TheCtrl).Controls[i]);
-    end;
-  end;
+            RepaintBtnControls(TWinControl(TheCtrl).Controls[i]);
+        End;
+    End;
 
-  procedure DoRepaint(Ctrl: TControl);
-  var
-    i: integer;
-  begin
-    if (Ctrl is TWinControl) then
-    begin
-      TWinControl(Ctrl).Repaint;
-      for i := 0 to TWinControl(Ctrl).ControlCount - 1 do
-        DoRepaint(TWinControl(Ctrl).Controls[i]);
-    end;
-  end;
+    Procedure DoRepaint(Ctrl: TControl);
+    Var
+        i: Integer;
+    Begin
+        If (Ctrl Is TWinControl) Then
+        Begin
+            TWinControl(Ctrl).Repaint;
+            For i := 0 To TWinControl(Ctrl).ControlCount - 1 Do
+                DoRepaint(TWinControl(Ctrl).Controls[i]);
+        End;
+    End;
 
-begin
-  if NeedRepaint then
-  begin
-    NeedRepaint := False;
-    if RepaintAll then
-      DoRepaint(Form)
-    else
-      RepaintBtnControls(Form);
-  end;
-end;
+Begin
+    If NeedRepaint Then
+    Begin
+        NeedRepaint := False;
+        If RepaintAll Then
+            DoRepaint(Form)
+        Else
+            RepaintBtnControls(Form);
+    End;
+End;
 
-procedure TFormObj.WndProc(var Message: TMessage);
-begin
-  OrgProc(Message);
-  if (Message.Msg = WM_UPDATEUISTATE) then
-  if (TFormObj <> nil) then
-    NeedRepaint := True;
-end;
+Procedure TFormObj.WndProc(Var Message: TMessage);
+Begin
+    OrgProc(Message);
+    If (Message.Msg = WM_UPDATEUISTATE) Then
+        If (TFormObj <> Nil) Then
+            NeedRepaint := True;
+End;
 
-end.
+End.

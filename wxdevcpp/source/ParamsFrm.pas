@@ -17,11 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-unit ParamsFrm;
+Unit ParamsFrm;
 
-interface
+Interface
 
-uses
+Uses
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
     Dialogs, StdCtrls, Buttons, XPMenu, devcfg, OpenSaveDialogs;
@@ -31,8 +31,8 @@ uses
   QDialogs, QStdCtrls, QButtons, devcfg;
 {$ENDIF}
 
-type
-    TParamsForm = class(TForm)
+Type
+    TParamsForm = Class(TForm)
         grpParameters: TGroupBox;
         ParamEdit: TEdit;
         grpHost: TGroupBox;
@@ -41,61 +41,61 @@ type
         OkBtn: TBitBtn;
         CancelBtn: TBitBtn;
         XPMenu: TXPMenu;
-        procedure LoadBtnClick(Sender: TObject);
-        procedure FormCreate(Sender: TObject);
-        procedure FormShow(Sender: TObject);
-    private
+        Procedure LoadBtnClick(Sender: TObject);
+        Procedure FormCreate(Sender: TObject);
+        Procedure FormShow(Sender: TObject);
+    Private
         OpenDialog: TOpenDialogEx;
-        procedure LoadText;
+        Procedure LoadText;
         { Private declarations }
-    public
-        procedure DisableHost;
+    Public
+        Procedure DisableHost;
         { Public declarations }
-    end;
+    End;
 
-var
+Var
     ParamsForm: TParamsForm;
 
-implementation
+Implementation
 
-uses
+Uses
     MultiLangSupport, main;
 
 {$R *.dfm}
 
-procedure TParamsForm.LoadText;
-begin
+Procedure TParamsForm.LoadText;
+Begin
     Caption := Lang.Strings[ID_PARAM_CAPTION];
     grpParameters.Caption := Lang.Strings[ID_PARAM_PARAMS];
     grpHost.Caption := Lang.Strings[ID_PARAM_HOST];
     OkBtn.Caption := Lang.Strings[ID_BTN_OK];
     CancelBtn.Caption := Lang.Strings[ID_BTN_CANCEL];
-end;
+End;
 
-procedure TParamsForm.LoadBtnClick(Sender: TObject);
-begin
-    if OpenDialog.Execute then
+Procedure TParamsForm.LoadBtnClick(Sender: TObject);
+Begin
+    If OpenDialog.Execute Then
         HostEdit.Text := OpenDialog.FileName;
-end;
+End;
 
-procedure TParamsForm.DisableHost;
-begin
-    HostEdit.Enabled := false;
-    LoadBtn.Enabled := false;
-end;
+Procedure TParamsForm.DisableHost;
+Begin
+    HostEdit.Enabled := False;
+    LoadBtn.Enabled := False;
+End;
 
-procedure TParamsForm.FormCreate(Sender: TObject);
-begin
+Procedure TParamsForm.FormCreate(Sender: TObject);
+Begin
     OpenDialog := TOpenDialogEx.Create(MainForm);
     OpenDialog.DefaultExt := '.exe';
     OpenDialog.Filter := 'Applications (*.exe)|*.exe';
     LoadText;
-end;
+End;
 
-procedure TParamsForm.FormShow(Sender: TObject);
-begin
+Procedure TParamsForm.FormShow(Sender: TObject);
+Begin
     DesktopFont := True;
     XPMenu.Active := devData.XPTheme;
-end;
+End;
 
-end.
+End.
