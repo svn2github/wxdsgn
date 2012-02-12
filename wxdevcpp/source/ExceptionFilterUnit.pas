@@ -46,12 +46,12 @@ Begin
 
     //This is for People who try to enter caption or Label information in the Name Property
     If exceptObject Is EComponentError Then
-        ShowError(EComponentError(exceptObject).Message + PromptMsg + 'exceptObject error TR2')
+        ShowError(EComponentError(exceptObject).Message + PromptMsg + ' exceptObject error TR2')
     //This is for screwing up some Property Inspector Editor specifics like Entering Data
     //in the Orientation Information
     Else
     If exceptObject Is EJvInspectorItem Then
-        ShowError(EComponentError(exceptObject).Message + PromptMsg + 'Inspector error TR3')
+        ShowError(EComponentError(exceptObject).Message + PromptMsg + ' Inspector error TR3')
     //For some weird designer errors.
     Else
     If exceptObject Is EELDesigner Then
@@ -59,7 +59,7 @@ Begin
     //If user accidently entered text to a Integer field
     Else
     If exceptObject Is EConvertError Then
-        ShowError(EConvertError(exceptObject).Message + PromptMsg + 'Convert error TR4');
+        ShowError(EConvertError(exceptObject).Message + PromptMsg + ' Convert error TR4');
 End;
 
 Initialization

@@ -1519,7 +1519,7 @@ Begin
         ParseConst := False
     Else
     Begin
-        Value^ := StrToInt(Val);
+        Value^ := StrToIntDef(Val, 0);
         ParseConst := True;
     End;
 End;
@@ -1840,7 +1840,7 @@ Begin
             Command.Command := Format('%d%s%s -r %s',
                 [Watch^.Token, GDBbrkwatch, WriteGDBContext(SelectedThread, SelectedFrame), varname]);
         wbWrite:
-            Command.Command := Format('%d%s%s %s',
+            Command.Command := Format('%d%s%s -a %s',
                 [Watch^.Token, GDBbrkwatch, WriteGDBContext(SelectedThread, SelectedFrame), varname]);
         wbBoth:
             Command.Command := Format('%d%s%s -a %s',
@@ -1873,18 +1873,20 @@ Begin
             Watch^.Token := WATCHTOKENBASE + index;
             Items[index].Text := Watch^.Name + ' = ' + Watch^.Value;
 
+
             Command := TCommand.Create;
             Case Watch^.BPType Of
                 wbRead:
-                    Command.Command := Format('%d%s-r %s',
+                    Command.Command := Format('%d%s -r %s',
                         [Watch^.Token, GDBbrkwatch, Watch^.Name]);
                 wbWrite:
-                    Command.Command := Format('%d%d %s',
+                    Command.Command := Format('%d%s -a %s',
                         [Watch^.Token, GDBbrkwatch, Watch^.Name]);
                 wbBoth:
-                    Command.Command := Format('%d%d -a %s',
+                    Command.Command := Format('%d%s -a %s',
                         [Watch^.Token, GDBbrkwatch, Watch^.Name]);
             End;
+
             QueueCommand(Command);
         End;
 End;
@@ -1921,7 +1923,7 @@ Begin
                         Command.Command := Format('%d%s%s -r %s',
                             [Watch^.Token, GDBbrkwatch, WriteGDBContext(SelectedThread, SelectedFrame), Watch^.Name]);
                     wbWrite:
-                        Command.Command := Format('%d%s%s %s',
+                        Command.Command := Format('%d%s%s -a %s',
                             [Watch^.Token, GDBbrkwatch, WriteGDBContext(SelectedThread, SelectedFrame), Watch^.Name]);
                     wbBoth:
                         Command.Command := Format('%d%s%s -a %s',
@@ -2176,7 +2178,7 @@ Begin
 		// gui_critSect.Enter();
 		      AddtoDisplay('Current Thread ID = ' + CurrentThread);
 		// gui_critSect.Leave();
-		      CurrentGDBThread := StrToInt(CurrentThread);
+		      CurrentGDBThread := StrToIntDef(CurrentThread, 0);
         SelectedThread := CurrentGDBThread;
         SelectedFrame := 0;
 		      Repeat
@@ -2384,8 +2386,8 @@ Begin
                 ParseConst(@List, @GDBbegin, PString(@Smemstart));
                 ParseConst(@List, @GDBend, PString(@Smemend));
                 ParseConst(@List, @GDBcontents, PString(@MemContent));
-                memstart := StrToInt64(Smemstart);
-                memend := StrToInt64(Smemend);
+                memstart := StrToInt64Def(Smemstart, 0);
+                memend := StrToInt64Def(Smemend, 0);
                 displaystart := memstart And (Not $0f);
                 mem := displaystart;
       //  (66 = length of preamble 'begin=" ..... contents="'
@@ -2410,7 +2412,7 @@ Begin
                         Begin
                             Output := Output + format('%.1s%.1s ',
                                 [MemContent[j * 2 + 1], MemContent[j * 2 + 2]]);
-                            AscChar := StrToInt('$' + MemContent[j * 2 + 1] + MemContent[j * 2 + 2]);
+                            AscChar := StrToIntDef('$' + MemContent[j * 2 + 1] + MemContent[j * 2 + 2], 0);
                             If ((AscChar < 32) Or (AscChar > 127)) Then
                                 AscChars := AscChars + ' '
                             Else
@@ -3421,7 +3423,7 @@ Begin
 			                 (s^[i + k + 4] < '8') And
 			                 (s^[i + k + 5] = '''') Then
 			             Begin
-				                c := ((StrToInt(s^[i + k + 2]) * 8) + StrToInt(s^[i + k + 3])) * 8 + StrToInt(s^[i + k + 4]);
+				                c := ((StrToIntDef(s^[i + k + 2], 0) * 8) + StrToIntDef(s^[i + k + 3], 0)) * 8 + StrToIntDef(s^[i + k + 4], 0);
 				                temp := temp + format('''0x%2.2x''', [c]);
 				                i := i + k + 6;
 			             End
@@ -4243,7 +4245,7 @@ Begin
         If Output[I] = GDBframesrcline Then
         Begin
             Inc(I);
-            StackFrame^.Line := StrToInt(Output[I]);
+            StackFrame^.Line := StrToIntDef(Output[I], 0);
         End;
         Inc(I);
     End;
@@ -4503,7 +4505,7 @@ Begin
                 End
                 Else
                 Begin
-                    thread := StrToInt(threadID);
+                    thread := StrToIntDef(threadID, 0);
 			                 CurrentGDBThread := thread;
                     SelectedThread := thread;
                     SelectedFrame := 0;
@@ -4675,7 +4677,7 @@ Begin
                         'Running all threads'
                 Else
                 Begin
-                    thread := StrToInt(threadID);
+                    thread := StrToIntDef(threadID, 0);
                     OutputBuffer := Format('Running thread %d', [thread]);
 					               CurrentGDBThread := thread;
 					               SelectedThread := thread;
@@ -5028,7 +5030,7 @@ Begin
     Else
     Begin
         Try
-            Token^ := StrToInt(sToken);
+            Token^ := StrToIntDef(sToken, 0);
         Except
             Token^ := 0;
         End;
@@ -5428,7 +5430,7 @@ Var
         If RegExp.Exec(line, 'Breakpoint ([0-9]+) hit') Then
         Begin
             CurrBp := GetBreakpointFromIndex(
-                StrToInt(RegExp.Substitute('$1')));
+                StrToIntDef(RegExp.Substitute('$1'), 0));
             If CurrBp <> Nil Then
                 MainForm.GotoBreakpoint(CurrBp.Filename, CurrBp.Line)
             Else
@@ -5650,7 +5652,7 @@ Begin
             With StackFrame^ Do
             Begin
                 Filename := RegExp.Substitute('$7');
-                Line := StrToInt(RegExp.Substitute('$8'));
+                Line := StrToIntDef(RegExp.Substitute('$8'), 0);
                 FuncName := RegExp.Substitute('$4$6');
                 Args := RegExp.Substitute('$5');
             End;
@@ -6213,7 +6215,7 @@ Begin
     For I := 0 To Output.Count - 1 Do
         If RegExp.Exec(Output[I], '^(.*)!(.*) \[(.*) @ ([0-9]+)]:') Then
         Begin
-            CurLine := StrToInt(RegExp.Substitute('$4'));
+            CurLine := StrToIntDef(RegExp.Substitute('$4'), 0);
             CurFile := RegExp.Substitute('$1!$2 [$3 @ ');
             Disassembly := Disassembly + #9 + ';' + Output[I] + #10;
         End
@@ -6224,9 +6226,9 @@ Begin
         If RegExp.Exec(Output[I],
             '^ +([0-9]+) +([0-9a-fA-F]{1,8})( +)([^ ]*)( +)(.*)( +)(.*)') Then
         Begin
-            If StrToInt(RegExp.Substitute('$1')) <> CurLine Then
+            If StrToIntDef(RegExp.Substitute('$1'), 0) <> CurLine Then
             Begin
-                CurLine := StrToInt(RegExp.Substitute('$1'));
+                CurLine := StrToIntDef(RegExp.Substitute('$1'), 0);
                 Disassembly :=
                     Disassembly + #9 + ';' + CurFile +
                     RegExp.Substitute('$1') + ']:' + #10;
