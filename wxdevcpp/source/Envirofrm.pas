@@ -283,6 +283,17 @@ Begin
         edCVSExec.Text := devCVSHandler.Executable;
         spnCVSCompression.Value := devCVSHandler.Compression;
         chkCVSUseSSH.Checked := devCVSHandler.UseSSH;
+
+        // On Windows >= Vista we can't update the registry
+        //  settings if UAC has not been elevated to admin
+        //  So let's check and see if that's been done to
+        //   decide whether or not to show the Assocs tab.
+        If (isElevatedUAC) Then
+            tabAssocs.TabVisible := True
+        Else
+            tabAssocs.TabVisible := False;
+
+
     End;
 End;
 

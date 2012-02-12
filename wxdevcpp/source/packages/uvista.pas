@@ -25,7 +25,7 @@ Type
     TTASKDIALOG_BUTTONS = Array Of TTASKDIALOG_BUTTON;
 
 
-
+Function isElevatedUAC: Boolean;
 Function IsWindowsVista: Boolean;
 Procedure SetVistaFonts(Const AForm: TCustomForm);
 Procedure SetVistaContentFonts(Const AFont: TFont);
@@ -560,6 +560,65 @@ mbAll	A button with the text 'All' on its face
 }
 
 
+// Detects whether we are running wxDev-C++ with elevated admin
+//  permissions on UAC (Windows >= Vista)
+Function isElevatedUAC: Boolean;
+Const
+    TokenElevationType = 18;
+    TokenElevation = 20;
+    TokenElevationTypeDefault = 1;
+    TokenElevationTypeFull = 2;
+    TokenElevationTypeLimited = 3;
+
+Var token: Cardinal;
+    ElevationType: Integer;
+    Elevation: DWord;
+    dwSize: Cardinal;
+    elevateResult: Boolean;
+
+Begin
+    ElevateResult := True;
+
+  //If we are on versions prior to Windows Vista, then no UAC
+  //  to worry about.
+    If Not (IsWindowsVista) Then
+    Begin
+        Result := True;
+        Exit;
+    End;
+
+    If OpenProcessToken(GetCurrentProcess, TOKEN_QUERY, token) Then
+        Try
+            If GetTokenInformation(token, TTokenInformationClass(TokenElevationType), @ElevationType, SizeOf(ElevationType), dwSize) Then
+                Case ElevationType Of
+                    TokenElevationTypeDefault:
+                        ElevateResult := False;
+        //  TokenElevationTypeFull:
+                    TokenElevationTypeLimited:
+                        ElevateResult := False;
+        //else
+         // ShowMessage('elevation type unknown');
+                End
+            Else
+                ShowMessage(SysErrorMessage(GetLastError));
+            If GetTokenInformation(token, TTokenInformationClass(TokenElevation), @Elevation, SizeOf(Elevation), dwSize) Then
+            Begin
+                If Elevation = 0 Then
+                    ElevateResult := False;
+       // else
+       //   ShowMessage('token has elevate privs');
+            End
+            Else
+                ShowMessage(SysErrorMessage(GetLastError));
+        Finally
+            CloseHandle(token);
+        End
+    Else
+        ShowMessage(SysErrorMessage(GetLastError));
+
+    Result := ElevateResult;
+
+End;
 
 
 End.

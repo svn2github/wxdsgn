@@ -27,10 +27,10 @@ object EnviroForm: TEnviroForm
     Top = 8
     Width = 403
     Height = 375
-    ActivePage = tabGeneral
+    ActivePage = tabAssocs
     Anchors = [akLeft, akTop, akRight, akBottom]
     MultiLine = True
-    TabIndex = 0
+    TabIndex = 4
     TabOrder = 0
     object tabGeneral: TTabSheet
       Caption = 'General'

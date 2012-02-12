@@ -2512,7 +2512,7 @@ Var
     aPath: String;
     aValue: String;
 Begin
-    aRegistry := TRegistry.Create;
+    aRegistry := TRegistry.Create(KEY_READ);
     Try
         With aRegistry Do
         Begin

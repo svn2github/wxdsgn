@@ -23,7 +23,7 @@ Interface
 
 Uses
 {$IFDEF WIN32}
-    Windows, SysUtils, Classes, Forms, Registry, ShlObj;
+    Windows, SysUtils, Classes, Forms, Registry, ShlObj, uVista;
 {$ENDIF}
 {$IFDEF LINUX}
   SysUtils, Classes, QForms;
@@ -108,35 +108,43 @@ Procedure UnAssociate(Index: Integer);
 Var
     reg: TRegistry;
 Begin
-    reg := TRegistry.Create;
-    Try
-        reg.Rootkey := HKEY_CLASSES_ROOT;
-        If reg.KeyExists('wxdevcpp.' + Associations[Index, 0]) Then
-        Begin
-            reg.DeleteKey('.' + Associations[Index, 0]);
-            reg.DeleteKey('wxdevcpp.' + Associations[Index, 0]);
+
+// This code can't be done on Windows with UAC since
+//   need admin privledges to write to the registry.
+//  I've commented it out. GAR 11 FEB 2012
+
+    If (isElevatedUAC) Then
+    Begin
+        reg := TRegistry.Create;
+        Try
+            reg.Rootkey := HKEY_CLASSES_ROOT;
+            If reg.KeyExists('wxdevcpp.' + Associations[Index, 0]) Then
+            Begin
+                reg.DeleteKey('.' + Associations[Index, 0]);
+                reg.DeleteKey('wxdevcpp.' + Associations[Index, 0]);
+            End;
+        Finally
+            reg.free;
         End;
-    Finally
-        reg.free;
+        Associated[Index] := False;
+        Case Index Of
+            0:
+                devData.AssociateC := False;
+            1:
+                devData.AssociateCpp := False;
+            2:
+                devData.AssociateH := False;
+            3:
+                devData.AssociateHpp := False;
+            4:
+                devData.AssociateDev := False;
+            5:
+                devData.AssociateRc := False;
+            6:
+                devData.AssociateTemplate := False;
+        End;
+        RefreshIcons;
     End;
-    Associated[Index] := False;
-    Case Index Of
-        0:
-            devData.AssociateC := False;
-        1:
-            devData.AssociateCpp := False;
-        2:
-            devData.AssociateH := False;
-        3:
-            devData.AssociateHpp := False;
-        4:
-            devData.AssociateDev := False;
-        5:
-            devData.AssociateRc := False;
-        6:
-            devData.AssociateTemplate := False;
-    End;
-    RefreshIcons;
 End;
 
 Procedure Associate(Index: Integer);
@@ -182,7 +190,7 @@ Var
     keystring: String;
     regdfile: String;
 Begin
-    reg := TRegistry.Create;
+    reg := TRegistry.Create(KEY_READ);
     Try
         Result := False;
         reg.Rootkey := HKEY_CLASSES_ROOT;
@@ -211,30 +219,41 @@ Var
     reg: TRegistry;
     keystring: String;
 Begin
-    reg := TRegistry.Create;
-    Try
-        reg.Rootkey := HKEY_CLASSES_ROOT;
-        If Not reg.OpenKey(extension, True) Then
-            Exit;
-        reg.WriteString('', filetype);
-        reg.CloseKey;
-        If Not reg.OpenKey(filetype, True) Then
-            Exit;
-        reg.WriteString('', description);
-        reg.closekey;
-        keystring := Format('%s\shell\%s\command', [filetype, verb]);
-        If Not reg.OpenKey(keystring, True) Then
-            Exit;
-        reg.WriteString('', serverapp);
-        reg.CloseKey;
-        If Not reg.OpenKey(filetype + '\DefaultIcon', True) Then
-            Exit;
-        reg.WriteString('', Application.ExeName + ',' + IcoNum);
-        reg.CloseKey;
-        RefreshIcons;
-    Finally
-        reg.free;
+
+// This code can't be done on Windows with UAC since
+//   need admin privledges to write to the registry.
+//  I've commented it out. GAR 11 FEB 2012
+
+    If (isElevatedUAC) Then
+    Begin
+
+        reg := TRegistry.Create;
+        Try
+            reg.Rootkey := HKEY_CLASSES_ROOT;
+            If Not reg.OpenKey(extension, True) Then
+                Exit;
+            reg.WriteString('', filetype);
+            reg.CloseKey;
+            If Not reg.OpenKey(filetype, True) Then
+                Exit;
+            reg.WriteString('', description);
+            reg.closekey;
+            keystring := Format('%s\shell\%s\command', [filetype, verb]);
+            If Not reg.OpenKey(keystring, True) Then
+                Exit;
+            reg.WriteString('', serverapp);
+            reg.CloseKey;
+            If Not reg.OpenKey(filetype + '\DefaultIcon', True) Then
+                Exit;
+            reg.WriteString('', Application.ExeName + ',' + IcoNum);
+            reg.CloseKey;
+            RefreshIcons;
+        Finally
+            reg.free;
+        End;
+
     End;
+
 End;
 
 Function CheckDDEServer(Const filetype, verb, topic, servername:
@@ -243,7 +262,7 @@ Var
     reg: TRegistry;
     keystring: String;
 Begin
-    reg := TRegistry.Create;
+    reg := TRegistry.Create(KEY_READ);
     Try
         Result := False;
         reg.Rootkey := HKEY_CLASSES_ROOT;
@@ -269,25 +288,34 @@ Var
     reg: TRegistry;
     keystring: String;
 Begin
-    reg := TRegistry.Create;
-    Try
-        reg.Rootkey := HKEY_CLASSES_ROOT;
-        keystring := Format('%s\shell\%s\ddeexec', [filetype, verb]);
-        If Not reg.OpenKey(keystring, True) Then
-            Exit;
-        reg.WriteString('', macro);
-        reg.CloseKey;
-        If Not reg.OpenKey(keystring + '\Application', True) Then
-            Exit;
-        reg.WriteString('', servername);
-        reg.CloseKey;
-        If Not reg.OpenKey(keystring + '\topic', True) Then
-            Exit;
-        reg.WriteString('', topic);
-        reg.CloseKey;
-    Finally
-        reg.free;
+// This code can't be done on Windows with UAC since
+//   need admin privledges to write to the registry.
+//  I've commented it out. GAR 11 FEB 2012
+
+    If (isElevatedUAC) Then
+    Begin
+        reg := TRegistry.Create;
+        Try
+            reg.Rootkey := HKEY_CLASSES_ROOT;
+            keystring := Format('%s\shell\%s\ddeexec', [filetype, verb]);
+            If Not reg.OpenKey(keystring, True) Then
+                Exit;
+            reg.WriteString('', macro);
+            reg.CloseKey;
+            If Not reg.OpenKey(keystring + '\Application', True) Then
+                Exit;
+            reg.WriteString('', servername);
+            reg.CloseKey;
+            If Not reg.OpenKey(keystring + '\topic', True) Then
+                Exit;
+            reg.WriteString('', topic);
+            reg.CloseKey;
+        Finally
+            reg.free;
+        End;
+
     End;
+
 End;
 
 Procedure CheckAssociations;

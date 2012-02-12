@@ -3385,6 +3385,7 @@ Procedure TMainForm.SurroundWithClick(Sender: TObject);
 Var
     e: TEditor;
 Begin
+
     e := GetEditor;
     If Not Assigned(e) Then
         Exit;
