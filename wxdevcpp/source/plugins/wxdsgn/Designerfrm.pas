@@ -33,7 +33,7 @@ Interface
 
 Uses
     Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-    ExtCtrls, Buttons, StdCtrls, wxversion,
+    ExtCtrls, Buttons, StdCtrls, wxversion, 
     WxEdit, WxStaticText, WxButton, wxUtils, WXRadioButton, WXCheckBox,
     Wxcombobox, WxToolButton, WxSeparator, wxChoice,
     WxListbox, WxGauge, wxListCtrl, wxTreeCtrl, WxMemo, wxScrollbar, wxSpinButton,
@@ -558,7 +558,7 @@ Begin
     synEdit.Clear;
     synEdit.Lines.Add('<?xml version="1.0" encoding="ISO-8859-1"?>');
     synEdit.Lines.Add('<resource version="2.3.0.1">');
-    synEdit.Lines.Add('<!-- Created by wxDev-C++ ' + WXDEVCPP_VERSION + ' -->');
+    synEdit.Lines.Add('<!-- Created by ' + GetAppVersion + ' -->');
 
     synEdit.Lines.Add(Format('<!--object class="%s" name="%s"-->',
         [frmNewForm.Wx_class, frmNewForm.Wx_Name]));

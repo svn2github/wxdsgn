@@ -118,10 +118,10 @@ Begin
         reg := TRegistry.Create;
         Try
             reg.Rootkey := HKEY_CLASSES_ROOT;
-            If reg.KeyExists('wxdevcpp.' + Associations[Index, 0]) Then
+            If reg.KeyExists('devcpp.' + Associations[Index, 0]) Then
             Begin
                 reg.DeleteKey('.' + Associations[Index, 0]);
-                reg.DeleteKey('wxdevcpp.' + Associations[Index, 0]);
+                reg.DeleteKey('devcpp.' + Associations[Index, 0]);
             End;
         Finally
             reg.free;
@@ -151,14 +151,14 @@ Procedure Associate(Index: Integer);
 Begin
     RegisterFiletype(
         '.' + Associations[Index, 0],
-        'wxdevcpp.' + Associations[Index, 0],
+        'devcpp.' + Associations[Index, 0],
         Associations[Index, 1],
         'open',
         Application.Exename + ' "%1"',
         Associations[Index, 2]);
     If Associations[Index, 3] = '' Then
         RegisterDDEServer(
-            'wxdevcpp.' + Associations[Index, 0],
+            'devcpp.' + Associations[Index, 0],
             'open',
             DDETopic,
             Uppercase(ChangeFileExt(ExtractFilename(Application.Exename), EmptyStr)),
@@ -325,7 +325,7 @@ Var
 Begin
     For I := 0 To AssociationsCount - 1 Do
         Associated[I] := CheckFiletype('.' + Associations[I, 0],
-            'wxdevcpp.' + Associations[I, 0],
+            'devcpp.' + Associations[I, 0],
             Associations[I, 1],
             'open',
             Application.Exename + ' "%1"');
@@ -338,7 +338,7 @@ Begin
 
     For I := 0 To AssociationsCount - 1 Do
         DdeOK[I] := (Associations[I, 3] <> '') Or
-            CheckDDEServer('wxdevcpp.' + Associations[I, 0],
+            CheckDDEServer('devcpp.' + Associations[I, 0],
             'open',
             DDETopic,
             Uppercase(ChangeFileExt(ExtractFilename(Application.Exename),
@@ -347,7 +347,7 @@ Begin
     For I := 0 To AssociationsCount - 1 Do
         If (Not DdeOK[I]) And MustAssociate(I) Then
             RegisterDDEServer(
-                'wxdevcpp.' + Associations[I, 0],
+                'devcpp.' + Associations[I, 0],
                 'open',
                 DDETopic,
                 Uppercase(ChangeFileExt(ExtractFilename(Application.Exename),

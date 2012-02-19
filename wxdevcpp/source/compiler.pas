@@ -353,8 +353,8 @@ Begin
         ID_COMPILER_LINUX:
             writeln(F, '# Compiler Type: Linux gcc');
     End;
-    writeln(F, Format('# Makefile created by %s %s on %s',
-        [DEVCPP, DEVCPP_VERSION,
+    writeln(F, Format('# Makefile created by %s on %s',
+        [DEVCPP_VERSION,
         FormatDateTime('dd/mm/yy hh:nn', Now)]));
 
     If DoCheckSyntax Then

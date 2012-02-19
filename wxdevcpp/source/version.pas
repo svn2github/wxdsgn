@@ -23,7 +23,7 @@ Unit version;
 
 Interface
 
-Uses xprocs, SysUtils, Registry, Windows, Classes, utils;
+Uses xprocs, SysUtils, Registry, Windows, Classes, utils, Dialogs;
 
 Var
     LIB_EXT: String;
@@ -43,7 +43,6 @@ Const
 Resourcestring
     // misc strings
     DEVCPP = 'wxDev-C++';
-    //DEVCPP_VERSION    = '7.4';
     DEVCPP_WEBPAGE = 'http://wxdsgn.sourceforge.net/';
     DEFAULT_LANG_FILE = 'English.lng';
     HTTP = 'http://';
@@ -67,13 +66,13 @@ Resourcestring
 
     // default directories
     GCC_BIN_DIR = 'Bin;';
-    GCC_LIB_DIR = 'Lib;';
+    GCC_LIB_DIR = 'Lib' + pd + 'wx' + pd + 'gcc_lib';
     GCC_C_INCLUDE_DIR = 'Include;';
     GCC_RC_INCLUDE_DIR = 'include' + pd + 'common;';
 
     //Vc++
     VC2010_BIN_DIR = 'Bin' + pd + 'VC2010;Bin;';
-    VC2010_LIB_DIR = 'Lib' + pd + 'VC2010';
+    VC2010_LIB_DIR = 'Lib' + pd + 'wx' + pd + 'vc_lib';
     VC2010_C_INCLUDE_DIR = 'Include' + pd + 'common;Include' + pd + 'VC2010;';
     VC2010_RC_INCLUDE_DIR = 'include' + pd + 'common;';
 
@@ -933,8 +932,10 @@ Begin
         End;
 
         ID_COMPILER_VC2010:
+
             Result := GetVC2010Include + VC2010_CPP_INCLUDE_DIR +
                 COMMON_CPP_INCLUDE_DIR;
+
 
         ID_COMPILER_VC2008:
             Result := GetVC2008Include + VC2008_CPP_INCLUDE_DIR +
@@ -1213,15 +1214,14 @@ Begin
         If trim(strFSDKInstallDir) = '' Then
         Begin
 
-            TempString := 'SOFTWARE\Microsoft\MicrosoftSDKs\Windows\';
+            TempString := 'SOFTWARE\Microsoft\Microsoft SDKs\Windows\v7.0A';
             If (reg.OpenKey(TempString, False)) Then
             Begin
-                strFSDKInstallDir := reg.ReadString('CurrentInstallFolder');
+                strFSDKInstallDir := reg.ReadString('InstallationFolder');
             End;
             reg.CloseKey;
 
         End;
-
 
         //Guru : Make sure we set some invalid names to the dir,
         //otherwise with the empty string it will set \include and
@@ -1264,10 +1264,14 @@ Begin
                 If Trim(strInclude) = '' Then
                     strInclude :=
                         '$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(VCInstallDir)PlatformSDK\include\prerelease;$(VCInstallDir)PlatformSDK\include;$(FrameworkSDKDir)include;';
-                If ((versionString = '9.0') Or (versionString = '10.0')) Then
+                If (versionString = '9.0') Then
                     strInclude :=
                         strInclude + ';' + StringReplace(GetProgramFilesDir, ' (x86)', '', []) +
-                        '\Microsoft SDKs\Windows\v6.0A\Include;';
+                        '\Microsoft SDKs\Windows\v6.0A\Include;'
+                Else
+                If (strtofloat(versionString) >= 10.0) Then
+                    strInclude := strInclude + ';' + IncludeTrailingPathDelimiter(strFSDKInstallDir) + 'include';
+
                 strInclude := strInclude + ';$(WinSDKDir)include;';
                 Result := GetRefinedPathList(
                     strInclude, strVSInstallDir, strVCPPInstallDir, strFSDKInstallDir, strWinSDKDir);
@@ -1278,10 +1282,14 @@ Begin
                 If Trim(strBin) = '' Then
                     strBin :=
                         '$(VCInstallDir)bin;$(VSInstallDir)Common7\Tools\bin\prerelease;$(VSInstallDir)Common7\Tools\bin;$(VSInstallDir)Common7\tools;$(VSInstallDir)Common7\ide;' + GetProgramFilesDir + '\HTML Help Workshop\;$(FrameworkSDKDir)bin;$(FrameworkDir)$(FrameworkVersion);';
-                If ((versionString = '9.0') Or (versionString = '10.0')) Then
+                If (versionString = '9.0') Then
                     strBin := strBin + ';' +
                         StringReplace(GetProgramFilesDir, ' (x86)', '', []) +
-                        '\Microsoft SDKs\Windows\v6.0A\Bin;';
+                        '\Microsoft SDKs\Windows\v6.0A\Bin;'
+                Else
+                If (strtofloat(versionString) >= 10.0) Then
+                    strBin := strBin + ';' + IncludeTrailingPathDelimiter(strFSDKInstallDir) + 'bin';
+
                 strBin := strBin + ';$(WinSDKDir)bin;';
                 Result := GetRefinedPathList(strBin, strVSInstallDir,
                     strVCPPInstallDir, strFSDKInstallDir, strWinSDKDir);
@@ -1291,10 +1299,14 @@ Begin
                 If Trim(strLib) = '' Then
                     strLib :=
                         '$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(VCInstallDir)PlatformSDK\lib\prerelease;$(VCInstallDir)PlatformSDK\lib;$(FrameworkSDKDir)lib';
-                If ((versionString = '9.0') Or (versionString = '10.0')) Then
+                If (versionString = '9.0') Then
                     strLib := strLib + ';' +
                         StringReplace(GetProgramFilesDir, ' (x86)', '', []) +
-                        '\Microsoft SDKs\Windows\v6.0A\Lib;';
+                        '\Microsoft SDKs\Windows\v6.0A\Lib;'
+                Else
+                If (strtofloat(versionString) >= 10.0) Then
+                    strLib := strLib + ';' + IncludeTrailingPathDelimiter(strFSDKInstallDir) + 'lib';
+
                 strLib := strLib + ';$(WinSDKDir)lib;';
                 Result := GetRefinedPathList(strLib, strVSInstallDir,
                     strVCPPInstallDir, strFSDKInstallDir, strWinSDKDir);

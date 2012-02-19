@@ -3204,7 +3204,8 @@ Begin
     If (ClassBrowser1.ShowFilter = sfCurrent) Or Not Assigned(fProject) Then
         ClassBrowser1.Clear;
 
-    ToggleExecuteMenu(False);
+    If (PageControl.PageCount = 0) Then   // If there are no more open editors
+        ToggleExecuteMenu(False);
 
     // EAB: fix tab names
     PageControl.Refresh;

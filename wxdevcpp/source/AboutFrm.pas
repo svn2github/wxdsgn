@@ -27,11 +27,11 @@ Uses
     Version,
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-    StdCtrls, Buttons, ExtCtrls, XPMenu, ComCtrls;
+    StdCtrls, Buttons, ExtCtrls, XPMenu, ComCtrls, utils;
 {$ENDIF}
 {$IFDEF LINUX}
   SysUtils, Classes, QGraphics, QControls, QForms, QDialogs,
-  QStdCtrls, QButtons, QExtCtrls;
+  QStdCtrls, QButtons, QExtCtrls, utila;
 {$ENDIF}
 
 Type
@@ -89,31 +89,7 @@ Uses
 
 {$R *.dfm}
 
-Function GetAppVersion: String;
-Var
-    Size, Size2: DWord;
-    Pt, Pt2: Pointer;
-Begin
-    Size := GetFileVersionInfoSize(Pchar(ParamStr(0)), Size2);
-    If Size > 0 Then
-    Begin
-        GetMem(Pt, Size);
-        Try
-            GetFileVersionInfo(Pchar(ParamStr(0)), 0, Size, Pt);
-            VerQueryValue(Pt, '\', Pt2, Size2);
-            With TVSFixedFileInfo(Pt2^) Do
-            Begin
-                Result := ' build ' +
-                    IntToStr(HiWord(dwFileVersionMS)) + '.' +
-                    IntToStr(LoWord(dwFileVersionMS)) + '.' +
-                    IntToStr(HiWord(dwFileVersionLS)) + '.' +
-                    IntToStr(LoWord(dwFileVersionLS));
-            End;
-        Finally
-            FreeMem(Pt);
-        End;
-    End;
-End;
+
 
 Procedure TAboutForm.LoadText;
 Begin

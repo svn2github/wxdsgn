@@ -99,6 +99,8 @@ Function CreateGraphicFileDir(strFileName: String): String;
 
 Function LocalAppDataPath: String;
 
+Function GetAppVersion: String;
+
 Type
     TWxPoint = Class(TComponent)
     Private
@@ -7387,7 +7389,7 @@ Begin
 
         Result.Add('<?xml version="1.0" encoding="ISO-8859-1"?>');
         Result.Add('<resource version="2.3.0.1">');
-        Result.Add('<!-- Created by ' + DEVCPP + ' ' + WXDEVCPP_VERSION + ' -->');
+        Result.Add('<!-- Created by ' + GetAppVersion + ' -->');
 
         // Result.Add(Format('<object class="%s" name="%s">', [frmNewForm.Wx_class, frmNewForm.Wx_Name]));
 
@@ -8180,6 +8182,32 @@ Begin
         sValue := [];
     End;
 
+End;
+
+Function GetAppVersion: String;
+Var
+    Size, Size2: DWord;
+    Pt, Pt2: Pointer;
+Begin
+    Size := GetFileVersionInfoSize(Pchar(ParamStr(0)), Size2);
+    If Size > 0 Then
+    Begin
+        GetMem(Pt, Size);
+        Try
+            GetFileVersionInfo(Pchar(ParamStr(0)), 0, Size, Pt);
+            VerQueryValue(Pt, '\', Pt2, Size2);
+            With TVSFixedFileInfo(Pt2^) Do
+            Begin
+                Result := ' build ' +
+                    IntToStr(HiWord(dwFileVersionMS)) + '.' +
+                    IntToStr(LoWord(dwFileVersionMS)) + '.' +
+                    IntToStr(HiWord(dwFileVersionLS)) + '.' +
+                    IntToStr(LoWord(dwFileVersionLS));
+            End;
+        Finally
+            FreeMem(Pt);
+        End;
+    End;
 End;
 
 End.
