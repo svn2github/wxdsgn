@@ -1,9 +1,10 @@
 #include <stdio.h>
-#include <stdlib.h>
 
 int main(int argc, char *argv[])
 {
   
-  system("PAUSE");	
+  printf("Press enter to continue ...");
+  getchar();	
   return 0;
+
 }
