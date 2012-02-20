@@ -57,7 +57,7 @@ ResourceIncludes=
 MakeIncludes=
 Compiler=-DBUILDING_DLL=1
 CppCompiler=-DBUILDING_DLL=1
-Linker=--no-export-all-symbols_@@_-Wl,--add-stdcall-alias
+Linker=-Wl,--add-stdcall-alias
 PreprocDefines=
 CompilerSettings=0000000000000000000000
 Icon=
