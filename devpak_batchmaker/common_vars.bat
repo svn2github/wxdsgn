@@ -37,7 +37,7 @@ echo In what directory are the wxCode components located (Default = %WXCODE%)?
 set /P WXCODE=
 
 set BUILDBASE=Y
-%STARTDIR%\CP /T:Y,5 Do you wish to build the BASE libraries (Default = %BUILDBASE%)?
+CHOICE /T 5 /D %BUILDBASE% /M "Do you wish to build the BASE libraries (Default = %BUILDBASE%)?"
 IF ERRORLEVEL 1 GOTO BaseKeyPressed
 GOTO BuildBaseEND
 :BaseKeyPressed
@@ -52,7 +52,7 @@ set BUILDBASE=N
 
 
 set BUILDCONTRIB=N
-%STARTDIR%\CP /T:Y,5 Do you wish to build the CONTRIB libraries (Default = %BUILDCONTRIB%)?
+CHOICE /T 5 /D %BUILDCONTRIB% /M "Do you wish to build the CONTRIB libraries (Default = %BUILDCONTRIB%)?"
 IF ERRORLEVEL 1 GOTO ContribKeyPressed
 GOTO BuildContribEND
 :ContribKeyPressed
@@ -67,7 +67,7 @@ set BUILDCONTRIB=N
 
 
 set BUILD3RDP=N
-%STARTDIR%\CP /T:Y,5 Do you wish to build the 3RD PARTY libraries (Default = %BUILD3RDP%)?
+CHOICE /T 5 /D %BUILD3RDP% /M "Do you wish to build the 3RD PARTY libraries (Default = %BUILD3RDP%)?"
 IF ERRORLEVEL 1 GOTO 3RDPKeyPressed
 GOTO BUILD3RDPEND
 :3RDPKeyPressed
@@ -82,7 +82,7 @@ set BUILD3RDP=N
 
 
 set BUILDGCC=Y
-%STARTDIR%\CP /T:Y,5 Do you wish to build using the GCC compiler (Default = %BUILDGCC%)?
+CHOICE /T 5 /D %BUILDGCC% /M "Do you wish to build using the GCC compiler (Default = %BUILDGCC%)?"
 IF ERRORLEVEL 1 GOTO GCCKeyPressed
 GOTO BUILDGCCEND
 :GCCKeyPressed
@@ -97,7 +97,7 @@ set BUILDGCC=N
 
 
 set BUILDVC=N
-%STARTDIR%\CP /T:N,5  Do you wish to build using the Microsoft compiler (Default = %BUILDVC%)?
+CHOICE /T 5 /D %BUILDVC% /M  "Do you wish to build using the Microsoft compiler (Default = %BUILDVC%)?"
 IF ERRORLEVEL 1 GOTO VCKeyPressed
 GOTO BUILDVCEND
 :VCKeyPressed
@@ -107,7 +107,7 @@ set BUILDVC=Y
 :BUILDVCEND
 
 set BUILDDMC=N
-%STARTDIR%\CP /T:N,5  Do you wish to build using the Digital Mars compiler (Default = %BUILDVC%)?
+CHOICE /T 5 /D %BUILDDMC% /M "Do you wish to build using the Digital Mars compiler (Default = %BUILDVC%)?"
 IF ERRORLEVEL 1 GOTO DMCKeyPressed
 GOTO BUILDDMCEND
 :DMCKeyPressed
@@ -117,7 +117,7 @@ set BUILDDMC=Y
 :BUILDDMCEND
 
 set BUILDBCC=N
-%STARTDIR%\CP /T:N,5  Do you wish to build using the Borland compiler (Default = %BUILDVC%)?
+CHOICE /T 5 /D %BUILDBCC% /M  "Do you wish to build using the Borland compiler (Default = %BUILDVC%)?"
 IF ERRORLEVEL 1 GOTO BCCKeyPressed
 GOTO BUILDBCCEND
 :BCCKeyPressed
