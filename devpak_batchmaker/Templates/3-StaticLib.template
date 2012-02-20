@@ -23,25 +23,6 @@ CppName=StaticLib.h
 C=StaticFuncsLibc.h.txt
 Cpp=StaticFuncsLibcpp.h.txt
 
-[VersionInfo]
-Major=0
-Minor=1
-Release=1
-Build=1
-LanguageID=1033
-CharsetID=1252
-CompanyName=
-FileVersion=
-FileDescription=
-InternalName=
-LegalCopyright=
-LegalTrademarks=
-OriginalFilename=
-ProductName=
-ProductVersion=
-AutoIncBuildNrOnRebuild=0
-AutoIncBuildNrOnCompile=0
-
 [Profile0]
 ProfileName=MingW gcc
 Type=2
@@ -52,7 +33,7 @@ ResourceIncludes=
 MakeIncludes=
 Compiler=
 CppCompiler=
-Linker=-mwindows_@@_
+Linker=
 PreprocDefines=
 CompilerSettings=0000000000000000000000
 Icon=
