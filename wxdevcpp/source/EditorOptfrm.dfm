@@ -30,9 +30,9 @@ object EditorOptForm: TEditorOptForm
     Top = 8
     Width = 415
     Height = 373
-    ActivePage = tabGeneral
+    ActivePage = tabClassBrowsing
     Anchors = [akLeft, akTop, akRight, akBottom]
-    TabIndex = 0
+    TabIndex = 4
     TabOrder = 0
     object tabGeneral: TTabSheet
       Caption = 'General'

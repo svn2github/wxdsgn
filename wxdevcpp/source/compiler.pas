@@ -921,7 +921,7 @@ Begin
                 ExtractRelativePath(Makefile, fProject.Executable) +
                 '.manifest" /outputresource:"' + ExtractRelativePath(
                 Makefile, fProject.Executable) + ';#2"');
-            writeln(F, #9 + '@rm "' + ExtractRelativePath(
+            writeln(F, #9 + '@$(RM) "' + ExtractRelativePath(
                 Makefile, fProject.Executable) + '.manifest"');
         End;
     End;

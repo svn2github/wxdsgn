@@ -65,15 +65,15 @@ Resourcestring
     DEV_INTERNAL_THEME = 'New Look';
 
     // default directories
-    GCC_BIN_DIR = 'Bin;';
-    GCC_LIB_DIR = 'Lib' + pd + 'wx' + pd + 'gcc_lib';
-    GCC_C_INCLUDE_DIR = 'Include;';
+    GCC_BIN_DIR = 'bin;';
+    GCC_LIB_DIR = 'lib;lib' + pd + 'wx' + pd + 'gcc_lib;';
+    GCC_C_INCLUDE_DIR = 'include;';
     GCC_RC_INCLUDE_DIR = 'include' + pd + 'common;';
 
     //Vc++
-    VC2010_BIN_DIR = 'Bin' + pd + 'VC2010;Bin;';
-    VC2010_LIB_DIR = 'Lib' + pd + 'wx' + pd + 'vc_lib';
-    VC2010_C_INCLUDE_DIR = 'Include' + pd + 'common;Include' + pd + 'VC2010;';
+    VC2010_BIN_DIR = 'bin' + pd + 'VC2010;bin;';
+    VC2010_LIB_DIR = 'lib;lib' + pd + 'wx' + pd + 'vc_lib;';
+    VC2010_C_INCLUDE_DIR = 'include' + pd + 'common;include' + pd + 'VC2010;';
     VC2010_RC_INCLUDE_DIR = 'include' + pd + 'common;';
 
     VC2008_BIN_DIR = 'Bin' + pd + 'VC2008;Bin;';
@@ -87,12 +87,12 @@ Resourcestring
     VC2005_RC_INCLUDE_DIR = 'include' + pd + 'common;';
 
     VC2003_BIN_DIR = 'Bin' + pd + 'VC2003;Bin;';
-    VC2003_LIB_DIR = 'Lib' + pd + 'VC2003';
+    VC2003_LIB_DIR = 'Lib' + pd + 'VC2003;';
     VC2003_C_INCLUDE_DIR = 'Include' + pd + 'common;Include' + pd + 'VC2003;';
     VC2003_RC_INCLUDE_DIR = 'include' + pd + 'common;';
 
     VC6_BIN_DIR = 'Bin' + pd + 'VC6;Bin;';
-    VC6_LIB_DIR = 'Lib' + pd + 'VC6';
+    VC6_LIB_DIR = 'Lib' + pd + 'VC6;';
     VC6_C_INCLUDE_DIR = 'Include' + pd + 'common;Include' + pd + 'VC6;';
     VC6_RC_INCLUDE_DIR = 'include' + pd + 'common;';
 

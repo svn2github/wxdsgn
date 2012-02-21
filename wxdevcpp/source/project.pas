@@ -279,15 +279,14 @@ End;
 
 Destructor TProjUnit.Destroy;
 Begin
+
     If Assigned(fEditor) Then
         FreeAndNil(fEditor)
-    Else
+    else
         fEditor := Nil;
 
-    If Assigned(fNode) Then
-        FreeAndNil(fNode)
-    Else
-        fNode := Nil;
+    fNode := Nil;
+    
     Inherited;
 End;
 

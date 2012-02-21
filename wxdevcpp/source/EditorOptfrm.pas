@@ -1751,6 +1751,7 @@ Procedure TEditorOptForm.FillCCC;
 Var
     I: Integer;
 Begin
+ 
     Screen.Cursor := crHourglass;
     CppParser1.OnStartParsing := CppParser1StartParsing;
     CppParser1.OnEndParsing := Nil; //We will call it ourselves

@@ -4685,11 +4685,11 @@ Begin
     If Not assigned(fProject) Then
         exit;
 
-{$IFDEF WIN32}
+
     While ProjectView.SelectionCount > 0 Do
     Begin
         node := ProjectView.Selections[0];
-{$ENDIF}
+
         If Not assigned(node) Or
             (node.Level < 1) Then
             Continue;
@@ -5396,11 +5396,17 @@ Begin
                         Exit;
                 End;
             End;
-        End;
 
-        fProject.CurrentProfile.Linker := linker_original;
+            fProject.CurrentProfile.Linker := linker_original;
 
-        doDebugAfterCompile(Sender);
+            doDebugAfterCompile(Sender);
+
+        End
+        Else  // We are not in a project (single file compilation)
+           MessageDlg('You cannot debug outside of a project.'
+             + #13#10 + 'Please add file to project and then re-try.', mtInformation,
+                [mbOk], 0);
+
 
     End
     Else
