@@ -988,6 +988,8 @@ Type
 
         Procedure OnWatches(Locals: PTList);
 
+        Function AddDebuggerSwitches: Boolean;
+
     Private
         HelpWindow: HWND;
         fToDoList: TList;
@@ -5324,12 +5326,172 @@ Begin
     fDebugger.Go;
 End;
 
+/////////////////////////////////////
+
+Function TMainForm.AddDebuggerSwitches: Boolean;
+Var
+    opt: TCompilerOption;
+    idx: Integer;
+    spos: Integer;
+    opts: TProjProfile;
+
+    MessageResult: Integer;
+    optDebug: TCompilerOption;
+    idxDebug: Integer;
+    debugEnabled: Boolean;
+    debugValue: Boolean;
+
+Begin
+
+    debugValue := True;
+
+    // see if debugging is enabled
+    debugEnabled := devCompiler.FindOption('-g3', optDebug, idxDebug);
+    If debugEnabled Then
+    Begin
+        If Assigned(fProject) Then
+        Begin
+            If (fProject.CurrentProfile.CompilerOptions <> '') And
+                (fProject.CurrentProfile.CompilerOptions[idxDebug + 1] = '1') Then
+                debugEnabled := True
+            Else
+                debugEnabled := False;
+        End
+        Else
+            debugEnabled := (optDebug.optValue > 0);
+    End;
+
+    Result := debugEnabled;
+
+    If Not (debugEnabled) Then
+    Begin
+
+
+        If devData.AutoAddDebugFlag = -1 Then
+        Begin
+            MessageResult :=
+                devMessageBox(Self,
+                Lang[ID_MSG_NODEBUGSYMBOLS], 'wxDev-C++',
+                'Don''t show this again',
+                MB_ICONQUESTION Or MB_YESNOCANCEL);
+
+
+
+            If MessageResult > 0 Then
+                devData.AutoAddDebugFlag := abs(MessageResult);
+            MessageResult := abs(MessageResult);
+        End
+        Else
+            MessageResult := devData.AutoAddDebugFlag;
+
+        If MessageResult = mrCancel Then
+            Exit;
+        If MessageResult = mrNO Then
+            debugValue := False
+        Else
+            debugValue := True;
+
+       //     End;
+
+
+      //  If MessageDlg(Lang[ID_MSG_NODEBUGSYMBOLS], mtConfirmation,
+      //      [mbYes, mbNo], 0) = mrYes Then
+      //  Begin
+
+        If ((devCompiler.CompilerType = ID_COMPILER_MINGW) Or
+            (devCompiler.CompilerType = ID_COMPILER_LINUX)) Then
+        Begin
+            If (debugValue) Then
+            Begin
+                If devCompiler.FindOption('-g3', opt, idx) Then
+                Begin
+                    opt.optValue := 1;
+                    If Not Assigned(MainForm.fProject) Then
+                        devCompiler.Options[idx] := opt;
+                // set global debugging option only if not working with a project
+                    MainForm.SetProjCompOpt(idx, True);
+                // set the project's correpsonding option too
+
+                // remove "-s" from the linker''s command line
+                    If Assigned(MainForm.fProject) Then
+                    Begin
+                        opts := MainForm.fProject.CurrentProfile;
+                    // look for "-s" in all the possible ways
+                    // NOTE: can't just search for "-s" because we might get confused with
+                    //       some other option starting with "-s...."
+                        spos := Pos('-s ', opts.Linker); // following more opts
+                        If spos = 0 Then
+                            spos := Pos('-s'#13, opts.Linker); // end of line
+                        If spos = 0 Then
+                            spos := Pos('-s_@@_', opts.Linker);
+                    // end of line (dev 4.9.7.3+)
+                        If (spos = 0) And (Length(opts.Linker) >= 2) And
+                        // end of string
+                            (Copy(opts.Linker, Length(opts.Linker) - 1, 2) =
+                            '-s') Then
+                            spos := Length(opts.Linker) - 1;
+
+                    // if found, delete it
+                        If spos > 0 Then
+                            Delete(opts.Linker, spos, 2);
+
+                    End;
+
+                // remove "--no-export-all-symbols" from the linker''s command line
+                    If Assigned(MainForm.fProject) Then
+                    Begin
+                        opts := MainForm.fProject.CurrentProfile;
+                    // look for "--no-export-all-symbols"
+                        spos := Pos('--no-export-all-symbols', opts.Linker);
+                    // following more opts
+                    // if found, delete it
+                        If spos > 0 Then
+                            Delete(opts.Linker, spos,
+                                length('--no-export-all-symbols'));
+
+                    End;
+
+                // remove -s from the compiler options
+                    If devCompiler.FindOption('-s', opt, idx) Then
+                    Begin
+                        opt.optValue := 0;
+                        If Not Assigned(MainForm.fProject) Then
+                            devCompiler.Options[idx] := opt;
+                    // set global debugging option only if not working with a project
+                        MainForm.SetProjCompOpt(idx, False);
+                    // set the project's correpsonding option too
+                    End;
+                End;
+
+            End
+            Else
+            If devCompiler.CompilerType In ID_COMPILER_VC Then
+                If devCompiler.FindOption('/ZI', opt, idx) Then
+                Begin
+                    opt.optValue := 1;
+                    If Not Assigned(MainForm.fProject) Then
+                        devCompiler.Options[idx] := opt;
+                    MainForm.SetProjCompOpt(idx, True);
+                    MainForm.fProject.CurrentProfile.Linker :=
+                        MainForm.fProject.CurrentProfile.Linker + '/Debug';
+                End;
+
+        End;
+
+    End;
+
+End;
+
 Procedure TMainForm.actDebugExecute(Sender: TObject);
 Var
     UpToDate: Boolean;
     MessageResult, spos: Integer;
     linker_original: String;
     opts: TProjProfile;
+    idx: Integer;
+    optCompiler: TCompilerOption;
+    originalDebugFlag: Boolean;
+
 Begin
 
     linker_original := '';  // Trying to supress bug #3469393
@@ -5339,18 +5501,10 @@ Begin
         If Assigned(fProject) Then
         Begin
 
-            // remove "--no-export-all-symbols" from the linker''s command line
             opts := fProject.CurrentProfile;
             linker_original := opts.Linker;
 
-            // look for "--no-export-all-symbols"
-            spos := Pos('--no-export-all-symbols', opts.Linker);
-            // following more opts
-            // if found, delete it
-            If spos > 0 Then
-                Delete(opts.Linker, spos, length('--no-export-all-symbols'));
-
-            fProject.CurrentProfile := opts;
+            originalDebugFlag := AddDebuggerSwitches;
 
             //Save all the files then set the UI status
             actSaveAllExecute(Self);
@@ -5397,14 +5551,19 @@ Begin
                 End;
             End;
 
+
             fProject.CurrentProfile.Linker := linker_original;
+            fProject.CurrentProfile := opts;
+
+            devCompiler.FindOption('-g3', optCompiler, idx);
+            SetProjCompOpt(idx, originalDebugFlag);
 
             doDebugAfterCompile(Sender);
 
         End
         Else  // We are not in a project (single file compilation)
-           MessageDlg('You cannot debug outside of a project.'
-             + #13#10 + 'Please add file to project and then re-try.', mtInformation,
+            MessageDlg('You cannot debug outside of a project.'
+                + #13#10 + 'Please add file to project and then re-try.', mtInformation,
                 [mbOk], 0);
 
 
@@ -6988,10 +7147,12 @@ Begin
     //todo: disable profiling for non gcc compilers
     // see if profiling is enabled
     If (assigned(fProject) And
-        ((fProject.CurrentProfile.compilerType <> ID_COMPILER_MINGW) Or
-        (fProject.CurrentProfile.compilerType <> ID_COMPILER_LINUX))) Then
+        Not (fProject.CurrentProfile.compilerType
+        In [ID_COMPILER_MINGW, ID_COMPILER_LINUX])) Then
     Begin
-        ShowMessage('Profiling is Disabled for Non-MingW compilers.');
+        ShowMessage(Format('Profiling is Disabled for Non-MingW compilers.' +
+            ' Compiler type #%d'
+            , [fProject.CurrentProfile.compilerType]));
         exit;
     End;
     prof := devCompiler.FindOption('-pg', optP, idxP);

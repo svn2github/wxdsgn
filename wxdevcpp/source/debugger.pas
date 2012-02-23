@@ -413,6 +413,7 @@ Type
 
         //Common events
         Procedure OnNoDebuggingSymbolsFound;
+        Procedure AddDebuggerSwitches;
         Procedure OnAccessViolation;
         Procedure OnBreakpoint;
 
@@ -1183,7 +1184,7 @@ End;
 
 //=============================================================
 
-Procedure TDebugger.OnNoDebuggingSymbolsFound;
+Procedure TDebugger.AddDebuggerSwitches;
 Var
     opt: TCompilerOption;
     idx: Integer;
@@ -1191,84 +1192,96 @@ Var
     opts: TProjProfile;
 
 Begin
+
+    If ((devCompiler.CompilerType = ID_COMPILER_MINGW) Or
+        (devCompiler.CompilerType = ID_COMPILER_LINUX)) Then
+    Begin
+        If devCompiler.FindOption('-g3', opt, idx) Then
+        Begin
+            opt.optValue := 1;
+            If Not Assigned(MainForm.fProject) Then
+                devCompiler.Options[idx] := opt;
+                // set global debugging option only if not working with a project
+            MainForm.SetProjCompOpt(idx, True);
+                // set the project's correpsonding option too
+
+                // remove "-s" from the linker''s command line
+            If Assigned(MainForm.fProject) Then
+            Begin
+                opts := MainForm.fProject.CurrentProfile;
+                    // look for "-s" in all the possible ways
+                    // NOTE: can't just search for "-s" because we might get confused with
+                    //       some other option starting with "-s...."
+                spos := Pos('-s ', opts.Linker); // following more opts
+                If spos = 0 Then
+                    spos := Pos('-s'#13, opts.Linker); // end of line
+                If spos = 0 Then
+                    spos := Pos('-s_@@_', opts.Linker);
+                    // end of line (dev 4.9.7.3+)
+                If (spos = 0) And (Length(opts.Linker) >= 2) And
+                        // end of string
+                    (Copy(opts.Linker, Length(opts.Linker) - 1, 2) =
+                    '-s') Then
+                    spos := Length(opts.Linker) - 1;
+
+                    // if found, delete it
+                If spos > 0 Then
+                    Delete(opts.Linker, spos, 2);
+
+            End;
+
+                // remove "--no-export-all-symbols" from the linker''s command line
+            If Assigned(MainForm.fProject) Then
+            Begin
+                opts := MainForm.fProject.CurrentProfile;
+                    // look for "--no-export-all-symbols"
+                spos := Pos('--no-export-all-symbols', opts.Linker);
+                    // following more opts
+                    // if found, delete it
+                If spos > 0 Then
+                    Delete(opts.Linker, spos,
+                        length('--no-export-all-symbols'));
+
+            End;
+
+                // remove -s from the compiler options
+            If devCompiler.FindOption('-s', opt, idx) Then
+            Begin
+                opt.optValue := 0;
+                If Not Assigned(MainForm.fProject) Then
+                    devCompiler.Options[idx] := opt;
+                    // set global debugging option only if not working with a project
+                MainForm.SetProjCompOpt(idx, False);
+                    // set the project's correpsonding option too
+            End;
+        End;
+    End
+    Else
+    If devCompiler.CompilerType In ID_COMPILER_VC Then
+        If devCompiler.FindOption('/ZI', opt, idx) Then
+        Begin
+            opt.optValue := 1;
+            If Not Assigned(MainForm.fProject) Then
+                devCompiler.Options[idx] := opt;
+            MainForm.SetProjCompOpt(idx, True);
+            MainForm.fProject.CurrentProfile.Linker :=
+                MainForm.fProject.CurrentProfile.Linker + '/Debug';
+        End;
+
+End;
+
+
+//=============================================================
+
+Procedure TDebugger.OnNoDebuggingSymbolsFound;
+Begin
     If MessageDlg(Lang[ID_MSG_NODEBUGSYMBOLS], mtConfirmation,
         [mbYes, mbNo], 0) = mrYes Then
     Begin
         CloseDebugger(Nil);
-        If ((devCompiler.CompilerType = ID_COMPILER_MINGW) Or
-            (devCompiler.CompilerType = ID_COMPILER_LINUX)) Then
-        Begin
-            If devCompiler.FindOption('-g3', opt, idx) Then
-            Begin
-                opt.optValue := 1;
-                If Not Assigned(MainForm.fProject) Then
-                    devCompiler.Options[idx] := opt;
-                // set global debugging option only if not working with a project
-                MainForm.SetProjCompOpt(idx, True);
-                // set the project's correpsonding option too
 
-                // remove "-s" from the linker''s command line
-                If Assigned(MainForm.fProject) Then
-                Begin
-                    opts := MainForm.fProject.CurrentProfile;
-                    // look for "-s" in all the possible ways
-                    // NOTE: can't just search for "-s" because we might get confused with
-                    //       some other option starting with "-s...."
-                    spos := Pos('-s ', opts.Linker); // following more opts
-                    If spos = 0 Then
-                        spos := Pos('-s'#13, opts.Linker); // end of line
-                    If spos = 0 Then
-                        spos := Pos('-s_@@_', opts.Linker);
-                    // end of line (dev 4.9.7.3+)
-                    If (spos = 0) And (Length(opts.Linker) >= 2) And
-                        // end of string
-                        (Copy(opts.Linker, Length(opts.Linker) - 1, 2) =
-                        '-s') Then
-                        spos := Length(opts.Linker) - 1;
+        AddDebuggerSwitches;
 
-                    // if found, delete it
-                    If spos > 0 Then
-                        Delete(opts.Linker, spos, 2);
-
-                End;
-
-                // remove "--no-export-all-symbols" from the linker''s command line
-                If Assigned(MainForm.fProject) Then
-                Begin
-                    opts := MainForm.fProject.CurrentProfile;
-                    // look for "--no-export-all-symbols"
-                    spos := Pos('--no-export-all-symbols', opts.Linker);
-                    // following more opts
-                    // if found, delete it
-                    If spos > 0 Then
-                        Delete(opts.Linker, spos,
-                            length('--no-export-all-symbols'));
-
-                End;
-
-                // remove -s from the compiler options
-                If devCompiler.FindOption('-s', opt, idx) Then
-                Begin
-                    opt.optValue := 0;
-                    If Not Assigned(MainForm.fProject) Then
-                        devCompiler.Options[idx] := opt;
-                    // set global debugging option only if not working with a project
-                    MainForm.SetProjCompOpt(idx, False);
-                    // set the project's correpsonding option too
-                End;
-            End;
-        End
-        Else
-        If devCompiler.CompilerType In ID_COMPILER_VC Then
-            If devCompiler.FindOption('/ZI', opt, idx) Then
-            Begin
-                opt.optValue := 1;
-                If Not Assigned(MainForm.fProject) Then
-                    devCompiler.Options[idx] := opt;
-                MainForm.SetProjCompOpt(idx, True);
-                MainForm.fProject.CurrentProfile.Linker :=
-                    MainForm.fProject.CurrentProfile.Linker + '/Debug';
-            End;
         MainForm.Compiler.OnCompilationEnded := MainForm.doDebugAfterCompile;
         MainForm.actRebuildExecute(Nil);
     End;

@@ -655,6 +655,7 @@ Type
         fHiliteActiveTab: Boolean; // Hilite the Active Editor Page Tab
         fAutoCompile: Integer; // automatically compile when out-of-date
         fNoToolTip: Boolean; // Don't use Tooltips
+        fAutoAddDebugFlag : Integer; //Automatically add debug flag if not present at debug start
 
         fDebugCommand: String;
         // Custom command to send to debugger (default is "finish")
@@ -741,7 +742,8 @@ Type
         Property HiliteActiveTab: Boolean Read fHiliteActiveTab
             Write fHiliteActiveTab;
         Property AutoCompile: Integer Read fAutoCompile Write fAutoCompile;
-        Property NoToolTip: Boolean Read fNoToolTip Write fNoToolTip Default True;
+        Property NoToolTip: Boolean Read fNoToolTip Write fNoToolTip Default False;
+        Property AutoAddDebugFlag: Integer Read fAutoAddDebugFlag Write fAutoAddDebugFlag;
 
         Property DebugCommand: String Read fDebugCommand Write fDebugCommand;
         //Execution
@@ -1719,6 +1721,7 @@ Begin
     fOpenStyle := 0;
     fdblFiles := False;
     fAutoCompile := -1;
+    fAutoAddDebugFlag := -1;
 
     fToolbarMain := True;
     fToolbarMainX := 11;
@@ -1772,7 +1775,7 @@ Begin
     fPrintLineNumbersMargins := False;
     fWatchHint := True;
     fWatchError := True;
-    fNoToolTip := True;
+    fNoToolTip := False;
 
     fDebugCommand := '-exec-finish';
 
