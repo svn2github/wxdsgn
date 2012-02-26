@@ -337,6 +337,8 @@ Begin
     End;
     tmpIni := TIniFile.Create(filename);
 
+    C := 0;
+
     With tmpIni Do
         Try
             WriteInteger('Template', 'ver', 3);
@@ -411,7 +413,7 @@ Begin
                         TempProject.Profiles[i].ResourceIncludes.DelimitedText);
             End;
 
-            C := 0;
+           // C := 0;
             For I := 0 To lstFiles.Items.Count - 1 Do
                 If lstFiles.Checked[I] Then
                 Begin

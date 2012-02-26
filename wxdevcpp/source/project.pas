@@ -291,11 +291,7 @@ Begin
 End;
 
 Function TProjUnit.Save: Boolean;
-{$IFDEF PLUGIN_BUILD}
-Var
-    i: Integer;
-    boolForm: Boolean;
-{$ENDIF}
+
     Procedure DisableFileWatch;
     Var
         idx: Integer;
@@ -1068,10 +1064,6 @@ Begin
 End;
 
 Procedure TProject.Update;
-{$IFDEF PLUGIN_BUILD}
-Var
-    i: Integer;
-{$ENDIF}
 Begin
     With finifile Do
     Begin
@@ -1613,11 +1605,11 @@ End;
 
 Procedure TProject.LoadProfiles;
 Var
-    i, profileCount, resetCompilers, AutoSelectMissingCompiler: Integer;
+    i, profileCount, AutoSelectMissingCompiler: Integer;
     NewProfile: TProjProfile;
     CompilerType: String;
 Begin
-    ResetCompilers := 0;
+
     finifile.Section := 'Project';
     profilecount := finifile.Read('ProfilesCount', 0);
     fProfiles.useGPP := finifile.Read('useGPP', True);
@@ -1727,7 +1719,6 @@ Begin
             End;
             End;
 
-            Inc(ResetCompilers);
         End;
         fProfiles.Add(NewProfile);
     End;
@@ -1799,7 +1790,7 @@ Begin
     s := ChangeFileExt(Filename, '.layout');
     //  SetCurrentDir(ExtractFilePath(Filename));   // EAB: FileIsReadOnly depends on current dir.
 
-    If FileExists(s) And (FileGetAttr(s) And faReadOnly <> 0) Then
+    If FileExists(s) Then //And (FileGetAttr(s) And faReadOnly <> 0) Then
         exit;
     layIni := TIniFile.Create(s);
     Try

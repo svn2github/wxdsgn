@@ -442,7 +442,7 @@ Type
         Procedure RemoveBreakpoint(breakpoint: TBreakpoint); Virtual; Abstract;
         Procedure RemoveAllBreakpoints;
         Procedure RefreshBreakpoints;
-        Procedure RefreshWatches; Virtual; Abstract;
+        //Procedure RefreshWatches; Virtual; Abstract;
         Procedure RefreshBreakpoint(Var breakpoint: TBreakpoint);
             Virtual; Abstract;
         Function BreakpointExists(filename: String; line: Integer): Boolean;
@@ -569,7 +569,7 @@ Type
         Procedure AddBreakpoint(breakpoint: TBreakpoint); Override;
         Procedure RemoveBreakpoint(breakpoint: TBreakpoint); Override;
         Procedure RefreshBreakpoint(Var breakpoint: TBreakpoint); Override;
-//        procedure RefreshWatches; override;
+        //procedure RefreshWatches; override;
 
         //Variable watches
         Procedure RefreshContext(refresh: ContextDataSet =
@@ -684,7 +684,7 @@ Type
         Procedure AddBreakpoint(breakpoint: TBreakpoint); Override;
         Procedure RemoveBreakpoint(breakpoint: TBreakpoint); Override;
         Procedure RefreshBreakpoint(Var breakpoint: TBreakpoint); Override;
-        Procedure RefreshWatches; Override;
+        //Procedure RefreshWatches; Override;
 
         //Variable watches
         Procedure RefreshContext(refresh: ContextDataSet =
@@ -727,10 +727,15 @@ Procedure ReadThread.Execute;
 Var
     BufMem: Pchar;           // The originally allocated memory (pointer 'buf' gets moved!)
     BytesAvailable: DWORD;
+
+    {$ifdef DISPLAYOUTPUT}
     PipeBufSize: DWORD;
+    BufType: DWORD;
+    {$ENDIF}
+
     BytesToRead: DWORD;
     LastRead: DWORD;
-    BufType: DWORD;
+
     TotalBytesRead: DWORD;
     ReadSuccess: Boolean;
 
@@ -743,7 +748,10 @@ Begin
     BytesAvailable := 0;
     BytesToRead := 0;
     LastRead := 0;
+
+    {$ifdef DISPLAYOUTPUT}
     TotalBytesRead := 0;
+    {$ENDIF}
 
     While (Not Terminated) Do
     Begin
@@ -1644,7 +1652,7 @@ Var
     Value: String;
     ValStrings: TStringList;
     start: Integer;
-    Buffer, Output: String;
+    Output: String;
 
 Begin
     start := 0;
@@ -2458,7 +2466,7 @@ Procedure TGDBDebugger.ParseCPUDisassem(Msg: String);
    Initial parse of Disassembly display.
 }
 Var
-    line: String;
+  //  line: String;
     List: String;
     CurrentFuncName: String;
     next: Integer;
@@ -3036,7 +3044,7 @@ Function TGDBDebugger.ParseResult(Str: PString; Level: Integer; List: TList): St
 Var
     Output: String;
     Vari: String;   // This is called Var in the GDB spec !
-    start: Integer;
+   // start: Integer;
     Val: String;
     Local: PWatchVar;
 
@@ -3044,7 +3052,7 @@ Begin          // ParseResult
     Val := SplitResult(Str, @Vari);
     Output := Vari;
     Output := Output + ' = ';
-    start := Pos(wxStringBase, Val);
+   // start := Pos(wxStringBase, Val);
     If (Vari = GDBname) Then                        // a name of a Tuple
     Begin
         New(Local);
@@ -3099,9 +3107,6 @@ Begin          // ParseResult
             End;
             List.Add(Local);
             Output := Output + Val;
-
-
-
 
         End;
 
@@ -4138,8 +4143,8 @@ End;
 
 Procedure TGDBDebugger.RefreshContext(refresh: ContextDataSet);
 Var
-    I: Integer;
-    Node: TListItem;
+  //  I: Integer;
+  //  Node: TListItem;
     Command: TCommand;
 Begin
     If Not Executing Then
@@ -5006,7 +5011,7 @@ End;
 Function TGDBDebugger.GetToken(buf: Pchar; bsize: PLongInt;
     Token: PInteger): Pchar;
 Var
-    OutputBuffer: String;
+   // OutputBuffer: String;
     c, s: Pchar;
     sToken: String;
 
@@ -5583,10 +5588,10 @@ End;
 
 Procedure TCDBDebugger.RefreshContext(refresh: ContextDataSet);
 Var
-    I: Integer;
-    Node: TTreeNode;
+   // I: Integer;
+   // Node: TTreeNode;
     Command: TCommand;
-    MemberName: String;
+   // MemberName: String;
 Begin
     If Not Executing Then
         Exit;
@@ -5627,17 +5632,12 @@ Begin
 End;
 
 Procedure TCDBDebugger.AddWatch(varname: String; when: TWatchBreakOn);
-Var
-    Command: TCommand;
-    bpType: String;
-    Watch: PWatch;
-Begin
-
-End;
-
-Procedure TCDBDebugger.RefreshWatches;
 Begin
 End;
+
+//Procedure TCDBDebugger.RefreshWatches;
+//Begin
+//End;
 
 Procedure TCDBDebugger.OnCallStack(Output: TStringList);
 Var

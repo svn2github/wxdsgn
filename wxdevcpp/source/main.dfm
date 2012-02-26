@@ -1372,7 +1372,7 @@ object MainForm: TMainForm
       object CompilerOutput: TListView
         Left = 0
         Top = 0
-        Width = 632
+        Width = 647
         Height = 98
         Align = alClient
         BevelOuter = bvRaised
@@ -1411,7 +1411,7 @@ object MainForm: TMainForm
       object ResourceOutput: TListBox
         Left = 0
         Top = 0
-        Width = 632
+        Width = 647
         Height = 98
         Align = alClient
         BevelKind = bkSoft
@@ -1431,7 +1431,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 225
-        Height = 97
+        Height = 98
         Align = alLeft
         Caption = 'Information :'
         TabOrder = 0
@@ -1486,13 +1486,13 @@ object MainForm: TMainForm
         Left = 225
         Top = 0
         Width = 422
-        Height = 97
+        Height = 98
         Align = alClient
         Caption = 'Compile log :'
         TabOrder = 1
         DesignSize = (
           422
-          97)
+          98)
         object LogOutput: TMemo
           Left = 7
           Top = 16
@@ -1514,7 +1514,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 647
-        Height = 97
+        Height = 98
         ActivePage = tabDebugOutput
         Align = alClient
         TabIndex = 4
@@ -1525,7 +1525,7 @@ object MainForm: TMainForm
           object lvBacktrace: TListView
             Left = 0
             Top = 0
-            Width = 624
+            Width = 639
             Height = 70
             Align = alClient
             Columns = <
@@ -1560,7 +1560,7 @@ object MainForm: TMainForm
           object lvLocals: TListView
             Left = 0
             Top = 0
-            Width = 624
+            Width = 639
             Height = 70
             Align = alClient
             Columns = <
@@ -1588,7 +1588,7 @@ object MainForm: TMainForm
           object lvThreads: TListView
             Left = 0
             Top = 0
-            Width = 624
+            Width = 639
             Height = 70
             Align = alClient
             Columns = <
@@ -1616,7 +1616,7 @@ object MainForm: TMainForm
             Left = 0
             Top = 0
             Width = 639
-            Height = 69
+            Height = 70
             Align = alClient
             Indent = 19
             PopupMenu = DebugVarsPopup
@@ -1689,7 +1689,7 @@ object MainForm: TMainForm
       object FindOutput: TListView
         Left = 0
         Top = 0
-        Width = 632
+        Width = 647
         Height = 98
         Align = alClient
         BevelOuter = bvRaised
@@ -1734,7 +1734,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 651
-        Height = 60
+        Height = 61
         Align = alClient
         Checkboxes = True
         Columns = <
@@ -1769,7 +1769,7 @@ object MainForm: TMainForm
       end
       object TodoSettings: TPanel
         Left = 0
-        Top = 60
+        Top = 61
         Width = 651
         Height = 41
         Align = alBottom
@@ -2340,7 +2340,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 184
-        Height = 167
+        Height = 168
         Align = alClient
         ChangeDelay = 1
         DragMode = dmAutomatic
@@ -2372,7 +2372,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 184
-        Height = 167
+        Height = 168
         Align = alClient
         Images = dmMain.ClassImages
         ReadOnly = True
@@ -4565,7 +4565,6 @@ object MainForm: TMainForm
     end
     object ClearallWatchPop: TMenuItem
       Caption = '&Clear all'
-      OnClick = ClearallWatchPopClick
     end
   end
   object DevCppDDEServer: TDdeServerConv

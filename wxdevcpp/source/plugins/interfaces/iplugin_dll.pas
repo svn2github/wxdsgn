@@ -22,7 +22,6 @@ type
     controlBar: TControlBar;
     owner: TWinControl;
     tool: TToolBar;
-    button: TToolButton;
     plugin_name: String;
     C_TestReport: procedure(h: HWND); cdecl;
     C_CutExecute: procedure; cdecl;
@@ -83,7 +82,7 @@ type
     procedure CutExecute;
     procedure CopyExecute;
     procedure PasteExecute;
-    procedure Destroy; 
+    procedure DestroyDLL;
     procedure OnToolbarEvent(WM_COMMAND: Word);
     procedure SetBoolInspectorDataClear(b: Boolean);
     procedure SetDisablePropertyBuilding(b: Boolean);
@@ -300,7 +299,7 @@ begin
         self.C_PasteExecute;
 end;
 
-procedure TPlug_In_DLL.Destroy;
+Procedure TPlug_In_DLL.DestroyDLL;
 begin
     if (@self.C_Destroy <> nil) then
         self.C_Destroy;

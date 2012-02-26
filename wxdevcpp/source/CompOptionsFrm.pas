@@ -534,6 +534,9 @@ Var
     tempName: String;
 {$ENDIF}
 Begin
+
+    pluginSettings := nil;
+
     //SaveSettings;    EAB
     devCompilerSet.LoadSet(cmbCompilerSetComp.ItemIndex);
 
@@ -575,6 +578,9 @@ Var
     tempName: String;
 {$ENDIF PLUGIN_BUILD}
 Begin
+
+    pluginSettings := nil;
+
     With devCompilerSet Do
     Begin
         fBins := BinDir;

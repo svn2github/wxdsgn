@@ -69,7 +69,7 @@ Type
         FApplicationEvents: TApplicationEvents;
         FRepaintAll: Boolean;
         Procedure ApplicationEventsIdle(Sender: TObject; Var Done: Boolean);
-        Function VistaWithTheme: Boolean;
+       // Function VistaWithTheme: Boolean;
     Public
         Constructor Create(AOwner: TComponent); Override;
         Destructor Destroy; Override;
@@ -162,18 +162,18 @@ Begin
     Inherited;
 End;
 
-Function TVistaAltFix.VistaWithTheme: Boolean;
-Var
-    OSVersionInfo: TOSVersionInfo;
-Begin
-    OSVersionInfo.dwOSVersionInfoSize := SizeOf(OSVersionInfo);
+//Function TVistaAltFix.VistaWithTheme: Boolean;
+//Var
+//    OSVersionInfo: TOSVersionInfo;
+//Begin
+//    OSVersionInfo.dwOSVersionInfoSize := SizeOf(OSVersionInfo);
   //if GetVersionEx(OSVersionInfo) and
 //     (OSVersionInfo.dwMajorVersion >= 6) and
  //    ThemeServices.ThemesEnabled then
  //   Result := True
  // else
-    Result := False;
-End;
+ //   Result := False;
+//End;
 
 { TFormObj }
 

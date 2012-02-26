@@ -494,6 +494,9 @@ Var
     tempName: String;
 {$ENDIF PLUGIN_BUILD}
 Begin
+
+        pluginSettings := nil;
+        
     If CurrentProfile = Nil Then
         exit;
     With CurrentProfile Do
@@ -1653,11 +1656,15 @@ Begin
         [mbYes, mbNo], 0) = mrNo Then
         Exit;
 
+    // Remove the current profile
     fProfiles.Remove(cmbProfileSetComp.ItemIndex);
+
+    // Change profile to first one
     cmbProfileSetComp.ItemIndex := 0;
     CurrentProfileIndex := 0;
     UpdateProfileList(0);
-    cmbProfileSetCompChange(cmbProfileSetComp);
+
+    cmbProfileSetCompChange(nil);
 End;
 
 Procedure TfrmProjectOptions.btnRenameProfileSetClick(Sender: TObject);

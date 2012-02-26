@@ -166,6 +166,8 @@ Begin
     End
     Else
     Begin
+        startTmp := 0; endTmp := 0;
+        
         If (ssoReplaceAll In fOptions) And Not UseSelection Then
         Begin
             startTmp := fEditor.Text.SelStart;
@@ -181,7 +183,7 @@ Begin
         If (ssoReplaceAll In fOptions) And Not UseSelection Then
         Begin
             fEditor.Text.SelStart := startTmp;
-            fEditor.Text.SelEnd := startTmp;
+            fEditor.Text.SelEnd := endTmp;
         End;
     End;
     Result := True;

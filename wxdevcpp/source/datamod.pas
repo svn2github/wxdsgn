@@ -279,6 +279,11 @@ Var
     resultAssigned: Boolean;
 {$ENDIF}
 Begin
+
+    {$IFDEF PLUGIN_BUILD}
+       ResultAssigned := False;
+    {$ENDIF}
+
     UpdateHighlighter;
     result := Nil;
     If devEditor.UseSyntax Then

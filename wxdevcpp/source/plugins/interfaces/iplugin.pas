@@ -20,10 +20,10 @@ const
 type
 
   IPlug_In = interface(IInterface) ['{C9E8FCF9-BEBD-4A51-80C1-16AF5197BBB3}']
-  
+
 	//Startup and shutdown
   procedure Initialize(name: String; module: HModule; _parent: HWND; _controlBar: TControlBar; _owner: TForm; Config: String; toolbar_x: Integer; toolbar_y: Integer);
-  procedure Destroy;
+  procedure DestroyDLL; 
   procedure TestReport;
 
   //Properties

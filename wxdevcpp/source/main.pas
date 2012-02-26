@@ -942,7 +942,6 @@ Type
         Procedure actAttachProcessUpdate(Sender: TObject);
         Procedure actAttachProcessExecute(Sender: TObject);
         Procedure actModifyWatchExecute(Sender: TObject);
-        Procedure ClearallWatchPopClick(Sender: TObject);
         Procedure PageControlChanging(Sender: TObject;
             Var AllowChange: Boolean);
         Procedure mnuCVSClick(Sender: TObject);
@@ -1990,7 +1989,6 @@ Var
     toolbar: TToolBar;
     i, j: Integer;
     panel1: TForm;
-    panel2: TForm;
 {$ENDIF PLUGIN_BUILD}
 Begin
     If IsWindow(HelpWindow) Then
@@ -2103,7 +2101,7 @@ Begin
             devPluginToolbarsY.AddToolbarsY(plugins[i].GetPluginName,
                 toolbar.Top);
         End;
-        plugins[i].Destroy;
+        plugins[i].DestroyDLL;
         plugins[i] := Nil;
     End;
   {$ENDIF PLUGIN_BUILD}
@@ -3181,7 +3179,6 @@ Function TMainForm.CloseEditor(index: Integer; Rem: Boolean;
 Var
     e: TEditor;
     Saved: Boolean;
-    intActivePage, i: Integer;
 Begin
     Saved := False;
     Result := False;
@@ -3964,9 +3961,6 @@ End;
 Procedure TMainForm.actNewProjectExecute(Sender: TObject);
 Var
     s: String;
-{$IFDEF PLUGIN_BUILD}
-    i: Integer;
-{$ENDIF}
 Begin
     With TNewProjectForm.Create(Self) Do
         Try
@@ -4098,14 +4092,10 @@ Var
     prj: Integer;
     flt: String;
 {$IFDEF PLUGIN_BUILD}
-    filters: TStringList;
-    built: Boolean;
-    j, I: Integer;
+    j: Integer;
 {$ENDIF}
 Begin
 
-
-    built := False;
     prj := -1;
     flt := '';
     BuildFilter(flt, ftOpen);
@@ -4821,11 +4811,6 @@ Var
     flt: String;
     idx: Integer;
     FolderNode: TTreeNode;
-    filtersBuilt: Boolean;
-{$IFDEF PLUGIN_BUILD}
-    i, j: Integer;
-    filters: TStringList;
-{$ENDIF}
 Begin
     If Not assigned(fProject) Then
         exit;
@@ -5229,8 +5214,7 @@ End;
 Procedure TMainForm.doDebugAfterCompile(Sender: TObject);
 Var
     e: TEditor;
-    idx, idx2: Integer;
-    s: String;
+    idx: Integer;
 Begin
     PrepareDebugger;
     If assigned(fProject) Then
@@ -5318,7 +5302,7 @@ Begin
                     [rfReplaceAll]), fCompiler.RunParams);
 
             fDebugger.RefreshBreakpoints;
-            fDebugger.RefreshWatches;
+            //fDebugger.RefreshWatches;
         End;
     End;
 
@@ -5343,8 +5327,6 @@ Var
 
 Begin
 
-    debugValue := True;
-
     // see if debugging is enabled
     debugEnabled := devCompiler.FindOption('-g3', optDebug, idxDebug);
     If debugEnabled Then
@@ -5366,7 +5348,6 @@ Begin
     If Not (debugEnabled) Then
     Begin
 
-
         If devData.AutoAddDebugFlag = -1 Then
         Begin
             MessageResult :=
@@ -5374,8 +5355,6 @@ Begin
                 Lang[ID_MSG_NODEBUGSYMBOLS], 'wxDev-C++',
                 'Don''t show this again',
                 MB_ICONQUESTION Or MB_YESNOCANCEL);
-
-
 
             If MessageResult > 0 Then
                 devData.AutoAddDebugFlag := abs(MessageResult);
@@ -5390,13 +5369,6 @@ Begin
             debugValue := False
         Else
             debugValue := True;
-
-       //     End;
-
-
-      //  If MessageDlg(Lang[ID_MSG_NODEBUGSYMBOLS], mtConfirmation,
-      //      [mbYes, mbNo], 0) = mrYes Then
-      //  Begin
 
         If ((devCompiler.CompilerType = ID_COMPILER_MINGW) Or
             (devCompiler.CompilerType = ID_COMPILER_LINUX)) Then
@@ -5485,7 +5457,7 @@ End;
 Procedure TMainForm.actDebugExecute(Sender: TObject);
 Var
     UpToDate: Boolean;
-    MessageResult, spos: Integer;
+    MessageResult: Integer;
     linker_original: String;
     opts: TProjProfile;
     idx: Integer;
@@ -7276,7 +7248,6 @@ Var
     idx: Integer;
     current: Integer;
     e: TEditor;
-    curFilename, tempFileName: String;
 {$IFDEF PLUGIN_BUILD}
     //tempEditor: TEditor;
     //pluginCatched : Boolean;
@@ -8770,7 +8741,7 @@ Begin
                     ProcessListForm.ProcessList[
                     ProcessListForm.ProcessCombo.ItemIndex]));
                 fDebugger.RefreshBreakpoints;
-                fDebugger.RefreshWatches;
+                //fDebugger.RefreshWatches;
                 fDebugger.Go;
             End
         Finally
@@ -8781,9 +8752,6 @@ End;
 
 Procedure TMainForm.actModifyWatchExecute(Sender: TObject);
 Var
-    val: String;
-    i: Integer;
-    n: TTreeNode;
     Watch: PWatchPt;
 
 Begin
@@ -8812,13 +8780,6 @@ Begin
     Finally
         ModifyVarForm.Free;
     End;
-End;
-
-Procedure TMainForm.ClearallWatchPopClick(Sender: TObject);
-Var
-    node: TTreeNode;
-Begin
-
 End;
 
 Procedure TMainForm.HideCodeToolTip;
@@ -8927,7 +8888,6 @@ Var
     //    _Loaded: boolean;
     //    _InProject: Boolean;
 Begin
-    Result := False;
     classname := trim(classname);
 
     //CppParser1.GetClassesList(TStrings());
@@ -9831,7 +9791,6 @@ Var
     items: TList;
     menuItem: TMenuItem;
     toolbar: TToolBar;
-    tabs: TTabSheet;
     i, j, idx, temp_left, temp_top, setIndex: Integer;
     AClass: TPersistentClass;
     loadablePlugins: TStringList;
@@ -9853,6 +9812,8 @@ Begin
     ToolsMenuOffset := 0;
     loadablePlugins := ListDirectory(devDirs.Exec + '\plugins\*.*',
         faDirectory);
+    pluginSettings := nil;
+    
   {$IFNDEF PLUGIN_TESTING}
     For i := 0 To loadablePlugins.Count - 1 Do
     Begin
@@ -10784,12 +10745,6 @@ Procedure TMainForm.OnWatches(Locals: PTList);
   If Locals is a null pointer, clear the on-screen list,
   otherwise, add Locals to the on-screen display
 }
-Var
-    I: Integer;
-    ListItem: TListItem;
-
-    Local: PWatchVar;
-
 Begin
 
     If (Locals = Nil) Then

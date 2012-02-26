@@ -329,7 +329,7 @@ Var
     nRead: DWORD;
     aBuf: Array[0..101] Of Char;
     sa: TSecurityAttributes;
-    hOutputReadTmp, hOutputRead, hOutputWrite, hInputWriteTmp, hInputRead,
+    hOutputRead, hOutputWrite, hInputWriteTmp, hInputRead,
     hInputWrite, hErrorWrite: THandle;
     FOutput: String;
     CurrentLine: String;
@@ -340,6 +340,8 @@ Begin
     sa.nLength := SizeOf(TSecurityAttributes);
     sa.lpSecurityDescriptor := Nil;
     sa.bInheritHandle := True;
+    hErrorWrite := 0;
+    hInputWrite := 0;
 
     CreatePipe(hOutputRead, hOutputWrite, @sa, 0);
 

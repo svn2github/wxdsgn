@@ -155,7 +155,10 @@ End;
 Destructor TCodeCompletion.Destroy;
 Begin
     If Assigned(CodeComplForm) Then
-        FreeAndNil(CodeComplForm)
+    begin
+        CodeComplForm.Close;
+        CodeComplForm.Free;
+    end
     Else
         CodeComplForm := Nil;
 

@@ -514,7 +514,7 @@ Var
     Allow: Boolean;
 {$IFDEF PLUGIN_BUILD}
    // i: Integer;
-    pluginCatched: Boolean;
+    //pluginCatched: Boolean;
 {$ENDIF}
 Begin
     If assigned(fTabSheet) Then

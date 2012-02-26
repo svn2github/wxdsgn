@@ -1154,6 +1154,8 @@ Var
 {$ENDIF PLUGIN_BUILD}
 Begin
 
+    pluginSettings := nil;
+
     devCompilerSet.WriteSets;
 
     //   ID_COMPILER_MINGW = 0;
@@ -3423,8 +3425,8 @@ Var
     goodRCDir{$ENDIF}: String;
     msg: String;
     tempStr: String;
-    maindir: String;
-    makeSig, mingwmakeSig: String;
+   // maindir: String;
+    //makeSig, mingwmakeSig: String;
     defaultDataForPlugins: Boolean;
     dummy: String;
     i: Integer;
@@ -3651,8 +3653,14 @@ Var
     pluginSettings: TSettings;
 {$ENDIF PLUGIN_BUILD}
 Begin
+
+{$IFDEF PLUGIN_BUILD}
+    pluginSettings := nil;
+{$ENDIF PLUGIN_BUILD}
+
     If Index < 0 Then
         Exit;
+
     With devData Do
     Begin
         key := OPT_COMPILERSETS + '_' + IntToStr(Index);
