@@ -2965,7 +2965,8 @@ Begin
             Begin
                 CppParser1.GetSourcePair(ExtractFileName(e.FileName),
                     ccFile, hfile);
-                CppParser1.AddFileToScan(e.FileName); //new cc
+                If (CppParser1.CacheContents.IndexOf(e.FileName) = -1) Then
+                        CppParser1.AddFileToScan(e.FileName); //new cc
                 CppParser1.ParseList;
                 ClassBrowser1.CurrentFile := e.FileName;
                 CppParser1.ReParseFile(e.FileName, True); //new cc
@@ -4834,7 +4835,8 @@ Begin
                 Begin
                     fProject.AddUnit(Files[idx], FolderNode, False);
                     // add under folder
-                    CppParser1.AddFileToScan(Files[idx]);
+                    If (CppParser1.CacheContents.IndexOf(Files[idx]) = -1) Then
+                            CppParser1.AddFileToScan(Files[idx]);
                 End;
                 fProject.RebuildNodes;
                 CppParser1.ParseList;
@@ -10424,7 +10426,8 @@ Begin
         fProject.AddUnit(currFile, fProject.Node, False); // add under folder
         If ClassBrowser1.Enabled Then
         Begin
-            CppParser1.AddFileToScan(currFile, True);
+            If (CppParser1.CacheContents.IndexOf(currFile) = -1) Then
+                CppParser1.AddFileToScan(currFile, True);
             CppParser1.ReParseFile(currFile, True, True);
             // EAB: Check this out ***
         End;

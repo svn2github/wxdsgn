@@ -34,6 +34,7 @@ object EditorOptForm: TEditorOptForm
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabIndex = 4
     TabOrder = 0
+    OnChange = PagesMainChange
     object tabGeneral: TTabSheet
       Caption = 'General'
       object grpMargin: TGroupBox
@@ -453,7 +454,7 @@ object EditorOptForm: TEditorOptForm
           Width = 181
           Height = 21
           Anchors = [akLeft, akRight, akBottom]
-          ItemHeight = 0
+          ItemHeight = 13
           TabOrder = 6
           OnChange = FontChange
           OnDblClick = cboDblClick
@@ -464,7 +465,7 @@ object EditorOptForm: TEditorOptForm
           Width = 87
           Height = 21
           Anchors = [akLeft, akRight, akBottom]
-          ItemHeight = 0
+          ItemHeight = 13
           TabOrder = 7
           OnChange = FontSizeChange
           OnDblClick = cboDblClick
@@ -526,7 +527,7 @@ object EditorOptForm: TEditorOptForm
           Top = 32
           Width = 180
           Height = 21
-          ItemHeight = 0
+          ItemHeight = 13
           TabOrder = 0
           OnDblClick = cboDblClick
           OnSelect = FontChange
@@ -536,7 +537,7 @@ object EditorOptForm: TEditorOptForm
           Top = 32
           Width = 80
           Height = 21
-          ItemHeight = 0
+          ItemHeight = 13
           TabOrder = 1
           OnChange = FontSizeChange
           OnDblClick = cboDblClick
@@ -986,7 +987,6 @@ object EditorOptForm: TEditorOptForm
         ActivePage = tabCBCompletion
         TabIndex = 1
         TabOrder = 1
-        OnChange = devPages1Change
         object tabCBBrowser: TTabSheet
           Caption = 'Class browsing'
           object lblClassBrowserSample: TLabel
@@ -1127,14 +1127,15 @@ object EditorOptForm: TEditorOptForm
             OnClick = chkCCCacheClick
           end
           object lbCCC: TListBox
-            Left = 24
+            Left = 8
             Top = 120
-            Width = 260
+            Width = 276
             Height = 155
             ItemHeight = 13
-            Sorted = True
+            ParentShowHint = False
+            ShowHint = True
             TabOrder = 2
-            OnClick = FontChange
+            OnClick = actSelectFileClick
           end
           object pbCCCache: TProgressBar
             Left = 292

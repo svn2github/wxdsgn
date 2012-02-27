@@ -163,6 +163,7 @@ Type
         Procedure FormShow(Sender: TObject);
         Procedure FormActivate(Sender: TObject);
         Procedure ElementListClick(Sender: TObject);
+        Procedure actSelectFileClick(Sender: TObject);
         Procedure FontChange(Sender: TObject);
         Procedure FontSizeChange(Sender: TObject);
         Procedure cpMarginColorHint(Sender: TObject; Cell: Integer;
@@ -213,7 +214,7 @@ Type
             Total, Current: Integer);
         Procedure CppParser1SaveProgress(Sender: TObject; FileName: String;
             Total, Current: Integer);
-        Procedure devPages1Change(Sender: TObject);
+        Procedure PagesMainChange(Sender: TObject);
         Procedure chkCBShowInheritedClick(Sender: TObject);
         Procedure OnGutterClick(Sender: TObject; Button: TMouseButton; X, Y,
             Line: Integer; Mark: TSynEditMark);
@@ -469,35 +470,13 @@ Begin
     End;
 End;
 
-Procedure TEditorOptForm.FontChange(Sender: TObject);
-Var
-    Size: String;
+Procedure TEditorOptForm.actSelectFileClick(Sender: TObject);
 Begin
-    fGutter := Sender = cboGutterFont;
-    If fGutter Then
-    Begin
-        pnlGutterPreview.Font.Name := cboGutterFont.Text;
-        CppEdit.Gutter.Font.Name := cboGutterFont.Text;
-        Size := cboGutterSize.Text;
-        LoadFontSize;
-        cboGutterSize.Text := Size;
 
-        CppEdit.Gutter.Font.Name := cboGutterFont.Text;
-        CppEdit.Gutter.Font.Size := strtointdef(cboGutterSize.Text, 12);
-        CppEdit.Gutter.Width := strtointdef(edGutterWidth.Text, 12);
-        CppEdit.Refresh;
-    End
-    Else
-    Begin
-        pnlEditorPreview.Font.Name := cboEditorFont.Text;
-        Size := cboEditorSize.Text;
-        LoadFontSize;
-        cboEditorSize.Text := Size;
+     If (lbCCC.ItemIndex >= 0) And
+          (lbCCC.ItemIndex < CppParser1.ScannedFiles.Count) then
+       lbCCC.Hint := CppParser1.ScannedFiles.Strings[lbCCC.ItemIndex];
 
-        CppEdit.Font.Name := cboEditorFont.Text;
-        CppEdit.Font.Size := strtointdef(cboEditorSize.Text, 12);
-        CppEdit.Refresh;
-    End;
 End;
 
 Procedure TEditorOptForm.cbGutterFntClick(Sender: TObject);
@@ -1656,11 +1635,12 @@ Var
     Hits: Integer;
     MaxHits, MaxIndex: Integer;
     sl: TStrings;
+    filesSelected : TStringList;
     flt: String;
 Begin
     // the following piece of code is a quick'n'dirty way to find the base
     // compiler's include dir (if we 're lucky).
-    // we search through devDirs.C and try to locate the base dir that is
+    // we search through devDirs.Cpp and try to locate the base dir that is
     // most common between the others(!).
     // if no most-common dir is found, we select the first in list.
     // for a default installation, it should work.
@@ -1672,7 +1652,7 @@ Begin
     sl := TStringList.Create;
     Try
         sl.Delimiter := ';';
-        sl.DelimitedText := devDirs.C;
+        sl.DelimitedText := devDirs.Cpp;
         If sl.Count > 1 Then
         Begin
             MaxHits := 0;
@@ -1692,7 +1672,7 @@ Begin
             CppParser1.ProjectDir := IncludeTrailingPathDelimiter(sl[MaxIndex]);
         End
         Else
-            CppParser1.ProjectDir := IncludeTrailingPathDelimiter(devDirs.C);
+            CppParser1.ProjectDir := IncludeTrailingPathDelimiter(devDirs.Cpp);
     Finally
         sl.Free;
     End;
@@ -1701,6 +1681,7 @@ Begin
     Begin
         BuildFilter(flt, [FLT_HEADS]);
         OpenDialog.Filter := flt;
+
         If OpenDialog.Execute Then
         Begin
             Application.ProcessMessages;
@@ -1712,16 +1693,33 @@ Begin
             CppParser1.OnEndParsing := CppParser1EndParsing;
             CppParser1.OnTotalProgress := CppParser1TotalProgress;
 
+           filesSelected := TStringList.Create;
+           filesSelected.Clear;
+
             //Add the files to scan and then parse the list
             For I := 0 To OpenDialog.Files.Count - 1 Do
-                CppParser1.AddFileToScan(OpenDialog.Files[I]);
+              Begin
+                // See if file is already in the cache
+                If (CppParser1.CacheContents.IndexOf(OpenDialog.Files[I]) = -1) Then
+                Begin
+                        filesSelected.Add(OpenDialog.Files.Strings[I]);
+                        CppParser1.AddFileToScan(OpenDialog.Files[I]);
+                End;
+
+              End;
+
             CppParser1.ParseList;
             Screen.Cursor := crDefault;
-            chkCCCache.Tag := 1; // mark modified
 
             //Finally append the new items unto the listbox
-            For I := 0 To OpenDialog.Files.Count - 1 Do
-                lbCCC.Items.Add(CompactFilename(OpenDialog.Files[I]));
+            For I := 0 To filesSelected.Count - 1 Do
+                lbCCC.Items.Add(CompactFilename(filesSelected[I]));
+
+            filesSelected.Clear;
+            filesSelected.Free;
+            
+            chkCCCache.Tag := 1; // mark modified
+
         End;
     End;
 End;
@@ -1751,7 +1749,7 @@ Procedure TEditorOptForm.FillCCC;
 Var
     I: Integer;
 Begin
- 
+
     Screen.Cursor := crHourglass;
     CppParser1.OnStartParsing := CppParser1StartParsing;
     CppParser1.OnEndParsing := Nil; //We will call it ourselves
@@ -1759,7 +1757,7 @@ Begin
     CppParser1.Load(devDirs.Config + DEV_COMPLETION_CACHE);
 
     For I := 0 To CppParser1.CacheContents.Count - 1 Do
-        lbCCC.Items.Add(CompactFilename(CppParser1.CacheContents[I]));
+       lbCCC.Items.Add(CompactFilename(CppParser1.CacheContents[I]));
 
     CppParser1EndParsing(Self);
     Screen.Cursor := crDefault;
@@ -1840,9 +1838,9 @@ Begin
     pbCCCache.Update;
 End;
 
-Procedure TEditorOptForm.devPages1Change(Sender: TObject);
+Procedure TEditorOptForm.PagesMainChange(Sender: TObject);
 Begin
-    If (devPages1.ActivePage = tabCBCompletion) And
+   If (PagesMain.ActivePage = tabClassBrowsing) And
         (CppParser1.Statements.Count = 0) Then
         FillCCC;
 End;
@@ -1874,6 +1872,39 @@ End;
 Procedure TEditorOptForm.seTabSizeChange(Sender: TObject);
 Begin
     CppEdit.TabWidth := seTabSize.Value;
+End;
+
+Procedure TEditorOptForm.FontChange(Sender: TObject);
+Var
+    Size: String;
+Begin
+
+    fGutter := Sender = cboGutterFont;
+    If fGutter Then
+    Begin
+        pnlGutterPreview.Font.Name := cboGutterFont.Text;
+        CppEdit.Gutter.Font.Name := cboGutterFont.Text;
+        Size := cboGutterSize.Text;
+        LoadFontSize;
+        cboGutterSize.Text := Size;
+
+        CppEdit.Gutter.Font.Name := cboGutterFont.Text;
+        CppEdit.Gutter.Font.Size := strtointdef(cboGutterSize.Text, 12);
+        CppEdit.Gutter.Width := strtointdef(edGutterWidth.Text, 12);
+        CppEdit.Refresh;
+    End
+    Else
+    Begin
+        pnlEditorPreview.Font.Name := cboEditorFont.Text;
+        Size := cboEditorSize.Text;
+        LoadFontSize;
+        cboEditorSize.Text := Size;
+
+        CppEdit.Font.Name := cboEditorFont.Text;
+        CppEdit.Font.Size := strtointdef(cboEditorSize.Text, 12);
+        CppEdit.Refresh;
+    End;
+
 End;
 
 End.

@@ -109,7 +109,7 @@ Begin
     For idx := 0 To pred(List.Count) Do
     Begin
         sel := ListBox.Items.Add(List.Values[List.Names[idx]]);
-        If Pos('english', LowerCase(ListBox.Items[sel])) > 0 Then
+        If Pos('english (original)', LowerCase(ListBox.Items[sel])) > 0 Then
             ListBox.Selected[sel] := True;
     End;
 End;
@@ -289,6 +289,7 @@ Begin
                     Screen.Cursor := crHourglass;
                     Application.ProcessMessages;
                     For j := 0 To f.Count - 1 Do
+                     If (MainForm.CppParser1.CacheContents.IndexOf(f[j]) = -1) Then
                         MainForm.CppParser1.AddFileToScan(f[j]);
                 End
                 Else
