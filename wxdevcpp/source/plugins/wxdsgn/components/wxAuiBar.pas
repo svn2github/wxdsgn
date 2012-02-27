@@ -254,12 +254,12 @@ Begin
 End;
 
 Function TWxAuiBar.GenerateGUIControlCreation: String;
-Var
-    strColorStr: String;
-    strStyle, parentName, strAlignment: String;
-    xrctlpanel, kill: Boolean; //is this panel a child of another panel
-    i: Integer;
-    wxcompInterface: IWxComponentInterface;
+//Var
+  //  strColorStr: String;
+    //strStyle, parentName, strAlignment: String;
+ //   xrctlpanel, kill: Boolean; //is this panel a child of another panel
+ //   i: Integer;
+ //   wxcompInterface: IWxComponentInterface;
 Begin
     Result := '';
     GetAuiDockDirection(Self.Wx_Aui_Dock_Direction);

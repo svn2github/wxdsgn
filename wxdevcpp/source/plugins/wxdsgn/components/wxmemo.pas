@@ -523,7 +523,7 @@ Var
     strColorStr: String;
     strStyle, parentName, strAlignment: String;
     i: Integer;
-    strParentLabel: String;
+   // strParentLabel: String;
 Begin
     Result := '';
 

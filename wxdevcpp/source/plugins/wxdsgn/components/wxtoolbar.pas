@@ -470,7 +470,7 @@ Function TWxToolBar.GenerateGUIControlCreation: String;
 Var
     strColorStr: String;
     strStyle, parentName, strAlignment: String;
-    strParentLabel: String;
+  //  strParentLabel: String;
 Begin
     Result := '';
 

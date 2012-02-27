@@ -273,7 +273,7 @@ Type
         Function ReloadForm(FileName: String): Boolean;
         Procedure ReloadFromFile(FileName: String; fileToReloadFrom: String);
         Procedure TerminateEditor(FileName: String);
-        Procedure Destroy;
+        Procedure DestroyDLL;
         Procedure OnDockableFormClosed(Sender: TObject; Var Action: TCloseAction);
         Function IsSource(FileName: String): Boolean;
         Function GetDefaultText(FileName: String): String;
@@ -822,7 +822,7 @@ Begin
         ELDesigner1.SnapToGrid := ini.ReadBool('wxWidgets', 'cbSnapToGrid', ELDesigner1.SnapToGrid);
         ELDesigner1.GenerateXRC := ini.ReadBool('wxWidgets', 'cbGenerateXRC', ELDesigner1.GenerateXRC);
         ELDesigner1.Floating := ini.ReadBool('wxWidgets', 'cbFloating', ELDesigner1.Floating);
-        XRCGEN := ELDesigner1.GenerateXRC; //Nuklear Zelph 
+        XRCGEN := ELDesigner1.GenerateXRC; //Nuklear Zelph
     // String format tells us what function to wrap strings with in the generated C++ code
     // Possible values are wxT(), _T(), and _()
         StringFormat := ini.ReadString('wxWidgets', 'cbStringFormat', StringFormat);
@@ -2695,7 +2695,7 @@ Var
     dlgInterface: IWxDialogNonInsertableInterface;
     tlbrInterface: IWxToolBarInsertableInterface;
     nontlbrInterface: IWxToolBarNonInsertableInterface;
-    compObj: TComponent;
+    //compObj: TComponent;
     I: Integer;
 
     Function GetNonAllowAbleControlCountForFrame(winCtrl: TWinControl): Integer;
@@ -4672,7 +4672,7 @@ Begin
     End;
 End;
 
-Procedure TWXDsgn.Destroy;
+Procedure TWXDsgn.DestroyDLL;
 Begin
     editors.Free;
     ComponentPalette.Free;

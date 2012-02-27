@@ -260,10 +260,10 @@ Begin
 End;
 
 Function TWxAuiNoteBookPage.GenerateGUIControlCreation: String;
-Var
-    strColorStr: String;
-    strStyle: String;
-    parentName, strAlignment: String;
+//Var
+ //   strColorStr: String;
+  //  strStyle: String;
+ //   parentName, strAlignment: String;
 
 Begin
 {  Result := '';

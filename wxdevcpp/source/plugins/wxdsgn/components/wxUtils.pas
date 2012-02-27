@@ -4609,7 +4609,7 @@ Var
     List: TList;
     NotebookPage: TTabSheet;
     Notebook: TPageControl;
-    ToolbarParent: TToolBar;
+   // ToolbarParent: TToolBar;
 Begin
 
     If Sender Is TControl Then
@@ -5130,7 +5130,7 @@ End;
 Function GenerateXPMDirectly(bmp: TBitmap; strCompName: String;
     strParentName: String; strFileName: String): Boolean;
 Var
-    xpmFileDir, xpmNewFileDir: String;
+    xpmFileDir: String;
     fileStrlst: TStringList;
     strXPMContent: String;
 

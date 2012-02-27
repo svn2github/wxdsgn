@@ -356,7 +356,7 @@ Function TWxGridSizer.GenerateGUIControlCreation: String;
     Var
         I: Integer;
         isAuimanagerAvailable: Boolean;
-        wxAuimanagerInterface: IWxAuiManagerInterface;
+      //  wxAuimanagerInterface: IWxAuiManagerInterface;
     Begin
         isAuimanagerAvailable := False;
         If self.Parent.Parent Is TForm Then

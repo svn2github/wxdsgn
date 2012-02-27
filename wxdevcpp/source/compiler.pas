@@ -2579,6 +2579,7 @@ Begin
             Begin
                 srch := ' ' + GenMakePath(ExtractRelativePath(fProject.FileName,
                     fProject.Units[I].FileName), False, True) + ' ';
+
                 If Pos(srch, Line) > 0 Then
                 Begin
                     fil := ExtractFilename(fProject.Units[I].FileName);
@@ -2610,7 +2611,8 @@ Begin
                 End;
 
                 srch := ExtractFileName(fProject.Executable);
-                If (Pos(srch, Line) > 0) And (Pos(RmExe, Line) > 0) Then
+                If (Pos(srch, Line) > 0) And
+                   ((Pos(RmExe, Line) > 0) Or (Pos('del /Q', Line) > 0)) Then
                 Begin
                     fil := srch;
                     prog := 1;
@@ -2659,6 +2661,7 @@ Begin
             lblFile.Caption := fil;
         If (fil <> '') And (pb.Position < pb.Max) Then
             pb.Position := prog;
+
     End;
 
     Application.ProcessMessages;

@@ -533,7 +533,7 @@ End;
 Function TwxRichTextStyleComboCtrl.GenerateGUIControlCreation: String;
 Var
     strColorStr: String;
-    i: Integer;
+ //   i: Integer;
     strStyle, parentName, strAlignment: String;
 Begin
     Result := '';

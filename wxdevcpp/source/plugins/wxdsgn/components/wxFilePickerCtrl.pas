@@ -343,11 +343,11 @@ Begin
 End;
 
 Function TWxFilePickerCtrl.GenerateXRCControlCreation(IndentString: String): TStringList;
-Var
-    i: Integer;
-    wxcompInterface: IWxComponentInterface;
-    tempstring: TStringList;
-    stylstr: String;
+//Var
+   // i: Integer;
+   // wxcompInterface: IWxComponentInterface;
+   // tempstring: TStringList;
+   // stylstr: String;
 Begin
 
     Result := TStringList.Create;
@@ -380,7 +380,7 @@ End;
 Function TWxFilePickerCtrl.GenerateGUIControlCreation: String;
 Var
     strColorStr: String;
-    strStyle, parentName, strAlignment, strAlign: String;
+    strStyle, parentName, strAlignment: String;
 Begin
     Result := '';
 

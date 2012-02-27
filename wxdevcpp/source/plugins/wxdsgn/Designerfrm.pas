@@ -272,6 +272,8 @@ Var
     strTemp: String;
 Begin
 
+    hasImage := false;
+
     If GetBlockStartAndEndPos(synEdit, strClassName, btClassNameGUIItemsCreation, intBlockStart, intBlockEnd) Then
     Begin
     //Clear Declaration and Creation Field
@@ -747,7 +749,7 @@ End;
 Procedure GenerateXPM(frmNewForm: TfrmNewForm; strFileName: String; onlyForForm: Boolean);
 Var
     I: Integer;
-    xpmFileDir, xpmNewFileDir: String;
+    xpmFileDir: String;
     fileStrlst: TStringList;
     strXPMContent, frmName: String;
 
@@ -1527,7 +1529,7 @@ Var
     strLst: TStringList;
     isSizerAvailable: Boolean;
   //  isAuimanagerAvailable: boolean;
-    WinRect: TRect;
+    //WinRect: TRect;
     wxtoolbarintf: IWxToolBarInterface;
     strTemp: String;
     sizerParentName: String;

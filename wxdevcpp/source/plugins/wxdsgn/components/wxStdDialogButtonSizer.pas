@@ -230,9 +230,9 @@ End;
 
 Function TWxStdDialogButtonSizer.GenerateXRCControlCreation(IndentString: String): TStringList;
 Var
-    i: Integer;
+   // i: Integer;
     wxcompInterface: IWxComponentInterface;
-    tempstring: TStringList;
+   // tempstring: TStringList;
 Begin
     Result := TStringList.Create;
   //NUKLEAR ZELPH no creation without sizer parent, check unneded

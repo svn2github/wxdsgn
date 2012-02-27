@@ -328,7 +328,7 @@ End;
 
 Function TwxAnimationCtrl.GenerateXRCControlCreation(IndentString: String): TStringList;
 Var
-    tempstring: TStringList;
+  //  tempstring: TStringList;
     stylstr: String;
 Begin
 

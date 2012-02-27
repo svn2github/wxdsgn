@@ -649,6 +649,7 @@ Var
     index, indexLevel, lastLevel: Integer;
 Begin
     Result := '';
+    index := 0; lastLevel := 0;
 
     If FWx_PaneCaption = '' Then
         FWx_PaneCaption := Self.Name;

@@ -427,7 +427,7 @@ End;
 Function TwxRichTextStyleListBox.GenerateXRCControlCreation(IndentString: String): TStringList;
 Var
     stylestring: String;
-    i: Integer;
+  //  i: Integer;
 Begin
 
     Result := TStringList.Create;

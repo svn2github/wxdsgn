@@ -549,7 +549,7 @@ Function TWxAuiNotebook.GenerateGUIControlCreation: String;
 Var
     strColorStr: String;
     strStyle, parentName, strAlignment, strAlign: String;
-    strParentLabel: String;
+  //  strParentLabel: String;
 
 Begin
     Result := '';

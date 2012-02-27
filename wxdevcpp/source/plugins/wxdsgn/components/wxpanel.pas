@@ -370,10 +370,10 @@ Function TWxPanel.GenerateGUIControlCreation: String;
 Var
     strColorStr: String;
     strStyle, parentName, strAlignment: String;
-    xrctlpanel, kill: Boolean; //is this panel a child of another panel
-    i: Integer;
-    wxcompInterface: IWxComponentInterface;
-    strParentLabel: String;
+    xrctlpanel: Boolean; //is this panel a child of another panel
+   // i: Integer;
+   // wxcompInterface: IWxComponentInterface;
+   // strParentLabel: String;
 Begin
     Result := '';
 
