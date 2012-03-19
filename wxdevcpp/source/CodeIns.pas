@@ -106,7 +106,11 @@ Var
     idx: Integer;
 Begin
     For idx := 0 To pred(fList.Count) Do
+    Begin
         dispose(fList[idx]);
+        fList.Delete(idx);
+    End;
+    fList.Clear;
     fList.Free;
     Inherited Destroy;
 End;

@@ -17,11 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-Unit CppTokenizer;
+unit CppTokenizer;
 
-Interface
+interface
 
-Uses
+uses
 {$IFDEF WIN32}
     Windows, Classes, SysUtils, StrUtils, ComCtrls;
 {$ENDIF}
@@ -29,306 +29,306 @@ Uses
   Classes, SysUtils, StrUtils, QComCtrls;
 {$ENDIF}
 
-Const
-    LetterChars: Set Of Char = ['A'..'Z', 'a'..'z', '_', '*', '&', '~'];
-    DigitChars: Set Of Char = ['0'..'9'];
-    HexChars: Set Of Char = ['A'..'F', 'a'..'f', 'x', 'L'];
-    SpaceChars: Set Of Char = [' ', #9];
-    LineChars: Set Of Char = [#13, #10];
+const
+    LetterChars: set of char = ['A'..'Z', 'a'..'z', '_', '*', '&', '~'];
+    DigitChars: set of char = ['0'..'9'];
+    HexChars: set of char = ['A'..'F', 'a'..'f', 'x', 'L'];
+    SpaceChars: set of char = [' ', #9];
+    LineChars: set of char = [#13, #10];
 
     MAX_TOKEN_SIZE = 32768;
 
-Type
-    TSetOfChars = Set Of Char;
+type
+    TSetOfChars = set of char;
 
-    TLogTokenEvent = Procedure(Sender: TObject; Msg: String) Of Object;
-    TProgressEvent = Procedure(Sender: TObject; FileName: String; Total, Current: Integer) Of Object;
+    TLogTokenEvent = procedure(Sender: TObject; Msg: string) of object;
+    TProgressEvent = procedure(Sender: TObject; FileName: string; Total, Current: integer) of object;
 
     PToken = ^TToken;
-    TToken = Record
-        Text: String[255];
-        Line: Integer;
-    End;
+    TToken = record
+        Text: string[255];
+        Line: integer;
+    end;
 
-    TCppTokenizer = Class(TComponent)
-    Private
-        pStart: Pchar;
-        pCurrent: Pchar;
-        pLineCount: Pchar;
-        fEnd: Integer;
-        fCurrLine: Integer;
+    TCppTokenizer = class(TComponent)
+    private
+        pStart: pchar;
+        pCurrent: pchar;
+        pLineCount: pchar;
+        fEnd: integer;
+        fCurrLine: integer;
         fTokenList: TList;
-        fLogTokens: Boolean;
+        fLogTokens: boolean;
         fOnLogToken: TLogTokenEvent;
         fOnProgress: TProgressEvent;
-        fTmpOutput: Pchar;
-        Procedure AddToken(sText: String; iLine: Integer);
-        Procedure CountLines;
-        Procedure MatchChar(C: Char);
-        Procedure SkipCStyleComment;
-        Procedure SkipSplitLine;
-        Procedure SkipToEOL;
-        Procedure SkipToNextToken;
-        Procedure SkipDoubleQuotes;
-        Procedure SkipSingleQuote;
-        Procedure SkipPair(cStart, cEnd: Char);
-        Procedure SkipAssignment;
-        Function GetNumber: String;
-        Function GetWord(bSkipParenthesis: Boolean = False; bSkipArray: Boolean = False; bSkipBlock: Boolean = False): String;
-        Function GetPreprocessor: String;
-        Function GetArguments: String;
-        Function IsWord: Boolean;
-        Function IsNumber: Boolean;
-        Function IsPreprocessor: Boolean;
-        Function IsArguments: Boolean;
-        Function GetNextToken(bSkipParenthesis: Boolean = False; bSkipArray: Boolean = False; bSkipBlock: Boolean = False): String;
-        Function Simplify(Str: String): String;
-        Procedure PostProcessToken(Var Str: String);
-        Procedure Advance(bPerformChecks: Boolean = True);
-        Function OpenFile(FileName: String): Boolean;
-        Function OpenStream(Stream: TStream): Boolean;
-        Procedure ReleaseFileMemory;
-    Public
-        Constructor Create(AOwner: TComponent); Override;
-        Destructor Destroy; Override;
-        Procedure Reset;
-        Procedure Tokenize(StartAt: Pchar); Overload;
-        Procedure Tokenize(FileName: TFilename); Overload;
-        Procedure Tokenize(Stream: TStream); Overload;
-    Published
-        Property LogTokens: Boolean Read fLogTokens Write fLogTokens;
-        Property OnLogToken: TLogTokenEvent Read fOnLogToken Write fOnLogToken;
-        Property OnProgress: TProgressEvent Read fOnProgress Write fOnProgress;
-        Property Tokens: TList Read fTokenList;
-    End;
+        fTmpOutput: pchar;
+        procedure AddToken(sText: string; iLine: integer);
+        procedure CountLines;
+        procedure MatchChar(C: char);
+        procedure SkipCStyleComment;
+        procedure SkipSplitLine;
+        procedure SkipToEOL;
+        procedure SkipToNextToken;
+        procedure SkipDoubleQuotes;
+        procedure SkipSingleQuote;
+        procedure SkipPair(cStart, cEnd: char);
+        procedure SkipAssignment;
+        function GetNumber: string;
+        function GetWord(bSkipParenthesis: boolean = FALSE; bSkipArray: boolean = FALSE; bSkipBlock: boolean = FALSE): string;
+        function GetPreprocessor: string;
+        function GetArguments: string;
+        function IsWord: boolean;
+        function IsNumber: boolean;
+        function IsPreprocessor: boolean;
+        function IsArguments: boolean;
+        function GetNextToken(bSkipParenthesis: boolean = FALSE; bSkipArray: boolean = FALSE; bSkipBlock: boolean = FALSE): string;
+        function Simplify(Str: string): string;
+        procedure PostProcessToken(var Str: string);
+        procedure Advance(bPerformChecks: boolean = TRUE);
+        function OpenFile(FileName: string): boolean;
+        function OpenStream(Stream: TStream): boolean;
+        procedure ReleaseFileMemory;
+    public
+        constructor Create(AOwner: TComponent); override;
+        destructor Destroy; override;
+        procedure Reset;
+        procedure Tokenize(StartAt: pchar); overload;
+        procedure Tokenize(FileName: TFilename); overload;
+        procedure Tokenize(Stream: TStream); overload;
+    published
+        property LogTokens: boolean read fLogTokens write fLogTokens;
+        property OnLogToken: TLogTokenEvent read fOnLogToken write fOnLogToken;
+        property OnProgress: TProgressEvent read fOnProgress write fOnProgress;
+        property Tokens: TList read fTokenList;
+    end;
 
-Implementation
+implementation
 
-Constructor TCppTokenizer.Create(AOwner: TComponent);
-Begin
-    Inherited Create(AOwner);
+constructor TCppTokenizer.Create(AOwner: TComponent);
+begin
+    inherited Create(AOwner);
     fTokenList := TList.Create;
-    fLogTokens := False;
-End;
+    fLogTokens := FALSE;
+end;
 
-Destructor TCppTokenizer.Destroy;
-Begin
-    Try
+destructor TCppTokenizer.Destroy;
+begin
+    try
         Reset;
-    Finally
-        If Assigned(fTokenList) Then
+    finally
+        if Assigned(fTokenList) then
             FreeAndNil(fTokenList)
-        Else fTokenList := Nil;
-    End;
-    Inherited Destroy;
-End;
+        else fTokenList := NIL;
+    end;
+    inherited Destroy;
+end;
 
-Procedure TCppTokenizer.Reset;
-Begin
-    If fTokenList <> Nil Then
-    Begin
-        While fTokenList.Count > 0 Do
-            If Assigned(PToken(fTokenList[fTokenList.Count - 1])) Then
-            Begin
+procedure TCppTokenizer.Reset;
+begin
+    if fTokenList <> NIL then
+    begin
+        while fTokenList.Count > 0 do
+            if Assigned(PToken(fTokenList[fTokenList.Count - 1])) then
+            begin
                 Dispose(PToken(fTokenList[fTokenList.Count - 1]));
                 fTokenList.Delete(fTokenList.Count - 1);
-            End
-            Else
+            end
+            else
                 fTokenList.Delete(fTokenList.Count - 1);
         fTokenList.Clear;
-    End;
-End;
+    end;
+end;
 
-Function TCppTokenizer.OpenFile(FileName: String): Boolean;
-Var
-    hFile: Integer;
-    iLength, iRead: Integer;
-Begin
-    Result := False;
-    If FileExists(FileName) Then
-    Begin
+function TCppTokenizer.OpenFile(FileName: string): boolean;
+var
+    hFile: integer;
+    iLength, iRead: integer;
+begin
+    Result := FALSE;
+    if FileExists(FileName) then
+    begin
         hFile := FileOpen(FileName, fmOpenRead);
-        If hFile > 0 Then
-        Begin
+        if hFile > 0 then
+        begin
             iLength := FileSeek(hFile, 0, 2);
             FileSeek(hFile, 0, 0);
-            If iLength > 0 Then
-            Begin
+            if iLength > 0 then
+            begin
                 GetMem(pStart, iLength + 1);
                 iRead := FileRead(hFile, pStart^, iLength);
                 (pStart + iLength)^ := #0;
                 Result := iRead = iLength;
-            End;
+            end;
             FileClose(hFile);
-            If Not Result Then
-            Begin
-                If fLogTokens Then
-                    If Assigned(fOnLogToken) Then
+            if not Result then
+            begin
+                if fLogTokens then
+                    if Assigned(fOnLogToken) then
                         fOnLogToken(Self, '[tokenizer]: Could not read file.');
-            End;
-        End
-        Else
-        Begin
-            If fLogTokens Then
-                If Assigned(fOnLogToken) Then
+            end;
+        end
+        else
+        begin
+            if fLogTokens then
+                if Assigned(fOnLogToken) then
                     fOnLogToken(Self, '[tokenizer]: Could not open file.');
-        End;
-    End
-    Else
-    Begin
-        If fLogTokens Then
-            If Assigned(fOnLogToken) Then
+        end;
+    end
+    else
+    begin
+        if fLogTokens then
+            if Assigned(fOnLogToken) then
                 fOnLogToken(Self, '[tokenizer]: File not found.');
-    End;
-End;
+    end;
+end;
 
-Function TCppTokenizer.OpenStream(Stream: TStream): Boolean;
-Begin
-    Result := False;
-    If Assigned(Stream) Then
-    Begin
+function TCppTokenizer.OpenStream(Stream: TStream): boolean;
+begin
+    Result := FALSE;
+    if Assigned(Stream) then
+    begin
         Stream.Position := 0;
         GetMem(pStart, Stream.Size + 1);
         Stream.Read(pStart^, Stream.Size);
         (pStart + Stream.Size)^ := #0;
-        Result := True;
-    End
-    Else
-    Begin
-        If fLogTokens Then
-            If Assigned(fOnLogToken) Then
+        Result := TRUE;
+    end
+    else
+    begin
+        if fLogTokens then
+            if Assigned(fOnLogToken) then
                 fOnLogToken(Self, '[tokenizer]: Non-existent stream.');
-    End;
-End;
+    end;
+end;
 
-Procedure TCppTokenizer.AddToken(sText: String; iLine: Integer);
-Var
+procedure TCppTokenizer.AddToken(sText: string; iLine: integer);
+var
     Token: PToken;
-Begin
+begin
     Token := New(PToken);
     FillChar(Token^.Text, sizeof(Token^.Text), 0);
     Token^.Text := sText;
     Token^.Line := iLine;
     fTokenList.Add(Token);
-End;
+end;
 
-Procedure TCppTokenizer.CountLines;
-Begin
-    While (pLineCount^ <> #0) And (pLineCount < pCurrent) Do
-    Begin
-        If pLineCount^ = #10 Then
+procedure TCppTokenizer.CountLines;
+begin
+    while (pLineCount^ <> #0) and (pLineCount < pCurrent) do
+    begin
+        if pLineCount^ = #10 then
             Inc(fCurrLine, 1);
         Inc(pLineCount, 1);
-    End;
-End;
+    end;
+end;
 
-Procedure TCppTokenizer.MatchChar(C: Char);
-Begin
-    While Not (pCurrent^ In [C, #0]) Do
-    Begin
+procedure TCppTokenizer.MatchChar(C: char);
+begin
+    while not (pCurrent^ in [C, #0]) do
+    begin
         Inc(pCurrent);
-    End;
+    end;
     Inc(pCurrent);
-End;
+end;
 
-Procedure TCppTokenizer.SkipCStyleComment;
-Begin
-    Repeat
+procedure TCppTokenizer.SkipCStyleComment;
+begin
+    repeat
         Inc(pCurrent);
-    Until (pCurrent^ = #0) Or ((pCurrent^ = '*') And ((pCurrent + 1)^ = '/'));
-    If pCurrent^ <> #0 Then
+    until (pCurrent^ = #0) or ((pCurrent^ = '*') and ((pCurrent + 1)^ = '/'));
+    if pCurrent^ <> #0 then
         Inc(pCurrent, 2); //skip '*/'
-End;
+end;
 
-Procedure TCppTokenizer.SkipSplitLine;
-Begin
+procedure TCppTokenizer.SkipSplitLine;
+begin
     Inc(pCurrent); // skip '\'
-    While pCurrent^ In LineChars Do // skip newline
+    while pCurrent^ in LineChars do // skip newline
         Inc(pCurrent);
-End;
+end;
 
-Procedure TCppTokenizer.SkipToEOL;
-Var
-    SplitLine: Boolean;
-    Last: Char;
-Begin
+procedure TCppTokenizer.SkipToEOL;
+var
+    SplitLine: boolean;
+    Last: char;
+begin
     Last := #0;
-    While (Not (pCurrent^ In LineChars)) And (pCurrent^ <> #0) Do
-    Begin
-        If (pCurrent^ = '/') And ((pCurrent + 1)^ = '*') And (Last <> '/') Then
+    while (not (pCurrent^ in LineChars)) and (pCurrent^ <> #0) do
+    begin
+        if (pCurrent^ = '/') and ((pCurrent + 1)^ = '*') and (Last <> '/') then
             SkipCStyleComment
-        Else
-        Begin
+        else
+        begin
             Last := pCurrent^;
             Inc(pCurrent);
-        End;
-    End;
+        end;
+    end;
 
-    SplitLine := ((pCurrent - 1)^ = '\') And (pCurrent^ In LineChars);
+    SplitLine := ((pCurrent - 1)^ = '\') and (pCurrent^ in LineChars);
 
-    While pCurrent^ In LineChars Do
+    while pCurrent^ in LineChars do
         Inc(pCurrent);
 
-    If SplitLine Then
+    if SplitLine then
         SkipToEOL; //recurse
-End;
+end;
 
-Procedure TCppTokenizer.SkipToNextToken;
-Begin
-    While pCurrent^ In SpaceChars + LineChars Do
+procedure TCppTokenizer.SkipToNextToken;
+begin
+    while pCurrent^ in SpaceChars + LineChars do
         Advance;
-End;
+end;
 
-Procedure TCppTokenizer.SkipDoubleQuotes;
-Begin
-    Repeat
+procedure TCppTokenizer.SkipDoubleQuotes;
+begin
+    repeat
         Inc(pCurrent);
-        If pCurrent^ = '\' Then
+        if pCurrent^ = '\' then
             Inc(pCurrent, 2); // skip escaped char
-    Until pCurrent^ In ['"', #0];
-End;
+    until pCurrent^ in ['"', #0];
+end;
 
-Procedure TCppTokenizer.SkipSingleQuote;
-Begin
-    Repeat
+procedure TCppTokenizer.SkipSingleQuote;
+begin
+    repeat
         Inc(pCurrent);
-        If pCurrent^ = '\' Then
+        if pCurrent^ = '\' then
             Inc(pCurrent, 2); // skip escaped quote
-    Until pCurrent^ In ['''', #0];
-End;
+    until pCurrent^ in ['''', #0];
+end;
 
-Procedure TCppTokenizer.SkipPair(cStart, cEnd: Char); // e.g.: SkipPair('[', ']');
-Begin
-    Repeat
+procedure TCppTokenizer.SkipPair(cStart, cEnd: char); // e.g.: SkipPair('[', ']');
+begin
+    repeat
         Inc(pCurrent);
-        If pCurrent^ = #0 Then
+        if pCurrent^ = #0 then
             Break;
-        If pCurrent^ = cStart Then
+        if pCurrent^ = cStart then
             SkipPair(cStart, cEnd); //recurse
-        If pCurrent^ = cEnd Then
+        if pCurrent^ = cEnd then
             Break;
-        Case pCurrent^ Of
+        case pCurrent^ of
             '"':
-                If cStart <> '''' Then
+                if cStart <> '''' then
                     SkipDoubleQuotes; // don't do it inside string!
             '''':
                 SkipSingleQuote;
             '/':
-                If (pCurrent + 1)^ = '/' Then
+                if (pCurrent + 1)^ = '/' then
                     SkipToEOL
-                Else
-                If (pCurrent + 1)^ = '*' Then
+                else
+                if (pCurrent + 1)^ = '*' then
                     SkipCStyleComment;
-        End;
-    Until (pCurrent^ = cEnd) Or (pCurrent^ = #0);
+        end;
+    until (pCurrent^ = cEnd) or (pCurrent^ = #0);
     Advance;
-End;
+end;
 
-Procedure TCppTokenizer.SkipAssignment;
-Begin
-    Repeat
+procedure TCppTokenizer.SkipAssignment;
+begin
+    repeat
         Inc(pCurrent);
-        Case pCurrent^ Of
+        case pCurrent^ of
             '(':
                 SkipPair('(', ')');
             '"':
@@ -336,384 +336,384 @@ Begin
             '''':
                 SkipSingleQuote;
             '/':
-                If (pCurrent + 1)^ = '/' Then
+                if (pCurrent + 1)^ = '/' then
                     SkipToEOL
-                Else
-                If (pCurrent + 1)^ = '*' Then
+                else
+                if (pCurrent + 1)^ = '*' then
                     SkipCStyleComment;
-        End;
+        end;
 //    if pCurrent^ = '(' then
 //      SkipPair('(', ')');
-    Until pCurrent^ In [',', ';', ')', '{', '}', #0]; // + LineChars;
-End;
+    until pCurrent^ in [',', ';', ')', '{', '}', #0]; // + LineChars;
+end;
 
-Procedure TCppTokenizer.Advance(bPerformChecks: Boolean = True);
-Begin
+procedure TCppTokenizer.Advance(bPerformChecks: boolean = TRUE);
+begin
     Inc(pCurrent);
-    If (pCurrent^ <> #0) And bPerformChecks Then
-        Case pCurrent^ Of
+    if (pCurrent^ <> #0) and bPerformChecks then
+        case pCurrent^ of
             '''', '"':
-            Begin
+            begin
                 Inc(pCurrent);
                 MatchChar((pCurrent - 1)^);
-            End;
+            end;
 //      '"': SkipDoubleQuotes;
 //      '''': SkipSingleQuote;
             '/':
-                Case (pCurrent + 1)^ Of
+                case (pCurrent + 1)^ of
                     '*':
                         SkipCStyleComment;
                     '/':
                         SkipToEOL;
-                End;
+                end;
             '=':
                 SkipAssignment;
             '&', '*', '!', '|', '+', '-':
-                If (pCurrent + 1)^ = '=' Then
+                if (pCurrent + 1)^ = '=' then
                     SkipAssignment;
             '\':
-                If (pCurrent + 1)^ In LineChars Then
+                if (pCurrent + 1)^ in LineChars then
                     SkipSplitLine;
-        End;
-End;
+        end;
+end;
 
-Function TCppTokenizer.GetNumber: String;
-Var
-    Offset: Pchar;
-Begin
+function TCppTokenizer.GetNumber: string;
+var
+    Offset: pchar;
+begin
     fTmpOutput^ := #0;
     Offset := pCurrent;
 
-    If pCurrent^ In DigitChars Then
-        While pCurrent^ In DigitChars + HexChars Do
+    if pCurrent^ in DigitChars then
+        while pCurrent^ in DigitChars + HexChars do
             Advance;
 
-    If Offset <> pCurrent Then
-    Begin
+    if Offset <> pCurrent then
+    begin
         StrLCopy(fTmpOutput, Offset, pCurrent - Offset);
-        If pCurrent^ = '.' Then // keep '.' for decimal
+        if pCurrent^ = '.' then // keep '.' for decimal
             StrLCat(StrEnd(fTmpOutput), pCurrent, 1);
         Result := StrPas(fTmpOutput);
-    End
-    Else
+    end
+    else
         Result := '';
-End;
+end;
 
-Function TCppTokenizer.GetWord(bSkipParenthesis: Boolean = False; bSkipArray: Boolean = False; bSkipBlock: Boolean = False): String;
-Var
-    Offset: Pchar;
-    Backup: Pchar;
-    tmp: Integer;
-    Done: Boolean;
-    AssignPos: Pchar;
-    localOutput: Pchar;
-Begin
+function TCppTokenizer.GetWord(bSkipParenthesis: boolean = FALSE; bSkipArray: boolean = FALSE; bSkipBlock: boolean = FALSE): string;
+var
+    Offset: pchar;
+    Backup: pchar;
+    tmp: integer;
+    Done: boolean;
+    AssignPos: pchar;
+    localOutput: pchar;
+begin
     localOutput := StrAlloc(MAX_TOKEN_SIZE);
     localOutput^ := #0;
     SkipToNextToken;
     Offset := pCurrent;
 
-    Repeat
-        While pCurrent^ In LetterChars + DigitChars Do
+    repeat
+        while pCurrent^ in LetterChars + DigitChars do
             Advance;
     // check for operator functions (look below too)
-        If (pCurrent - Offset >= 8) And (StrLComp('operator', Offset, pCurrent - Offset) = 0) Then
-        Begin
-            If pCurrent^ In ['+', '-', '/', '*', '['] Then
-            Begin
+        if (pCurrent - Offset >= 8) and (StrLComp('operator', Offset, pCurrent - Offset) = 0) then
+        begin
+            if pCurrent^ in ['+', '-', '/', '*', '['] then
+            begin
                 Inc(pCurrent);
-                If pCurrent^ = '(' Then
+                if pCurrent^ = '(' then
                     SkipPair('(', ')');
-            End;
+            end;
             Advance;
-            Done := False;
-        End
-        Else
-            Done := True;
-    Until Done;
+            Done := FALSE;
+        end
+        else
+            Done := TRUE;
+    until Done;
 
   // check for '<<' or '>>' operator
     Backup := pCurrent;
-    While Backup^ In SpaceChars Do
+    while Backup^ in SpaceChars do
         Inc(Backup);
-    If ((Backup^ = '<') And ((Backup + 1)^ = '<')) Or
-        ((Backup^ = '>') And ((Backup + 1)^ = '>')) Then
-    Begin
+    if ((Backup^ = '<') and ((Backup + 1)^ = '<')) or
+        ((Backup^ = '>') and ((Backup + 1)^ = '>')) then
+    begin
     //skip to ';'
-        Repeat
+        repeat
             Inc(Backup);
-        Until Backup^ In [';', #0];
+        until Backup^ in [';', #0];
         pCurrent := Backup;
-    End
+    end
 
   // check for <xxx> values (templates, lists etc)
-    Else
-    If pCurrent^ = '<' Then
-    Begin
+    else
+    if pCurrent^ = '<' then
+    begin
         Backup := pCurrent;
-        Repeat
+        repeat
             Inc(Backup);
-        Until Backup^ In ['>', ';', '{', '}', '(', ')', '.', #0];
-        If Backup^ = '>' Then // got it!
+        until Backup^ in ['>', ';', '{', '}', '(', ')', '.', #0];
+        if Backup^ = '>' then // got it!
             pCurrent := Backup + 1;
-    End;
+    end;
 
-    If Offset <> pCurrent Then
-    Begin
+    if Offset <> pCurrent then
+    begin
         StrLCopy(localOutput, Offset, pCurrent - Offset);
     // check for operator functions (look above too)
     // we separate the args from the func name (only for operators - for other funcs it's done automatically)
         AssignPos := StrPos(localOutput, '(');
-        If (AssignPos <> Nil) And (pCurrent - Offset >= 8) And (StrLComp('operator', Offset, 8) = 0) Then
-        Begin
+        if (AssignPos <> NIL) and (pCurrent - Offset >= 8) and (StrLComp('operator', Offset, 8) = 0) then
+        begin
             AssignPos^ := #0;
             pCurrent := Offset + (AssignPos - localOutput);
-            bSkipArray := False;
-        End
+            bSkipArray := FALSE;
+        end
     // if it contains assignment, remove it
-        Else
-        Begin
+        else
+        begin
             AssignPos := StrPos(localOutput, '=');
-            If AssignPos <> Nil Then
+            if AssignPos <> NIL then
                 AssignPos^ := #0;
-        End;
+        end;
 
     // we want it
         SkipToNextToken;
-        If bSkipArray And (pCurrent^ = '[') Then
-        Begin
-            Repeat
+        if bSkipArray and (pCurrent^ = '[') then
+        begin
+            repeat
                 Offset := pCurrent;
                 tmp := 1;
-                Repeat
-                    Repeat
+                repeat
+                    repeat
                         Inc(pCurrent);
-                        If pCurrent^ = '[' Then
+                        if pCurrent^ = '[' then
                             Inc(tmp);
-                    Until pCurrent^ In [#0, ']'] + LineChars;
+                    until pCurrent^ in [#0, ']'] + LineChars;
                     Dec(tmp);
-                Until tmp = 0;
+                until tmp = 0;
                 Inc(pCurrent);
 //        SkipPair('[', ']');
                 StrLCat(StrEnd(localOutput), Offset, pCurrent - Offset);
                 SkipToNextToken;
-            Until pCurrent^ <> '['; // maybe multi-dimension array
-        End
-        Else
-        If bSkipBlock And (pCurrent^ = '{') Then
-        Begin
+            until pCurrent^ <> '['; // maybe multi-dimension array
+        end
+        else
+        if bSkipBlock and (pCurrent^ = '{') then
+        begin
             SkipPair('{', '}');
             SkipToNextToken;
-        End;
-        If pCurrent^ = '.' Then // keep '.' for class-members
+        end;
+        if pCurrent^ = '.' then // keep '.' for class-members
             StrLCat(StrEnd(localOutput), pCurrent, 1)
-        Else
-        If (pCurrent^ = '-') And ((pCurrent + 1)^ = '>') Then
-        Begin // keep '->' for members
+        else
+        if (pCurrent^ = '-') and ((pCurrent + 1)^ = '>') then
+        begin // keep '->' for members
             StrLCat(StrEnd(localOutput), pCurrent, 2);
             Inc(pCurrent, 2);
-        End
-        Else
-        If (pCurrent^ = ':') And ((pCurrent + 1)^ = ':') Then
-        Begin // keep '::'
+        end
+        else
+        if (pCurrent^ = ':') and ((pCurrent + 1)^ = ':') then
+        begin // keep '::'
             StrLCat(StrEnd(localOutput), pCurrent, 2);
             Inc(pCurrent, 2); // there are 2 ':'!
-            StrCat(localOutput, Pchar(GetWord(bSkipParenthesis, bSkipArray, bSkipBlock)));
-        End;
+            StrCat(localOutput, pchar(GetWord(bSkipParenthesis, bSkipArray, bSkipBlock)));
+        end;
         Result := StrPas(localOutput);
-    End
-    Else
+    end
+    else
         Result := '';
     StrDispose(localOutput);
-End;
+end;
 
-Function TCppTokenizer.GetPreprocessor: String;
-Var
-    Offset: Pchar;
-Begin
+function TCppTokenizer.GetPreprocessor: string;
+var
+    Offset: pchar;
+begin
     Offset := pCurrent;
     SkipToEOL;
     fTmpOutput^ := #0;
     StrLCopy(fTmpOutput, Offset, pCurrent - Offset);
     Result := StrPas(fTmpOutput);
-End;
+end;
 
-Function TCppTokenizer.GetArguments: String;
-Var
-    Offset: Pchar;
-Begin
+function TCppTokenizer.GetArguments: string;
+var
+    Offset: pchar;
+begin
     fTmpOutput^ := #0;
     Result := '';
     Offset := pCurrent;
     SkipPair('(', ')');
-    If pCurrent - Offset > MAX_TOKEN_SIZE Then
+    if pCurrent - Offset > MAX_TOKEN_SIZE then
         Exit;
     StrLCopy(fTmpOutput, Offset, pCurrent - Offset);
-    If (pCurrent^ = '.') Or ((pCurrent^ = '-') And ((pCurrent + 1)^ = '>')) Then // skip '.' and '->'
-        While Not (pCurrent^ In [#0, '(', ';', '{', '}', ')'] + LineChars + SpaceChars) Do
+    if (pCurrent^ = '.') or ((pCurrent^ = '-') and ((pCurrent + 1)^ = '>')) then // skip '.' and '->'
+        while not (pCurrent^ in [#0, '(', ';', '{', '}', ')'] + LineChars + SpaceChars) do
             Inc(pCurrent);
     SkipToNextToken;
     Result := StrPas(fTmpOutput);
-End;
+end;
 
-Function TCppTokenizer.IsWord: Boolean;
-Begin
-    Result := pCurrent^ In LetterChars;
-End;
+function TCppTokenizer.IsWord: boolean;
+begin
+    Result := pCurrent^ in LetterChars;
+end;
 
-Function TCppTokenizer.IsNumber: Boolean;
-Begin
-    Result := pCurrent^ In DigitChars;
-End;
+function TCppTokenizer.IsNumber: boolean;
+begin
+    Result := pCurrent^ in DigitChars;
+end;
 
-Function TCppTokenizer.IsPreprocessor: Boolean;
-Begin
+function TCppTokenizer.IsPreprocessor: boolean;
+begin
     Result := pCurrent^ = '#';
-End;
+end;
 
-Function TCppTokenizer.IsArguments: Boolean;
-Begin
+function TCppTokenizer.IsArguments: boolean;
+begin
     Result := pCurrent^ = '(';
-End;
+end;
 
-Function TCppTokenizer.GetNextToken(bSkipParenthesis: Boolean = False; bSkipArray: Boolean = False; bSkipBlock: Boolean = False): String;
-Var
-    Done: Boolean;
-Begin
+function TCppTokenizer.GetNextToken(bSkipParenthesis: boolean = FALSE; bSkipArray: boolean = FALSE; bSkipBlock: boolean = FALSE): string;
+var
+    Done: boolean;
+begin
     Result := '';
-    Done := False;
-    Repeat
+    Done := FALSE;
+    repeat
         SkipToNextToken;
-        If pCurrent^ = #0 Then
+        if pCurrent^ = #0 then
             Break;
-        If IsPreprocessor Then
-        Begin
+        if IsPreprocessor then
+        begin
             CountLines;
             Result := GetPreprocessor;
             Done := Result <> '';
-        End
-        Else
-        If IsArguments Then
-        Begin
+        end
+        else
+        if IsArguments then
+        begin
             CountLines;
             Result := GetArguments;
             Done := Result <> '';
-        End
-        Else
-        If IsWord Then
-        Begin
+        end
+        else
+        if IsWord then
+        begin
             CountLines;
-            Result := GetWord(False, bSkipArray, bSkipBlock);
+            Result := GetWord(FALSE, bSkipArray, bSkipBlock);
             Done := Result <> '';
-        End
-        Else
-        If IsNumber Then
-        Begin
+        end
+        else
+        if IsNumber then
+        begin
             CountLines;
             Result := GetNumber;
             Done := Result <> '';
-        End
-        Else
-        Begin
-            Case pCurrent^ Of
+        end
+        else
+        begin
+            case pCurrent^ of
                 #0:
-                    Done := True;
+                    Done := TRUE;
                 '/':
-                    Case (pCurrent + 1)^ Of
+                    case (pCurrent + 1)^ of
                         '*':
                             SkipCStyleComment;
                         '/':
                             SkipToEOL;
-                    Else
+                    else
                         Advance;
-                    End;
+                    end;
                 '{', '}', ';', ',', ':':
-                Begin //just return the brace or the ';'
+                begin //just return the brace or the ';'
                     CountLines;
                     Result := pCurrent^;
                     Advance;
-                    Done := True;
-                End;
-            Else
+                    Done := TRUE;
+                end;
+            else
                 Advance;
-            End;
-        End;
-    Until Done;
-End;
+            end;
+        end;
+    until Done;
+end;
 
-Function TCppTokenizer.Simplify(Str: String): String;
-Var
-    I: Integer;
-    len: Integer;
-Begin
+function TCppTokenizer.Simplify(Str: string): string;
+var
+    I: integer;
+    len: integer;
+begin
     Result := Str;
-    If Str = '' Then
+    if Str = '' then
         Exit;
 
     len := Length(Result);
     fTmpOutput^ := #0;
     I := 1;
-    While I <= len Do
-    Begin
+    while I <= len do
+    begin
     // simplify spaces
-        If Result[I] In [' ', #9] Then
-        Begin
+        if Result[I] in [' ', #9] then
+        begin
       //Result's  Index is not checked before using it,
       //so it is causing problems when parsing some
       //header files
-            While (I <= len) And (Result[I] In [' ', #9]) Do
+            while (I <= len) and (Result[I] in [' ', #9]) do
                 Inc(I);
             StrLCat(StrEnd(fTmpOutput), ' ', 1);
-        End;
+        end;
     // remove comments
-        If (I < len) And (Result[I] = '/') Then
-        Begin
-            Case Result[I + 1] Of
+        if (I < len) and (Result[I] = '/') then
+        begin
+            case Result[I + 1] of
                 '*':
-                Begin // C style
-                    Repeat
+                begin // C style
+                    repeat
                         Inc(I);
-                    Until (I >= len - 1) Or ((Result[I] = '*') And (Result[I + 1] = '/'));
-                    If Result[I] = '*' Then
+                    until (I >= len - 1) or ((Result[I] = '*') and (Result[I + 1] = '/'));
+                    if Result[I] = '*' then
                         Inc(I, 2);
-                End;
+                end;
                 '/':
-                Begin // C++ style
-                    Repeat
+                begin // C++ style
+                    repeat
                         Inc(I);
-                    Until (I >= len - 1) Or ((Result[I] = '/') And (Result[I + 1] = '/'));
-                    If Result[I] = '/' Then
+                    until (I >= len - 1) or ((Result[I] = '/') and (Result[I + 1] = '/'));
+                    if Result[I] = '/' then
                         Inc(I, 2);
-                End;
-            End;
-        End;
-        If I <= len Then
-            If Not (Result[I] In [' ', #9]) Then
+                end;
+            end;
+        end;
+        if I <= len then
+            if not (Result[I] in [' ', #9]) then
                 StrLCat(StrEnd(fTmpOutput), @Result[I], 1);
         Inc(I);
-    End;
+    end;
     Result := StrPas(fTmpOutput);
-End;
+end;
 
-Procedure TCppTokenizer.PostProcessToken(Var Str: String);
-Begin
+procedure TCppTokenizer.PostProcessToken(var Str: string);
+begin
 
     Str := StringReplace(Str, '\'#13, '', [rfReplaceAll]);
     Str := StringReplace(Str, '\'#10, '', [rfReplaceAll]);
     Str := StringReplace(Str, #13, '', [rfReplaceAll]);
     Str := StringReplace(Str, #10, '', [rfReplaceAll]);
     Str := Simplify(Str);
-End;
+end;
 
-Procedure TCppTokenizer.Tokenize(StartAt: Pchar);
-Var
-    S: String;
-    LastToken: String;
-    Command: String;
-    bSkipBlocks: Boolean;
-    I: Integer;
-Begin
-    If StartAt = Nil Then
+procedure TCppTokenizer.Tokenize(StartAt: pchar);
+var
+    S: string;
+    LastToken: string;
+    Command: string;
+    bSkipBlocks: boolean;
+    I: integer;
+begin
+    if StartAt = NIL then
         Exit;
 
     Reset;
@@ -724,49 +724,49 @@ Begin
     pLineCount := pStart;
 
     S := '';
-    bSkipBlocks := False;
+    bSkipBlocks := FALSE;
     Command := '';
     fCurrLine := 1;
-    If Assigned(fOnProgress) Then
+    if Assigned(fOnProgress) then
         fOnProgress(Self, '', fEnd, 0);
-    Repeat
+    repeat
         LastToken := S;
-        S := GetNextToken(True, True, bSkipBlocks);
+        S := GetNextToken(TRUE, TRUE, bSkipBlocks);
         PostProcessToken(S);
-        If S <> '' Then
+        if S <> '' then
             AddToken(S, fCurrLine);
-        If Assigned(fOnProgress) Then
+        if Assigned(fOnProgress) then
             fOnProgress(Self, '', fEnd, pCurrent - pStart);
-    Until S = '';
+    until S = '';
     AddToken(#0, fCurrLine);
-    If Assigned(fOnProgress) Then
+    if Assigned(fOnProgress) then
         fOnProgress(Self, '', fEnd, 0);
-    If fLogTokens Then
-        If Assigned(fOnLogToken) Then
-            For I := 0 To fTokenList.Count - 1 Do
+    if fLogTokens then
+        if Assigned(fOnLogToken) then
+            for I := 0 to fTokenList.Count - 1 do
                 fOnLogToken(Self, Format('[tokenizer]: Idx: %4d Line: %4d Token: %s', [I, PToken(fTokenList[I])^.Line, PToken(fTokenList[I])^.Text]));
     StrDispose(fTmpOutput);
-End;
+end;
 
-Procedure TCppTokenizer.Tokenize(FileName: TFilename);
-Begin
-    If OpenFile(FileName) Then
+procedure TCppTokenizer.Tokenize(FileName: TFilename);
+begin
+    if OpenFile(FileName) then
         Tokenize(pStart);
     ReleaseFileMemory;
-End;
+end;
 
-Procedure TCppTokenizer.Tokenize(Stream: TStream);
-Begin
-    If OpenStream(Stream) Then
+procedure TCppTokenizer.Tokenize(Stream: TStream);
+begin
+    if OpenStream(Stream) then
         Tokenize(pStart);
     ReleaseFileMemory;
-End;
+end;
 
-Procedure TCppTokenizer.ReleaseFileMemory;
-Begin
-    If pStart <> Nil Then
+procedure TCppTokenizer.ReleaseFileMemory;
+begin
+    if pStart <> NIL then
         FreeMem(pStart);
-    pStart := Nil;
-End;
+    pStart := NIL;
+end;
 
-End.
+end.

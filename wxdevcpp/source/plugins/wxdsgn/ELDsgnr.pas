@@ -1482,7 +1482,11 @@ type
     LI: Integer;
   begin
     for LI := 0 to AData.ControlList.Count - 1 do
+    Begin
       Dispose(PControlItem(AData.ControlList[LI]));
+      AData.ControlList.Delete(LI);
+    End;
+    AData.ControlList.Clear;
     AData.ControlList.Free;
     Dispose(AData);
   end;

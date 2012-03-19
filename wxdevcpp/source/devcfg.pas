@@ -742,7 +742,7 @@ Type
         Property HiliteActiveTab: Boolean Read fHiliteActiveTab
             Write fHiliteActiveTab;
         Property AutoCompile: Integer Read fAutoCompile Write fAutoCompile;
-        Property NoToolTip: Boolean Read fNoToolTip Write fNoToolTip Default False;
+        Property NoToolTip: Boolean Read fNoToolTip Write fNoToolTip Default True;
         Property AutoAddDebugFlag: Integer Read fAutoAddDebugFlag Write fAutoAddDebugFlag;
 
         Property DebugCommand: String Read fDebugCommand Write fDebugCommand;
@@ -1777,7 +1777,7 @@ Begin
     fPrintLineNumbersMargins := False;
     fWatchHint := True;
     fWatchError := True;
-    fNoToolTip := False;
+    fNoToolTip := True;
 
     fDebugCommand := '-exec-finish';
 
@@ -2657,8 +2657,11 @@ Begin
     For i := 0 To fOptions.Count - 1 Do
     Begin
         If Assigned(PCompilerOption(fOptions.Items[i]).optChoices) Then
+        Begin
             PCompilerOption(fOptions.Items[i]).optChoices.Free;
-        Dispose(fOptions.Items[i]);
+        End;
+                Dispose(fOptions.Items[i]);
+
     End;
     fOptions.Clear;
 End;
@@ -2676,8 +2679,10 @@ Begin
     If Assigned(PCompilerOption(fOptions[Index]).optChoices) Then
         PCompilerOption(fOptions[Index]).optChoices.Free;
     If Assigned(fOptions[Index]) Then
+    Begin
         Dispose(fOptions[Index]);
-    fOptions.Delete(Index);
+        fOptions.Delete(Index);
+    End;
 End;
 
 Destructor TdevCompiler.Destroy;

@@ -233,6 +233,7 @@ Begin
             Dispose(Entries[0]);
             Entries.Delete(0);
         End;
+        Entries.Clear;
         Entries.Free;
     End;
 End;

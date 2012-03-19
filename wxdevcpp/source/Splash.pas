@@ -83,10 +83,13 @@ End;
 Procedure TSplashForm.OnCacheProgress(Sender: TObject; FileName: String; Total,
     Current: Integer);
 Begin
-    ProgressBar.Visible := True;
-    ProgressBar.Max := Total;
-    ProgressBar.Position := Current;
-    Application.ProcessMessages;
+    if Assigned(ProgressBar) then
+    begin
+        ProgressBar.Visible := True;
+        ProgressBar.Max := Total;
+        ProgressBar.Position := Current;
+        Application.ProcessMessages;
+    end;
 End;
 
 End.

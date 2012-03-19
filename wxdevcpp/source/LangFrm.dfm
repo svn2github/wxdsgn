@@ -1,11 +1,11 @@
 object LangForm: TLangForm
-  Left = 540
-  Top = 292
+  Left = 343
+  Top = 142
   BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'wxDev-C++ First-Run Configuration'
-  ClientHeight = 295
-  ClientWidth = 416
+  ClientHeight = 333
+  ClientWidth = 454
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -21,16 +21,16 @@ object LangForm: TLangForm
   object FinishPanel: TPanel
     Left = 144
     Top = 8
-    Width = 266
+    Width = 305
     Height = 249
     BevelOuter = bvNone
-    TabOrder = 5
+    TabOrder = 3
     Visible = False
     object Label6: TLabel
       Left = 4
       Top = 0
-      Width = 255
-      Height = 39
+      Width = 285
+      Height = 26
       Caption = 
         'That'#39's all we need to set up wxDev-C++ for use; Click OK to exit' +
         ' this wizard and continue wxDev-C++'#39's start up.'
@@ -39,7 +39,7 @@ object LangForm: TLangForm
     object Label4: TLabel
       Left = 5
       Top = 49
-      Width = 253
+      Width = 273
       Height = 39
       Caption = 
         'If you need help using wxDev-C++, please refer to the wxDev-C++ ' +
@@ -50,8 +50,8 @@ object LangForm: TLangForm
     object Label7: TLabel
       Left = 4
       Top = 98
-      Width = 250
-      Height = 65
+      Width = 282
+      Height = 52
       Caption = 
         'You can also download DevPaks (like libraries or tools) to use w' +
         'ith wxDev-C++, as well as upgrade wxDev-C++ to the latest versio' +
@@ -61,18 +61,18 @@ object LangForm: TLangForm
     end
   end
   object CachePanel: TPanel
-    Left = 144
+    Left = 152
     Top = 8
-    Width = 266
-    Height = 249
+    Width = 305
+    Height = 281
     BevelOuter = bvNone
-    TabOrder = 3
+    TabOrder = 4
     Visible = False
     object Label2: TLabel
       Left = 4
-      Top = 0
-      Width = 241
-      Height = 65
+      Top = 8
+      Width = 284
+      Height = 52
       Caption = 
         'wxDev-C++ can create a cache containing the declarations found i' +
         'n global include files. This will speed up project load times as' +
@@ -82,9 +82,9 @@ object LangForm: TLangForm
     end
     object Label3: TLabel
       Left = 4
-      Top = 75
-      Width = 246
-      Height = 65
+      Top = 83
+      Width = 282
+      Height = 52
       Caption = 
         'Do you want to create the code completion cache now? This can ta' +
         'ke several minutes, depending on the resources available on the ' +
@@ -102,7 +102,7 @@ object LangForm: TLangForm
       Visible = False
       object ParseLabel: TLabel
         Left = 16
-        Top = 24
+        Top = 20
         Width = 65
         Height = 13
         Caption = 'Parsing files...'
@@ -122,15 +122,16 @@ object LangForm: TLangForm
     object BuildPanel: TPanel
       Left = 0
       Top = 150
-      Width = 265
-      Height = 100
+      Width = 305
+      Height = 123
       BevelOuter = bvNone
       TabOrder = 0
       object LoadBtn: TSpeedButton
-        Left = 228
-        Top = 67
-        Width = 22
-        Height = 22
+        Left = 260
+        Top = 87
+        Width = 29
+        Height = 30
+        Enabled = False
         Glyph.Data = {
           36030000424D3603000000000000360000002800000010000000100000000100
           18000000000000030000120B0000120B00000000000000000000BFBFBFBFBFBF
@@ -161,9 +162,9 @@ object LangForm: TLangForm
         OnClick = LoadBtnClick
       end
       object YesCache: TRadioButton
-        Left = 8
-        Top = 0
-        Width = 235
+        Left = 56
+        Top = 10
+        Width = 185
         Height = 17
         Caption = 'Yes, create the cache now'
         Checked = True
@@ -171,29 +172,29 @@ object LangForm: TLangForm
         TabStop = True
       end
       object NoCache: TRadioButton
-        Left = 8
-        Top = 18
-        Width = 235
+        Left = 56
+        Top = 33
+        Width = 209
         Height = 17
         Caption = 'No, do not create the cache'
         TabOrder = 1
       end
       object DirCheckBox: TCheckBox
         Left = 8
-        Top = 48
-        Width = 249
-        Height = 17
+        Top = 60
+        Width = 273
+        Height = 25
         Caption = 'Parse this directory instead of the standard one:'
         TabOrder = 2
         OnClick = DirCheckBoxClick
       end
       object DirEdit: TEdit
-        Left = 25
-        Top = 68
-        Width = 200
+        Left = 8
+        Top = 91
+        Width = 241
         Height = 21
-        Color = clInactiveCaptionText
         Enabled = False
+        HideSelection = False
         TabOrder = 3
       end
     end
@@ -201,10 +202,10 @@ object LangForm: TLangForm
   object SecondPanel: TPanel
     Left = 144
     Top = 8
-    Width = 266
-    Height = 249
+    Width = 305
+    Height = 265
     BevelOuter = bvNone
-    TabOrder = 4
+    TabOrder = 5
     Visible = False
     object SecondLabel: TLabel
       Left = 4
@@ -220,8 +221,8 @@ object LangForm: TLangForm
     object Label5: TLabel
       Left = 4
       Top = 62
-      Width = 232
-      Height = 65
+      Width = 275
+      Height = 52
       Caption = 
         'Although this feature is useful, it requires more CPU power and ' +
         'memory to function, and may not be suitable for all developers. ' +
@@ -232,8 +233,8 @@ object LangForm: TLangForm
     object Label8: TLabel
       Left = 7
       Top = 137
-      Width = 231
-      Height = 65
+      Width = 280
+      Height = 52
       Caption = 
         'Do note that the Class Browser is needed for the automatic gener' +
         'ation of event handlers when designing wxWidgets Forms. Of cours' +
@@ -242,9 +243,9 @@ object LangForm: TLangForm
       WordWrap = True
     end
     object YesClassBrowser: TRadioButton
-      Left = 20
-      Top = 210
-      Width = 220
+      Left = 36
+      Top = 212
+      Width = 250
       Height = 17
       Caption = 'Yes, I want to use this feature'
       Checked = True
@@ -252,9 +253,9 @@ object LangForm: TLangForm
       TabStop = True
     end
     object NoClassBrowser: TRadioButton
-      Left = 20
-      Top = 228
-      Width = 220
+      Left = 36
+      Top = 232
+      Width = 250
       Height = 17
       Caption = 'No, I prefer to use wxDev-C++ without it'
       TabOrder = 1
@@ -263,14 +264,14 @@ object LangForm: TLangForm
   object FirstPanel: TPanel
     Left = 144
     Top = 8
-    Width = 266
-    Height = 249
+    Width = 305
+    Height = 281
     BevelOuter = bvNone
     TabOrder = 2
     object Label1: TLabel
-      Left = 0
-      Top = 0
-      Width = 247
+      Left = 8
+      Top = 8
+      Width = 273
       Height = 39
       Caption = 
         'This is the first time you have launched wxDev-C++. Here are som' +
@@ -279,23 +280,23 @@ object LangForm: TLangForm
     end
     object GroupBox1: TGroupBox
       Left = 0
-      Top = 48
-      Width = 265
-      Height = 121
+      Top = 56
+      Width = 297
+      Height = 137
       Caption = 'Select your language :'
       TabOrder = 1
     end
     object ThemeGroupBox: TGroupBox
       Left = 0
-      Top = 176
-      Width = 265
+      Top = 200
+      Width = 297
       Height = 73
       Caption = 'Select your wxDev-C++ theme :'
       TabOrder = 2
       object ThemeBox: TComboBox
         Left = 16
-        Top = 24
-        Width = 153
+        Top = 22
+        Width = 169
         Height = 21
         Style = csDropDownList
         ItemHeight = 13
@@ -303,10 +304,10 @@ object LangForm: TLangForm
         OnChange = ThemeBoxChange
       end
       object PreviewBtn: TBitBtn
-        Left = 178
-        Top = 24
+        Left = 202
+        Top = 22
         Width = 75
-        Height = 22
+        Height = 35
         Caption = '&Preview'
         TabOrder = 1
         OnClick = PreviewBtnClick
@@ -323,17 +324,17 @@ object LangForm: TLangForm
     end
     object ListBox: TListBox
       Left = 8
-      Top = 64
-      Width = 249
-      Height = 97
+      Top = 72
+      Width = 281
+      Height = 113
       ItemHeight = 13
       TabOrder = 0
     end
   end
   object OkBtn: TBitBtn
-    Left = 144
-    Top = 264
-    Width = 265
+    Left = 152
+    Top = 296
+    Width = 281
     Height = 25
     Caption = '&Next'
     Default = True

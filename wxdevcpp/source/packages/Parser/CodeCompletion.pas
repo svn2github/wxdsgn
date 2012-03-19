@@ -154,16 +154,7 @@ End;
 
 Destructor TCodeCompletion.Destroy;
 Begin
-    If Assigned(CodeComplForm) Then
-    Begin
-     If CodeComplForm.HasParent Then
-        CodeComplForm.Close
-     Else
-        FreeAndNil(CodeComplForm);
-    End
-    Else
-        CodeComplForm := Nil;
-
+   
     If Assigned(fCompletionStatementList) Then
         FreeAndNil(fCompletionStatementList)
     Else
@@ -190,6 +181,7 @@ Begin
         fIncludedFiles := Nil;
 
     Inherited Destroy;
+
 End;
 
 Function TCodeCompletion.GetClass(Phrase: String): String;

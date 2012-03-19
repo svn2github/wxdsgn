@@ -4930,7 +4930,7 @@ End;
 
 Function TWXDsgn.GET_COMMON_CPP_INCLUDE_DIR: String;
 Begin
-    Result := COMMON_CPP_INCLUDE_DIR;
+    Result := COMMON_CPP_INCLUDE_DIR + ';include\common;';
 End;
 
 Function TWXDsgn.GetCompilerMacros: String;

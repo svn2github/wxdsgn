@@ -17,6 +17,8 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
+{$WARN UNIT_PLATFORM OFF}
+
 Unit EditorOptfrm;
 
 Interface
@@ -24,9 +26,9 @@ Interface
 Uses
  //dbugintf,  EAB removed Gexperts debug stuff.
 {$IFDEF WIN32}
-    Windows, Messages, SysUtils, Variants, Graphics, Controls, Forms,
+    Windows, Messages, SysUtils, Variants, Graphics, Controls, Forms, 
     Dialogs, ComCtrls, devTabs, StdCtrls, ExtCtrls, Spin, ColorPickerButton,
-    SynEdit, SynEditHighlighter, SynHighlighterCpp, CheckLst, SynMemo,
+    SynEdit, SynEditHighlighter, SynHighlighterCpp, CheckLst, SynMemo, FileCtrl,
     Buttons, ClassBrowser, CppParser, CppTokenizer, StrUtils, XPMenu, Classes;
 {$ENDIF}
 {$IFDEF LINUX}
@@ -159,6 +161,8 @@ Type
         cbDefaultintoprj: TCheckBox;
         edCompletionDelay: TSpinEdit;
         cbGutterGradient: TCheckBox;
+    btnAddNewFolder: TButton;
+    txtLoadingCache: TLabel;
         Procedure FormCreate(Sender: TObject);
         Procedure FormShow(Sender: TObject);
         Procedure FormActivate(Sender: TObject);
@@ -220,6 +224,7 @@ Type
             Line: Integer; Mark: TSynEditMark);
         Procedure cbHighCurrLineClick(Sender: TObject);
         Procedure seTabSizeChange(Sender: TObject);
+    procedure btnAddNewFolderClick(Sender: TObject);
     Private
         ffgColor: TColor;
         fbgColor: TColor;
@@ -474,8 +479,8 @@ Procedure TEditorOptForm.actSelectFileClick(Sender: TObject);
 Begin
 
      If (lbCCC.ItemIndex >= 0) And
-          (lbCCC.ItemIndex < CppParser1.ScannedFiles.Count) then
-       lbCCC.Hint := CppParser1.ScannedFiles.Strings[lbCCC.ItemIndex];
+          (lbCCC.ItemIndex < MainForm.CppParser1.ScannedFiles.Count) then
+       lbCCC.Hint := MainForm.CppParser1.ScannedFiles.Strings[lbCCC.ItemIndex];
 
 End;
 
@@ -802,6 +807,7 @@ Begin
     chkCCCache.Enabled := chkEnableCompletion.Checked;
     lbCCC.Enabled := chkCCCache.Checked And chkEnableCompletion.Checked;
     btnCCCnew.Enabled := chkCCCache.Checked And chkEnableCompletion.Checked;
+    btnAddNewFolder.Enabled := chkCCCache.Checked And chkEnableCompletion.Checked;
     btnCCCdelete.Enabled := chkCCCache.Checked And chkEnableCompletion.Checked;
 
     // CLASS_BROWSING //
@@ -1480,7 +1486,10 @@ Var
 Begin
     lvCodeIns.AlphaSort;
     For idx := 0 To dmMain.CodeInserts.Count - 1 Do
+    Begin
         Dispose(dmMain.CodeInserts.Items[idx]);
+        dmMain.CodeInserts.Delete(idx);
+    End;
     dmMain.CodeInserts.Clear;
     For idx := 0 To pred(lvCodeIns.Items.Count) Do
     Begin
@@ -1726,12 +1735,13 @@ End;
 
 Procedure TEditorOptForm.btnCCCdeleteClick(Sender: TObject);
 Begin
-    If lbCCC.Items.Count = 0 Then
-        Exit;
+  //  If lbCCC.Items.Count = 0 Then
+  //      Exit;
     If MessageDlg('Are you sure you want to clear the cache?',
         mtConfirmation, [mbYes, mbNo], 0) = mrYes Then
     Begin
         DeleteFile(devDirs.Config + DEV_COMPLETION_CACHE);
+        CppParser1.Reset(False); // Reset parser and don't keep loaded
         FreeAndNil(CppParser1);
         CppParser1 := TCppParser.Create(Self);
         CppParser1.Tokenizer := CppTokenizer1;
@@ -1740,6 +1750,7 @@ Begin
         CppParser1.OnStartParsing := CppParser1StartParsing;
         CppParser1.OnEndParsing := CppParser1EndParsing;
         CppParser1.OnTotalProgress := CppParser1TotalProgress;
+        CppParser1.OnCacheProgress := NIL;
         lbCCC.Items.Clear;
         chkCCCache.Tag := 1; // mark modified
     End;
@@ -1751,15 +1762,10 @@ Var
 Begin
 
     Screen.Cursor := crHourglass;
-    CppParser1.OnStartParsing := CppParser1StartParsing;
-    CppParser1.OnEndParsing := Nil; //We will call it ourselves
-    CppParser1.OnCacheProgress := CppParser1CacheProgress;
-    CppParser1.Load(devDirs.Config + DEV_COMPLETION_CACHE);
 
-    For I := 0 To CppParser1.CacheContents.Count - 1 Do
-       lbCCC.Items.Add(CompactFilename(CppParser1.CacheContents[I]));
+    For I := 0 To MainForm.CppParser1.CacheContents.Count - 1 Do
+       lbCCC.Items.Add(CompactFilename(MainForm.CppParser1.CacheContents[I]));
 
-    CppParser1EndParsing(Self);
     Screen.Cursor := crDefault;
 End;
 
@@ -1767,6 +1773,7 @@ Procedure TEditorOptForm.chkCCCacheClick(Sender: TObject);
 Begin
     lbCCC.Enabled := chkCCCache.Checked;
     btnCCCnew.Enabled := chkCCCache.Checked;
+    btnAddNewFolder.Enabled := chkCCCache.Checked;
     btnCCCdelete.Enabled := chkCCCache.Checked;
 End;
 
@@ -1784,10 +1791,13 @@ Procedure TEditorOptForm.CppParser1StartParsing(Sender: TObject);
 Begin
     chkCCCache.Enabled := False;
     btnCCCnew.Enabled := False;
+    btnAddNewFolder.Enabled := False;
     btnCCCdelete.Enabled := False;
     btnOk.Enabled := False;
     btnCancel.Enabled := False;
     pbCCCache.Visible := True;
+    txtLoadingCache.Visible := True;
+    Application.ProcessMessages;
 End;
 
 Procedure TEditorOptForm.CppParser1EndParsing(Sender: TObject);
@@ -1795,9 +1805,12 @@ Begin
     chkCCCache.Enabled := True;
     btnCCCnew.Enabled := True;
     btnCCCdelete.Enabled := True;
+    btnAddNewFolder.Enabled := True;
     btnOk.Enabled := True;
     btnCancel.Enabled := True;
     pbCCCache.Visible := False;
+    txtLoadingCache.Visible := False;
+    Application.ProcessMessages;
 End;
 
 Procedure TEditorOptForm.CppParser1TotalProgress(Sender: TObject;
@@ -1906,5 +1919,92 @@ Begin
     End;
 
 End;
+
+procedure TEditorOptForm.btnAddNewFolderClick(Sender: TObject);
+Var
+  chosenDirectory : string;
+  filesSelected, FileList : TStringList;
+  I : Integer;
+
+begin
+
+     if SelectDirectory('Select directory to add to cache', '', chosenDirectory) then //(SelectDirectory(chosenDirectory, [], 0)) then
+     begin
+
+            Application.ProcessMessages;
+            Screen.Cursor := crHourglass;
+
+             //Track the cache parse progress
+            HasProgressStarted := False;
+            CppParser1.OnStartParsing := CppParser1StartParsing;
+            CppParser1.OnEndParsing := CppParser1EndParsing;
+            CppParser1.OnTotalProgress := CppParser1TotalProgress;
+
+           filesSelected := TStringList.Create;
+           filesSelected.Clear;
+
+           FileList := TStringList.Create;
+
+           // This is kludge to get all header files
+           FilesFromWildCard(chosenDirectory, '*.h', FileList, True, False, True);
+           For I := 0 To FileList.Count - 1 Do
+               filesSelected.Add(FileList[I]);
+           FileList.Clear;
+           FilesFromWildCard(chosenDirectory, '*.hpp', FileList, True, False, True);
+           For I := 0 To FileList.Count - 1 Do
+               filesSelected.Add(FileList[I]);
+           FileList.Clear;
+           FilesFromWildCard(chosenDirectory, '*.hh', FileList, True, False, True);
+           For I := 0 To FileList.Count - 1 Do
+               filesSelected.Add(FileList[I]);
+           FileList.Clear;
+           FilesFromWildCard(chosenDirectory, '*.rh', FileList, True, False, True);
+           For I := 0 To FileList.Count - 1 Do
+               filesSelected.Add(FileList[I]);
+           FileList.Clear;
+           FileList.Assign(filesSelected);
+           filesSelected.Clear;
+           // End kludge
+
+            //Add the files to scan and then parse the list
+            For I := 0 To FileList.Count - 1 Do
+              Begin
+                // See if file is already in the cache
+                If (CppParser1.CacheContents.IndexOf(FileList[I]) = -1) Then
+                Begin
+                        filesSelected.Add(FileList.Strings[I]);
+                        CppParser1.AddFileToScan(FileList[I]);
+                End;
+
+              End;
+
+            FileList.Clear;
+            FileList.Free;
+
+            CppParser1.ParseList;
+
+           pbCCCache.Max := filesSelected.Count;
+           pbCCCache.StepBy(1);
+
+            //Finally append the new items unto the listbox
+            For I := 0 To filesSelected.Count - 1 Do
+            Begin
+                lbCCC.Items.Add(CompactFilename(filesSelected[I]));
+                pbCCCache.StepIt;
+            End;
+
+            filesSelected.Clear;
+            filesSelected.Free;
+
+            pbCCCache.Position := pbCCCache.Max;
+
+            CppParser1EndParsing(Self);
+            Screen.Cursor := crDefault;
+
+            chkCCCache.Tag := 1; // mark modified
+
+     end;
+
+end;
 
 End.

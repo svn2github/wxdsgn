@@ -527,10 +527,16 @@ end;
 
 procedure TWebUpdateForm.ClearList;
 begin
-  while fUpdateList.Count > 0 do begin
+  while fUpdateList.Count > 0 do
+  begin
     if Assigned(fUpdateList[0]) then
+    Begin
       Dispose(PUpdateRec(fUpdateList[0]));
-    fUpdateList.Delete(0);
+      fUpdateList.Delete(0);
+    End;
+
+    End;
+    fUpdateList.Clear;
   end;
 end;
 

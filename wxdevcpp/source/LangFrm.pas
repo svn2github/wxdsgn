@@ -24,7 +24,7 @@ Interface
 Uses
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-    StdCtrls, Buttons, ExtCtrls, Menus, XPMenu, ComCtrls,
+    StdCtrls, Buttons, ExtCtrls, Menus, XPMenu, ComCtrls, CppParser, 
 {$WARNINGS OFF}
     FileCtrl;
 {$WARNINGS ON}
@@ -96,22 +96,28 @@ Type
 Implementation
 
 Uses
-    MultiLangSupport, datamod, DevThemes, devcfg, utils, main, version;
+    MultiLangSupport, datamod, DevThemes, devcfg, utils, main, version,
+    Splash;
 
 {$R *.dfm}
 
 Procedure TLangForm.UpdateList;
 Var
     idx: Integer;
-    sel: Integer;
+    sel, selEnglish: Integer;
 Begin
     ListBox.Clear;
+    selEnglish := 0;
     For idx := 0 To pred(List.Count) Do
     Begin
         sel := ListBox.Items.Add(List.Values[List.Names[idx]]);
         If Pos('english (original)', LowerCase(ListBox.Items[sel])) > 0 Then
+        begin
+            selEnglish := sel;
             ListBox.Selected[sel] := True;
+        end
     End;
+    ListBox.TopIndex := -1 + selEnglish;
 End;
 
 Function TLangForm.GetSelected: Integer;
@@ -143,7 +149,9 @@ Var s: Array [0..255] Of Char;
     d: DWORD;
     sl: TStrings;
 Begin
-    DesktopFont := True;
+  //  DesktopFont := True;
+    SplashForm.Hide; // Hide the splash form
+
     HasProgressStarted := False;
     sl := devTheme.ThemeList;
     ThemeBox.Items.AddStrings(sl);
@@ -185,13 +193,65 @@ Begin
         ParseLabel.Caption := 'Parsing file: ' + FileName
     Else
         ParseLabel.Caption := 'Finalizing... Please wait';
-    ParseLabel.Width := 236;
+    ParseLabel.Width := 250;
     Application.ProcessMessages;
 End;
 
 Procedure TLangForm.OkBtnClick(Sender: TObject);
-Var s, f: TStringList;
-    i, j: Integer;
+Var s: TStringList;
+    i: Integer;
+
+procedure CacheFilesFromWildcard(Directory, Mask: String;
+        Subdirs, ShowDirs, Multitasking: Boolean);
+Var
+    SearchRec: TSearchRec;
+    Attr, Error: Integer;
+    fileName : string;
+Begin
+    Directory := IncludeTrailingPathDelimiter(Directory);
+
+    { First, find the required file... }
+    Attr := faAnyFile;
+    If ShowDirs = False Then
+        Attr := Attr - faDirectory;
+    Error := FindFirst(Directory + Mask, Attr, SearchRec);
+    If (Error = 0) Then
+    Begin
+        While (Error = 0) Do
+        Begin
+            { Found one! }
+            fileName := Directory + SearchRec.Name;
+             If (MainForm.CppParser1.CacheContents.IndexOf(fileName) = -1) Then
+                        MainForm.CppParser1.AddFileToScan(fileName);
+
+            Error := FindNext(SearchRec);
+            If Multitasking Then
+                Application.ProcessMessages;
+        End;
+        FindClose(SearchRec);
+    End;
+
+    { Then walk through all subdirectories. }
+    If Subdirs Then
+    Begin
+        Error := FindFirst(Directory + '*.*', faAnyFile, SearchRec);
+        If (Error = 0) Then
+        Begin
+            While (Error = 0) Do
+            Begin
+                { Found one! }
+                If (SearchRec.Name[1] <> '.') And (SearchRec.Attr And
+                    faDirectory <> 0) Then
+                    { We do this recursively! }
+                    CacheFilesFromWildcard(Directory + SearchRec.Name, Mask,
+                        Subdirs, ShowDirs, Multitasking);
+                Error := FindNext(SearchRec);
+            End;
+            FindClose(SearchRec);
+        End;
+    End;
+End;
+
 Begin
     If OkBtn.Tag = 0 Then
     Begin
@@ -222,6 +282,7 @@ Begin
             SecondPanel.Visible := False;
             devCodeCompletion.Enabled := False;
             devCodeCompletion.UseCacheFiles := False;
+            devClassBrowsing.Enabled := False;
             devClassBrowsing.ParseLocalHeaders := False;
             devClassBrowsing.ParseGlobalHeaders := False;
             SaveOptions;
@@ -280,40 +341,36 @@ Begin
                 StrToList(devDirs.Cpp, s);
             End;
 
-            f := TStringList.Create;
             For i := 0 To s.Count - 1 Do
             Begin
                 If DirectoryExists(s[i]) Then
                 Begin
-                    FilesFromWildcard(s[i], '*.*', f, False, False, False);
+                    CacheFilesFromWildcard(s[i], '*.h', True, False, False);
                     Screen.Cursor := crHourglass;
                     Application.ProcessMessages;
-                    For j := 0 To f.Count - 1 Do
-                     If (MainForm.CppParser1.CacheContents.IndexOf(f[j]) = -1) Then
-                        MainForm.CppParser1.AddFileToScan(f[j]);
                 End
                 Else
                     MessageDlg('Directory "' + s[i] + '" does not exist.',
                         mtWarning, [mbOK], 0);
             End;
+            Application.ProcessMessages;
             MainForm.CppParser1.ParseList;
             ParseLabel.Caption := 'Saving cache to disk...';
 
             Application.ProcessMessages;
             MainForm.CppParser1.Save(devDirs.Config + DEV_COMPLETION_CACHE);
-            MainForm.CppParser1.OnStartParsing := MainForm.CppParser1StartParsing;
-            MainForm.CppParser1.OnEndParsing := MainForm.CppParser1EndParsing;
-            MainForm.CppParser1.OnTotalProgress := MainForm.CppParser1TotalProgress;
-
             MainForm.ClassBrowser1.SetUpdateOn;
             Application.ProcessMessages;
+
             Screen.Cursor := crDefault;
+
+            s.Clear;
             s.Free;
-            f.Free;
+
         End
         Else
         Begin
-            devClassBrowsing.ParseLocalHeaders := True;
+            devClassBrowsing.ParseLocalHeaders := False;
             devClassBrowsing.ParseGlobalHeaders := False;
         End;
         OkBtn.Tag := 3;
@@ -322,6 +379,7 @@ Begin
         OkBtn.Enabled := True;
         FinishPanel.Visible := True;
         CachePanel.Visible := False;
+
     End;
 End;
 
@@ -335,11 +393,10 @@ End;
 
 Procedure TLangForm.DirCheckBoxClick(Sender: TObject);
 Begin
+
     DirEdit.Enabled := DirCheckBox.Checked;
-    If DirEdit.Enabled Then
-        DirEdit.Color := clCaptionText
-    Else
-        DirEdit.Color := clInactiveCaptionText;
+    LoadBtn.Enabled := DirCheckBox.Checked;
+        
 End;
 
 Procedure TLangForm.LoadBtnClick(Sender: TObject);

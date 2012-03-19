@@ -4891,8 +4891,12 @@ Begin
 
         Finish1:
             FreeMem(image, SizeOf(Integer) * iWidth * iHeight);
-        For palindex := 0 To pal.Count - 1 Do
+        For palindex := (pal.Count - 1) downto 0 Do
+        Begin
             Dispose(pal.Items[palindex]);
+            pal.Delete(palIndex);
+        End;
+        pal.Clear;
         pal.Free;
         //   Form2.Hide;
         //   Form1.Enabled:=True;
@@ -5121,8 +5125,13 @@ Begin
 
         Finish1:
             FreeMem(image, SizeOf(Integer) * iWidth * iHeight);
-        For palindex := 0 To pal.Count - 1 Do
+        For palindex := (pal.Count - 1) downto 0 Do
+        Begin
             Dispose(pal.Items[palindex]);
+            pal.Delete(palindex);
+        End;
+        
+        pal.Clear;
         pal.Free;
     End;
 End;
@@ -5387,12 +5396,14 @@ Begin
         Finish1:
             StrDispose(cp1);
 
-        For col := 0 To colors - 1 Do
+        For col := (colors - 1) downto 0 Do
         Begin
             palitem := pal.Items[col];
             StrDispose(palitem^.chrs);
             Dispose(palitem);
+            pal.Delete(col);
         End;
+        pal.Clear;
         pal.Free;
 
         CloseFile(F);
