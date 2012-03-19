@@ -36,7 +36,7 @@ const
     SpaceChars: set of char = [' ', #9];
     LineChars: set of char = [#13, #10];
 
-    MAX_TOKEN_SIZE = 32768;
+    MAX_TOKEN_SIZE = 64000;
 
 type
     TSetOfChars = set of char;
@@ -124,6 +124,8 @@ begin
 end;
 
 procedure TCppTokenizer.Reset;
+var
+    i, iCount: integer;
 begin
     if fTokenList <> NIL then
     begin
@@ -137,6 +139,7 @@ begin
                 fTokenList.Delete(fTokenList.Count - 1);
         fTokenList.Clear;
     end;
+
 end;
 
 function TCppTokenizer.OpenFile(FileName: string): boolean;
@@ -145,6 +148,7 @@ var
     iLength, iRead: integer;
 begin
     Result := FALSE;
+
     if FileExists(FileName) then
     begin
         hFile := FileOpen(FileName, fmOpenRead);
@@ -185,6 +189,7 @@ end;
 function TCppTokenizer.OpenStream(Stream: TStream): boolean;
 begin
     Result := FALSE;
+
     if Assigned(Stream) then
     begin
         Stream.Position := 0;
@@ -546,7 +551,7 @@ begin
     Result := '';
     Offset := pCurrent;
     SkipPair('(', ')');
-    if pCurrent - Offset > MAX_TOKEN_SIZE then
+    if (pCurrent - Offset) > MAX_TOKEN_SIZE then
         Exit;
     StrLCopy(fTmpOutput, Offset, pCurrent - Offset);
     if (pCurrent^ = '.') or ((pCurrent^ = '-') and ((pCurrent + 1)^ = '>')) then // skip '.' and '->'
@@ -717,7 +722,7 @@ begin
         Exit;
 
     Reset;
-    fTmpOutput := StrAlloc(MAX_TOKEN_SIZE);
+    fTmpOutput := StrAlloc(StrLen(StartAt)); //StrAlloc(MAX_TOKEN_SIZE);
     pStart := StartAt;
     fEnd := Length(StrPas(pStart));
     pCurrent := pStart;
@@ -752,6 +757,7 @@ procedure TCppTokenizer.Tokenize(FileName: TFilename);
 begin
     if OpenFile(FileName) then
         Tokenize(pStart);
+
     ReleaseFileMemory;
 end;
 

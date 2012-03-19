@@ -17,11 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-Unit ClassBrowsingReg;
+unit ClassBrowsingReg;
 
-Interface
+interface
 
-Uses
+uses
 {$IFDEF WIN32}
     Windows, Classes, CppParser, CppTokenizer, CodeCompletion, ClassBrowser;
 {$ENDIF}
@@ -29,14 +29,14 @@ Uses
   Classes, CppParser, CppTokenizer, CodeCompletion, ClassBrowser;
 {$ENDIF}
 
-Procedure Register;
+procedure Register;
 
-Implementation
+implementation
 
-Procedure Register;
-Begin
+procedure Register;
+begin
     RegisterComponents('dev-c++', [TCppTokenizer, TCppParser, TCodeCompletion, TClassBrowser]);
-End;
+end;
 
-End.
+end.
  

@@ -319,8 +319,8 @@ begin
 end;
 
 destructor TCppParser.Destroy;
-Var
-    i, iCount: Integer;
+var
+    i, iCount: integer;
 begin
     if Assigned(fInvalidatedIDs) then
         FreeAndNil(fInvalidatedIDs)
@@ -330,41 +330,43 @@ begin
         FreeAndNil(fProjectFiles)
     else fProjectFiles := NIL;
 
-    If Assigned(fIncludesList) Then
-    Begin
-    iCount := fIncludesList.Count;
-    For i := (iCount - 1) downto 0 Do
-    Begin
-        Dispose(PIncludesRec(fIncludesList.Items[i]));
-        fIncludesList.Delete(i);
-    End;
-
+    if Assigned(fIncludesList) then
+    begin
+        iCount := fIncludesList.Count;
+        for i := (iCount - 1) downto 0 do
+        begin
+            Dispose(PIncludesRec(fIncludesList.Items[i]));
+            fIncludesList.Delete(i);
+        end;
+        fIncludesList.Clear;
         FreeAndNil(fIncludesList);
-    End
+    end
     else fIncludesList := NIL;
 
-    If Assigned(fOutstandingTypedefs) Then
-    Begin
-    iCount := fOutstandingTypedefs.Count;
-    For i := (iCount - 1) downto 0 Do
-    Begin
-        Dispose(POutstandingTypedef(fOutstandingTypedefs.Items[i]));
-        fOutstandingTypedefs.Delete(i);
-    End;
+    if Assigned(fOutstandingTypedefs) then
+    begin
+        iCount := fOutstandingTypedefs.Count;
+        for i := (iCount - 1) downto 0 do
+        begin
+            Dispose(POutstandingTypedef(fOutstandingTypedefs.Items[i]));
+            fOutstandingTypedefs.Delete(i);
+        end;
+        fOutstandingTypedefs.Clear;
         FreeAndNil(fOutstandingTypedefs);
-    End
+    end
     else fOutstandingTypedefs := NIL;
 
-    If Assigned(fStatementList) Then
-    Begin
-    iCount := fStatementList.Count;
-    For i := (iCount - 1) downto 0 Do
-    Begin
-        Dispose(PStatement(fStatementList.Items[i]));
-        fStatementList.Delete(i);
-    End;
+    if Assigned(fStatementList) then
+    begin
+        iCount := fStatementList.Count;
+        for i := (iCount - 1) downto 0 do
+        begin
+            Dispose(PStatement(fStatementList.Items[i]));
+            fStatementList.Delete(i);
+        end;
+        fStatementList.Clear;
         FreeAndNil(fStatementList);
-    End
+    end
     else fStatementList := NIL;
 
     if Assigned(fFilesToScan) then
@@ -1870,7 +1872,7 @@ procedure TCppParser.Reset(KeepLoaded: boolean = TRUE);
 var
     I, iCount: integer;
     I1: integer;
-    startIndex : integer;
+    startIndex: integer;
     s: PStatement;
     p: Pointer;
 begin
@@ -1916,14 +1918,13 @@ begin
         end;
     end;
 
-   // fStatementList.Clear;
     fStatementList.Pack;
     fStatementList.Capacity := fStatementList.Count;
 
     if not KeepLoaded then
     begin
         iCount := fIncludesList.Count;
-        for I:= (iCount - 1) downto 0 do
+        for I := (iCount - 1) downto 0 do
         begin
             p := fIncludesList[I];
             if Assigned(p) then
@@ -1953,7 +1954,7 @@ var
     IsVisible: boolean;
     bLocal: boolean;
     bGlobal: boolean;
-    I, iCount : Integer;
+    I, iCount: integer;
 begin
     if not fEnabled then
         Exit;
@@ -2012,14 +2013,14 @@ begin
     if Assigned(fOnStartParsing) then
         fOnStartParsing(Self);
     try
-        While fFilesToScan.Count > 0 Do
+        while fFilesToScan.Count > 0 do
         begin
             if Assigned(fOnTotalProgress) then
                 fOnTotalProgress(Self, fFilesToScan[0], fFilesToScan.Count, 1);
-            If fScannedFiles.IndexOf(fFilesToScan[0]) = -1 Then
+            if fScannedFiles.IndexOf(fFilesToScan[0]) = -1 then
             begin
-                IsVisible := Not IsGlobalFile(fFilesToScan[0]);
-                Parse(fFilesToScan[0], IsVisible, True, False);
+                IsVisible := not IsGlobalFile(fFilesToScan[0]);
+                Parse(fFilesToScan[0], IsVisible, TRUE, FALSE);
             end;
             fFilesToScan.Delete(0);
         end;
@@ -2301,7 +2302,7 @@ begin
   // what happens with the statements that have _ParentID on one of these???
   // what happens with the statements that inherit from one of these???
   // POSSIBLE WORKAROUND 1: invalidate the other file too (don't like it much...)
-   
+
   // delete statements from file
     for I := (fStatementList.Count - 1) downto 0 do
         if (AnsiCompareStr(PStatement(fStatementList[I])^._FileName, FileName) = 0) or
@@ -2313,6 +2314,7 @@ begin
             fStatementList.Delete(I);
         end;
 
+    fStatementList.Clear;
     fStatementList.Pack;
     fStatementList.Capacity := fStatementList.Count;
 
@@ -3092,7 +3094,7 @@ begin
         begin
             Dispose(PStatement(fStatementList[I]));
             fStatementList.Delete(I);
-        end
+        end;
     end;
 
     fThisPointerID := -1;
