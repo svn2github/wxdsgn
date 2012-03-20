@@ -30,121 +30,121 @@ unit dmCodeGen;
 
 interface
 
-uses classes, Sysutils, xprocs,synEdit;
+uses classes, Sysutils, xprocs, synEdit;
 
 type
-    TBlockType = (btManualCode,btDialogStyle, btHeaderIncludes, btForwardDec, btClassNameControlIdentifiers, btClassNameEnumControlIdentifiers,btXPMImages, btClassNameEventTableEntries, btClassNameGUIItemsCreation, btClassNameGUIItemsDeclaration,btLHSVariables,btRHSVariables);
+    TBlockType = (btManualCode, btDialogStyle, btHeaderIncludes, btForwardDec, btClassNameControlIdentifiers, btClassNameEnumControlIdentifiers, btXPMImages, btClassNameEventTableEntries, btClassNameGUIItemsCreation, btClassNameGUIItemsDeclaration, btLHSVariables, btRHSVariables);
 
-function GetStartAndEndBlockStrings(ClassNameString: string; blockType: TBlockType; var StartString, EndString: string): Boolean;
+function GetStartAndEndBlockStrings(ClassNameString: string; blockType: TBlockType; var StartString, EndString: string): boolean;
 
-function GetBlockStartAndEndPos(synEdit:TSynEdit; wxClassName: string; blockType: TBlockType; var StartPos, EndPos: Integer): Boolean;
+function GetBlockStartAndEndPos(synEdit: TSynEdit; wxClassName: string; blockType: TBlockType; var StartPos, EndPos: integer): boolean;
 
 //function GetBlockCode(synEdit:TSynEdit; wxClassName: string; blockType: TBlockType; StartPos, EndPos: Integer): string;overload;
-function GetBlockCode(synEdit:TSynEdit; wxClassName: string; blockType: TBlockType; StartPos, EndPos: Integer): TStringList;
+function GetBlockCode(synEdit: TSynEdit; wxClassName: string; blockType: TBlockType; StartPos, EndPos: integer): TStringList;
 
-function DeleteBlock(synEdit:TSynEdit; wxClassName: string; blockType: TBlockType): Boolean;
+function DeleteBlock(synEdit: TSynEdit; wxClassName: string; blockType: TBlockType): boolean;
 
-function AddDialogStyleDeclaration(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer; GUIItemString: string): Boolean;
-function DeleteAllDialogStyleDeclaration(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer): Boolean;
+function AddDialogStyleDeclaration(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer; GUIItemString: string): boolean;
+function DeleteAllDialogStyleDeclaration(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer): boolean;
 
-function AddClassNameGUIItemsDeclaration(synEdit:TSynEdit;ClassNameString: string; BlockStart, BlockEnd: Integer; GUIItemString: string): Boolean;
-function DeleteAllClassNameGUIItemsDeclaration(synEdit:TSynEdit;ClassNameString: string; BlockStart, BlockEnd: Integer): Boolean;
+function AddClassNameGUIItemsDeclaration(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer; GUIItemString: string): boolean;
+function DeleteAllClassNameGUIItemsDeclaration(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer): boolean;
 
-function AddClassNameGUIItemsCreation(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer; GUIItemString: string): Boolean;
-function DeleteAllClassNameGUIItemsCreation(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer): Boolean;
+function AddClassNameGUIItemsCreation(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer; GUIItemString: string): boolean;
+function DeleteAllClassNameGUIItemsCreation(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer): boolean;
 
-function AddClassNameControlIndentifiers(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer; ControlIDString: string): Boolean;
-function DeleteAllClassNameControlIndentifiers(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer): Boolean;
+function AddClassNameControlIndentifiers(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer; ControlIDString: string): boolean;
+function DeleteAllClassNameControlIndentifiers(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer): boolean;
 
-function AddClassNameEnumControlIndentifiers(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer; ControlIDString: string): Boolean;
-function DeleteAllClassNameEnumControlIndentifiers(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer): Boolean;
+function AddClassNameEnumControlIndentifiers(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer; ControlIDString: string): boolean;
+function DeleteAllClassNameEnumControlIndentifiers(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer): boolean;
 
-function AddClassNameIncludeHeader(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer; ControlIDString: string): Boolean;
-function DeleteAllClassNameIncludeHeader(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer): Boolean;
+function AddClassNameIncludeHeader(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer; ControlIDString: string): boolean;
+function DeleteAllClassNameIncludeHeader(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer): boolean;
 
-function AddClassNameEventTableEntries(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer; EvtString: string;useTabChar:Boolean = true): Boolean;
-function DeleteAllClassNameEventTableEntries(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer): Boolean;
+function AddClassNameEventTableEntries(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer; EvtString: string; useTabChar: boolean = TRUE): boolean;
+function DeleteAllClassNameEventTableEntries(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer): boolean;
 
-function AddRHSVariableList(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer; VarString: string;useTabChar:Boolean = true): Boolean;
-function DeleteAllRHSVariableList(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer): Boolean;
+function AddRHSVariableList(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer; VarString: string; useTabChar: boolean = TRUE): boolean;
+function DeleteAllRHSVariableList(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer): boolean;
 
-function AddLHSVariableList(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer; VarString: string;useTabChar:Boolean = true): Boolean;
-function DeleteAllLHSVariableList(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer): Boolean;
+function AddLHSVariableList(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer; VarString: string; useTabChar: boolean = TRUE): boolean;
+function DeleteAllLHSVariableList(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer): boolean;
 
 
 implementation
 
-function AddHeaderInclude(synEdit:TSynEdit; BlockStart, BlockEnd: Integer; HeaderString: string): Boolean;
+function AddHeaderInclude(synEdit: TSynEdit; BlockStart, BlockEnd: integer; HeaderString: string): boolean;
 begin
-    Result:= True;
+    Result := TRUE;
 end;
 
-function EditHeaderInclude(synEdit:TSynEdit; BlockStart, BlockEnd: Integer; FromHeaderString, ToHeaderString: string): Boolean;
+function EditHeaderInclude(synEdit: TSynEdit; BlockStart, BlockEnd: integer; FromHeaderString, ToHeaderString: string): boolean;
 begin
-  Result:= True;
+    Result := TRUE;
 end;
 
-function DeleteHeaderInclude(synEdit:TSynEdit; BlockStart, BlockEnd: Integer; HeaderString: string): Boolean;
+function DeleteHeaderInclude(synEdit: TSynEdit; BlockStart, BlockEnd: integer; HeaderString: string): boolean;
 begin
-Result:= True;
+    Result := TRUE;
 end;
 
-function AddSourceInclude(synEdit:TSynEdit; BlockStart, BlockEnd: Integer; HeaderString: string): Boolean;
+function AddSourceInclude(synEdit: TSynEdit; BlockStart, BlockEnd: integer; HeaderString: string): boolean;
 begin
-Result:= True;
+    Result := TRUE;
 end;
 
-function EditSourceInclude(synEdit:TSynEdit; BlockStart, BlockEnd: Integer; FromHeaderString, ToHeaderString: string): Boolean;
+function EditSourceInclude(synEdit: TSynEdit; BlockStart, BlockEnd: integer; FromHeaderString, ToHeaderString: string): boolean;
 begin
-Result:= True;
+    Result := TRUE;
 end;
 
-function DeleteSourceInclude(synEdit:TSynEdit; BlockStart, BlockEnd: Integer; HeaderString: string): Boolean;
+function DeleteSourceInclude(synEdit: TSynEdit; BlockStart, BlockEnd: integer; HeaderString: string): boolean;
 begin
-Result:= True;
+    Result := TRUE;
 end;
 
-function AddClassNameControlIdentifier(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer; IdString: string): Boolean;
+function AddClassNameControlIdentifier(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer; IdString: string): boolean;
 begin
-Result:= True;
+    Result := TRUE;
 end;
 
-function EditClassNameControlIdentifier(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer; FromIdString, ToIdString: string): Boolean;
+function EditClassNameControlIdentifier(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer; FromIdString, ToIdString: string): boolean;
 begin
-Result:= True;
+    Result := TRUE;
 end;
 
-function DeleteClassNameControlIdentifier(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer; IdString: string): Boolean;
+function DeleteClassNameControlIdentifier(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer; IdString: string): boolean;
 begin
-Result:= True;
+    Result := TRUE;
 end;
 
-function AddXPMImage(synEdit:TSynEdit; BlockStart, BlockEnd: Integer; XPMString: string): Boolean;
+function AddXPMImage(synEdit: TSynEdit; BlockStart, BlockEnd: integer; XPMString: string): boolean;
 begin
-Result:= True;
+    Result := TRUE;
 end;
 
-function EditXPMImage(synEdit:TSynEdit; BlockStart, BlockEnd: Integer; FromXPMString, ToXPMString: string): Boolean;
+function EditXPMImage(synEdit: TSynEdit; BlockStart, BlockEnd: integer; FromXPMString, ToXPMString: string): boolean;
 begin
-Result:= True;
+    Result := TRUE;
 end;
 
-function DeleteXPMImage(synEdit:TSynEdit; BlockStart, BlockEnd: Integer; XPMString: string): Boolean;
+function DeleteXPMImage(synEdit: TSynEdit; BlockStart, BlockEnd: integer; XPMString: string): boolean;
 begin
-Result:= True;
+    Result := TRUE;
 end;
 
-function AddClassNameEventTableEntries(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer; EvtString: string;useTabChar:Boolean = true): Boolean;
+function AddClassNameEventTableEntries(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer; EvtString: string; useTabChar: boolean = TRUE): boolean;
 var
-    i:Integer;
-    strlst:TStringList;
-    strData:string;
+    i: integer;
+    strlst: TStringList;
+    strData: string;
 begin
-    Result:= True;
+    Result := TRUE;
     if trim(EvtString) = '' then
         exit;
-    strlst:=TStringList.Create;
-    strlst.Text:=EvtString;
+    strlst := TStringList.Create;
+    strlst.Text := EvtString;
     //strlst.Delimiter:=#13;
     //DelimitedText:=EvtString;
 
@@ -153,12 +153,12 @@ begin
 
     for i := strlst.Count - 1 downto 0 do    // Iterate
     begin
-        strData:=Trim(strlst[i]);
+        strData := Trim(strlst[i]);
         if useTabChar then
-            strData:=#9+strData;
+            strData := #9 + strData;
 
         if strData <> '' then
-	    synEdit.Lines.Insert(BlockStart + 1,strData);
+	           synEdit.Lines.Insert(BlockStart + 1, strData);
     end;    // for
     //synEdit.Lines.Insert(BlockStart + 1,'');
 
@@ -166,29 +166,29 @@ begin
     //synEdit.Lines.Insert(BlockStart + 1, #9EvtString);
 end;
 
-function EditClassNameEventTableEntries(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer; FromEvtString, ToEvtString: string): Boolean;
+function EditClassNameEventTableEntries(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer; FromEvtString, ToEvtString: string): boolean;
 begin
-Result:= True;
+    Result := TRUE;
 end;
 
 
-function DeleteAllClassNameEventTableEntries(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer): Boolean;
+function DeleteAllClassNameEventTableEntries(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer): boolean;
 begin
-    Result:= True;
+    Result := TRUE;
     DeleteBlock(synEdit, ClassNameString, btClassNameEventTableEntries);
 end;
 
-function AddRHSVariableList(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer; VarString: string;useTabChar:Boolean = true): Boolean;
+function AddRHSVariableList(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer; VarString: string; useTabChar: boolean = TRUE): boolean;
 var
-    i:Integer;
-    strlst:TStringList;
-    strData:string;
+    i: integer;
+    strlst: TStringList;
+    strData: string;
 begin
-    Result:= True;
+    Result := TRUE;
     if trim(VarString) = '' then
         exit;
-    strlst:=TStringList.Create;
-    strlst.Text:=VarString;
+    strlst := TStringList.Create;
+    strlst.Text := VarString;
     //strlst.Delimiter:=#13;
     //DelimitedText:=EvtString;
 
@@ -197,12 +197,12 @@ begin
 
     for i := strlst.Count - 1 downto 0 do    // Iterate
     begin
-        strData:=Trim(strlst[i]);
+        strData := Trim(strlst[i]);
         if useTabChar then
-            strData:=#9+strData;
+            strData := #9 + strData;
 
         if strData <> '' then
-	    synEdit.Lines.Insert(BlockStart + 1,strData);
+	           synEdit.Lines.Insert(BlockStart + 1, strData);
     end;    // for
     //synEdit.Lines.Insert(BlockStart + 1,'');
 
@@ -210,23 +210,23 @@ begin
     //synEdit.Lines.Insert(BlockStart + 1, #9EvtString);
 end;
 
-function DeleteAllRHSVariableList(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer): Boolean;
+function DeleteAllRHSVariableList(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer): boolean;
 begin
-    Result:= True;
+    Result := TRUE;
     DeleteBlock(synEdit, ClassNameString, btRHSVariables);
 end;
 
-function AddLHSVariableList(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer; VarString: string;useTabChar:Boolean = true): Boolean;
+function AddLHSVariableList(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer; VarString: string; useTabChar: boolean = TRUE): boolean;
 var
-    i:Integer;
-    strlst:TStringList;
-    strData:string;
+    i: integer;
+    strlst: TStringList;
+    strData: string;
 begin
-    Result:= True;
+    Result := TRUE;
     if trim(VarString) = '' then
         exit;
-    strlst:=TStringList.Create;
-    strlst.Text:=VarString;
+    strlst := TStringList.Create;
+    strlst.Text := VarString;
     //strlst.Delimiter:=#13;
     //DelimitedText:=EvtString;
 
@@ -235,12 +235,12 @@ begin
 
     for i := strlst.Count - 1 downto 0 do    // Iterate
     begin
-        strData:=Trim(strlst[i]);
+        strData := Trim(strlst[i]);
         if useTabChar then
-            strData:=#9+strData;
+            strData := #9 + strData;
 
         if strData <> '' then
-	    synEdit.Lines.Insert(BlockStart + 1,strData);
+	           synEdit.Lines.Insert(BlockStart + 1, strData);
     end;    // for
     //synEdit.Lines.Insert(BlockStart + 1,'');
 
@@ -248,29 +248,29 @@ begin
     //synEdit.Lines.Insert(BlockStart + 1, #9EvtString);
 end;
 
-function DeleteAllLHSVariableList(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer): Boolean;
+function DeleteAllLHSVariableList(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer): boolean;
 begin
-    Result:= True;
+    Result := TRUE;
     DeleteBlock(synEdit, ClassNameString, btLHSVariables);
 end;
 
-function AddDialogStyleDeclaration(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer; GUIItemString: string): Boolean;
+function AddDialogStyleDeclaration(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer; GUIItemString: string): boolean;
 var
-    i:Integer;
-    strlst:TStringList;
+    i: integer;
+    strlst: TStringList;
 begin
-    Result:= True;
+    Result := TRUE;
     if trim(GUIItemString) = '' then
         exit;
 
-    strlst:=TStringList.Create;
+    strlst := TStringList.Create;
 
-    strTokenToStrings(GUIItemString,#13,strlst);
+    strTokenToStrings(GUIItemString, #13, strlst);
 
 
     for i := strlst.Count - 1 downto 0 do    // Iterate
     begin
-	synEdit.Lines.Insert(BlockStart + 1, Trim(strlst[i]));
+	       synEdit.Lines.Insert(BlockStart + 1, Trim(strlst[i]));
     end;    // for
 
     //synEdit.Lines.Insert(BlockStart + 1,'');
@@ -280,181 +280,181 @@ begin
 end;
 
 
-function DeleteAllDialogStyleDeclaration(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer): Boolean;
+function DeleteAllDialogStyleDeclaration(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer): boolean;
 begin
-    Result:= True;
+    Result := TRUE;
     DeleteBlock(synEdit, ClassNameString, btDialogStyle);
 end;
 
-function AddClassNameGUIItemsDeclaration(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer; GUIItemString: string): Boolean;
+function AddClassNameGUIItemsDeclaration(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer; GUIItemString: string): boolean;
 var
-    i:Integer;
+    i: integer;
     strlst: TStringList;
 begin
-    Result:= True;
+    Result := TRUE;
     if trim(GUIItemString) = '' then
         exit;
-    strlst:=TStringList.Create;
+    strlst := TStringList.Create;
 
-    strTokenToStrings(GUIItemString,#13,strlst);
+    strTokenToStrings(GUIItemString, #13, strlst);
 
 
     for i := strlst.Count - 1 downto 0 do    // Iterate
     begin
-        synEdit.Lines.Insert(BlockStart + 1,#9#9+Trim(strlst[i]));
+        synEdit.Lines.Insert(BlockStart + 1, #9#9 + Trim(strlst[i]));
     end;    // for
     //synEdit.Lines.Insert(BlockStart + 1,'');
 
     strlst.Destroy;
 end;
 
-function EditClassNameGUIItemsDeclaration(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer; FromGUIItemString, ToGUIItemString: string): Boolean;
+function EditClassNameGUIItemsDeclaration(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer; FromGUIItemString, ToGUIItemString: string): boolean;
 begin
-    Result:= True;
+    Result := TRUE;
 end;
 
-function DeleteClassNameGUIItemsDeclaration(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer; GUIItemString: string): Boolean;
+function DeleteClassNameGUIItemsDeclaration(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer; GUIItemString: string): boolean;
 begin
-    Result:= True;
+    Result := TRUE;
 end;
 
-function DeleteAllClassNameGUIItemsDeclaration(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer): Boolean;
+function DeleteAllClassNameGUIItemsDeclaration(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer): boolean;
 begin
-    Result:= True;
+    Result := TRUE;
     DeleteBlock(synEdit, ClassNameString, btClassNameGUIItemsDeclaration);
 end;
 
 
-function AddClassNameGUIItemsCreation(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer; GUIItemString: string): Boolean;
+function AddClassNameGUIItemsCreation(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer; GUIItemString: string): boolean;
 var
-    i:Integer;
+    i: integer;
     strlst: TStringList;
 begin
-    Result:= True;
+    Result := TRUE;
     if trim(GUIItemString) = '' then
         exit;
-    strlst:=TStringList.Create;
+    strlst := TStringList.Create;
 
-    strTokenToStrings(GUIItemString,#13,strlst);
+    strTokenToStrings(GUIItemString, #13, strlst);
 
 
     for i := strlst.Count - 1 downto 0 do    // Iterate
     begin
-	synEdit.Lines.Insert(BlockStart + 1,#9 + Trim(strlst[i]));
+	       synEdit.Lines.Insert(BlockStart + 1, #9 + Trim(strlst[i]));
     end;    // for
-    synEdit.Lines.Insert(BlockStart + 1,'');
+    synEdit.Lines.Insert(BlockStart + 1, '');
 
     strlst.Destroy;
 
 end;
 
-function EditClassNameGUIItemsCreation(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer; FromGUIItemString, ToGUIItemString: string): Boolean;
+function EditClassNameGUIItemsCreation(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer; FromGUIItemString, ToGUIItemString: string): boolean;
 begin
-  Result:= True;
+    Result := TRUE;
 end;
 
-function DeleteClassNameGUIItemsCreation(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer; GUIItemString: string): Boolean;
+function DeleteClassNameGUIItemsCreation(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer; GUIItemString: string): boolean;
 begin
-    Result:= True;
+    Result := TRUE;
 end;
 
-function DeleteAllClassNameGUIItemsCreation(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer): Boolean;
+function DeleteAllClassNameGUIItemsCreation(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer): boolean;
 begin
-    Result:= True;
+    Result := TRUE;
     DeleteBlock(synEdit, ClassNameString, btClassNameGUIItemsCreation);
 end;
 
 
-function AddClassNameControlIndentifiers(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer; ControlIDString: string): Boolean;
+function AddClassNameControlIndentifiers(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer; ControlIDString: string): boolean;
 var
-    i:Integer;
+    i: integer;
     strlst: TStringList;
 begin
-    Result:= True;
+    Result := TRUE;
     if trim(ControlIDString) = '' then
         exit;
-    strlst:=TStringList.Create;
+    strlst := TStringList.Create;
 
-    strTokenToStrings(ControlIDString,#13,strlst);
+    strTokenToStrings(ControlIDString, #13, strlst);
 
 
     for i := strlst.Count - 1 downto 0 do    // Iterate
     begin
-	synEdit.Lines.Insert(BlockStart + 1,Trim(strlst[i]));
+	       synEdit.Lines.Insert(BlockStart + 1, Trim(strlst[i]));
     end;    // for
 
     strlst.Destroy;
 end;
 
-function EditClassNameControlIndentifiers(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer; FromControlIDString, ToControlIDString: string): Boolean;
+function EditClassNameControlIndentifiers(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer; FromControlIDString, ToControlIDString: string): boolean;
 begin
-    Result:= True;
+    Result := TRUE;
 end;
 
-function DeleteAllClassNameControlIndentifiers(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer): Boolean;
+function DeleteAllClassNameControlIndentifiers(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer): boolean;
 begin
-    Result:= True;
+    Result := TRUE;
     DeleteBlock(synEdit, ClassNameString, btClassNameControlIdentifiers);
 end;
 
-function AddClassNameEnumControlIndentifiers(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer; ControlIDString: string): Boolean;
+function AddClassNameEnumControlIndentifiers(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer; ControlIDString: string): boolean;
 var
-    i:Integer;
+    i: integer;
     strlst: TStringList;
 begin
-    Result:= True;
+    Result := TRUE;
     if trim(ControlIDString) = '' then
         exit;
-    strlst:=TStringList.Create;
+    strlst := TStringList.Create;
 
-    strTokenToStrings(ControlIDString,#13,strlst);
+    strTokenToStrings(ControlIDString, #13, strlst);
 
     for i := strlst.Count - 1 downto 0 do    // Iterate
     begin
-	synEdit.Lines.Insert(BlockStart + 1, #9#9#9 + Trim(strlst[i]));
+	       synEdit.Lines.Insert(BlockStart + 1, #9#9#9 + Trim(strlst[i]));
     end;    // for
 
     strlst.Destroy;
 end;
 
-function DeleteAllClassNameEnumControlIndentifiers(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer): Boolean;
+function DeleteAllClassNameEnumControlIndentifiers(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer): boolean;
 begin
-    Result:= True;
+    Result := TRUE;
     DeleteBlock(synEdit, ClassNameString, btClassNameEnumControlIdentifiers);
 end;
 
-function AddClassNameIncludeHeader(synEdit:TSynEdit;ClassNameString: string; BlockStart, BlockEnd: Integer; ControlIDString: string): Boolean;
+function AddClassNameIncludeHeader(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer; ControlIDString: string): boolean;
 var
-    i:Integer;
+    i: integer;
     strlst: TStringList;
 begin
-    Result:= True;
+    Result := TRUE;
     if trim(ControlIDString) = '' then
         exit;
-    strlst:=TStringList.Create;
+    strlst := TStringList.Create;
 
-    strTokenToStrings(ControlIDString,#13,strlst);
+    strTokenToStrings(ControlIDString, #13, strlst);
 
 
     for i := strlst.Count - 1 downto 0 do    // Iterate
     begin
-	synEdit.Lines.Insert(BlockStart + 1,Trim(strlst[i]));
+	       synEdit.Lines.Insert(BlockStart + 1, Trim(strlst[i]));
     end;    // for
 
     strlst.Destroy;
 
 end;
 
-function DeleteAllClassNameIncludeHeader(synEdit:TSynEdit; ClassNameString: string; BlockStart, BlockEnd: Integer): Boolean;
+function DeleteAllClassNameIncludeHeader(synEdit: TSynEdit; ClassNameString: string; BlockStart, BlockEnd: integer): boolean;
 begin
-    Result:= True;
+    Result := TRUE;
     DeleteBlock(synEdit, ClassNameString, btHeaderIncludes);
 end;
 
-function GetStartAndEndBlockStrings(ClassNameString: string; blockType: TBlockType; var StartString, EndString: string): Boolean;
+function GetStartAndEndBlockStrings(ClassNameString: string; blockType: TBlockType; var StartString, EndString: string): boolean;
 begin
 
-    Result:= True;
+    Result := TRUE;
 
     StartString := '';
     EndString := '';
@@ -537,7 +537,7 @@ begin
         EndString := '////LHS Variables End';
         Exit;
     end;
-    
+
 end;
 
 function GetBlockStartString(ClassNameString: string; blockType: TBlockType): string;
@@ -558,13 +558,13 @@ end;
 
 
 
-function GetBlockStartAndEndPos(synEdit:TSynEdit; wxClassName: string; blockType: TBlockType; var StartPos, EndPos: Integer): Boolean;
+function GetBlockStartAndEndPos(synEdit: TSynEdit; wxClassName: string; blockType: TBlockType; var StartPos, EndPos: integer): boolean;
 var
     strStartBlock, strEndBlock: string;
-    i, sCount: Integer;
+    i, sCount: integer;
     strLine: string;
 begin
-    Result := true;
+    Result := TRUE;
 
     StartPos := 0;
     EndPos := 0;
@@ -574,7 +574,7 @@ begin
 
     if (strStartBlock = '') or (strEndBlock = '') then
     begin
-        Result := false;
+        Result := FALSE;
         exit;
     end;
 
@@ -589,7 +589,7 @@ begin
         begin
             if StartPos <> 0 then
             begin
-                Result := false;
+                Result := FALSE;
                 exit;
             end;
             StartPos := i;
@@ -600,7 +600,7 @@ begin
         begin
             if EndPos <> 0 then
             begin
-                Result := false;
+                Result := FALSE;
                 exit;
             end;
             EndPos := i;
@@ -611,9 +611,9 @@ begin
 
     if (StartPos = 0) or (EndPos = 0) then
     begin
-        Result := false;
+        Result := FALSE;
         Exit;
-    end
+    end;
 
 end;
 //function GetBlockCode(synEdit:TSynEdit; wxClassName: string; blockType: TBlockType; StartPos, EndPos: Integer): string;
@@ -630,50 +630,50 @@ end;
 //
 //end;
 
-function GetBlockCode(synEdit:TSynEdit; wxClassName: string; blockType: TBlockType; StartPos, EndPos: Integer): TStringList;
+function GetBlockCode(synEdit: TSynEdit; wxClassName: string; blockType: TBlockType; StartPos, EndPos: integer): TStringList;
 var
-    i:Integer;
+    i: integer;
 begin
-    Result:=TStringList.Create;
+    Result := TStringList.Create;
 
     try
-      for i := StartPos+1 to EndPos-1 do
-      begin
-           Result.Add(synEdit.Lines[i]);
-      end;
+        for i := StartPos + 1 to EndPos - 1 do
+        begin
+            Result.Add(synEdit.Lines[i]);
+        end;
     except
-      Result.Free;
-      raise;
+        Result.Free;
+        raise;
     end;
 
 end;
 
 
-function DeleteBlock(synEdit:TSynEdit; wxClassName: string; blockType: TBlockType): Boolean;
+function DeleteBlock(synEdit: TSynEdit; wxClassName: string; blockType: TBlockType): boolean;
 var
-    StartLinePos, EndLinePos: Integer;
-    i: Integer;
+    StartLinePos, EndLinePos: integer;
+    i: integer;
 begin
-    Result := true;
+    Result := TRUE;
     StartLinePos := 0;
     EndLinePos := 0;
 
     if not GetBlockStartAndEndPos(synEdit, wxClassName, blockType, StartLinePos, EndLinePos) then
     begin
-        Result := false;
+        Result := FALSE;
         exit;
     end;
 
     for i := EndLinePos - 1 downto StartLinePos + 1 do
     begin
-           synEdit.Lines.Delete(i);
+        synEdit.Lines.Delete(i);
     end;
 
 end;
 
-function AddItemToBlock(synEdit:TSynEdit; wxClassName: string; blockType: TBlockType; LineString: string): Boolean;
+function AddItemToBlock(synEdit: TSynEdit; wxClassName: string; blockType: TBlockType; LineString: string): boolean;
 begin
-    Result:= True;
+    Result := TRUE;
 end;
 
 //function AddItemToBlock(SourceLines:TStringList;intBlockStart,intBlockEnd:Integer;StartblkString:String):Boolean;overload;
@@ -681,9 +681,9 @@ end;
 //
 //End;
 
-function LocateLineInBlock(synEdit:TSynEdit; wxClassName: string; blockType: TBlockType; LineString: string): Boolean;
+function LocateLineInBlock(synEdit: TSynEdit; wxClassName: string; blockType: TBlockType; LineString: string): boolean;
 begin
-Result:= True;
+    Result := TRUE;
 end;
 
 //function LocateLineInBlock(SourceLines:TStringList,intBlockStart,intBlockEnd:Integer;LineString:String):Boolean;
@@ -692,9 +692,9 @@ end;
 //ENd;
 
 
-function ChangeClassName(FromClassName, ToClassName: string): Boolean;
+function ChangeClassName(FromClassName, ToClassName: string): boolean;
 begin
-    Result:= True;
+    Result := TRUE;
 end;
 
 

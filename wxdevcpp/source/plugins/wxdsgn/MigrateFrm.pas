@@ -22,250 +22,267 @@ unit MigrateFrm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ComCtrls, SynEdit, SynMemo, Buttons, JvExButtons,
-  JvBitBtn, ExtCtrls, XPMenu;
+    Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+    Dialogs, StdCtrls, ComCtrls, SynEdit, SynMemo, Buttons, JvExButtons,
+    JvBitBtn, ExtCtrls, XPMenu;
 
 type
-  TMigrateFrm = class(TForm)
-    XPMenu: TXPMenu;
-    btnNext: TButton;
-    Page1: TPanel;
-    intro: TLabel;
-    filename: TLabel;
-    lblSource: TLabel;
-    chkBackup: TCheckBox;
-    Source: TEdit;
-    btnSource: TJvBitBtn;
-    Page2: TPanel;
-    progress_lbl: TLabel;
-    lblAction: TLabel;
-    Line: TLabel;
-    Action: TLabel;
-    bvlStatus: TBevel;
-    bvlLine: TBevel;
-    lblLine: TLabel;
-    lblChanges: TLabel;
-    bvlChanges: TBevel;
-    Changes: TLabel;
-    Progress: TProgressBar;
-    Page3: TPanel;
-    finish: TLabel;
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure FormCreate(Sender: TObject);
-    procedure btnNextClick(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
-  private
-    procedure CleanUp;
-  end;
+    TMigrateFrm = class(TForm)
+        XPMenu: TXPMenu;
+        btnNext: TButton;
+        Page1: TPanel;
+        intro: TLabel;
+        filename: TLabel;
+        lblSource: TLabel;
+        chkBackup: TCheckBox;
+        Source: TEdit;
+        btnSource: TJvBitBtn;
+        Page2: TPanel;
+        progress_lbl: TLabel;
+        lblAction: TLabel;
+        Line: TLabel;
+        Action: TLabel;
+        bvlStatus: TBevel;
+        bvlLine: TBevel;
+        lblLine: TLabel;
+        lblChanges: TLabel;
+        bvlChanges: TBevel;
+        Changes: TLabel;
+        Progress: TProgressBar;
+        Page3: TPanel;
+        finish: TLabel;
+        procedure FormClose(Sender: TObject; var Action: TCloseAction);
+        procedure FormCreate(Sender: TObject);
+        procedure btnNextClick(Sender: TObject);
+        procedure FormDestroy(Sender: TObject);
+    private
+        procedure CleanUp;
+    end;
 
 implementation
 uses
-  StrUtils, wxdesigner;
+    StrUtils, wxdesigner;
 {$R *.dfm}
 
 procedure TMigrateFrm.btnNextClick(Sender: TObject);
 begin
-  case btnNext.Tag of
-    0:
-      begin
-        Page1.Visible := False;
-        Page2.Visible := True;
-        Page3.Visible := False;
-        btnNext.Tag := 1;
-        Application.ProcessMessages;
-        CleanUp;
-      end;
-    1:
-      begin
-        Page1.Visible := False;
-        Page2.Visible := False;
-        Page3.Visible := True;
-        btnNext.Tag := 2;
-        btnNext.Caption := '&Finish';
-        Application.ProcessMessages;
-      end;
-    2:
-      begin
-        ModalResult := mrOK;
-        Close;
-      end;
-  end;
+    case btnNext.Tag of
+        0:
+        begin
+            Page1.Visible := FALSE;
+            Page2.Visible := TRUE;
+            Page3.Visible := FALSE;
+            btnNext.Tag := 1;
+            Application.ProcessMessages;
+            CleanUp;
+        end;
+        1:
+        begin
+            Page1.Visible := FALSE;
+            Page2.Visible := FALSE;
+            Page3.Visible := TRUE;
+            btnNext.Tag := 2;
+            btnNext.Caption := '&Finish';
+            Application.ProcessMessages;
+        end;
+        2:
+        begin
+            ModalResult := mrOK;
+            Close;
+        end;
+    end;
 end;
 
 procedure TMigrateFrm.CleanUp();
 var
-  Position: integer;
-  Changes: integer;
-  Strings: TStringList;
-  i: integer;
+    Position: integer;
+    Changes: integer;
+    Strings: TStringList;
+    i: integer;
 begin
   //Create our array
-  btnNext.Enabled := false;
-  Strings := TStringList.Create;
-  Changes := 0;
-  i := 0;
+    btnNext.Enabled := FALSE;
+    Strings := TStringList.Create;
+    Changes := 0;
+    i := 0;
 
   //Load the file
-  Strings.LoadFromFile(Source.Text);
-  Progress.Max := Strings.Count;
+    Strings.LoadFromFile(Source.Text);
+    Progress.Max := Strings.Count;
 
   //Save a backup
-  if chkBackup.Checked then
-    Strings.SaveToFile(Source.Text + '.bak');
+    if chkBackup.Checked then
+        Strings.SaveToFile(Source.Text + '.bak');
 
   //Interate over the file's lines
-  while i < Strings.Count do
-  begin
-    //OnResize = NewFormResize
-    if Pos('OnResize = NewFormResize', Trim(Strings[i])) = 1 then
+    while i < Strings.Count do
     begin
-      Strings[i] := 'OnResize = FormResize';
-      Inc(Changes);
-    end
+    //OnResize = NewFormResize
+        if Pos('OnResize = NewFormResize', Trim(Strings[i])) = 1 then
+        begin
+            Strings[i] := 'OnResize = FormResize';
+            Inc(Changes);
+        end
 
     //Wx_Alignment
-    else if Pos('Wx_Alignment = ', Trim(Strings[i])) = 1 then
-    begin
-      Position := Pos('Wx_Alignment = ', Strings[i]);
-      if Pos('[', Trim(Strings[i])) = 0 then
-      begin
-      Strings[i] := Copy(Strings[i], 1, Position + 14) + '[' + Copy(Strings[i], Position + 15, Length(Strings[i])) + ']';
-      Inc(Changes);
-      end;
-    end
+        else
+        if Pos('Wx_Alignment = ', Trim(Strings[i])) = 1 then
+        begin
+            Position := Pos('Wx_Alignment = ', Strings[i]);
+            if Pos('[', Trim(Strings[i])) = 0 then
+            begin
+                Strings[i] := Copy(Strings[i], 1, Position + 14) + '[' + Copy(Strings[i], Position + 15, Length(Strings[i])) + ']';
+                Inc(Changes);
+            end;
+        end
 
     //OnCloseQuery
-    else if Pos('OnCloseQuery', Trim(Strings[i])) = 1 then
-    begin
-      Strings.Delete(i);
-      Dec(I);
-      Inc(Changes);
-    end
+        else
+        if Pos('OnCloseQuery', Trim(Strings[i])) = 1 then
+        begin
+            Strings.Delete(i);
+            Dec(I);
+            Inc(Changes);
+        end
 
     //OnKeyDown
-    else if Pos('OnKeyDown = ', Trim(Strings[i])) = 1 then
-    begin
-      Strings.Delete(i);
-      Dec(I);
-      Inc(Changes);
-    end
-    
+        else
+        if Pos('OnKeyDown = ', Trim(Strings[i])) = 1 then
+        begin
+            Strings.Delete(i);
+            Dec(I);
+            Inc(Changes);
+        end
+
     //SpaceValue
-    else if Pos('SpaceValue', Trim(Strings[i])) = 1 then
-    begin
-      Position := Pos('SpaceValue', Strings[i]);
-      Strings[i] := Copy(Strings[i], 1, Position - 1) + 'Wx_Border' + Copy(Strings[i], Position + 10, Length(Strings[i]));
-      Inc(Changes);
-    end
+        else
+        if Pos('SpaceValue', Trim(Strings[i])) = 1 then
+        begin
+            Position := Pos('SpaceValue', Strings[i]);
+            Strings[i] := Copy(Strings[i], 1, Position - 1) + 'Wx_Border' + Copy(Strings[i], Position + 10, Length(Strings[i]));
+            Inc(Changes);
+        end
 
     //StrechFactor
-    else if Pos('Wx_StrechFactor =', Trim(Strings[i])) = 1 then
-    begin
-      Strings.Delete(i);
-      Dec(I);
-      Inc(Changes);
-    end
+        else
+        if Pos('Wx_StrechFactor =', Trim(Strings[i])) = 1 then
+        begin
+            Strings.Delete(i);
+            Dec(I);
+            Inc(Changes);
+        end
 
     //Wx_ControlOrientation
-    else if Pos('Wx_ControlOrientation =', Trim(Strings[i])) = 1 then
-    begin
-      Strings.Delete(i);
-      Dec(I);
-      Inc(Changes);
-    end
+        else
+        if Pos('Wx_ControlOrientation =', Trim(Strings[i])) = 1 then
+        begin
+            Strings.Delete(i);
+            Dec(I);
+            Inc(Changes);
+        end
 
     //Wx_HorizontalAlignment
-    else if Pos('Wx_HorizontalAlignment =', Trim(Strings[i])) = 1 then
-    begin
-      Strings.Delete(i);
-      Dec(I);
-      Inc(Changes);
-    end
+        else
+        if Pos('Wx_HorizontalAlignment =', Trim(Strings[i])) = 1 then
+        begin
+            Strings.Delete(i);
+            Dec(I);
+            Inc(Changes);
+        end
 
     //Wx_VerticalAlignment
-    else if Pos('Wx_VerticalAlignment =', Trim(Strings[i])) = 1 then
-    begin
-      Strings.Delete(i);
-      Dec(I);
-      Inc(Changes);
-    end
+        else
+        if Pos('Wx_VerticalAlignment =', Trim(Strings[i])) = 1 then
+        begin
+            Strings.Delete(i);
+            Dec(I);
+            Inc(Changes);
+        end
 
     //Wx_Height
-    else if Pos('Wx_Height =', Trim(Strings[i])) = 1 then
-    begin
-      Strings.Delete(i);
-      Dec(I);
-      Inc(Changes);
-    end
+        else
+        if Pos('Wx_Height =', Trim(Strings[i])) = 1 then
+        begin
+            Strings.Delete(i);
+            Dec(I);
+            Inc(Changes);
+        end
 
     //Wx_Width
-    else if Pos('Wx_Width =', Trim(Strings[i])) = 1 then
-    begin
-      Strings.Delete(i);
-      Dec(I);
-      Inc(Changes);
-    end
+        else
+        if Pos('Wx_Width =', Trim(Strings[i])) = 1 then
+        begin
+            Strings.Delete(i);
+            Dec(I);
+            Inc(Changes);
+        end
 
     //Rows of wxGrid/wxFlexGridSizer
-    else if Pos('Rows =', Trim(Strings[i])) = 1 then
-    begin
-      Strings.Delete(i);
-      Dec(I);
-      Inc(Changes);
-    end
+        else
+        if Pos('Rows =', Trim(Strings[i])) = 1 then
+        begin
+            Strings.Delete(i);
+            Dec(I);
+            Inc(Changes);
+        end
 
     //wxTE_PROCESS_ENTER
-    else if (Pos('wxPROCESS_ENTER', Trim(Strings[i])) > Pos('Wx_ComboboxStyle', Trim(Strings[i]))) and (Pos('Wx_ComboboxStyle', Trim(Strings[i])) <> 0) then
-    begin
-      Strings[i] := AnsiReplaceStr(Strings[i], 'wxPROCESS_ENTER,', '');
-      Strings[i] := AnsiReplaceStr(Strings[i], ', wxPROCESS_ENTER', '');
-      Strings[i] := AnsiReplaceStr(Strings[i], 'wxPROCESS_ENTER', '');
-      Strings.Add('Wx_EditStyle = [wxTE_PROCESS_ENTER]');
-      Inc(Changes);
-    end
+        else
+        if (Pos('wxPROCESS_ENTER', Trim(Strings[i])) > Pos('Wx_ComboboxStyle', Trim(Strings[i]))) and (Pos('Wx_ComboboxStyle', Trim(Strings[i])) <> 0) then
+        begin
+            Strings[i] := AnsiReplaceStr(Strings[i], 'wxPROCESS_ENTER,', '');
+            Strings[i] := AnsiReplaceStr(Strings[i], ', wxPROCESS_ENTER', '');
+            Strings[i] := AnsiReplaceStr(Strings[i], 'wxPROCESS_ENTER', '');
+            Strings.Add('Wx_EditStyle = [wxTE_PROCESS_ENTER]');
+            Inc(Changes);
+        end
 
     //wxLC_* constants
-    else if (Pos('wxLC_ICON', Trim(Strings[i])) > Pos('Wx_ListviewStyle', Trim(Strings[i]))) and (Pos('Wx_ListviewStyle', Trim(Strings[i])) <> 0) then
-    begin
-      Strings[i] := AnsiReplaceStr(Strings[i], 'wxLC_ICON,', '');
-      Strings[i] := AnsiReplaceStr(Strings[i], ', wxLC_ICON', '');
-      Strings[i] := AnsiReplaceStr(Strings[i], 'wxLC_ICON', '');
-      Strings.Add('Wx_ListviewView = wxLC_ICON');
-      Inc(Changes);
-    end
-    else if (Pos('wxLC_SMALL_ICON', Trim(Strings[i])) > Pos('Wx_ListviewStyle', Trim(Strings[i]))) and (Pos('Wx_ListviewStyle', Trim(Strings[i])) <> 0) then
-    begin
-      Strings[i] := AnsiReplaceStr(Strings[i], 'wxLC_SMALL_ICON,', '');
-      Strings[i] := AnsiReplaceStr(Strings[i], ', wxLC_SMALL_ICON', '');
-      Strings[i] := AnsiReplaceStr(Strings[i], 'wxLC_SMALL_ICON', '');
-      Strings.Add('Wx_ListviewView = wxLC_SMALL_ICON');
-      Inc(Changes);
-    end
-    else if (Pos('wxLC_LIST', Trim(Strings[i])) > Pos('Wx_ListviewStyle', Trim(Strings[i]))) and (Pos('Wx_ListviewStyle', Trim(Strings[i])) <> 0) then
-    begin
-      Strings[i] := AnsiReplaceStr(Strings[i], 'wxLC_LIST,', '');
-      Strings[i] := AnsiReplaceStr(Strings[i], ', wxLC_LIST', '');
-      Strings[i] := AnsiReplaceStr(Strings[i], 'wxLC_LIST', '');
-      Strings.Add('Wx_ListviewView = wxLC_LIST');
-      Inc(Changes);
-    end
-    else if (Pos('wxLC_REPORT', Trim(Strings[i])) > Pos('Wx_ListviewStyle', Trim(Strings[i]))) and (Pos('Wx_ListviewStyle', Trim(Strings[i])) <> 0) then
-    begin
-      Strings[i] := AnsiReplaceStr(Strings[i], 'wxLC_REPORT,', '');
-      Strings[i] := AnsiReplaceStr(Strings[i], ', wxLC_REPORT', '');
-      Strings[i] := AnsiReplaceStr(Strings[i], 'wxLC_REPORT', '');
-      Strings.Add('Wx_ListviewView = wxLC_REPORT');
-      Inc(Changes);
-    end
-    else if (Pos('wxLC_VIRTUAL', Trim(Strings[i])) > Pos('Wx_ListviewStyle', Trim(Strings[i]))) and (Pos('Wx_ListviewStyle', Trim(Strings[i])) <> 0) then
-    begin
-      Strings[i] := AnsiReplaceStr(Strings[i], 'wxLC_VIRTUAL,', '');
-      Strings[i] := AnsiReplaceStr(Strings[i], ', wxLC_VIRTUAL', '');
-      Strings[i] := AnsiReplaceStr(Strings[i], 'wxLC_VIRTUAL', '');
-      Strings.Add('Wx_ListviewView = wxLC_VIRTUAL');
-      Inc(Changes);
-    end
+        else
+        if (Pos('wxLC_ICON', Trim(Strings[i])) > Pos('Wx_ListviewStyle', Trim(Strings[i]))) and (Pos('Wx_ListviewStyle', Trim(Strings[i])) <> 0) then
+        begin
+            Strings[i] := AnsiReplaceStr(Strings[i], 'wxLC_ICON,', '');
+            Strings[i] := AnsiReplaceStr(Strings[i], ', wxLC_ICON', '');
+            Strings[i] := AnsiReplaceStr(Strings[i], 'wxLC_ICON', '');
+            Strings.Add('Wx_ListviewView = wxLC_ICON');
+            Inc(Changes);
+        end
+        else
+        if (Pos('wxLC_SMALL_ICON', Trim(Strings[i])) > Pos('Wx_ListviewStyle', Trim(Strings[i]))) and (Pos('Wx_ListviewStyle', Trim(Strings[i])) <> 0) then
+        begin
+            Strings[i] := AnsiReplaceStr(Strings[i], 'wxLC_SMALL_ICON,', '');
+            Strings[i] := AnsiReplaceStr(Strings[i], ', wxLC_SMALL_ICON', '');
+            Strings[i] := AnsiReplaceStr(Strings[i], 'wxLC_SMALL_ICON', '');
+            Strings.Add('Wx_ListviewView = wxLC_SMALL_ICON');
+            Inc(Changes);
+        end
+        else
+        if (Pos('wxLC_LIST', Trim(Strings[i])) > Pos('Wx_ListviewStyle', Trim(Strings[i]))) and (Pos('Wx_ListviewStyle', Trim(Strings[i])) <> 0) then
+        begin
+            Strings[i] := AnsiReplaceStr(Strings[i], 'wxLC_LIST,', '');
+            Strings[i] := AnsiReplaceStr(Strings[i], ', wxLC_LIST', '');
+            Strings[i] := AnsiReplaceStr(Strings[i], 'wxLC_LIST', '');
+            Strings.Add('Wx_ListviewView = wxLC_LIST');
+            Inc(Changes);
+        end
+        else
+        if (Pos('wxLC_REPORT', Trim(Strings[i])) > Pos('Wx_ListviewStyle', Trim(Strings[i]))) and (Pos('Wx_ListviewStyle', Trim(Strings[i])) <> 0) then
+        begin
+            Strings[i] := AnsiReplaceStr(Strings[i], 'wxLC_REPORT,', '');
+            Strings[i] := AnsiReplaceStr(Strings[i], ', wxLC_REPORT', '');
+            Strings[i] := AnsiReplaceStr(Strings[i], 'wxLC_REPORT', '');
+            Strings.Add('Wx_ListviewView = wxLC_REPORT');
+            Inc(Changes);
+        end
+        else
+        if (Pos('wxLC_VIRTUAL', Trim(Strings[i])) > Pos('Wx_ListviewStyle', Trim(Strings[i]))) and (Pos('Wx_ListviewStyle', Trim(Strings[i])) <> 0) then
+        begin
+            Strings[i] := AnsiReplaceStr(Strings[i], 'wxLC_VIRTUAL,', '');
+            Strings[i] := AnsiReplaceStr(Strings[i], ', wxLC_VIRTUAL', '');
+            Strings[i] := AnsiReplaceStr(Strings[i], 'wxLC_VIRTUAL', '');
+            Strings.Add('Wx_ListviewView = wxLC_VIRTUAL');
+            Inc(Changes);
+        end
 {$IFDEF PRIVATE_BUILD}
     else if (Pos('wxLC_TILE', Trim(Strings[i])) > Pos('Wx_ListviewStyle', Trim(Strings[i]))) and (Pos('Wx_ListviewStyle', Trim(Strings[i])) <> 0) then
     begin
@@ -277,118 +294,127 @@ begin
     end
 {$ENDIF}
     //EVT_RICHTEXT_ITEM_SELECTED =
-    else if Pos('EVT_RICHTEXT_ITEM_SELECTED =', Trim(Strings[i])) = 1 then
-    begin
-      Strings.Delete(i);
-      Dec(I);
-      Inc(Changes);
-    end
+        else
+        if Pos('EVT_RICHTEXT_ITEM_SELECTED =', Trim(Strings[i])) = 1 then
+        begin
+            Strings.Delete(i);
+            Dec(I);
+            Inc(Changes);
+        end
 
     //EVT_RICHTEXT_ITEM_DESELECTED
-    else if Pos('EVT_RICHTEXT_ITEM_DESELECTED =', Trim(Strings[i])) = 1 then
-    begin
-      Strings.Delete(i);
-      Dec(I);
-      Inc(Changes);
-    end
+        else
+        if Pos('EVT_RICHTEXT_ITEM_DESELECTED =', Trim(Strings[i])) = 1 then
+        begin
+            Strings.Delete(i);
+            Dec(I);
+            Inc(Changes);
+        end
 
 
     //wxALIGN_LEFT for wxStaticText
-    else if (Pos('wxALIGN_LEFT', Trim(Strings[i])) > Pos('Wx_LabelStyle', Trim(Strings[i]))) and (Pos('Wx_LabelStyle', Trim(Strings[i])) <> 0) then
-    begin
-      Strings[i] := AnsiReplaceStr(Strings[i], 'wxALIGN_LEFT,', 'wxST_ALIGN_LEFT,');
-      Strings[i] := AnsiReplaceStr(Strings[i], ', wxALIGN_LEFT', ', wxST_ALIGN_LEFT');
-      Strings[i] := AnsiReplaceStr(Strings[i], 'wxALIGN_LEFT', 'wxST_ALIGN_LEFT');
-      Inc(Changes);
-    end
-    else if (Pos('wxALIGN_CENTRE', Trim(Strings[i])) > Pos('Wx_LabelStyle', Trim(Strings[i]))) and (Pos('Wx_LabelStyle', Trim(Strings[i])) <> 0) then
-    begin
-      Strings[i] := AnsiReplaceStr(Strings[i], 'wxALIGN_CENTRE,', 'wxST_ALIGN_CENTRE,');
-      Strings[i] := AnsiReplaceStr(Strings[i], ', wxALIGN_CENTRE', ', wxST_ALIGN_CENTRE');
-      Strings[i] := AnsiReplaceStr(Strings[i], 'wxALIGN_CENTRE', 'wxST_ALIGN_CENTRE');
-      Inc(Changes);
-    end
-    else if (Pos('wxALIGN_RIGHT', Trim(Strings[i])) > Pos('Wx_LabelStyle', Trim(Strings[i]))) and (Pos('Wx_LabelStyle', Trim(Strings[i])) <> 0) then
-    begin
-      Strings[i] := AnsiReplaceStr(Strings[i], 'wxALIGN_RIGHT,', 'wxST_ALIGN_RIGHT,');
-      Strings[i] := AnsiReplaceStr(Strings[i], ', wxALIGN_RIGHT', ', wxST_ALIGN_RIGHT');
-      Strings[i] := AnsiReplaceStr(Strings[i], 'wxALIGN_RIGHT', 'wxST_ALIGN_RIGHT');
-      Inc(Changes);
-    end
+        else
+        if (Pos('wxALIGN_LEFT', Trim(Strings[i])) > Pos('Wx_LabelStyle', Trim(Strings[i]))) and (Pos('Wx_LabelStyle', Trim(Strings[i])) <> 0) then
+        begin
+            Strings[i] := AnsiReplaceStr(Strings[i], 'wxALIGN_LEFT,', 'wxST_ALIGN_LEFT,');
+            Strings[i] := AnsiReplaceStr(Strings[i], ', wxALIGN_LEFT', ', wxST_ALIGN_LEFT');
+            Strings[i] := AnsiReplaceStr(Strings[i], 'wxALIGN_LEFT', 'wxST_ALIGN_LEFT');
+            Inc(Changes);
+        end
+        else
+        if (Pos('wxALIGN_CENTRE', Trim(Strings[i])) > Pos('Wx_LabelStyle', Trim(Strings[i]))) and (Pos('Wx_LabelStyle', Trim(Strings[i])) <> 0) then
+        begin
+            Strings[i] := AnsiReplaceStr(Strings[i], 'wxALIGN_CENTRE,', 'wxST_ALIGN_CENTRE,');
+            Strings[i] := AnsiReplaceStr(Strings[i], ', wxALIGN_CENTRE', ', wxST_ALIGN_CENTRE');
+            Strings[i] := AnsiReplaceStr(Strings[i], 'wxALIGN_CENTRE', 'wxST_ALIGN_CENTRE');
+            Inc(Changes);
+        end
+        else
+        if (Pos('wxALIGN_RIGHT', Trim(Strings[i])) > Pos('Wx_LabelStyle', Trim(Strings[i]))) and (Pos('Wx_LabelStyle', Trim(Strings[i])) <> 0) then
+        begin
+            Strings[i] := AnsiReplaceStr(Strings[i], 'wxALIGN_RIGHT,', 'wxST_ALIGN_RIGHT,');
+            Strings[i] := AnsiReplaceStr(Strings[i], ', wxALIGN_RIGHT', ', wxST_ALIGN_RIGHT');
+            Strings[i] := AnsiReplaceStr(Strings[i], 'wxALIGN_RIGHT', 'wxST_ALIGN_RIGHT');
+            Inc(Changes);
+        end
     //wxNB_TOP
-    else if (Pos('wxNB_TOP', Trim(Strings[i])) > Pos('Wx_NoteBookStyle', Trim(Strings[i]))) and (Pos('Wx_NoteBookStyle', Trim(Strings[i])) <> 0) then
-    begin
-      Strings[i] := AnsiReplaceStr(Strings[i], 'wxNB_TOP,', '');
-      Strings[i] := AnsiReplaceStr(Strings[i], ', wxNB_TOP', '');
-      Strings[i] := AnsiReplaceStr(Strings[i], 'wxNB_TOP', '');
-      Strings.Add('Wx_BookAlignment = wxNB_TOP');
-      Inc(Changes);
-    end
+        else
+        if (Pos('wxNB_TOP', Trim(Strings[i])) > Pos('Wx_NoteBookStyle', Trim(Strings[i]))) and (Pos('Wx_NoteBookStyle', Trim(Strings[i])) <> 0) then
+        begin
+            Strings[i] := AnsiReplaceStr(Strings[i], 'wxNB_TOP,', '');
+            Strings[i] := AnsiReplaceStr(Strings[i], ', wxNB_TOP', '');
+            Strings[i] := AnsiReplaceStr(Strings[i], 'wxNB_TOP', '');
+            Strings.Add('Wx_BookAlignment = wxNB_TOP');
+            Inc(Changes);
+        end
     //wxNB_BOTTOM
-    else if (Pos('wxNB_BOTTOM', Trim(Strings[i])) > Pos('Wx_NoteBookStyle', Trim(Strings[i]))) and (Pos('Wx_NoteBookStyle', Trim(Strings[i])) <> 0) then
-    begin
-      Strings[i] := AnsiReplaceStr(Strings[i], 'wxNB_BOTTOM,', '');
-      Strings[i] := AnsiReplaceStr(Strings[i], ', wxNB_BOTTOM', '');
-      Strings[i] := AnsiReplaceStr(Strings[i], 'wxNB_BOTTOM', '');
-      Strings.Add('Wx_BookAlignment = wxNB_BOTTOM');
-      Inc(Changes);
-    end
+        else
+        if (Pos('wxNB_BOTTOM', Trim(Strings[i])) > Pos('Wx_NoteBookStyle', Trim(Strings[i]))) and (Pos('Wx_NoteBookStyle', Trim(Strings[i])) <> 0) then
+        begin
+            Strings[i] := AnsiReplaceStr(Strings[i], 'wxNB_BOTTOM,', '');
+            Strings[i] := AnsiReplaceStr(Strings[i], ', wxNB_BOTTOM', '');
+            Strings[i] := AnsiReplaceStr(Strings[i], 'wxNB_BOTTOM', '');
+            Strings.Add('Wx_BookAlignment = wxNB_BOTTOM');
+            Inc(Changes);
+        end
     //wxNB_LEFT
-    else if (Pos('wxNB_LEFT', Trim(Strings[i])) > Pos('Wx_NoteBookStyle', Trim(Strings[i]))) and (Pos('Wx_NoteBookStyle', Trim(Strings[i])) <> 0) then
-    begin
-      Strings[i] := AnsiReplaceStr(Strings[i], 'wxNB_LEFT,', '');
-      Strings[i] := AnsiReplaceStr(Strings[i], ', wxNB_LEFT', '');
-      Strings[i] := AnsiReplaceStr(Strings[i], 'wxNB_LEFT', '');
-      Strings.Add('Wx_BookAlignment = wxNB_LEFT');
-      Inc(Changes);
-    end
+        else
+        if (Pos('wxNB_LEFT', Trim(Strings[i])) > Pos('Wx_NoteBookStyle', Trim(Strings[i]))) and (Pos('Wx_NoteBookStyle', Trim(Strings[i])) <> 0) then
+        begin
+            Strings[i] := AnsiReplaceStr(Strings[i], 'wxNB_LEFT,', '');
+            Strings[i] := AnsiReplaceStr(Strings[i], ', wxNB_LEFT', '');
+            Strings[i] := AnsiReplaceStr(Strings[i], 'wxNB_LEFT', '');
+            Strings.Add('Wx_BookAlignment = wxNB_LEFT');
+            Inc(Changes);
+        end
     //wxNB_RIGHT
-    else if (Pos('wxNB_RIGHT', Trim(Strings[i])) > Pos('Wx_NoteBookStyle', Trim(Strings[i]))) and (Pos('Wx_NoteBookStyle', Trim(Strings[i])) <> 0) then
-    begin
-      Strings[i] := AnsiReplaceStr(Strings[i], 'wxNB_RIGHT,', '');
-      Strings[i] := AnsiReplaceStr(Strings[i], ', wxNB_RIGHT', '');
-      Strings[i] := AnsiReplaceStr(Strings[i], 'wxNB_RIGHT', '');
-      Strings.Add('Wx_BookAlignment = wxNB_RIGHT');
-      Inc(Changes);
-    end;
+        else
+        if (Pos('wxNB_RIGHT', Trim(Strings[i])) > Pos('Wx_NoteBookStyle', Trim(Strings[i]))) and (Pos('Wx_NoteBookStyle', Trim(Strings[i])) <> 0) then
+        begin
+            Strings[i] := AnsiReplaceStr(Strings[i], 'wxNB_RIGHT,', '');
+            Strings[i] := AnsiReplaceStr(Strings[i], ', wxNB_RIGHT', '');
+            Strings[i] := AnsiReplaceStr(Strings[i], 'wxNB_RIGHT', '');
+            Strings.Add('Wx_BookAlignment = wxNB_RIGHT');
+            Inc(Changes);
+        end;
 
     //Update the UI
-    Progress.Position := i;
-    Progress.Max := Strings.Count;
-    Self.Changes.Caption := inttostr(Changes);
-    Line.Caption := inttostr(i + 1) + '/' + inttostr(Strings.Count);
-    Application.ProcessMessages;
-    Inc(I);
-  end;
+        Progress.Position := i;
+        Progress.Max := Strings.Count;
+        Self.Changes.Caption := inttostr(Changes);
+        Line.Caption := inttostr(i + 1) + '/' + inttostr(Strings.Count);
+        Application.ProcessMessages;
+        Inc(I);
+    end;
 
   //Save the file
-  Action.Caption := 'Saving changes...';
-  Strings.SaveToFile(Source.Text);
+    Action.Caption := 'Saving changes...';
+    Strings.SaveToFile(Source.Text);
 
   //Free our memory
-  Strings.Destroy;
-  btnNext.Enabled := true;
-  Action.Caption := 'Done';
+    Strings.Destroy;
+    btnNext.Enabled := TRUE;
+    Action.Caption := 'Done';
 end;
 
 procedure TMigrateFrm.FormClose(Sender: TObject;
-  var Action: TCloseAction);
+    var Action: TCloseAction);
 begin
-  if Self.Action.Caption = 'Done' then
-    self.ModalResult := mrOK;
+    if Self.Action.Caption = 'Done' then
+        self.ModalResult := mrOK;
 end;
 
 procedure TMigrateFrm.FormCreate(Sender: TObject);
 begin
-  btnNext.Tag := 0;
-  DesktopFont := True;
-  XPMenu.Active := wx_designer.XPTheme;
+    btnNext.Tag := 0;
+    DesktopFont := TRUE;
+    XPMenu.Active := wx_designer.XPTheme;
 end;
 
 procedure TMigrateFrm.FormDestroy(Sender: TObject);
 begin
-  XPMenu.Active := false;
-  XPMenu.Free;
+    XPMenu.Active := FALSE;
+    XPMenu.Free;
 end;
 
 end.

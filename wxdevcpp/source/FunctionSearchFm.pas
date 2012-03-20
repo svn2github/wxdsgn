@@ -17,11 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-Unit FunctionSearchFm;
+unit FunctionSearchFm;
 
-Interface
+interface
 
-Uses
+uses
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
     Dialogs, StdCtrls, ExtCtrls, CppParser, ComCtrls, XPMenu;
@@ -31,37 +31,37 @@ Uses
   QDialogs, QStdCtrls, QExtCtrls, CppParser, QComCtrls;
 {$ENDIF}
 
-Type
-    TFunctionSearchForm = Class(TForm)
+type
+    TFunctionSearchForm = class(TForm)
         Panel1: TPanel;
         Label1: TLabel;
         txtSearch: TEdit;
         lvEntries: TListView;
         XPMenu: TXPMenu;
-        Procedure FormShow(Sender: TObject);
-        Procedure txtSearchChange(Sender: TObject);
-        Procedure txtSearchExit(Sender: TObject);
-        Procedure txtSearchKeyDown(Sender: TObject; Var Key: Word;
+        procedure FormShow(Sender: TObject);
+        procedure txtSearchChange(Sender: TObject);
+        procedure txtSearchExit(Sender: TObject);
+        procedure txtSearchKeyDown(Sender: TObject; var Key: word;
             Shift: TShiftState);
-        Procedure lvEntriesDblClick(Sender: TObject);
-        Procedure lvEntriesCompare(Sender: TObject; Item1, Item2: TListItem;
-            Data: Integer; Var Compare: Integer);
-        Procedure FormCreate(Sender: TObject);
-    Private
+        procedure lvEntriesDblClick(Sender: TObject);
+        procedure lvEntriesCompare(Sender: TObject; Item1, Item2: TListItem;
+            Data: integer; var Compare: integer);
+        procedure FormCreate(Sender: TObject);
+    private
         { Private declarations }
-        Procedure LoadText;
-    Public
+        procedure LoadText;
+    public
         { Public declarations }
         fParser: TCppParser;
         fFileName: TFileName;
-    End;
+    end;
 
-Var
+var
     FunctionSearchForm: TFunctionSearchForm;
 
-Implementation
+implementation
 
-Uses
+uses
 {$IFDEF WIN32}
     datamod, MultiLangSupport, devcfg;
 {$ENDIF}
@@ -71,38 +71,38 @@ Uses
 
 {$R *.dfm}
 
-Procedure TFunctionSearchForm.FormShow(Sender: TObject);
-Begin
+procedure TFunctionSearchForm.FormShow(Sender: TObject);
+begin
     txtSearch.Text := '';
-    txtSearchChange(Nil);
-End;
+    txtSearchChange(NIL);
+end;
 
-Procedure TFunctionSearchForm.txtSearchChange(Sender: TObject);
-Var
-    I: Integer;
-Begin
-    If Not Assigned(fParser) Then
+procedure TFunctionSearchForm.txtSearchChange(Sender: TObject);
+var
+    I: integer;
+begin
+    if not Assigned(fParser) then
         Exit;
 
     lvEntries.Items.BeginUpdate;
     lvEntries.Items.Clear;
 
-    For I := 0 To fParser.Statements.Count - 1 Do
-        If PStatement(fParser.Statements[I])^._Kind = skFunction Then
-            If (PStatement(fParser.Statements[I])^._IsDeclaration And
+    for I := 0 to fParser.Statements.Count - 1 do
+        if PStatement(fParser.Statements[I])^._Kind = skFunction then
+            if (PStatement(fParser.Statements[I])^._IsDeclaration and
                 (AnsiCompareText(PStatement(fParser.Statements[I])^._DeclImplFileName,
-                fFilename) = 0)) Or
-                (Not PStatement(fParser.Statements[I])^._IsDeclaration And
+                fFilename) = 0)) or
+                (not PStatement(fParser.Statements[I])^._IsDeclaration and
                 (AnsiCompareText(PStatement(fParser.Statements[I])^._FileName,
-                fFilename) = 0)) Then
-                If (txtSearch.Text = '') Or
+                fFilename) = 0)) then
+                if (txtSearch.Text = '') or
                     (AnsiPos(LowerCase(txtSearch.Text),
-                    LowerCase(PStatement(fParser.Statements[I])^._ScopelessCmd)) > 0) Then
-                Begin
-                    With lvEntries.Items.Add Do
-                    Begin
+                    LowerCase(PStatement(fParser.Statements[I])^._ScopelessCmd)) > 0) then
+                begin
+                    with lvEntries.Items.Add do
+                    begin
                         ImageIndex := -1;
-                        Case PStatement(fParser.Statements[I])^._ClassScope Of
+                        case PStatement(fParser.Statements[I])^._ClassScope of
                             scsPrivate:
                                 StateIndex := 5;
                             scsProtected:
@@ -111,20 +111,20 @@ Begin
                                 StateIndex := 7;
                             scsPublished:
                                 StateIndex := 7;
-                        End;
+                        end;
                         SubItems.Add(PStatement(fParser.Statements[I])^._Type);
                         SubItems.Add(PStatement(fParser.Statements[I])^._Command);
-                        If PStatement(fParser.Statements[I])^._IsDeclaration Then
+                        if PStatement(fParser.Statements[I])^._IsDeclaration then
                             SubItems.Add(
                                 IntToStr(PStatement(fParser.Statements[I])^._DeclImplLine))
-                        Else
+                        else
                             SubItems.Add(IntToStr(PStatement(fParser.Statements[I])^._Line));
                         Data := fParser.Statements[I];
-                    End;
-                End;
+                    end;
+                end;
     lvEntries.AlphaSort;
-    If lvEntries.ItemIndex = -1 Then
-        If lvEntries.Items.Count > 0 Then
+    if lvEntries.ItemIndex = -1 then
+        if lvEntries.Items.Count > 0 then
             lvEntries.ItemIndex := 0;
     lvEntries.Items.EndUpdate;
 
@@ -136,71 +136,71 @@ Begin
 {$IFDEF LINUX}
   lvEntries.Perform(WM_KEYDOWN, XK_DOWN, 0);
 {$ENDIF}
-End;
+end;
 
-Procedure TFunctionSearchForm.txtSearchExit(Sender: TObject);
-Begin
+procedure TFunctionSearchForm.txtSearchExit(Sender: TObject);
+begin
     txtSearch.SetFocus;
     txtSearch.SelStart := Length(txtSearch.Text);
-End;
+end;
 
-Procedure TFunctionSearchForm.txtSearchKeyDown(Sender: TObject;
-    Var Key: Word; Shift: TShiftState);
-Begin
-    If lvEntries = Nil Then
+procedure TFunctionSearchForm.txtSearchKeyDown(Sender: TObject;
+    var Key: word; Shift: TShiftState);
+begin
+    if lvEntries = NIL then
         Exit;
 
-    Case Key Of
+    case Key of
 {$IFDEF WIN32}
         VK_UP, VK_DOWN, VK_PRIOR, VK_NEXT:
-        Begin
+        begin
 {$ENDIF}
 {$IFDEF LINUX}
     XK_UP, XK_DOWN, XK_PRIOR, XK_NEXT: begin
 {$ENDIF}
             lvEntries.Perform(WM_KEYDOWN, Key, 0);
             Key := 0;
-        End;
+        end;
 {$IFDEF WIN32}
         VK_ESCAPE:
             ModalResult := mrCancel;
         VK_RETURN:
-            If lvEntries.Selected <> Nil Then
+            if lvEntries.Selected <> NIL then
                 ModalResult := mrOK;
 {$ENDIF}
 {$IFDEF LINUX}
     XK_ESCAPE: ModalResult := mrCancel;
     XK_RETURN: if lvEntries.Selected <> nil then ModalResult := mrOK;
 {$ENDIF}
-    End;
-End;
+    end;
+end;
 
-Procedure TFunctionSearchForm.lvEntriesDblClick(Sender: TObject);
-Begin
-    If lvEntries.Selected <> Nil Then
+procedure TFunctionSearchForm.lvEntriesDblClick(Sender: TObject);
+begin
+    if lvEntries.Selected <> NIL then
         ModalResult := mrOK;
-End;
+end;
 
-Procedure TFunctionSearchForm.lvEntriesCompare(Sender: TObject; Item1,
-    Item2: TListItem; Data: Integer; Var Compare: Integer);
-Begin
+procedure TFunctionSearchForm.lvEntriesCompare(Sender: TObject; Item1,
+    Item2: TListItem; Data: integer; var Compare: integer);
+begin
     Compare := AnsiCompareText(Item1.SubItems[1], Item2.SubItems[1]);
-End;
+end;
 
-Procedure TFunctionSearchForm.LoadText;
-Begin
-    DesktopFont := True;
+procedure TFunctionSearchForm.LoadText;
+begin
+    DesktopFont := TRUE;
     XPMenu.Active := devData.XPTheme;
     Caption := StringReplace(Lang[ID_ITEM_GOTOFUNCTION], '&', '', []);
     Label1.Caption := Lang[ID_GF_TEXT];
     lvEntries.Column[1].Caption := Lang[ID_GF_TYPE];
     lvEntries.Column[2].Caption := Lang[ID_GF_FUNCTION];
     lvEntries.Column[3].Caption := Lang[ID_GF_LINE];
-End;
+end;
 
-Procedure TFunctionSearchForm.FormCreate(Sender: TObject);
-Begin
+procedure TFunctionSearchForm.FormCreate(Sender: TObject);
+begin
     LoadText;
-End;
+end;
 
-End.
+end.

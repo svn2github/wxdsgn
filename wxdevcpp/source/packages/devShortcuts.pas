@@ -17,11 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-Unit devShortcuts;
+unit devShortcuts;
 
-Interface
+interface
 
-Uses
+uses
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Classes, Menus, Controls, IniFiles, Graphics, ActnList;
 {$ENDIF}
@@ -29,58 +29,58 @@ Uses
   SysUtils, Classes, QMenus, QControls, IniFiles, QGraphics, QActnList;
 {$ENDIF}
 
-Type
-    TmlStrings = Class(TPersistent)
-    Private
-        fCaption: String;
-        fTitle: String;
-        fTip: String;
-        fHeaderEntry: String;
-        fHeaderShortcut: String;
-        fOK: String;
-        fCancel: String;
-    Protected
-    Public
-    Published
-        Property Caption: String Read fCaption Write fCaption;
-        Property Title: String Read fTitle Write fTitle;
-        Property Tip: String Read fTip Write fTip;
-        Property HeaderEntry: String Read fHeaderEntry Write fHeaderEntry;
-        Property HeaderShortcut: String Read fHeaderShortcut Write fHeaderShortcut;
-        Property OK: String Read fOK Write fOK;
-        Property Cancel: String Read fCancel Write fCancel;
-    End;
+type
+    TmlStrings = class(TPersistent)
+    private
+        fCaption: string;
+        fTitle: string;
+        fTip: string;
+        fHeaderEntry: string;
+        fHeaderShortcut: string;
+        fOK: string;
+        fCancel: string;
+    protected
+    public
+    published
+        property Caption: string read fCaption write fCaption;
+        property Title: string read fTitle write fTitle;
+        property Tip: string read fTip write fTip;
+        property HeaderEntry: string read fHeaderEntry write fHeaderEntry;
+        property HeaderShortcut: string read fHeaderShortcut write fHeaderShortcut;
+        property OK: string read fOK write fOK;
+        property Cancel: string read fCancel write fCancel;
+    end;
 
-    TdevShortcuts = Class(TComponent)
-    Private
+    TdevShortcuts = class(TComponent)
+    private
     { Private declarations }
         fOwner: TComponent;
         fAltColor: TColor;
         fFilename: TFileName;
         fMLStrings: TmlStrings;
-        Procedure ReadShortcuts;
-        Procedure Save;
-    Protected
+        procedure ReadShortcuts;
+        procedure Save;
+    protected
     { Protected declarations }
-    Public
+    public
     { Public declarations }
-        Constructor Create(AOwner: TComponent); Override;
-        Destructor Destroy; Override;
-        Procedure Load;
-        Procedure Edit;
-    Published
+        constructor Create(AOwner: TComponent); override;
+        destructor Destroy; override;
+        procedure Load;
+        procedure Edit;
+    published
     { Published declarations }
-        Property Filename: TFilename Read fFilename Write fFilename;
-        Property AlternateColor: TColor Read fAltColor Write fAltColor;
-        Property MultiLangStrings: TmlStrings Read fMLStrings Write fMLStrings;
-    End;
+        property Filename: TFilename read fFilename write fFilename;
+        property AlternateColor: TColor read fAltColor write fAltColor;
+        property MultiLangStrings: TmlStrings read fMLStrings write fMLStrings;
+    end;
 
-Procedure Register;
+procedure Register;
 
-Implementation
+implementation
 
 {$IFDEF WIN32}
-Uses
+uses
     devShortcutsEditorForm, Forms;
 {$ENDIF}
 {$IFDEF LINUX}
@@ -88,22 +88,22 @@ uses
   devShortcutsEditorForm, QForms;
 {$ENDIF}
 
-Procedure Register;
-Begin
+procedure Register;
+begin
     RegisterComponents('dev-c++', [TdevShortcuts]);
-End;
+end;
 
 { TdevShortcuts }
 
-Constructor TdevShortcuts.Create(AOwner: TComponent);
-Begin
-    Inherited;
+constructor TdevShortcuts.Create(AOwner: TComponent);
+begin
+    inherited;
     fOwner := AOwner;
     fFileName := 'shortcuts.cfg';
     fAltColor := $E0E0E0;
     fMLStrings := TMLStrings.Create;
-    With fMLStrings Do
-    Begin
+    with fMLStrings do
+    begin
         Caption := 'Configure Shortcuts';
         Title := ' Click on an item and press the shortcut you desire!';
         Tip := 'Tip: press "Escape" to clear a shortcut...';
@@ -111,20 +111,20 @@ Begin
         HeaderShortcut := 'Shortcut assigned';
         OK := 'OK';
         Cancel := 'Cancel';
-    End;
-End;
+    end;
+end;
 
-Destructor TdevShortcuts.Destroy;
-Begin
+destructor TdevShortcuts.Destroy;
+begin
     fMLStrings.Free;
-    Inherited;
-End;
+    inherited;
+end;
 
-Procedure TdevShortcuts.Edit;
-Begin
+procedure TdevShortcuts.Edit;
+begin
     frmShortcutsEditor := TfrmShortcutsEditor.Create(Self);
-    With frmShortcutsEditor Do
-        Try
+    with frmShortcutsEditor do
+        try
             AltColor := fAltColor;
             Caption := fMLStrings.Caption;
             lblTitle.Caption := fMLStrings.Title;
@@ -135,176 +135,176 @@ Begin
             btnCancel.Caption := fMLStrings.Cancel;
             Clear;
             ReadShortcuts;
-            If ShowModal = mrOK Then
+            if ShowModal = mrOK then
                 Save;
-        Finally
+        finally
             frmShortcutsEditor.Free;
-        End;
-End;
+        end;
+end;
 
-Function GetTopmostItemAncestor(Item: TMenuItem): String;
-Var
+function GetTopmostItemAncestor(Item: TMenuItem): string;
+var
     CurMenu: TMenu;
-Begin
+begin
     Result := '';
 
   //Check to make sure we have a valid reference
-    If Item.GetParentMenu <> Nil Then
-    Begin
+    if Item.GetParentMenu <> NIL then
+    begin
         Result := Item.GetParentMenu.Name;
         CurMenu := Item.GetParentMenu;
-        If CurMenu Is TMainMenu Then
-            While Item <> Nil Do
-            Begin
-                If Item.Caption <> '' Then
+        if CurMenu is TMainMenu then
+            while Item <> NIL do
+            begin
+                if Item.Caption <> '' then
                     Result := Item.Caption;
                 Item := Item.Parent;
-            End;
-    End;
-End;
+            end;
+    end;
+end;
 
-Procedure TdevShortcuts.Load;
-Type TMenuAndShortcut = Record
-        Caption: String;
+procedure TdevShortcuts.Load;
+type TMenuAndShortcut = record
+        Caption: string;
         Shortcut: TShortCut;
-    End;
+    end;
     PMenuAndShortcut = ^TMenuAndShortcut;
-Var
-    I, x: Integer;
+var
+    I, x: integer;
     Fini: TIniFile;
     Entries: TList;
     ms: PMenuAndShortcut;
     sct: TShortCut;
-    SmenuOld, SmenuNew, Entry: String;
-    Found: Boolean;
-Begin
-    If fOwner = Nil Then
+    SmenuOld, SmenuNew, Entry: string;
+    Found: boolean;
+begin
+    if fOwner = NIL then
         Exit;
-    If (fFileName = '') Or Not FileExists(fFileName) Then
+    if (fFileName = '') or not FileExists(fFileName) then
         Exit;
     Entries := TList.Create;
     Fini := TIniFile.Create(fFileName);
-    Try
-        For I := 0 To fOwner.ComponentCount - 1 Do
-            If (fOwner.Components[I] Is TMenuItem) Then
-                If Not TMenuItem(fOwner.Components[I]).IsLine Then
-                    If (TMenuItem(fOwner.Components[I]).Count = 0) Then
-                    Begin
+    try
+        for I := 0 to fOwner.ComponentCount - 1 do
+            if (fOwner.Components[I] is TMenuItem) then
+                if not TMenuItem(fOwner.Components[I]).IsLine then
+                    if (TMenuItem(fOwner.Components[I]).Count = 0) then
+                    begin
                         SmenuOld := StripHotkey(TMenuItem(fOwner.Components[I]).Caption);
                         SmenuNew := StripHotkey(GetTopmostItemAncestor(TMenuItem(fOwner.Components[I]))) + ':' + SmenuOld;
                         Entry := Fini.ReadString('Shortcuts', SmenuNew, '');
 
-                        Found := False;
-                        For x := 0 To Entries.Count - 1 Do
-                        Begin
+                        Found := FALSE;
+                        for x := 0 to Entries.Count - 1 do
+                        begin
                             ms := Entries[x];
-                            If ms^.Caption = SmenuOld Then
-                            Begin
+                            if ms^.Caption = SmenuOld then
+                            begin
                                 TMenuItem(fOwner.Components[I]).ShortCut := ms^.Shortcut;
-                                If Assigned(TMenuItem(fOwner.Components[I]).Action) Then
+                                if Assigned(TMenuItem(fOwner.Components[I]).Action) then
                                     TAction(TMenuItem(fOwner.Components[I]).Action).ShortCut := ms^.Shortcut;
-                                found := True;
+                                found := TRUE;
                                 Break;
-                            End;
-                        End;
-                        If Found Then
+                            end;
+                        end;
+                        if Found then
                             Continue;
 
-                        If Entry = '' Then
+                        if Entry = '' then
                             Entry := Fini.ReadString('Shortcuts', SmenuOld, ShortCutToText(
                                 TMenuItem(fOwner.Components[I]).ShortCut));
-                        If Entry <> 'none' Then
+                        if Entry <> 'none' then
                             sct := TextToShortCut(Entry)
-                        Else
+                        else
                             sct := 0;
                         TMenuItem(fOwner.Components[I]).ShortCut := sct;
-                        If Assigned(TMenuItem(fOwner.Components[I]).Action) Then
+                        if Assigned(TMenuItem(fOwner.Components[I]).Action) then
                             TAction(TMenuItem(fOwner.Components[I]).Action).ShortCut := sct;
 
                         ms := New(PMenuAndShortcut);
                         ms^.Caption := SmenuOld;
                         ms^.Shortcut := sct;
                         Entries.Add(ms);
-                    End;
-    Finally
+                    end;
+    finally
         Fini.Free;
-        While Entries.Count > 0 Do
-        Begin
+        while Entries.Count > 0 do
+        begin
             Dispose(Entries[0]);
             Entries.Delete(0);
-        End;
+        end;
         Entries.Clear;
         Entries.Free;
-    End;
-End;
+    end;
+end;
 
-Procedure TdevShortcuts.ReadShortcuts;
-Var
-    I: Integer;
+procedure TdevShortcuts.ReadShortcuts;
+var
+    I: integer;
     Actions: THashedStringList;
     MenuItem: TMenuItem;
-Begin
-    If fOwner = Nil Then
+begin
+    if fOwner = NIL then
         Exit;
     Actions := THashedStringList.Create;
-    For I := 0 To fOwner.ComponentCount - 1 Do
-        If fOwner.Components[I] Is TMenuItem And
-            (TMenuItem(fOwner.Components[I]).GetParentMenu Is TMainMenu) Then
-        Begin
+    for I := 0 to fOwner.ComponentCount - 1 do
+        if fOwner.Components[I] is TMenuItem and
+            (TMenuItem(fOwner.Components[I]).GetParentMenu is TMainMenu) then
+        begin
             MenuItem := TMenuItem(fOwner.Components[I]);
-            If Not MenuItem.IsLine Then
-                If MenuItem.Count = 0 Then
-                Begin
-                    If Assigned(MenuItem.Action) And (MenuItem.Action.Name <> '') And
-                        (Actions.IndexOf(MenuItem.Action.Name) = -1) Then
+            if not MenuItem.IsLine then
+                if MenuItem.Count = 0 then
+                begin
+                    if Assigned(MenuItem.Action) and (MenuItem.Action.Name <> '') and
+                        (Actions.IndexOf(MenuItem.Action.Name) = -1) then
                         Actions.Add(MenuItem.Action.Name);
                     frmShortcutsEditor.AddShortcut(TMenuItem(fOwner.Components[I]),
                         GetTopmostItemAncestor(TMenuItem(fOwner.Components[I])));
-                End;
-        End;
-    For I := 0 To fOwner.ComponentCount - 1 Do
-        If fOwner.Components[I] Is TMenuItem And
-            (TMenuItem(fOwner.Components[I]).GetParentMenu Is TPopupMenu)
-        Then
-        Begin
+                end;
+        end;
+    for I := 0 to fOwner.ComponentCount - 1 do
+        if fOwner.Components[I] is TMenuItem and
+            (TMenuItem(fOwner.Components[I]).GetParentMenu is TPopupMenu)
+        then
+        begin
             MenuItem := TMenuItem(fOwner.Components[I]);
-            If Not MenuItem.IsLine And (MenuItem.Count = 0) And
-                ((Not Assigned(MenuItem.Action)) Or (MenuItem.Action.Name = '') Or
+            if not MenuItem.IsLine and (MenuItem.Count = 0) and
+                ((not Assigned(MenuItem.Action)) or (MenuItem.Action.Name = '') or
                 (Actions.IndexOf(MenuItem.Action.Name) = -1))
-            Then
-            Begin
+            then
+            begin
                 frmShortcutsEditor.AddShortcut(TMenuItem(fOwner.Components[I]),
                     GetTopmostItemAncestor(TMenuItem(fOwner.Components[I])));
-            End;
-        End;
-End;
+            end;
+        end;
+end;
 
-Procedure TdevShortcuts.Save;
-Var
-    I: Integer;
+procedure TdevShortcuts.Save;
+var
+    I: integer;
     Fini: TIniFile;
-    Smenu: String;
-    Scut: String;
-Begin
-    If fFileName = '' Then
+    Smenu: string;
+    Scut: string;
+begin
+    if fFileName = '' then
         Exit;
     Fini := TIniFile.Create(fFileName);
-    Try
-        For I := 0 To frmShortcutsEditor.Count - 1 Do
-        Begin
+    try
+        for I := 0 to frmShortcutsEditor.Count - 1 do
+        begin
             frmShortcutsEditor.Items[I].ShortCut := frmShortcutsEditor.ShortCuts[I];
-            If Assigned(frmShortcutsEditor.Items[I].Action) Then
+            if Assigned(frmShortcutsEditor.Items[I].Action) then
                 TAction(frmShortcutsEditor.Items[I].Action).ShortCut := frmShortcutsEditor.ShortCuts[I];
             Smenu := StripHotkey(GetTopmostItemAncestor(frmShortcutsEditor.Items[I])) + ':' +
                 StripHotkey(frmShortcutsEditor.Items[I].Caption);
             Scut := ShortCutToText(frmShortcutsEditor.ShortCuts[I]);
-            If Scut = '' Then
+            if Scut = '' then
                 Scut := 'none';
             Fini.WriteString('Shortcuts', Smenu, Scut);
-        End;
-    Finally
+        end;
+    finally
         Fini.Free;
-    End;
-End;
+    end;
+end;
 
-End.
+end.

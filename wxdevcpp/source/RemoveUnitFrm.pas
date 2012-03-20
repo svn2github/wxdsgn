@@ -17,11 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-Unit RemoveUnitFrm;
+unit RemoveUnitFrm;
 
-Interface
+interface
 
-Uses
+uses
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
     StdCtrls, Buttons, ExtCtrls, XPMenu;
@@ -31,8 +31,8 @@ Uses
   QStdCtrls, QButtons, QExtCtrls;
 {$ENDIF}
 
-Type
-    TRemoveUnitForm = Class(TForm)
+type
+    TRemoveUnitForm = class(TForm)
         Panel: TPanel;
         OkBtn: TBitBtn;
         CancelBtn: TBitBtn;
@@ -46,24 +46,24 @@ Type
         Label6: TLabel;
         XPMenu: TXPMenu;
         Label7: TLabel;
-        Procedure FormCreate(Sender: TObject);
-    End;
+        procedure FormCreate(Sender: TObject);
+    end;
 
-Implementation
+implementation
 
-Uses
+uses
     MultiLangSupport, devcfg;
 
 {$R *.dfm}
 
-Procedure TRemoveUnitForm.FormCreate(Sender: TObject);
-Begin
-    DesktopFont := True;
+procedure TRemoveUnitForm.FormCreate(Sender: TObject);
+begin
+    DesktopFont := TRUE;
     XPMenu.Active := devData.XPTheme;
     Caption := Lang[ID_RU];
     GroupBox.Caption := Lang[ID_RU_TEXT];
     OkBtn.Caption := Lang[ID_BTN_OK];
     CancelBtn.Caption := Lang[ID_BTN_CANCEL];
-End;
+end;
 
-End.
+end.

@@ -46,14 +46,14 @@
 -------------------------------------------------------------------------------}
 
 {$IFNDEF QSYNAUTOINDENT}
-Unit SynAutoIndent;
+unit SynAutoIndent;
 {$ENDIF}
 
 {$I SynEdit.inc}
 
-Interface
+interface
 
-Uses
+uses
   {$IFDEF SYN_CLX}
   Qt, QGraphics, QControls, QForms, QDialogs,
   QSynEdit,
@@ -66,44 +66,44 @@ Uses
     SysUtils,
     Classes;
 
-Type
-    TSynCustomAutoIndent = Class(TComponent)
-    Private
-        FEnabled: Boolean;
+type
+    TSynCustomAutoIndent = class(TComponent)
+    private
+        FEnabled: boolean;
         FEditor: TSynEdit;
-        FIndentChars: String;
-        FUnIndentChars: String;
-    Protected
-        Procedure SetEditor(Value: TSynEdit); Virtual;
-        Procedure doProcessUserCommand(Sender: TObject; AfterProcessing: Boolean;
-            Var Handled: Boolean; Var Command: TSynEditorCommand;
-            Var AChar: Char; Data: Pointer; HandlerData: pointer); Virtual;
-    Public
-        Constructor Create(AOwner: TComponent); Override;
-        Property Editor: TSynEdit Read FEditor Write SetEditor;
-        Property Enabled: Boolean Read FEnabled Write FEnabled;
-        Property IndentChars: String Read FIndentChars Write FIndentChars;
-        Property UnIndentChars: String Read FUnIndentChars Write FUnIndentChars;
-    End;
+        FIndentChars: string;
+        FUnIndentChars: string;
+    protected
+        procedure SetEditor(Value: TSynEdit); virtual;
+        procedure doProcessUserCommand(Sender: TObject; AfterProcessing: boolean;
+            var Handled: boolean; var Command: TSynEditorCommand;
+            var AChar: char; Data: Pointer; HandlerData: pointer); virtual;
+    public
+        constructor Create(AOwner: TComponent); override;
+        property Editor: TSynEdit read FEditor write SetEditor;
+        property Enabled: boolean read FEnabled write FEnabled;
+        property IndentChars: string read FIndentChars write FIndentChars;
+        property UnIndentChars: string read FUnIndentChars write FUnIndentChars;
+    end;
 
 
-    TSynAutoIndent = Class(TSynCustomAutoIndent)
-    Published
-        Property Editor;
-        Property Enabled;
-        Property IndentChars;
-        Property UnIndentChars;
-        Property Name;
-        Property Tag;
-    End;
+    TSynAutoIndent = class(TSynCustomAutoIndent)
+    published
+        property Editor;
+        property Enabled;
+        property IndentChars;
+        property UnIndentChars;
+        property Name;
+        property Tag;
+    end;
 
 
-Procedure Register;
+procedure Register;
 
 
-Implementation
+implementation
 
-Uses
+uses
 {$IFDEF SYN_CLX}
   QSynEditStrConst;
 {$ELSE}
@@ -112,109 +112,109 @@ Uses
 
 {$R SynAutoIndent.res}
 
-Procedure Register;
-Begin
+procedure Register;
+begin
     RegisterComponents('SynEdit', [TSynAutoIndent]);
-End;
+end;
 
 
 //--------------------------------------------------------------------------------------------------
 
 
-Constructor TSynCustomAutoIndent.Create(AOwner: TComponent);
-Begin
-    Inherited Create(AOwner);
+constructor TSynCustomAutoIndent.Create(AOwner: TComponent);
+begin
+    inherited Create(AOwner);
 
-    FEnabled := True;
-    FEditor := Nil;
+    FEnabled := TRUE;
+    FEditor := NIL;
     FIndentChars := ':{';
     FUnIndentChars := '}';
-End;
+end;
 
 
 //--------------------------------------------------------------------------------------------------
 
 
-Procedure TSynCustomAutoIndent.SetEditor(Value: TSynEdit);
-Begin
-    If FEditor <> Value Then
-    Begin
-        If (Editor <> Nil) And Not (csDesigning In ComponentState) Then
+procedure TSynCustomAutoIndent.SetEditor(Value: TSynEdit);
+begin
+    if FEditor <> Value then
+    begin
+        if (Editor <> NIL) and not (csDesigning in ComponentState) then
             Editor.UnregisterCommandHandler(doProcessUserCommand);
     // Set the new editor
         FEditor := Value;
-        If (Editor <> Nil) And Not (csDesigning In ComponentState) Then
-            Editor.RegisterCommandHandler(doProcessUserCommand, Nil);
-    End;
-End;
+        if (Editor <> NIL) and not (csDesigning in ComponentState) then
+            Editor.RegisterCommandHandler(doProcessUserCommand, NIL);
+    end;
+end;
 
 
 //--------------------------------------------------------------------------------------------------
 
 
-Procedure TSynCustomAutoIndent.doProcessUserCommand(Sender: TObject; AfterProcessing: Boolean;
-    Var Handled: Boolean; Var Command: TSynEditorCommand; Var AChar: Char; Data: Pointer; HandlerData: pointer);
-Var
+procedure TSynCustomAutoIndent.doProcessUserCommand(Sender: TObject; AfterProcessing: boolean;
+    var Handled: boolean; var Command: TSynEditorCommand; var AChar: char; Data: Pointer; HandlerData: pointer);
+var
     iEditor: TCustomSynEdit;
-    StrPrevLine: String;
-    StrCurLine: String;
-    i: Integer;
-Begin
-    If (Not FEnabled) Or Not (eoAutoIndent In (Sender As TCustomSynEdit).Options) Then
+    StrPrevLine: string;
+    StrCurLine: string;
+    i: integer;
+begin
+    if (not FEnabled) or not (eoAutoIndent in (Sender as TCustomSynEdit).Options) then
         Exit;
 
-    If AfterProcessing Then
-    Begin
-        Case Command Of
+    if AfterProcessing then
+    begin
+        case Command of
             ecLineBreak:
-            Begin
-                iEditor := Sender As TCustomSynEdit;
+            begin
+                iEditor := Sender as TCustomSynEdit;
           { CaretY should never be lesser than 2 right after ecLineBreak, so there's
           no need for a check }
                 StrPrevLine := TrimRight(iEditor.Lines[iEditor.CaretY - 2]);
-                If (StrPrevLine <> '') And (AnsiPos(StrPrevLine[Length(StrPrevLine)], FIndentChars) > 0) Then
-                Begin
+                if (StrPrevLine <> '') and (AnsiPos(StrPrevLine[Length(StrPrevLine)], FIndentChars) > 0) then
+                begin
                     iEditor.UndoList.BeginBlock;
-                    Try
+                    try
                         i := iEditor.DisplayX + iEditor.TabWidth - 1;
-                        iEditor.ExecuteCommand(ecSelLineStart, #0, Nil);
-                        While iEditor.DisplayX <= i Do
-                            iEditor.ExecuteCommand(ecTab, #0, Nil);
-                    Finally
+                        iEditor.ExecuteCommand(ecSelLineStart, #0, NIL);
+                        while iEditor.DisplayX <= i do
+                            iEditor.ExecuteCommand(ecTab, #0, NIL);
+                    finally
                         iEditor.UndoList.EndBlock;
-                    End;
-                End;
-            End;
-        End;
-    End
-    Else
-    Begin
-        Case Command Of
+                    end;
+                end;
+            end;
+        end;
+    end
+    else
+    begin
+        case Command of
             ecChar:
-            Begin
-                iEditor := Sender As TCustomSynEdit;
+            begin
+                iEditor := Sender as TCustomSynEdit;
                 StrCurLine := Trim(iEditor.Lines[iEditor.CaretY - 1]);
-                If (StrCurLine = '') And (AnsiPos(AChar, FUnIndentChars) > 0) Then
-                Begin
+                if (StrCurLine = '') and (AnsiPos(AChar, FUnIndentChars) > 0) then
+                begin
                     iEditor.UndoList.BeginBlock;
-                    Try
+                    try
                         i := iEditor.DisplayX - 1 - FEditor.TabWidth;
-                        iEditor.ExecuteCommand(ecSelLineStart, #0, Nil);
-                        iEditor.ExecuteCommand(ecChar, AChar, Nil);
+                        iEditor.ExecuteCommand(ecSelLineStart, #0, NIL);
+                        iEditor.ExecuteCommand(ecChar, AChar, NIL);
                         AChar := #0;
-                        iEditor.ExecuteCommand(ecLeft, #0, Nil);
-                        While iEditor.DisplayX <= i Do
-                            iEditor.ExecuteCommand(ecTab, #0, Nil);
-                        iEditor.ExecuteCommand(ecRight, #0, Nil);
-                    Finally
+                        iEditor.ExecuteCommand(ecLeft, #0, NIL);
+                        while iEditor.DisplayX <= i do
+                            iEditor.ExecuteCommand(ecTab, #0, NIL);
+                        iEditor.ExecuteCommand(ecRight, #0, NIL);
+                    finally
                         iEditor.UndoList.EndBlock;
-                    End;
-                End;
-            End;
-        End;
-    End;
-End;
+                    end;
+                end;
+            end;
+        end;
+    end;
+end;
 
 
 
-End.
+end.

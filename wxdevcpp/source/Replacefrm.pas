@@ -17,11 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-Unit Replacefrm;
+unit Replacefrm;
 
-Interface
+interface
 
-Uses
+uses
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
     SynEdit, StdCtrls, SynEditTypes, XPMenu, ExtCtrls;
@@ -31,8 +31,8 @@ Uses
   QSynEdit, QStdCtrls, QSynEditTypes;
 {$ENDIF}
 
-Type
-    TfrmReplace = Class(TForm)
+type
+    TfrmReplace = class(TForm)
         cboFindText: TComboBox;
         grpOptions: TGroupBox;
         lblFind: TLabel;
@@ -51,32 +51,32 @@ Type
         grpOrigin: TRadioGroup;
         grpDirection: TRadioGroup;
         cbUseSelection: TCheckBox;
-        Procedure btnReplaceClick(Sender: TObject);
-        Procedure FormShow(Sender: TObject);
-        Procedure FormClose(Sender: TObject; Var Action: TCloseAction);
-        Procedure btnCancelClick(Sender: TObject);
+        procedure btnReplaceClick(Sender: TObject);
+        procedure FormShow(Sender: TObject);
+        procedure FormClose(Sender: TObject; var Action: TCloseAction);
+        procedure btnCancelClick(Sender: TObject);
 
-    Private
+    private
         fSearchOptions: TSynSearchOptions;
-        fClose: Boolean;
-        fRegex: Boolean;
-        Procedure LoadText;
+        fClose: boolean;
+        fRegex: boolean;
+        procedure LoadText;
 
-    Public
-        UseSelection: Boolean;
-        Property SearchOptions: TSynSearchOptions
-            Read fSearchOptions Write fSearchOptions;
-        Property Regex: Boolean Read fRegex Write fRegex;
-    End;
+    public
+        UseSelection: boolean;
+        property SearchOptions: TSynSearchOptions
+            read fSearchOptions write fSearchOptions;
+        property Regex: boolean read fRegex write fRegex;
+    end;
 
-Var
+var
     frmReplace: TfrmReplace;
 
-Implementation
+implementation
 
 {$R *.dfm}
 
-Uses
+uses
     Search_Center,
 {$IFDEF WIN32}
     Dialogs, MultiLangSupport, devcfg;
@@ -85,76 +85,76 @@ Uses
   QDialogs, MultiLangSupport, devcfg;
 {$ENDIF}
 
-Procedure TfrmReplace.btnReplaceClick(Sender: TObject);
-Begin
-    If cboFindText.Text <> '' Then
-    Begin
+procedure TfrmReplace.btnReplaceClick(Sender: TObject);
+begin
+    if cboFindText.Text <> '' then
+    begin
         fSearchOptions := [];
         Regex := cbRegex.Checked;
-        If cboFindText.Items.Indexof(cboFindText.Text) = -1 Then
+        if cboFindText.Items.Indexof(cboFindText.Text) = -1 then
             cboFindText.Items.Add(cboFindText.Text);
 
-        If cboReplaceText.Items.IndexOf(cboReplaceText.Text) = -1 Then
+        if cboReplaceText.Items.IndexOf(cboReplaceText.Text) = -1 then
             cboReplaceText.Items.Add(cboReplaceText.Text);
 
-        If modalResult = mrOk Then
+        if modalResult = mrOk then
             fSearchOptions := [ssoReplace]
-        Else
-        If ModalResult = mrAll Then
+        else
+        if ModalResult = mrAll then
             fSearchOptions := [ssoReplaceAll];
 
-        If cbPrompt.Checked Then
+        if cbPrompt.Checked then
             include(fSearchoptions, ssoPrompt);
 
-        If cbMatchCase.checked Then
+        if cbMatchCase.checked then
             include(fSearchOptions, ssoMatchCase);
 
-        If cbWholeWord.Checked Then
+        if cbWholeWord.Checked then
             include(fSearchOptions, ssoWholeWord);
 
-        If grpDirection.ItemIndex = 1 Then
+        if grpDirection.ItemIndex = 1 then
             include(fSearchOptions, ssoBackwards);
 
-        If TLookIn(LookIn.Items.Objects[LookIn.ItemIndex]) = liSelected Then
+        if TLookIn(LookIn.Items.Objects[LookIn.ItemIndex]) = liSelected then
             include(fSearchOptions, ssoSelectedOnly);
 
-        If grpOrigin.ItemIndex = 1 Then
+        if grpOrigin.ItemIndex = 1 then
             include(fSearchOptions, ssoEntireScope);
 
         UseSelection := cbUseSelection.Checked;
 
-        fClose := True;
-    End;
-End;
+        fClose := TRUE;
+    end;
+end;
 
-Procedure TfrmReplace.FormShow(Sender: TObject);
-Begin
+procedure TfrmReplace.FormShow(Sender: TObject);
+begin
     ActiveControl := cboFindText;
     LoadText;
-End;
+end;
 
-Procedure TfrmReplace.FormClose(Sender: TObject; Var Action: TCloseAction);
-Begin
-    If fClose Then
+procedure TfrmReplace.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+    if fClose then
         action := caHide
-    Else
-    Begin
+    else
+    begin
         Action := caNone;
         ActiveControl := cboFindText;
-    End;
-End;
+    end;
+end;
 
-Procedure TfrmReplace.btnCancelClick(Sender: TObject);
-Begin
-    fClose := True;
+procedure TfrmReplace.btnCancelClick(Sender: TObject);
+begin
+    fClose := TRUE;
     Close;
-End;
+end;
 
-Procedure TfrmReplace.LoadText;
-Var
-    x: Integer;
-Begin
-    DesktopFont := True;
+procedure TfrmReplace.LoadText;
+var
+    x: integer;
+begin
+    DesktopFont := TRUE;
     XPMenu.Active := devData.XPTheme;
     Caption := Lang[ID_RPLC];
     LookIn.Items[0] := Lang[ID_RPLC_SELONLY];
@@ -180,22 +180,22 @@ Begin
     btnReplaceAll.Caption := Lang[ID_BTN_REPLACEALL];
 
     x := Self.Canvas.TextWidth(btnReplace.Caption) + 5;
-    If x > btnReplace.Width Then
-    Begin
+    if x > btnReplace.Width then
+    begin
         btnReplace.Width := x;
         btnReplaceAll.Left := btnReplace.Left + btnReplace.Width + 6;
-    End;
+    end;
 
     x := Self.Canvas.TextWidth(btnReplaceAll.Caption) + 5;
-    If x > btnReplaceAll.Width Then
+    if x > btnReplaceAll.Width then
         btnReplaceAll.Width := x;
 
     x := Self.Canvas.TextWidth(btnCancel.Caption) + 5;
-    If x > btnCancel.Width Then
-    Begin
+    if x > btnCancel.Width then
+    begin
         btnCancel.Left := btnCancel.Left - ((x - btnCancel.Width) + 10);
         btnCancel.Width := x;
-    End;
-End;
+    end;
+end;
 
-End.
+end.

@@ -17,81 +17,81 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-Unit Templates;
+unit Templates;
 
-Interface
+interface
 
-Uses
+uses
     Classes, Types, IniFiles, prjtypes, devcfg;
 
-Type
-    TTemplateUnit = Record
-        CName: String;
-        CppName: String;
-        ResName: String;
-        CText: String;
-        CppText: String;
-        ResText: String;
-    End;
+type
+    TTemplateUnit = record
+        CName: string;
+        CppName: string;
+        ResName: string;
+        CText: string;
+        CppText: string;
+        ResText: string;
+    end;
 
-    TTemplateRec = Record
+    TTemplateRec = record
         CCaret: TPoint;
         CppCaret: TPoint;
-        IsCPP: Boolean; // TRUE = C++ / FALSE = C
-        IsRes: Boolean;
-        CText: String;
-        CppText: String;
-        ResText: String;
-    End;
+        IsCPP: boolean; // TRUE = C++ / FALSE = C
+        IsRes: boolean;
+        CText: string;
+        CppText: string;
+        ResText: string;
+    end;
 
-    TTemplate = Class
-    Private
-        fFileName: String;
+    TTemplate = class
+    private
+        fFileName: string;
         fOptions: TProjectProfileList;
-        fName: String;
-        fDesc: String;
-        fCatagory: String;
-        fPrjName: String;
-        fProjectIcon: String;
-        fIconIndex: Integer;
+        fName: string;
+        fDesc: string;
+        fCatagory: string;
+        fPrjName: string;
+        fProjectIcon: string;
+        fIconIndex: integer;
         fTemplate: TmeminiFile;
-        fVersion: Integer;
-        fPlugin: String;
+        fVersion: integer;
+        fPlugin: string;
 
-        Function GetUnitCount: Integer;
-        Function GetOldData: TTemplateRec;
-        Function GetVersion: Integer;
-        Function GetUnit(index: Integer): TTemplateUnit;
-        Procedure SetUnit(index: Integer; value: TTemplateUnit);
-        Procedure SetOldData(value: TTemplateRec);
-    Public
-        Constructor Create;
-        Destructor Destroy; Override;
+        function GetUnitCount: integer;
+        function GetOldData: TTemplateRec;
+        function GetVersion: integer;
+        function GetUnit(index: integer): TTemplateUnit;
+        procedure SetUnit(index: integer; value: TTemplateUnit);
+        procedure SetOldData(value: TTemplateRec);
+    public
+        constructor Create;
+        destructor Destroy; override;
 
-        Procedure ReadTemplateFile(Const FileName: String);
-        Procedure LoadFromStream(Const ms: TStream);
-        Function AddUnit: Integer;
-        Procedure RemoveUnit(Const index: Integer);
-        Function Save: Boolean;
+        procedure ReadTemplateFile(const FileName: string);
+        procedure LoadFromStream(const ms: TStream);
+        function AddUnit: integer;
+        procedure RemoveUnit(const index: integer);
+        function Save: boolean;
 
-        Property Catagory: String Read fCatagory Write fCatagory;
-        Property Description: String Read fDesc Write fDesc;
-        Property FileName: String Read fFileName Write fFileName;
-        Property Name: String Read fName Write fName;
-        Property OptionsRec: TProjectProfileList Read fOptions Write fOptions;
-        Property ProjectName: String Read fPrjName Write fPrjName;
-        Property ProjectIcon: String Read fProjectIcon Write fProjectIcon;
-        Property UnitCount: Integer Read GetUnitCount;
-        Property Units[index: Integer]: TTemplateUnit Read GetUnit Write SetUnit;
-        Property OldData: TTemplateRec Read GetOldData Write SetOldData;
-        Property Version: Integer Read GetVersion Write fVersion;
-        Property IconIndex: Integer Read fIconIndex Write fIconIndex;
-        Property AssignedPlugin: String Read fPlugin Write fPlugin;
-    End;
+        property Catagory: string read fCatagory write fCatagory;
+        property Description: string read fDesc write fDesc;
+        property FileName: string read fFileName write fFileName;
+        property Name: string read fName write fName;
+        property OptionsRec: TProjectProfileList read fOptions write fOptions;
+        property ProjectName: string read fPrjName write fPrjName;
+        property ProjectIcon: string read fProjectIcon write fProjectIcon;
+        property UnitCount: integer read GetUnitCount;
+        property Units[index: integer]: TTemplateUnit read GetUnit write SetUnit;
+        property OldData: TTemplateRec read GetOldData write SetOldData;
+        property Version: integer read GetVersion write fVersion;
+        property IconIndex: integer read fIconIndex write fIconIndex;
+        property AssignedPlugin: string read fPlugin write fPlugin;
+    end;
 
-Implementation
+implementation
 
-Uses
+uses
     main,
 {$IFDEF WIN32}
     Windows, Forms, SysUtils, version, utils, Dialogs, MultiLangSupport;
@@ -100,74 +100,74 @@ Uses
   QForms, SysUtils, version, utils, QDialogs, MultiLangSupport;
 {$ENDIF}
 
-Resourcestring
+resourcestring
     cTemplate = 'Template';
     cEditor = 'Editor';
     cProject = 'Project';
 
 { TTemplate }
 
-Constructor TTemplate.Create;
-Begin
+constructor TTemplate.Create;
+begin
     fOptions := TProjectProfileList.Create;
-End;
+end;
 
-Destructor TTemplate.Destroy;
-Begin
+destructor TTemplate.Destroy;
+begin
     fOptions.Free;
-    Inherited;
-End;
+    inherited;
+end;
 
-Procedure TTemplate.ReadTemplateFile(Const FileName: String);
-Var
+procedure TTemplate.ReadTemplateFile(const FileName: string);
+var
     NewProfile: TProjProfile;
-    CurrentProfileName: String;
-    ProfileCount, i: Integer;
+    CurrentProfileName: string;
+    ProfileCount, i: integer;
 
-    Procedure VerifyProfile(Var NewProfile: TProjProfile);
-    Var
-        i, CurrentSet: Integer;
-    Begin
+    procedure VerifyProfile(var NewProfile: TProjProfile);
+    var
+        i, CurrentSet: integer;
+    begin
         //Store the old compiler set
         CurrentSet := devCompiler.CompilerSet;
 
         //Do some sanity checking - if the profile states that we should be using a MingW compiler,
         //then make sure the CompilerSet actually points to one that is of CompilerType.
-        If devCompilerSet.Sets.Count > NewProfile.CompilerSet Then
+        if devCompilerSet.Sets.Count > NewProfile.CompilerSet then
             devCompilerSet.LoadSet(NewProfile.CompilerSet);
-        If devCompilerSet.CompilerType <> NewProfile.compilerType Then
-            For i := 0 To devCompilerSet.Sets.Count - 1 Do
-            Begin
+        if devCompilerSet.CompilerType <> NewProfile.compilerType then
+            for i := 0 to devCompilerSet.Sets.Count - 1 do
+            begin
                 devCompilerSet.LoadSet(i);
-                If devCompilerSet.CompilerType = NewProfile.compilerType Then
-                Begin
+                if devCompilerSet.CompilerType = NewProfile.compilerType then
+                begin
                     NewProfile.CompilerSet := i;
                     Break;
-                End;
-            End;
+                end;
+            end;
 
         //Restore the old compiler set
         devCompilerSet.LoadSet(CurrentSet);
-    End;
-Begin
+    end;
+begin
 
-    If Assigned(fTemplate) Then
+    if Assigned(fTemplate) then
         fTemplate.Free;
-    If FileExists(FileName) Then
-    Begin
+    if FileExists(FileName) then
+    begin
         fFileName := FileName;
         fTemplate := TmemINIFile.Create(fFileName);
-    End
-    Else
-    Begin
+    end
+    else
+    begin
         MessageBox(Application.MainForm.Handle,
-            Pchar(Format(Lang[ID_ERR_TEMPFNF], [fFileName])),
-            Pchar(Lang[ID_INFO]), MB_OK Or MB_ICONINFORMATION);
+            pchar(Format(Lang[ID_ERR_TEMPFNF], [fFileName])),
+            pchar(Lang[ID_INFO]), MB_OK or MB_ICONINFORMATION);
         Exit;
-    End;
+    end;
 
-    With fTemplate Do
-    Begin
+    with fTemplate do
+    begin
         // read entries for both old and new template info
         fVersion := ReadInteger(cTemplate, 'Ver', -1);
         fName := ReadString(cTemplate, 'Name', 'NoName');
@@ -181,35 +181,35 @@ Begin
         ProfileCount := ReadInteger(cProject, 'ProfilesCount', 0);
 
         //If there are no Profiles then we'll assume the template as version 1
-        If (ProfileCount = 0) And (fVersion = 3) Then
+        if (ProfileCount = 0) and (fVersion = 3) then
             fVersion := 1;
 
-        If fPrjName = '' Then
+        if fPrjName = '' then
             fPrjName := fName;
 
-        If fName = '' Then
+        if fName = '' then
             fName := fPrjName;
 
-        If fVersion < 3 Then
-        Begin
+        if fVersion < 3 then
+        begin
             NewProfile := TProjProfile.Create;
             NewProfile.ProfileName := 'MingW';
             fOptions.Add(NewProfile);
-        End;
+        end;
 
         // read old style
-        If fVersion <= 0 Then
-        Begin
+        if fVersion <= 0 then
+        begin
             fOptions[0].icon := ReadString(cTemplate, 'Icon', '');
-            If ReadBool(cProject, 'Console', False) Then
+            if ReadBool(cProject, 'Console', FALSE) then
                 fOptions[0].typ := dptCon
-            Else
-            If ReadBool(cProject, 'DLL', False) Then
+            else
+            if ReadBool(cProject, 'DLL', FALSE) then
                 fOptions[0].typ := dptDyn
-            Else
+            else
                 fOptions[0].Typ := dptGUI;
 
-            fOptions.useGPP := ReadBool(cProject, 'Cpp', False);
+            fOptions.useGPP := ReadBool(cProject, 'Cpp', FALSE);
             fOptions[0].Compiler := ReadString(cProject, 'CompilerOptions', '');
             fOptions[0].CompilerType := ID_COMPILER_MINGW;
             fOptions[0].Libs.Append(ReadString(cProject, 'Libs', ''));
@@ -217,13 +217,13 @@ Begin
 
             //Verify the profile's integrity
             VerifyProfile(NewProfile);
-        End
-        Else
-        If (fVersion = 1) Or (fVersion = 2) Then
-        Begin
+        end
+        else
+        if (fVersion = 1) or (fVersion = 2) then
+        begin
             ProjectIcon :=
                 ReadString(cProject, 'ProjectIcon', '');
-            fOptions.useGPP := ReadBool(cProject, 'IsCpp', False);
+            fOptions.useGPP := ReadBool(cProject, 'IsCpp', FALSE);
             fOptions[0].compilerType := ID_COMPILER_MINGW;
             fOptions[0].icon := ReadString(cTemplate, 'Icon', '');
             fOptions[0].typ := ReadInteger(cProject, 'Type', 0);
@@ -252,9 +252,9 @@ Begin
             fOptions[0].CompilerOptions :=
                 ReadString(cProject, COMPILER_INI_LABEL, '');
             fOptions[0].IncludeVersionInfo :=
-                ReadBool(cProject, 'IncludeVersionInfo', False);
+                ReadBool(cProject, 'IncludeVersionInfo', FALSE);
             fOptions[0].SupportXPThemes :=
-                ReadBool(cProject, 'SupportXPThemes', False);
+                ReadBool(cProject, 'SupportXPThemes', FALSE);
             fOptions[0].ExeOutput :=
                 ReadString(cProject, 'ExeOutput', '');
             fOptions[0].ObjectOutput :=
@@ -263,32 +263,32 @@ Begin
             fOptions[0].ImagesOutput :=
                 ReadString(cProject, 'ImagesOutput', '');
 
-            If (Trim(fOptions[0].ExeOutput) = '') And
-                (Trim(fOptions[0].ObjectOutput) <> '') Then
+            if (Trim(fOptions[0].ExeOutput) = '') and
+                (Trim(fOptions[0].ObjectOutput) <> '') then
                 fOptions[0].ExeOutput := fOptions[0].ObjectOutput
-            Else
-            If (Trim(fOptions[0].ExeOutput) <> '') And
-                (trim(fOptions[0].ObjectOutput) = '') Then
+            else
+            if (Trim(fOptions[0].ExeOutput) <> '') and
+                (trim(fOptions[0].ObjectOutput) = '') then
                 fOptions[0].ObjectOutput := fOptions[0].ExeOutput
-            Else
-            If (fOptions[0].ExeOutput = '') And (fOptions[0].ObjectOutput = '') Then
-            Begin
+            else
+            if (fOptions[0].ExeOutput = '') and (fOptions[0].ObjectOutput = '') then
+            begin
                 fOptions[0].ObjectOutput := fOptions[0].ProfileName;
                 fOptions[0].ExeOutput := fOptions[0].ProfileName;
-            End;
+            end;
 
             //Verify the profile's integrity
             VerifyProfile(NewProfile);
-        End
-        Else // read new style
-        Begin
+        end
+        else // read new style
+        begin
             ProfileCount := ReadInteger(cProject, 'ProfilesCount', 0);
-            For i := 0 To ProfileCount - 1 Do
-            Begin
+            for i := 0 to ProfileCount - 1 do
+            begin
                 ProjectIcon :=
                     ReadString(cProject, 'ProjectIcon', '');
                 fOptions.useGPP :=
-                    ReadBool(cProject, 'IsCpp', False);
+                    ReadBool(cProject, 'IsCpp', FALSE);
 
                 //Read the current profile's values
                 CurrentProfileName := 'Profile' + IntToStr(i);
@@ -324,15 +324,15 @@ Begin
                 NewProfile.ImagesOutput :=
                     ReadString(CurrentProfileName, 'ImagesOutput', 'Images\');
                 NewProfile.OverrideOutput :=
-                    ReadBool(CurrentProfileName, 'OverrideOutput', False);
+                    ReadBool(CurrentProfileName, 'OverrideOutput', FALSE);
                 NewProfile.OverridenOutput :=
                     ReadString(CurrentProfileName, 'OverrideOutputName', '');
                 NewProfile.HostApplication :=
                     ReadString(CurrentProfileName, 'HostApplication', '');
                 NewProfile.IncludeVersionInfo :=
-                    ReadBool(CurrentProfileName, 'IncludeVersionInfo', False);
+                    ReadBool(CurrentProfileName, 'IncludeVersionInfo', FALSE);
                 NewProfile.SupportXPThemes :=
-                    ReadBool(CurrentProfileName, 'SupportXPThemes', False);
+                    ReadBool(CurrentProfileName, 'SupportXPThemes', FALSE);
                 NewProfile.CompilerSet :=
                     ReadInteger(CurrentProfileName, 'CompilerSet', 0);
                 NewProfile.CompilerOptions :=
@@ -345,199 +345,199 @@ Begin
 
                 //Save the profile to the list of profiles available
                 fOptions.Add(NewProfile);
-            End;
-        End;
-    End;
-End;
+            end;
+        end;
+    end;
+end;
 
 // need to actually save values. (basiclly TTemplate is readonly right now)
-Function TTemplate.Save: Boolean;
-Var
-    fName: String;
-Begin
-    result := False;
-    Try
-        If assigned(fTemplate) Then
-        Begin
-            If (fTemplate.FileName = '') Then
-            Begin
+function TTemplate.Save: boolean;
+var
+    fName: string;
+begin
+    result := FALSE;
+    try
+        if assigned(fTemplate) then
+        begin
+            if (fTemplate.FileName = '') then
+            begin
                 // ** prompt for name place in fname
-                fTemplate.Rename(fName, False);
-            End;
+                fTemplate.Rename(fName, FALSE);
+            end;
             fTemplate.UpdateFile;
-            result := True;
-        End;
-    Except
+            result := TRUE;
+        end;
+    except
         // swallow
-    End;
-End;
+    end;
+end;
 
-Function TTemplate.AddUnit: Integer;
-Var
-    section: String;
-Begin
-    If (fVersion > 0) And (assigned(fTemplate)) Then
-    Begin
+function TTemplate.AddUnit: integer;
+var
+    section: string;
+begin
+    if (fVersion > 0) and (assigned(fTemplate)) then
+    begin
         result := GetUnitCount + 1;
         section := 'Unit' + inttostr(result);
         fTemplate.WriteString(section, 'C', '');
         fTemplate.WriteString(section, 'Cpp', '');
         fTemplate.WriteString(section, 'Res', '');
         fTemplate.WriteInteger(cProject, 'UnitCount', result);
-    End
-    Else
+    end
+    else
         result := -1;
-End;
+end;
 
-Procedure TTemplate.RemoveUnit(Const index: Integer);
-Var
-    section: String;
-    count: Integer;
-Begin
+procedure TTemplate.RemoveUnit(const index: integer);
+var
+    section: string;
+    count: integer;
+begin
     section := 'Unit' + inttostr(index);
-    If fTemplate.SectionExists(section) Then
-    Begin
+    if fTemplate.SectionExists(section) then
+    begin
         fTemplate.EraseSection(section);
         Count := fTemplate.ReadInteger(cProject, 'UnitCount', 0);
         dec(Count);
         fTemplate.WriteInteger(cProject, 'UnitCount', Count);
-    End;
-End;
+    end;
+end;
 
-Function TTemplate.GetOldData: TTemplateRec;
-Begin
-    If Not assigned(fTemplate) Then
-    Begin
+function TTemplate.GetOldData: TTemplateRec;
+begin
+    if not assigned(fTemplate) then
+    begin
         FillChar(result, Sizeof(TTemplateRec), #0);
         exit;
-    End;
+    end;
 
-    If (fVersion <= 0) Then // read old style
-    Begin
+    if (fVersion <= 0) then // read old style
+    begin
         result.CText := fTemplate.ReadString(cEditor, 'Text', '');
         result.CppText := fTemplate.ReadString(cEditor, 'Text_Cpp', '');
         result.CCaret := point(fTemplate.ReadInteger(cEditor, 'CursorX', 1),
             fTemplate.ReadInteger(cEditor, 'CursorY', 1));
         result.CppCaret := point(fTemplate.ReadInteger(cEditor, 'CursorX_Cpp', 1),
             fTemplate.ReadInteger(cEditor, 'CursorY_Cpp', 1));
-        result.IsCPP := fTemplate.ReadBool(cTemplate, 'EnableC', False);
-        If Not result.IsCPP Then
-            result.IsCPP := fTemplate.ReadBool(cTemplate, 'EnableCpp', False);
-    End
-    Else // read new style
-    Begin
-        If fTemplate.ReadInteger(cTemplate, 'UnitCount', 0) > 0 Then
-        Begin
+        result.IsCPP := fTemplate.ReadBool(cTemplate, 'EnableC', FALSE);
+        if not result.IsCPP then
+            result.IsCPP := fTemplate.ReadBool(cTemplate, 'EnableCpp', FALSE);
+    end
+    else // read new style
+    begin
+        if fTemplate.ReadInteger(cTemplate, 'UnitCount', 0) > 0 then
+        begin
             result.CText := fTemplate.ReadString('Unit0', 'C', '');
             result.CppText := fTemplate.ReadString('Unit0', 'Cpp', '');
             result.ResText := fTemplate.ReadString('Unit0', 'Res', '');
-        End;
+        end;
         result.CCaret := point(1, 1);
         result.CppCaret := point(1, 1);
-        result.IsCpp := fTemplate.ReadBool(cProject, 'IsCpp', True);
-        result.IsRes := fTemplate.ReadBool(cProject, 'IsRes', False);
-    End;
-End;
+        result.IsCpp := fTemplate.ReadBool(cProject, 'IsCpp', TRUE);
+        result.IsRes := fTemplate.ReadBool(cProject, 'IsRes', FALSE);
+    end;
+end;
 
-Procedure TTemplate.SetOldData(value: TTemplateRec);
-Begin
-    If Not assigned(fTemplate) Then
-    Begin
+procedure TTemplate.SetOldData(value: TTemplateRec);
+begin
+    if not assigned(fTemplate) then
+    begin
         MessageBox(Application.MainForm.Handle,
-            Pchar(Lang[ID_ERR_NOTEMPLATE]), Pchar(Lang[ID_INFO]),
-            MB_OK Or MB_ICONWARNING);
+            pchar(Lang[ID_ERR_NOTEMPLATE]), pchar(Lang[ID_INFO]),
+            MB_OK or MB_ICONWARNING);
         exit;
-    End;
+    end;
 
-    If (fVersion <= 0) Then // set old style
-        With fTemplate Do
-        Begin
+    if (fVersion <= 0) then // set old style
+        with fTemplate do
+        begin
             WriteInteger(cEditor, 'CursorX', value.CCaret.X);
             WriteInteger(cEditor, 'CursorY', value.CCaret.Y);
             WriteInteger(cEditor, 'Cursor_CppX', value.CppCaret.X);
             WriteInteger(cEditor, 'Cursor_CppY', value.CppCaret.Y);
-            WriteBool(cTemplate, 'EnableC', Not value.IsCPP);
+            WriteBool(cTemplate, 'EnableC', not value.IsCPP);
             WriteBool(cTemplate, 'EnableCpp', value.IsCpp);
-        End
-    Else // seems dumb but might happen
-    Begin
+        end
+    else // seems dumb but might happen
+    begin
         fTemplate.WriteBool(cProject, 'Cpp', value.IsCpp);
         fTemplate.WriteBool(cProject, 'Res', value.IsRes);
-    End;
-End;
+    end;
+end;
 
-Function TTemplate.GetUnit(index: Integer): TTemplateUnit;
-Var
-    section: String;
-Begin
-    If Not assigned(fTemplate) Then
-    Begin
+function TTemplate.GetUnit(index: integer): TTemplateUnit;
+var
+    section: string;
+begin
+    if not assigned(fTemplate) then
+    begin
         FillChar(result, Sizeof(TTemplateUnit), #0);
         exit;
-    End;
-    If fVersion <= 0 Then // return nothing no units in old style
-    Begin
+    end;
+    if fVersion <= 0 then // return nothing no units in old style
+    begin
         result.CText := '';
         result.CppText := '';
         result.ResText := '';
-    End
-    Else // return unit info
-    Begin
+    end
+    else // return unit info
+    begin
         section := 'Unit' + inttostr(index);
         result.CText := fTemplate.ReadString(section, 'C', '');
         result.CppText := fTemplate.ReadString(section, 'Cpp', '');
         result.ResText := fTemplate.ReadString(section, 'Res', '');
-        If Length(result.CppText) = 0 Then
+        if Length(result.CppText) = 0 then
             result.CppText := result.CText;
 
         result.ResName := fTemplate.ReadString(section, 'ResName', '');
         result.CName := fTemplate.ReadString(section, 'CName', '');
         result.CppName := fTemplate.ReadString(section, 'CppName', '');
-        If Length(result.CppName) = 0 Then
+        if Length(result.CppName) = 0 then
             result.CppName := result.CName;
-    End;
-End;
+    end;
+end;
 
-Procedure TTemplate.SetUnit(index: Integer; value: TTemplateUnit);
-Var
-    section: String;
-Begin
-    If Not assigned(fTemplate) Or (fVersion <= 0) Then
+procedure TTemplate.SetUnit(index: integer; value: TTemplateUnit);
+var
+    section: string;
+begin
+    if not assigned(fTemplate) or (fVersion <= 0) then
         exit;
     section := 'Unit' + inttostr(index);
-    If fTemplate.SectionExists(section) Then
-    Begin
+    if fTemplate.SectionExists(section) then
+    begin
         fTemplate.WriteString(section, 'C', value.CText);
         fTemplate.WriteString(section, 'Cpp', value.CppText);
         fTemplate.WriteString(section, 'Res', value.ResText);
         fTemplate.WriteString(section, 'CName', value.CName);
         fTemplate.WriteString(section, 'CppName', value.CppName);
         fTemplate.WriteString(section, 'ResName', value.ResName);
-    End
-    Else
+    end
+    else
         // debugging (we need to add debugging mode defines)
         showmessage('Section doesn''t exists ' + inttostr(index));
-End;
+end;
 
-Function TTemplate.GetUnitCount: Integer;
-Begin
-    If Not assigned(fTemplate) Then
+function TTemplate.GetUnitCount: integer;
+begin
+    if not assigned(fTemplate) then
         result := -1
-    Else
-    If (fVersion <= 0) Then
+    else
+    if (fVersion <= 0) then
         result := 0
-    Else
+    else
         result := fTemplate.ReadInteger(cProject, 'UnitCount', 0);
-End;
+end;
 
-Function TTemplate.GetVersion: Integer;
-Begin
+function TTemplate.GetVersion: integer;
+begin
     result := fVersion;
-End;
+end;
 
-Procedure TTemplate.LoadFromStream(Const ms: TStream);
-Begin
+procedure TTemplate.LoadFromStream(const ms: TStream);
+begin
     //
-End;
+end;
 
-End.
+end.

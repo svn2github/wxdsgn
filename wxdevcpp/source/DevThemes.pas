@@ -17,11 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-Unit DevThemes;
+unit DevThemes;
 
-Interface
+interface
 
-Uses
+uses
 {$IFDEF WIN32}
     Classes, Controls, oysUtils;
 {$ENDIF}
@@ -29,45 +29,45 @@ Uses
   Classes, QControls, oysUtils, QImgList;
 {$ENDIF}
 
-Type
-    TdevTheme = Class(TObject)
-    Private
+type
+    TdevTheme = class(TObject)
+    private
         fThemes: ToysStringList;
-        fFile: String;
-        fName: String;
+        fFile: string;
+        fName: string;
         fMenus: TImageList;
         fHelp: TImageList;
         fProjects: TImageList;
         fSpecials: TImageList;
         fBrowser: TImageList;
         fImgfiles: TOysStringList;
-        Procedure ClearLists;
-        Function GetImage(Const Index: Integer; Var imglst: TImageList): Boolean;
-        Function GetPreview: String;
-    Public
-        Constructor Create;
-        Destructor Destroy; Override;
+        procedure ClearLists;
+        function GetImage(const Index: integer; var imglst: TImageList): boolean;
+        function GetPreview: string;
+    public
+        constructor Create;
+        destructor Destroy; override;
 
-        Procedure ScanThemes;
-        Function ThemeList: TStrings;
-        Function SetTheme(Const theme: String): Boolean;
-        Function LoadTheme(Const FileName: String): Boolean;
+        procedure ScanThemes;
+        function ThemeList: TStrings;
+        function SetTheme(const theme: string): boolean;
+        function LoadTheme(const FileName: string): boolean;
 
-        Property Name: String Read fName;
-        Property Menus: TImageList Read fMenus;
-        Property Help: TImageList Read fHelp;
-        Property Projects: TImageList Read fProjects;
-        Property Specials: TImageList Read fSpecials;
-        Property Browser: TImageList Read fBrowser;
-        Property Preview: String Read GetPreview;
-    End;
+        property Name: string read fName;
+        property Menus: TImageList read fMenus;
+        property Help: TImageList read fHelp;
+        property Projects: TImageList read fProjects;
+        property Specials: TImageList read fSpecials;
+        property Browser: TImageList read fBrowser;
+        property Preview: string read GetPreview;
+    end;
 
-Var
-    devTheme: TdevTheme = Nil;
+var
+    devTheme: TdevTheme = NIL;
 
-Implementation
+implementation
 
-Uses
+uses
 {$IFDEF WIN32}
     SysUtils, Forms, Graphics, devcfg, utils, datamod, version;
 {$ENDIF}
@@ -78,25 +78,25 @@ Uses
 
 { TdevTheme }
 
-Constructor TdevTheme.Create;
-Begin
+constructor TdevTheme.Create;
+begin
     fThemes := ToysStringList.Create;
-    fMenus := TImageList.Create(Nil);
-    fHelp := TImageList.Create(Nil);
-    fProjects := TImageList.Create(Nil);
-    fSpecials := TImageList.Create(Nil);
-    fBrowser := TImageList.Create(Nil);
-    fMenus.Masked := True;
-    fHelp.Masked := True;
-    fProjects.Masked := True;
-    fSpecials.Masked := True;
-    fBrowser.Masked := True;
+    fMenus := TImageList.Create(NIL);
+    fHelp := TImageList.Create(NIL);
+    fProjects := TImageList.Create(NIL);
+    fSpecials := TImageList.Create(NIL);
+    fBrowser := TImageList.Create(NIL);
+    fMenus.Masked := TRUE;
+    fHelp.Masked := TRUE;
+    fProjects.Masked := TRUE;
+    fSpecials.Masked := TRUE;
+    fBrowser.Masked := TRUE;
 
     ScanThemes;
-End;
+end;
 
-Destructor TdevTheme.Destroy;
-Begin
+destructor TdevTheme.Destroy;
+begin
     fMenus.Clear;
     fHelp.Clear;
     fProjects.Clear;
@@ -109,70 +109,70 @@ Begin
     fProjects.Free;
     fSpecials.Free;
     fBrowser.Free;
-    Inherited;
-End;
+    inherited;
+end;
 
-Procedure TdevTheme.ClearLists;
-Begin
+procedure TdevTheme.ClearLists;
+begin
     fMenus.Clear;
     fHelp.Clear;
     fProjects.Clear;
     fSpecials.Clear;
     fBrowser.Clear;
-End;
+end;
 
-Function GetPreview: String;
-Begin
+function GetPreview: string;
+begin
 
-End;
+end;
 
-Function TdevTheme.GetImage(Const Index: Integer;
-    Var imglst: TImageList): Boolean;
-Var
-    idx: Integer;
-    aFile: String;
+function TdevTheme.GetImage(const Index: integer;
+    var imglst: TImageList): boolean;
+var
+    idx: integer;
+    aFile: string;
     img: TBitmap;
     clr: TColor;
-Begin
-    Try
+begin
+    try
         idx := fimgfiles.IndexofName(IntToStr(index));
-        If idx <> -1 Then
+        if idx <> -1 then
             aFile := ExpandFileto(fimgFiles.Values[idx], ExtractFilePath(fFile))
-        Else
+        else
             aFile := '';
 
         img := TBitmap.Create;
-        Try
-            If (aFile <> '') And (FileExists(aFile)) Then
+        try
+            if (aFile <> '') and (FileExists(aFile)) then
                 img.LoadFromFile(aFile)
-            Else
+            else
                 img.LoadFromResourceName(HInstance, 'NOIMG');
 
             clr := img.Canvas.Pixels[0, 15];
             imglst.AddMasked(img, clr);
-        Finally
+        finally
             img.Free;
-        End;
-        Result := True;
-    Except
-        Result := False;
-    End;
-End;
+        end;
+        Result := TRUE;
+    except
+        Result := FALSE;
+    end;
+end;
 
-Function TdevTheme.SetTheme(Const theme: String): Boolean;
-Var
-    idx: Integer;
-Begin
-    Result := False;
-    If theme = fName Then
+function TdevTheme.SetTheme(const theme: string): boolean;
+var
+    idx: integer;
+begin
+    Result := FALSE;
+    if theme = fName then
         Exit;
 
-    If (theme = DEV_GNOME_THEME) Or
-        (theme = DEV_NEWLOOK_THEME) Or
-        (theme = DEV_BLUE_THEME) Then
-    Begin
-        If theme = DEV_NEWLOOK_THEME Then
-        Begin
+    if (theme = DEV_GNOME_THEME) or
+        (theme = DEV_NEWLOOK_THEME) or
+        (theme = DEV_BLUE_THEME) then
+    begin
+        if theme = DEV_NEWLOOK_THEME then
+        begin
             fMenus.Clear;
             fHelp.Clear;
             fProjects.Clear;
@@ -183,12 +183,12 @@ Begin
             fProjects.AddImages(dmMain.ProjectImage_NewLook);
             fSpecials.AddImages(dmMain.SpecialImages_NewLook);
             fBrowser.AddImages(dmMain.ClassImages);
-            result := True;
+            result := TRUE;
             fFile := DEV_INTERNAL_THEME;
-        End
-        Else
-        If theme = DEV_GNOME_THEME Then
-        Begin
+        end
+        else
+        if theme = DEV_GNOME_THEME then
+        begin
             fMenus.Clear;
             fHelp.Clear;
             fProjects.Clear;
@@ -199,12 +199,12 @@ Begin
             fProjects.AddImages(dmMain.ProjectImage_Gnome);
             fSpecials.AddImages(dmMain.SpecialImages_Gnome);
             fBrowser.AddImages(dmMain.ClassImages);
-            result := True;
+            result := TRUE;
             fFile := DEV_INTERNAL_THEME;
-        End
-        Else
-        If theme = DEV_BLUE_THEME Then
-        Begin
+        end
+        else
+        if theme = DEV_BLUE_THEME then
+        begin
             fMenus.Clear;
             fHelp.Clear;
             fProjects.Clear;
@@ -215,12 +215,12 @@ Begin
             fProjects.AddImages(dmMain.ProjectImage_Blue);
             fSpecials.AddImages(dmMain.SpecialImages_Blue);
             fBrowser.AddImages(dmMain.ClassImages);
-            result := True;
+            result := TRUE;
             fFile := DEV_INTERNAL_THEME;
-        End
-	       Else
-        If theme = DEV_CLASSIC_THEME Then
-        Begin
+        end
+	       else
+        if theme = DEV_CLASSIC_THEME then
+        begin
             fMenus.Clear;
             fHelp.Clear;
             fProjects.Clear;
@@ -231,22 +231,22 @@ Begin
             fProjects.AddImages(dmMain.ProjectImage_Classic);
             fSpecials.AddImages(dmMain.SpecialImages_Classic);
             fBrowser.AddImages(dmMain.ClassImages);
-            result := True;
+            result := TRUE;
             fFile := DEV_INTERNAL_THEME;
-        End;
-    End
-    Else
-    Begin // load theme from file
+        end;
+    end
+    else
+    begin // load theme from file
         idx := fThemes.IndexofValue(Theme);
-        If idx <> -1 Then
+        if idx <> -1 then
             Result := LoadTheme(fThemes.Names[idx])
-        Else
-            Result := False;
-    End;
-End;
+        else
+            Result := FALSE;
+    end;
+end;
 
-Function TdevTheme.LoadTheme(Const FileName: String): Boolean;
-Const
+function TdevTheme.LoadTheme(const FileName: string): boolean;
+const
     MNU_CNT = 47;
     MNU_OFF = 1000;
     HLP_CNT = 7;
@@ -257,112 +257,112 @@ Const
     SPL_OFF = 1300;
     BRW_CNT = 8;
     BRW_OFF = 1400;
-Var
-    idx: Integer;
-    fName: String;
-Begin
+var
+    idx: integer;
+    fName: string;
+begin
     //  Open file and load images into lists
     //  if image isn't found load "NOIMG" bitmap from resources
-    Result := False;
+    Result := FALSE;
     fName := ValidateFile(FileName, devDirs.Themes);
-    If fName = '' Then
-    Begin
+    if fName = '' then
+    begin
         //     MessageDlg('Could not open Theme File ', +FileName, mtErrorm [mbOk], 0);
         Exit;
-    End;
+    end;
 
     fFile := fName;
     ClearLists;
     fimgFiles := ToysStringList.Create;
-    With fimgfiles Do
-        Try
+    with fimgfiles do
+        try
             LoadFromFile(FName);
 
             fName := Value['Name'];
             // fill menu
-            For idx := 0 To pred(MNU_CNT) Do
+            for idx := 0 to pred(MNU_CNT) do
                 GetImage(idx + MNU_OFF, fMenus);
 
             Application.ProcessMessages;
             // fill Help
-            For idx := 0 To pred(HLP_CNT) Do
+            for idx := 0 to pred(HLP_CNT) do
                 GetImage(idx + HLP_OFF, fHelp);
 
             Application.ProcessMessages;
             // fill Projects
-            For idx := 0 To pred(PRJ_CNT) Do
+            for idx := 0 to pred(PRJ_CNT) do
                 GetImage(idx + PRJ_OFF, fProjects);
 
             Application.ProcessMessages;
             // fill Specials
-            For idx := 0 To pred(SPL_CNT) Do
+            for idx := 0 to pred(SPL_CNT) do
                 GetImage(idx + SPL_OFF, fSpecials);
 
             Application.ProcessMessages;
             // fill Browser
-            For idx := 0 To pred(BRW_CNT) Do
+            for idx := 0 to pred(BRW_CNT) do
                 GetImage(idx + BRW_OFF, fBrowser);
-        Finally
+        finally
             Free;
-        End;
-    Result := True;
-End;
+        end;
+    Result := TRUE;
+end;
 
-Function TdevTheme.ThemeList: TStrings;
-Var
-    idx: Integer;
-Begin
+function TdevTheme.ThemeList: TStrings;
+var
+    idx: integer;
+begin
     Result := TStringList.Create;
-    For idx := 0 To pred(fthemes.Count) Do
+    for idx := 0 to pred(fthemes.Count) do
         Result.Add(fThemes.Values[idx]);
-End;
+end;
 
-Procedure TdevTheme.ScanThemes;
-Var
+procedure TdevTheme.ScanThemes;
+var
     tmp: TStringList;
-    idx: Integer;
-Begin
+    idx: integer;
+begin
     fThemes.Clear;
     fThemes.Append(DEV_NEWLOOK_THEME + '=' + DEV_NEWLOOK_THEME);
     fThemes.Append(DEV_GNOME_THEME + '=' + DEV_GNOME_THEME);
     fThemes.Append(DEV_BLUE_THEME + '=' + DEV_BLUE_THEME);
     fThemes.Append(DEV_CLASSIC_THEME + '=' + DEV_CLASSIC_THEME);
 
-    If devDirs.Themes = '' Then
+    if devDirs.Themes = '' then
         Exit;
 
     FilesFromWildCard(devDirs.Themes, '*.thm',
-        TStringList(fThemes), True, False, True);
+        TStringList(fThemes), TRUE, FALSE, TRUE);
 
-    If fThemes.Count > 2 Then
-    Begin
+    if fThemes.Count > 2 then
+    begin
         tmp := TStringList.Create;
-        Try
-            For idx := 4 To pred(fThemes.Count) Do
+        try
+            for idx := 4 to pred(fThemes.Count) do
                 // start from 3 because we have three standard themes
-            Begin
+            begin
                 tmp.Clear;
                 tmp.LoadFromfile(fThemes[idx]);
-                If tmp.Values['Name'] = '' Then
+                if tmp.Values['Name'] = '' then
                     fThemes[idx] := Format('%s=%s', [fThemes[idx],
                         ChangefileExt(ExtractFileName(fThemes[idx]), '')])
-                Else
+                else
                     fThemes[idx] := Format('%s=%s', [fThemes[idx], tmp.Values['Name']]);
-            End;
-        Finally
+            end;
+        finally
             tmp.Free;
-        End;
-    End;
-End;
+        end;
+    end;
+end;
 
-Function TdevTheme.GetPreview: String;
-Begin
+function TdevTheme.GetPreview: string;
+begin
     //
-End;
+end;
 
-Initialization
+initialization
 
-Finalization
+finalization
     devTheme.Free;
 
-End.
+end.

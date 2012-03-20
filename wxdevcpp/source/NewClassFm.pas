@@ -17,11 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-Unit NewClassFm;
+unit NewClassFm;
 
-Interface
+interface
 
-Uses
+uses
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
     Dialogs, StdCtrls, Buttons, XPMenu, OpenSaveDialogs;
@@ -31,8 +31,8 @@ Uses
   QDialogs, QStdCtrls, QButtons;
 {$ENDIF}
 
-Type
-    TNewClassForm = Class(TForm)
+type
+    TNewClassForm = class(TForm)
         Label1: TLabel;
         txtName: TEdit;
         GroupBox1: TGroupBox;
@@ -59,185 +59,185 @@ Type
         Label9: TLabel;
         txtArgs: TEdit;
         XPMenu: TXPMenu;
-        Procedure FormClose(Sender: TObject; Var Action: TCloseAction);
-        Procedure FormShow(Sender: TObject);
-        Procedure chkInheritClick(Sender: TObject);
-        Procedure txtNameChange(Sender: TObject);
-        Procedure txtCppFileChange(Sender: TObject);
-        Procedure btnBrowseCppClick(Sender: TObject);
-        Procedure btnCreateClick(Sender: TObject);
-        Procedure cmbClassChange(Sender: TObject);
-        Procedure memDescrChange(Sender: TObject);
-        Procedure txtNameKeyPress(Sender: TObject; Var Key: Char);
-        Procedure FormCreate(Sender: TObject);
-    Private
+        procedure FormClose(Sender: TObject; var Action: TCloseAction);
+        procedure FormShow(Sender: TObject);
+        procedure chkInheritClick(Sender: TObject);
+        procedure txtNameChange(Sender: TObject);
+        procedure txtCppFileChange(Sender: TObject);
+        procedure btnBrowseCppClick(Sender: TObject);
+        procedure btnCreateClick(Sender: TObject);
+        procedure cmbClassChange(Sender: TObject);
+        procedure memDescrChange(Sender: TObject);
+        procedure txtNameKeyPress(Sender: TObject; var Key: char);
+        procedure FormCreate(Sender: TObject);
+    private
         { Private declarations }
         SaveDialog1: TSaveDialogEx;
-        Procedure LoadText;
-    Public
+        procedure LoadText;
+    public
         { Public declarations }
-    End;
+    end;
 
-Var
+var
     NewClassForm: TNewClassForm;
 
-Implementation
+implementation
 
-Uses
+uses
     main, CppParser, MultiLangSupport, version, editor, devcfg;
 
 {$R *.dfm}
 
-Procedure TNewClassForm.FormClose(Sender: TObject;
-    Var Action: TCloseAction);
-Begin
+procedure TNewClassForm.FormClose(Sender: TObject;
+    var Action: TCloseAction);
+begin
     Action := caFree;
-End;
+end;
 
-Procedure TNewClassForm.FormShow(Sender: TObject);
-Var
+procedure TNewClassForm.FormShow(Sender: TObject);
+var
     sl: TStrings;
-Begin
+begin
     LoadText;
     txtName.Text := '';
     txtArgs.Text := '';
 
     cmbScope.ItemIndex := 2;
     sl := TStringList.Create;
-    Try
+    try
         MainForm.CppParser1.GetClassesList(sl);
         cmbClass.Items.Assign(sl);
-    Finally
+    finally
         sl.Free;
-    End;
-    If Assigned(MainForm.ClassBrowser1.Selected) And
+    end;
+    if Assigned(MainForm.ClassBrowser1.Selected) and
         (MainForm.ClassBrowser1.IsNodeAFolder(MainForm.ClassBrowser1.Selected) =
-        False) And (PStatement(MainForm.ClassBrowser1.Selected.Data)^._Kind =
-        skClass) Then
-    Begin
+        FALSE) and (PStatement(MainForm.ClassBrowser1.Selected.Data)^._Kind =
+        skClass) then
+    begin
         cmbClass.ItemIndex := cmbClass.Items.IndexOf(
             PStatement(MainForm.ClassBrowser1.Selected.Data)^._Command);
-        chkInherit.Checked := True;
-    End
-    Else
-    Begin
+        chkInherit.Checked := TRUE;
+    end
+    else
+    begin
         cmbClass.Text := '';
-        chkInherit.Checked := False;
-    End;
+        chkInherit.Checked := FALSE;
+    end;
 
     txtIncFile.Text := '';
     txtCppFile.Text := '';
     txtHFile.Text := '';
-    chkAddToProject.Checked := True;
+    chkAddToProject.Checked := TRUE;
 
     memDescr.Lines.Clear;
     cmbComment.ItemIndex := 1;
 
-    chkInheritClick(Nil);
-    txtNameChange(Nil);
-    cmbClassChange(Nil);
+    chkInheritClick(NIL);
+    txtNameChange(NIL);
+    cmbClassChange(NIL);
     txtName.SetFocus;
-End;
+end;
 
-Procedure TNewClassForm.chkInheritClick(Sender: TObject);
-Begin
+procedure TNewClassForm.chkInheritClick(Sender: TObject);
+begin
     cmbScope.Enabled := chkInherit.Checked;
     cmbClass.Enabled := chkInherit.Checked;
-End;
+end;
 
-Procedure TNewClassForm.txtNameChange(Sender: TObject);
-Begin
-    If txtName.Text <> '' Then
-    Begin
+procedure TNewClassForm.txtNameChange(Sender: TObject);
+begin
+    if txtName.Text <> '' then
+    begin
         txtCppFile.Text := MainForm.fProject.Directory +
             LowerCase(txtName.Text) + '.cpp';
         txtHFile.Text := MainForm.fProject.Directory +
             LowerCase(txtName.Text) + '.h';
-    End
-    Else
-    Begin
+    end
+    else
+    begin
         txtCppFile.Text := '';
         txtHFile.Text := '';
-    End;
-    btnCreate.Enabled := (txtName.Text <> '') And
-        (txtCppFile.Text <> '') And
+    end;
+    btnCreate.Enabled := (txtName.Text <> '') and
+        (txtCppFile.Text <> '') and
         (txtHFile.Text <> '');
-End;
+end;
 
-Procedure TNewClassForm.txtCppFileChange(Sender: TObject);
-Begin
-    btnCreate.Enabled := (txtName.Text <> '') And
-        (txtCppFile.Text <> '') And
+procedure TNewClassForm.txtCppFileChange(Sender: TObject);
+begin
+    btnCreate.Enabled := (txtName.Text <> '') and
+        (txtCppFile.Text <> '') and
         (txtHFile.Text <> '');
-End;
+end;
 
-Procedure TNewClassForm.btnBrowseCppClick(Sender: TObject);
-Begin
+procedure TNewClassForm.btnBrowseCppClick(Sender: TObject);
+begin
     SaveDialog1.Create(MainForm);
-    If Sender = btnBrowseCpp Then
-    Begin
+    if Sender = btnBrowseCpp then
+    begin
         SaveDialog1.FileName := ExtractFileName(txtCppFile.Text);
         SaveDialog1.InitialDir := ExtractFilePath(txtCppFile.Text);
         SaveDialog1.Filter := FLT_CPPS;
         SaveDialog1.DefaultExt := 'cpp';
-    End
-    Else
-    Begin
+    end
+    else
+    begin
         SaveDialog1.FileName := ExtractFileName(txtHFile.Text);
         SaveDialog1.InitialDir := ExtractFilePath(txtHFile.Text);
         SaveDialog1.Filter := FLT_HEADS;
         SaveDialog1.DefaultExt := 'h';
-    End;
-    If SaveDialog1.Execute Then
-    Begin
-        If Sender = btnBrowseCpp Then
+    end;
+    if SaveDialog1.Execute then
+    begin
+        if Sender = btnBrowseCpp then
             txtCppFile.Text := SaveDialog1.FileName
-        Else
+        else
             txtHFile.Text := SaveDialog1.FileName;
-    End;
-End;
+    end;
+end;
 
-Procedure TNewClassForm.btnCreateClick(Sender: TObject);
-Var
-    idx: Integer;
-    I: Integer;
+procedure TNewClassForm.btnCreateClick(Sender: TObject);
+var
+    idx: integer;
+    I: integer;
     e: TEditor;
-    S: String;
-    hfName: String;
-    hFile: Integer;
+    S: string;
+    hfName: string;
+    hFile: integer;
     st: PStatement;
-Begin
+begin
     // HEADER FILE IMPLEMENTATION
-    If chkAddToProject.Checked Then
-    Begin
-        idx := MainForm.fProject.NewUnit(False, txtHFile.Text);
+    if chkAddToProject.Checked then
+    begin
+        idx := MainForm.fProject.NewUnit(FALSE, txtHFile.Text);
         e := MainForm.fProject.OpenUnit(idx);
-        If idx = -1 Then
-        Begin
+        if idx = -1 then
+        begin
             MessageDlg('Cannot add header file to project...', mtError, [mbOk], 0);
             Exit;
-        End;
-    End
-    Else
-    Begin
+        end;
+    end
+    else
+    begin
         hFile := FileCreate(txtHFile.Text);
-        If hFile > 0 Then
-        Begin
+        if hFile > 0 then
+        begin
             FileClose(hFile);
             e := MainForm.GetEditorFromFileName(txtHFile.Text);
-        End
-        Else
-        Begin
+        end
+        else
+        begin
             MessageDlg('Cannot create header file...', mtError, [mbOk], 0);
             Exit;
-        End;
-    End;
+        end;
+    end;
 
-    If Not Assigned(e) Then
-    Begin
+    if not Assigned(e) then
+    begin
         MessageDlg('Cannot open header file in editor...', mtError, [mbOk], 0);
         Exit;
-    End;
+    end;
 
     hfName := UpperCase(ExtractFileName(txtHFile.Text));
     hfName := StringReplace(hfName, '.', '_', [rfReplaceAll]);
@@ -249,44 +249,44 @@ Begin
     e.Text.Lines.Append('#ifndef ' + hfName);
     e.Text.Lines.Append('#define ' + hfName);
     e.Text.Lines.Append('');
-    If chkInherit.Checked And (txtIncFile.Text <> '') Then
-    Begin
-        st := Nil;
-        For idx := 0 To MainForm.CppParser1.Statements.Count - 1 Do
-        Begin
+    if chkInherit.Checked and (txtIncFile.Text <> '') then
+    begin
+        st := NIL;
+        for idx := 0 to MainForm.CppParser1.Statements.Count - 1 do
+        begin
             st := MainForm.CppParser1.Statements[idx];
-            If (st^._Kind = skClass) And (st^._ScopelessCmd = cmbClass.Text) And
+            if (st^._Kind = skClass) and (st^._ScopelessCmd = cmbClass.Text) and
                 (MainForm.fProject.Units.Indexof(
-                MainForm.CppParser1.GetDeclarationFileName(st)) <> -1) Then
+                MainForm.CppParser1.GetDeclarationFileName(st)) <> -1) then
                 Break;
-            st := Nil;
-        End;
-        If Assigned(st) Then
+            st := NIL;
+        end;
+        if Assigned(st) then
             e.Text.Lines.Append('#include "' +
                 txtIncFile.Text + '" // inheriting class''s header file')
-        Else
+        else
             e.Text.Lines.Append('#include <' +
                 txtIncFile.Text + '> // inheriting class''s header file');
         e.Text.Lines.Append('');
-    End;
+    end;
     S := 'class ' + txtName.Text;
-    If chkInherit.Checked And (cmbClass.Text <> '') Then
+    if chkInherit.Checked and (cmbClass.Text <> '') then
         S := S + ' : ' + cmbScope.Text + ' ' + cmbClass.Text;
 
     // insert the comment
-    If Trim(memDescr.Text) = '' Then
+    if Trim(memDescr.Text) = '' then
         memDescr.Text := 'No description';
-    If cmbComment.ItemIndex = 0 Then // /** ... */
+    if cmbComment.ItemIndex = 0 then // /** ... */
         e.Text.Lines.Append('/**')
-    Else
-    If cmbComment.ItemIndex = 1 Then // /* ... */
+    else
+    if cmbComment.ItemIndex = 1 then // /* ... */
         e.Text.Lines.Append('/*');
-    For I := 0 To memDescr.Lines.Count - 1 Do
-        If cmbComment.ItemIndex In [0, 1] Then // /** ... */ or /* ... */
+    for I := 0 to memDescr.Lines.Count - 1 do
+        if cmbComment.ItemIndex in [0, 1] then // /** ... */ or /* ... */
             e.Text.Lines.Append(' * ' + memDescr.Lines[I])
-        Else
+        else
             e.Text.Lines.Append('// ' + memDescr.Lines[I]);
-    If cmbComment.ItemIndex In [0, 1] Then // /** ... */ or /* ... */
+    if cmbComment.ItemIndex in [0, 1] then // /** ... */ or /* ... */
         e.Text.Lines.Append(' */');
 
     e.Text.Lines.Append(S);
@@ -301,41 +301,41 @@ Begin
     e.Text.Lines.Append('#endif // ' + hfName);
     e.Text.Lines.Append('');
 
-    e.Modified := True;
+    e.Modified := TRUE;
 
     // CPP FILE IMPLEMENTATION
-    If chkAddToProject.Checked Then
-    Begin
-        idx := MainForm.fProject.NewUnit(False, txtCppFile.Text);
+    if chkAddToProject.Checked then
+    begin
+        idx := MainForm.fProject.NewUnit(FALSE, txtCppFile.Text);
         e := MainForm.fProject.OpenUnit(idx);
-        If idx = -1 Then
-        Begin
+        if idx = -1 then
+        begin
             MessageDlg('Cannot add implementation file to project...',
                 mtError, [mbOk], 0);
             Exit;
-        End;
-    End
-    Else
-    Begin
+        end;
+    end
+    else
+    begin
         hFile := FileCreate(txtCppFile.Text);
-        If hFile > 0 Then
-        Begin
+        if hFile > 0 then
+        begin
             FileClose(hFile);
             e := MainForm.GetEditorFromFileName(txtCppFile.Text);
-        End
-        Else
-        Begin
+        end
+        else
+        begin
             MessageDlg('Cannot create implementation file...', mtError, [mbOk], 0);
             Exit;
-        End;
-    End;
+        end;
+    end;
 
-    If Not Assigned(e) Then
-    Begin
+    if not Assigned(e) then
+    begin
         MessageDlg('Cannot open implementation file in editor...',
             mtError, [mbOk], 0);
         Exit;
-    End;
+    end;
 
     e.Text.Lines.Append(
         '// Class automatically generated by Dev-C++ New Class wizard');
@@ -357,53 +357,53 @@ Begin
     e.Text.Lines.Append('}');
     e.Text.Lines.Append('');
 
-    e.Modified := True;
-End;
+    e.Modified := TRUE;
+end;
 
-Procedure TNewClassForm.cmbClassChange(Sender: TObject);
-Var
+procedure TNewClassForm.cmbClassChange(Sender: TObject);
+var
     st: PStatement;
-Begin
-    If cmbClass.Items.IndexOf(cmbClass.Text) <> -1 Then
-    Begin
+begin
+    if cmbClass.Items.IndexOf(cmbClass.Text) <> -1 then
+    begin
         st := PStatement(cmbClass.Items.Objects[cmbClass.Items.IndexOf(
             cmbClass.Text)]);
-        If Assigned(st) Then
+        if Assigned(st) then
             txtIncFile.Text := ExtractFileName(
                 MainForm.CppParser1.GetDeclarationFileName(st))
-        Else
+        else
             txtIncFile.Text := LowerCase(cmbClass.Text) + '.h';
-    End
-    Else
-    Begin
-        If cmbClass.Text <> '' Then
+    end
+    else
+    begin
+        if cmbClass.Text <> '' then
             txtIncFile.Text := LowerCase(cmbClass.Text) + '.h'
-        Else
+        else
             txtIncFile.Text := '';
-    End;
-End;
+    end;
+end;
 
-Procedure TNewClassForm.memDescrChange(Sender: TObject);
-Begin
+procedure TNewClassForm.memDescrChange(Sender: TObject);
+begin
   { ???
     if memDescr.Lines.Count > 1 then
       cmbComment.ItemIndex := 0
     else
       cmbComment.ItemIndex := 1; }
-End;
+end;
 
-Procedure TNewClassForm.txtNameKeyPress(Sender: TObject; Var Key: Char);
-Begin
-    If Not (Key In ['_', 'a'..'z', 'A'..'Z', '0'..'9', #1..#31]) Then
-    Begin
+procedure TNewClassForm.txtNameKeyPress(Sender: TObject; var Key: char);
+begin
+    if not (Key in ['_', 'a'..'z', 'A'..'Z', '0'..'9', #1..#31]) then
+    begin
         Key := #0;
         Abort;
-    End;
-End;
+    end;
+end;
 
-Procedure TNewClassForm.LoadText;
-Begin
-    DesktopFont := True;
+procedure TNewClassForm.LoadText;
+begin
+    DesktopFont := TRUE;
     XPMenu.Active := devData.XPTheme;
     Caption := Lang[ID_POP_NEWCLASS];
     Label1.Caption := Lang[ID_NEWCLASS_NAME];
@@ -420,11 +420,11 @@ Begin
     Label8.Caption := Lang[ID_NEWVAR_COMMENTSSTYLE];
     btnCreate.Caption := Lang[ID_NEWVAR_BTN_CREATE];
     btnCancel.Caption := Lang[ID_NEWVAR_BTN_CANCEL];
-End;
+end;
 
-Procedure TNewClassForm.FormCreate(Sender: TObject);
-Begin
+procedure TNewClassForm.FormCreate(Sender: TObject);
+begin
     SaveDialog1 := TSaveDialogEx.Create(MainForm);
-End;
+end;
 
-End.
+end.

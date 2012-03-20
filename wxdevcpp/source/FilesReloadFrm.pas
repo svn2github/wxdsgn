@@ -1,13 +1,13 @@
-Unit FilesReloadFrm;
+unit FilesReloadFrm;
 
-Interface
+interface
 
-Uses
+uses
     Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
     Dialogs, StdCtrls, CheckLst, XPMenu, devMonitorTypes, ComCtrls, ExtCtrls;
 
-Type
-    TFilesReloadFrm = Class(TForm)
+type
+    TFilesReloadFrm = class(TForm)
         lblTitle: TLabel;
         btnOK: TButton;
         btnClose: TButton;
@@ -20,109 +20,109 @@ Type
         lbDeleted: TListBox;
         pnlModifiedSelectAll: TPanel;
         chkSelectAll: TCheckBox;
-        Procedure FormCreate(Sender: TObject);
-        Procedure FormDestroy(Sender: TObject);
-        Procedure lbModifiedClickCheck(Sender: TObject);
-        Procedure chkSelectAllClick(Sender: TObject);
-    Private
+        procedure FormCreate(Sender: TObject);
+        procedure FormDestroy(Sender: TObject);
+        procedure lbModifiedClickCheck(Sender: TObject);
+        procedure chkSelectAllClick(Sender: TObject);
+    private
         { Private declarations }
         ReloadFilenames: TList;
-        CheckedItems: Integer;
+        CheckedItems: integer;
 
-        Procedure SetFilenames(Files: TList);
-    Public
+        procedure SetFilenames(Files: TList);
+    public
         { Public declarations }
-        Property Files: TList Read ReloadFilenames Write SetFilenames;
-    End;
+        property Files: TList read ReloadFilenames write SetFilenames;
+    end;
 
     PReloadFile = ^TReloadFile;
-    TReloadFile = Packed Record
-        FileName: String;
+    TReloadFile = packed record
+        FileName: string;
         ChangeType: TdevMonitorChangeType;
-    End;
-Var
+    end;
+var
     FilesReloadForm: TFilesReloadFrm;
 
-Implementation
-Uses
+implementation
+uses
     devcfg;
 {$R *.dfm}
 
-Procedure TFilesReloadFrm.FormCreate(Sender: TObject);
-Begin
+procedure TFilesReloadFrm.FormCreate(Sender: TObject);
+begin
     XPMenu.Active := devData.XPTheme;
     ReloadFilenames := TList.Create;
-    DesktopFont := True;
+    DesktopFont := TRUE;
     CheckedItems := 0;
-End;
+end;
 
-Procedure TFilesReloadFrm.FormDestroy(Sender: TObject);
-Begin
+procedure TFilesReloadFrm.FormDestroy(Sender: TObject);
+begin
     ReloadFilenames.Free;
-End;
+end;
 
-Procedure TFilesReloadFrm.SetFilenames(Files: TList);
-Var
-    I, Idx: Integer;
-Begin
+procedure TFilesReloadFrm.SetFilenames(Files: TList);
+var
+    I, Idx: integer;
+begin
     ReloadFilenames.Assign(Files);
-    For I := 0 To ReloadFilenames.Count - 1 Do
-        With PReloadFile(Files[I])^ Do
-            If ChangeType = mctDeleted Then
-            Begin
+    for I := 0 to ReloadFilenames.Count - 1 do
+        with PReloadFile(Files[I])^ do
+            if ChangeType = mctDeleted then
+            begin
                 Idx := lbDeleted.Items.IndexOf(FileName);
-                If Idx = -1 Then
+                if Idx = -1 then
                     lbDeleted.Items.Add(FileName);
-            End
-            Else
-            Begin
+            end
+            else
+            begin
                 Idx := lbModified.Items.IndexOf(FileName);
-                If Idx = -1 Then
-                Begin
+                if Idx = -1 then
+                begin
                     Inc(CheckedItems);
                     lbModified.Items.Add(FileName);
-                    lbModified.Checked[lbModified.Count - 1] := True;
-                End;
-            End;
+                    lbModified.Checked[lbModified.Count - 1] := TRUE;
+                end;
+            end;
 
-    If CheckedItems = lbModified.Count Then
+    if CheckedItems = lbModified.Count then
         chkSelectAll.State := cbChecked
-    Else
-    If CheckedItems = 0 Then
+    else
+    if CheckedItems = 0 then
         chkSelectAll.State := cbUnchecked
-    Else
+    else
         chkSelectAll.State := cbGrayed;
-End;
+end;
 
-Procedure TFilesReloadFrm.lbModifiedClickCheck(Sender: TObject);
-Var
-    I: Integer;
-Begin
+procedure TFilesReloadFrm.lbModifiedClickCheck(Sender: TObject);
+var
+    I: integer;
+begin
     CheckedItems := 0;
-    For I := 0 To lbModified.Count - 1 Do
-        If lbModified.Checked[I] Then
+    for I := 0 to lbModified.Count - 1 do
+        if lbModified.Checked[I] then
             Inc(CheckedItems);
 
-    If CheckedItems = lbModified.Count Then
+    if CheckedItems = lbModified.Count then
         chkSelectAll.State := cbChecked
-    Else
-    If CheckedItems = 0 Then
+    else
+    if CheckedItems = 0 then
         chkSelectAll.State := cbUnchecked
-    Else
+    else
         chkSelectAll.State := cbGrayed;
-End;
+end;
 
-Procedure TFilesReloadFrm.chkSelectAllClick(Sender: TObject);
-Var
-    I: Integer;
-Begin
-    If chkSelectAll.State = cbChecked Then
-        For I := 0 To lbModified.Count - 1 Do
-            lbModified.Checked[I] := True
-    Else
-    If chkSelectAll.State = cbUnchecked Then
-        For I := 0 To lbModified.Count - 1 Do
-            lbModified.Checked[I] := False;
-End;
+procedure TFilesReloadFrm.chkSelectAllClick(Sender: TObject);
+var
+    I: integer;
+begin
+    if chkSelectAll.State = cbChecked then
+        for I := 0 to lbModified.Count - 1 do
+            lbModified.Checked[I] := TRUE
+    else
+    if chkSelectAll.State = cbUnchecked then
+        for I := 0 to lbModified.Count - 1 do
+            lbModified.Checked[I] := FALSE;
+end;
 
-End.
+end.

@@ -18,11 +18,11 @@
 }
 
 {$WARN UNIT_PLATFORM OFF}
-Unit NewProjectFrm;
+unit NewProjectFrm;
 
-Interface
+interface
 
-Uses
+uses
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
     StdCtrls, ExtCtrls, ImgList, Buttons, ComCtrls, Templates, Inifiles,
@@ -34,8 +34,8 @@ Uses
   devTabs;
 {$ENDIF}
 
-Type
-    TNewProjectForm = Class(TForm)
+type
+    TNewProjectForm = class(TForm)
         btnOk: TBitBtn;
         btnCancel: TBitBtn;
         ImageList: TImageList;
@@ -54,142 +54,142 @@ Type
         rbCpp: TRadioButton;
         edProjectName: TEdit;
         Label1: TLabel;
-        Procedure ProjViewChange(Sender: TObject; Item: TListItem;
+        procedure ProjViewChange(Sender: TObject; Item: TListItem;
             Change: TItemChange);
-        Procedure FormCreate(Sender: TObject);
-        Procedure LoadText;
-        Procedure FormDestroy(Sender: TObject);
-        Procedure TabsMainChange(Sender: TObject);
-        Procedure ProjViewDblClick(Sender: TObject);
-        Procedure btnCancelClick(Sender: TObject);
-        Procedure btnHelpClick(Sender: TObject);
-    Private
-        Procedure AddTemplate(FileName: String);
-        Procedure ReadTemplateIndex;
-    Private
+        procedure FormCreate(Sender: TObject);
+        procedure LoadText;
+        procedure FormDestroy(Sender: TObject);
+        procedure TabsMainChange(Sender: TObject);
+        procedure ProjViewDblClick(Sender: TObject);
+        procedure btnCancelClick(Sender: TObject);
+        procedure btnHelpClick(Sender: TObject);
+    private
+        procedure AddTemplate(FileName: string);
+        procedure ReadTemplateIndex;
+    private
         fTemplates: TList;
-        Procedure UpdateView;
-    Public
-        Function GetTemplate: TTemplate;
-    End;
+        procedure UpdateView;
+    public
+        function GetTemplate: TTemplate;
+    end;
 
-Implementation
+implementation
 
-Uses
+uses
 {$IFDEF WIN32}
     FileCtrl,
 {$ENDIF}
     MultiLangSupport, utils, datamod, devcfg, version, project, prjtypes, hh;
 {$R *.dfm}
 
-Procedure TNewProjectForm.FormCreate(Sender: TObject);
-Begin
+procedure TNewProjectForm.FormCreate(Sender: TObject);
+begin
     LoadText;
     TemplateLabel.Font.Color := clNavy;
     fTemplates := TList.Create;
     ReadTemplateIndex;
     edProjectName.Text := format(Lang[ID_NEWPROJECT], [dmMain.GetNumber]);
-End;
+end;
 
-Procedure TNewProjectForm.FormDestroy(Sender: TObject);
-Begin
+procedure TNewProjectForm.FormDestroy(Sender: TObject);
+begin
     fTemplates.Free;
-End;
+end;
 
-Procedure TNewProjectForm.AddTemplate(FileName: String);
-Var
+procedure TNewProjectForm.AddTemplate(FileName: string);
+var
     Template: TTemplate;
-Begin
-    If Not FileExists(FileName) Then
+begin
+    if not FileExists(FileName) then
         exit;
     Template := TTemplate.Create;
     Template.ReadTemplateFile(FileName);
     fTemplates.Add(Template);
-End;
+end;
 
-Procedure TNewProjectForm.ReadTemplateIndex;
-Var
-    i: Integer;
+procedure TNewProjectForm.ReadTemplateIndex;
+var
+    i: integer;
     LTemplates: TStringList;
-    sDir: String;
-Begin
+    sDir: string;
+begin
     sDir := devDirs.Templates;
-    If Not CheckChangeDir(sDir) Then
-    Begin
+    if not CheckChangeDir(sDir) then
+    begin
         MessageDlg('Could not change to the Templates directory (' +
             devDirs.Templates + ')...', mtError, [mbOk], 0);
         Exit;
-    End;
+    end;
     LTemplates := TStringList.Create;
-    Try
+    try
         Screen.Cursor := crHourGlass;
         Application.ProcessMessages;
         FilesFromWildCard(devDirs.Templates, '*' + TEMPLATE_EXT,
-            LTemplates, False, False, True);
-        If LTemplates.Count > 0 Then
-        Begin
-            For i := 0 To pred(LTemplates.Count) Do
+            LTemplates, FALSE, FALSE, TRUE);
+        if LTemplates.Count > 0 then
+        begin
+            for i := 0 to pred(LTemplates.Count) do
                 AddTemplate(LTemplates[i]);
             // EAB TODO:* All templates are loaded here.. can we load each one only when actually get's used?
             UpdateView;
-        End;
-    Finally
+        end;
+    finally
         LTemplates.Free;
         Screen.Cursor := crDefault;
-    End;
-End;
+    end;
+end;
 
-Function TNewProjectForm.GetTemplate: TTemplate;
-Var
+function TNewProjectForm.GetTemplate: TTemplate;
+var
     Opts: TProjectProfileList;
-Begin
+begin
     Opts := TProjectProfileList.Create;
-    If assigned(ProjView.Selected) Then
-    Begin
-        result := TTemplate(fTemplates[Integer(ProjView.Selected.Data)]);
+    if assigned(ProjView.Selected) then
+    begin
+        result := TTemplate(fTemplates[integer(ProjView.Selected.Data)]);
         Opts.CopyDataFrom(result.OptionsRec);
-    End
-    Else
-    Begin
+    end
+    else
+    begin
         result := TTemplate.Create;
         result.Version := -1;
-    End;
+    end;
     result.ProjectName := edProjectName.Text;
     Opts.useGPP := rbCpp.Checked;
     result.OptionsRec.CopyDataFrom(Opts);
-End;
+end;
 
-Procedure TNewProjectForm.ProjViewChange(Sender: TObject; Item: TListItem;
+procedure TNewProjectForm.ProjViewChange(Sender: TObject; Item: TListItem;
     Change: TItemChange);
-Var
+var
     LTemplate: TTemplate;
-Begin
-    If Not assigned(ProjView.Selected) Then
-    Begin
+begin
+    if not assigned(ProjView.Selected) then
+    begin
         TemplateLabel.Caption := '';
-        btnOk.Enabled := False;
-    End
-    Else
-    Begin
-        btnOk.Enabled := True;
-        LTemplate := TTemplate(fTemplates[Integer(ProjView.Selected.Data)]);
-        If Not assigned(LTemplate) Then
+        btnOk.Enabled := FALSE;
+    end
+    else
+    begin
+        btnOk.Enabled := TRUE;
+        LTemplate := TTemplate(fTemplates[integer(ProjView.Selected.Data)]);
+        if not assigned(LTemplate) then
             exit;
         TemplateLabel.Caption := LTemplate.Description;
 
-        If LTemplate.OptionsRec.useGPP Then
-        Begin
-            rbC.Enabled := False;
-            rbCpp.Checked := True;
-        End
-        Else
-            rbC.Enabled := True;
-    End;
-End;
+        if LTemplate.OptionsRec.useGPP then
+        begin
+            rbC.Enabled := FALSE;
+            rbCpp.Checked := TRUE;
+        end
+        else
+            rbC.Enabled := TRUE;
+    end;
+end;
 
-Procedure TNewProjectForm.LoadText;
-Begin
-    DesktopFont := True;
+procedure TNewProjectForm.LoadText;
+begin
+    DesktopFont := TRUE;
     XPMenu.Active := devData.XPTheme;
     Caption := Lang[ID_NP];
     lblDesc.Caption := Lang[ID_NP_DESC];
@@ -202,93 +202,93 @@ Begin
     btnOk.Caption := Lang[ID_BTN_OK];
     btnCancel.Caption := Lang[ID_BTN_CANCEL];
     btnHelp.Caption := Lang[ID_BTN_HELP];
-End;
+end;
 
-Procedure TNewProjectForm.UpdateView;
-    Function HasPage(Const value: String): Boolean;
-    Var
-        idx: Integer;
-    Begin
-        result := True;
-        For idx := 0 To pred(TabsMain.Tabs.Count) Do
-            If AnsiCompareText(TabsMain.Tabs[idx], Value) = 0 Then
+procedure TNewProjectForm.UpdateView;
+    function HasPage(const value: string): boolean;
+    var
+        idx: integer;
+    begin
+        result := TRUE;
+        for idx := 0 to pred(TabsMain.Tabs.Count) do
+            if AnsiCompareText(TabsMain.Tabs[idx], Value) = 0 then
                 exit;
-        result := False;
-    End;
-Var
-    idx: Integer;
+        result := FALSE;
+    end;
+var
+    idx: integer;
     LTemplate: TTemplate;
     Item: TListItem;
     LIcon: TIcon;
-    fName: String;
-Begin
-    For idx := 0 To pred(fTemplates.Count) Do
-    Begin
+    fName: string;
+begin
+    for idx := 0 to pred(fTemplates.Count) do
+    begin
         LTemplate := TTemplate(fTemplates[idx]);
-        If Not HasPage(LTemplate.Catagory) Then
+        if not HasPage(LTemplate.Catagory) then
             TabsMain.Tabs.Append(LTemplate.Catagory);
-    End;
+    end;
 
     ProjView.Items.Clear;
-    For idx := pred(ImageList.Count) Downto 6 Do
+    for idx := pred(ImageList.Count) downto 6 do
         ImageList.Delete(idx);
 
-    For idx := 0 To pred(fTemplates.Count) Do
-    Begin
+    for idx := 0 to pred(fTemplates.Count) do
+    begin
         LTemplate := TTemplate(fTemplates[idx]);
-        If LTemplate.Catagory = '' Then
+        if LTemplate.Catagory = '' then
             LTemplate.Catagory := Lang[ID_NP_PRJSHEET];
-        If AnsiCompareText(LTemplate.Catagory,
-            TabsMain.Tabs[TabsMain.TabIndex]) = 0 Then
-        Begin
+        if AnsiCompareText(LTemplate.Catagory,
+            TabsMain.Tabs[TabsMain.TabIndex]) = 0 then
+        begin
             Item := ProjView.Items.Add;
             Item.Caption := LTemplate.Name;
             Item.Data := pointer(idx);
             fName := ValidateFile(LTemplate.OptionsRec[0].Icon,
                 ExtractFilePath(LTemplate.FileName));
-            If fName <> '' Then
-            Begin
+            if fName <> '' then
+            begin
                 LIcon := TIcon.Create;
-                Try
+                try
                     LIcon.LoadFromFile(ExpandFileto(fName,
                         ExtractFilePath(LTemplate.FileName)));
                     Item.ImageIndex := ImageList.AddIcon(LIcon);
-                    If Item.ImageIndex = -1 Then
+                    if Item.ImageIndex = -1 then
                         Item.ImageIndex := 0;
-                Finally
+                finally
                     LIcon.Free;
-                End;
-            End
-            Else
+                end;
+            end
+            else
                 Item.ImageIndex := LTemplate.IconIndex;
-        End;
-    End;
-End;
+        end;
+    end;
+end;
 
-Procedure TNewProjectForm.TabsMainChange(Sender: TObject);
-Begin
+procedure TNewProjectForm.TabsMainChange(Sender: TObject);
+begin
     UpdateView;
-End;
+end;
 
-Procedure TNewProjectForm.ProjViewDblClick(Sender: TObject);
-Begin
-    If assigned(ProjView.Selected) Then
-    Begin
+procedure TNewProjectForm.ProjViewDblClick(Sender: TObject);
+begin
+    if assigned(ProjView.Selected) then
+    begin
         ModalResult := mrOk;
-    End;
-End;
+    end;
+end;
 
-Procedure TNewProjectForm.btnCancelClick(Sender: TObject);
-Begin
+procedure TNewProjectForm.btnCancelClick(Sender: TObject);
+begin
     Dec(dmMain.fProjectCount);
-End;
+end;
 
-Procedure TNewProjectForm.btnHelpClick(Sender: TObject);
-Begin
+procedure TNewProjectForm.btnHelpClick(Sender: TObject);
+begin
     HelpFile := devDirs.Help + DEV_MAINHELP_FILE;
-    HtmlHelp(self.handle, Pchar(HelpFile), HH_DISPLAY_TOPIC,
-        DWORD(Pchar('html\creating_project.html')));
+    HtmlHelp(self.handle, pchar(HelpFile), HH_DISPLAY_TOPIC,
+        DWORD(pchar('html\creating_project.html')));
     //Application.HelpJump('ID_CREATEPROJECT');
-End;
+end;
 
-End.
+end.

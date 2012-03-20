@@ -17,11 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-Unit NewVarFm;
+unit NewVarFm;
 
-Interface
+interface
 
-Uses
+uses
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
     Dialogs, StdCtrls, ExtCtrls, XPMenu;
@@ -31,8 +31,8 @@ Uses
   QDialogs, QStdCtrls, QExtCtrls;
 {$ENDIF}
 
-Type
-    TNewVarForm = Class(TForm)
+type
+    TNewVarForm = class(TForm)
         Label1: TLabel;
         Label2: TLabel;
         rgScope: TRadioGroup;
@@ -55,149 +55,149 @@ Type
         XPMenu: TXPMenu;
         chkInlineR: TCheckBox;
         chkInlineW: TCheckBox;
-        Procedure FormClose(Sender: TObject; Var Action: TCloseAction);
-        Procedure FormShow(Sender: TObject);
-        Procedure cmbTypeChange(Sender: TObject);
-        Procedure chkReadFuncClick(Sender: TObject);
-        Procedure chkWriteFuncClick(Sender: TObject);
-        Procedure btnCreateClick(Sender: TObject);
-        Procedure memDescrChange(Sender: TObject);
-    Private
+        procedure FormClose(Sender: TObject; var Action: TCloseAction);
+        procedure FormShow(Sender: TObject);
+        procedure cmbTypeChange(Sender: TObject);
+        procedure chkReadFuncClick(Sender: TObject);
+        procedure chkWriteFuncClick(Sender: TObject);
+        procedure btnCreateClick(Sender: TObject);
+        procedure memDescrChange(Sender: TObject);
+    private
         { Private declarations }
-        Procedure LoadText;
-    Public
+        procedure LoadText;
+    public
         { Public declarations }
-    End;
+    end;
 
-Var
+var
     NewVarForm: TNewVarForm;
 
-Implementation
+implementation
 
-Uses editor, main, CppParser, MultiLangSupport, devcfg;
+uses editor, main, CppParser, MultiLangSupport, devcfg;
 
 {$R *.dfm}
 
-Procedure TNewVarForm.FormClose(Sender: TObject; Var Action: TCloseAction);
-Begin
+procedure TNewVarForm.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
     Action := caFree;
-End;
+end;
 
-Procedure TNewVarForm.FormShow(Sender: TObject);
-Var
+procedure TNewVarForm.FormShow(Sender: TObject);
+var
     sl: TStrings;
-Begin
+begin
     LoadText;
     cmbType.Text := '';
     txtName.Text := '';
     rgScope.ItemIndex := 0;
-    chkReadFunc.Checked := False;
-    chkWriteFunc.Checked := False;
+    chkReadFunc.Checked := FALSE;
+    chkWriteFunc.Checked := FALSE;
     txtReadFunc.Text := '';
     txtWriteFunc.Text := '';
     memDescr.Lines.Clear;
     cmbComment.ItemIndex := 2;
 
-    cmbTypeChange(Nil);
+    cmbTypeChange(NIL);
 
     sl := TStringList.Create;
-    Try
+    try
         MainForm.CppParser1.GetClassesList(sl);
         cmbClass.Items.Assign(sl);
-    Finally
+    finally
         sl.Free;
-    End;
+    end;
     cmbClass.ItemIndex := cmbClass.Items.IndexOf(
         PStatement(MainForm.ClassBrowser1.Selected.Data)^._Command);
 
     cmbType.SetFocus;
-End;
+end;
 
-Procedure TNewVarForm.cmbTypeChange(Sender: TObject);
-Begin
+procedure TNewVarForm.cmbTypeChange(Sender: TObject);
+begin
     btnCreate.Enabled := cmbType.Text <> '';
-    btnCreate.Enabled := btnCreate.Enabled And (txtName.Text <> '');
-    If chkReadFunc.Checked Then
-        btnCreate.Enabled := btnCreate.Enabled And (txtReadFunc.Text <> '');
-    If chkWriteFunc.Checked Then
-        btnCreate.Enabled := btnCreate.Enabled And (txtWriteFunc.Text <> '');
-End;
+    btnCreate.Enabled := btnCreate.Enabled and (txtName.Text <> '');
+    if chkReadFunc.Checked then
+        btnCreate.Enabled := btnCreate.Enabled and (txtReadFunc.Text <> '');
+    if chkWriteFunc.Checked then
+        btnCreate.Enabled := btnCreate.Enabled and (txtWriteFunc.Text <> '');
+end;
 
-Procedure TNewVarForm.chkReadFuncClick(Sender: TObject);
-Begin
-    If chkReadFunc.Checked Then
-    Begin
-        If btnCreate.Enabled Then // type and name are ok
+procedure TNewVarForm.chkReadFuncClick(Sender: TObject);
+begin
+    if chkReadFunc.Checked then
+    begin
+        if btnCreate.Enabled then // type and name are ok
             txtReadFunc.Text := 'Get' + txtName.Text
-        Else
-            chkReadFunc.Checked := False;
-    End;
+        else
+            chkReadFunc.Checked := FALSE;
+    end;
     chkInlineR.Enabled := chkReadFunc.Checked;
-    If Not chkInlineR.Enabled Then
-        chkInlineR.Checked := False;
-End;
+    if not chkInlineR.Enabled then
+        chkInlineR.Checked := FALSE;
+end;
 
-Procedure TNewVarForm.chkWriteFuncClick(Sender: TObject);
-Begin
-    If chkWriteFunc.Checked Then
-    Begin
-        If btnCreate.Enabled Then // type and name are ok
+procedure TNewVarForm.chkWriteFuncClick(Sender: TObject);
+begin
+    if chkWriteFunc.Checked then
+    begin
+        if btnCreate.Enabled then // type and name are ok
             txtWriteFunc.Text := 'Set' + txtName.Text
-        Else
-            chkWriteFunc.Checked := False;
-    End;
+        else
+            chkWriteFunc.Checked := FALSE;
+    end;
     chkInlineW.Enabled := chkWriteFunc.Checked;
-    If Not chkInlineW.Enabled Then
-        chkInlineW.Checked := False;
-End;
+    if not chkInlineW.Enabled then
+        chkInlineW.Checked := FALSE;
+end;
 
-Procedure TNewVarForm.btnCreateClick(Sender: TObject);
-Var
-    pID: Integer;
-    fName: String;
-    CppFname: String;
-    I: Integer;
-    Line: Integer;
-    PublicLine: Integer;
+procedure TNewVarForm.btnCreateClick(Sender: TObject);
+var
+    pID: integer;
+    fName: string;
+    CppFname: string;
+    I: integer;
+    Line: integer;
+    PublicLine: integer;
     e: TEditor;
-    AddScopeStr: Boolean;
-    fAddScopeStr: Boolean;
-    VarName: String;
-    VarType: String;
-    VarRead: Boolean;
-    VarReadFunc: String;
-    VarWrite: Boolean;
-    VarWriteFunc: String;
+    AddScopeStr: boolean;
+    fAddScopeStr: boolean;
+    VarName: string;
+    VarType: string;
+    VarRead: boolean;
+    VarReadFunc: string;
+    VarWrite: boolean;
+    VarWriteFunc: string;
     VarScope: TStatementClassScope;
     St: PStatement;
-    ClsName: String;
-    S: String;
-Begin
-    If cmbClass.ItemIndex = -1 Then
-    Begin
+    ClsName: string;
+    S: string;
+begin
+    if cmbClass.ItemIndex = -1 then
+    begin
         MessageDlg(Lang[ID_NEWVAR_MSG_NOCLASS], mtError, [mbOk], 0);
         Exit;
-    End;
+    end;
 
-    If cmbClass.Items.IndexOf(cmbClass.Text) > -1 Then
+    if cmbClass.Items.IndexOf(cmbClass.Text) > -1 then
         St := PStatement(cmbClass.Items.Objects[cmbClass.Items.IndexOf(
             cmbClass.Text)])
-    Else
-        St := Nil;
+    else
+        St := NIL;
 
-    If Not Assigned(St) Then
-    Begin
+    if not Assigned(St) then
+    begin
         MessageDlg(Lang[ID_NEWVAR_MSG_NOCLASS], mtError, [mbOk], 0);
         Exit;
-    End;
+    end;
 
-    With MainForm Do
-    Begin
+    with MainForm do
+    begin
         pID := St^._ID;
 
         VarName := txtName.Text;
         VarType := cmbType.Text;
-        Case rgScope.ItemIndex Of
+        case rgScope.ItemIndex of
             0:
                 VarScope := scsPrivate;
             1:
@@ -206,91 +206,91 @@ Begin
                 VarScope := scsPublic;
             3:
                 VarScope := scsPublished;
-        Else
+        else
             VarScope := scsPublic;
-        End;
+        end;
         VarRead := chkReadFunc.Checked;
         VarReadFunc := txtReadFunc.Text;
         VarWrite := chkWriteFunc.Checked;
         VarWriteFunc := txtWriteFunc.Text;
-        If Trim(memDescr.Text) = '' Then
+        if Trim(memDescr.Text) = '' then
             memDescr.Text := 'No description';
 
         CppParser1.GetSourcePair(CppParser1.GetDeclarationFileName(St),
             CppFname, fName);
 
-        If Not FileExists(CppFname) Then
-        Begin
+        if not FileExists(CppFname) then
+        begin
             MessageDlg(Lang[ID_NEWVAR_MSG_NOIMPL], mtError, [mbOk], 0);
             Exit;
-        End;
+        end;
 
         // if the file is modified, ask to save
         e := GetEditorFromFileName(fName);
 
-        If Not Assigned(e) Then
+        if not Assigned(e) then
             Exit;
 
-        If e.Modified Then
-            Case MessageDlg(format(Lang[ID_MSG_ASKSAVECLOSE], [fName]),
-                    mtConfirmation, [mbYes, mbCancel], 0) Of
+        if e.Modified then
+            case MessageDlg(format(Lang[ID_MSG_ASKSAVECLOSE], [fName]),
+                    mtConfirmation, [mbYes, mbCancel], 0) of
                 mrYes:
-                    If FileExists(fName) Then
-                    Begin
-                        If devEditor.AppendNewline Then
-                            With e.Text Do
-                                If Lines.Count > 0 Then
-                                    If Lines[Lines.Count - 1] <> '' Then
+                    if FileExists(fName) then
+                    begin
+                        if devEditor.AppendNewline then
+                            with e.Text do
+                                if Lines.Count > 0 then
+                                    if Lines[Lines.Count - 1] <> '' then
                                         Lines.Add('');
                         MainForm.SaveFile(e);
-                    End
-                    Else
+                    end
+                    else
                         Exit;
                 mrCancel:
                     Exit;
-            End;
+            end;
 
         // Ask CppParser for insertion line suggestion ;)
         Line := CppParser1.SuggestMemberInsertionLine(pID, VarScope, AddScopeStr);
-        If VarScope <> scsPublic Then
+        if VarScope <> scsPublic then
             PublicLine := CppParser1.SuggestMemberInsertionLine(pID,
                 scsPublic, fAddScopeStr)
-        Else
-        Begin
+        else
+        begin
             fAddScopeStr := AddScopeStr;
             PublicLine := Line;
-        End;
+        end;
 
-        If Line = -1 Then
-        Begin
+        if Line = -1 then
+        begin
             // CppParser could not suggest a line for insertion :(
             MessageDlg(Lang[ID_NEWVAR_MSG_NOLINE], mtError, [mbOk], 0);
             Exit;
-        End;
+        end;
 
-        If Not Assigned(e) Then
+        if not Assigned(e) then
             Exit;
 
         // insert the actual var
         e.Text.Lines.Insert(Line, #9#9 + VarType + ' ' + VarName + ';');
 
         // insert the comment
-        If cmbComment.ItemIndex In [0, 1] Then // /** ... */ or /* ... */
+        if cmbComment.ItemIndex in [0, 1] then // /** ... */ or /* ... */
             e.Text.Lines.Insert(Line, #9#9' */');
-        For I := memDescr.Lines.Count - 1 Downto 0 Do
-            If cmbComment.ItemIndex In [0, 1] Then // /** ... */ or /* ... */
+        for I := memDescr.Lines.Count - 1 downto 0 do
+            if cmbComment.ItemIndex in [0, 1] then // /** ... */ or /* ... */
                 e.Text.Lines.Insert(Line, #9#9' * ' + memDescr.Lines[I])
-            Else
+            else
                 e.Text.Lines.Insert(Line, #9#9'// ' + memDescr.Lines[I]);
-        If cmbComment.ItemIndex = 0 Then // /** ... */
+        if cmbComment.ItemIndex = 0 then // /** ... */
             e.Text.Lines.Insert(Line, #9#9'/**')
-        Else
-        If cmbComment.ItemIndex = 1 Then // /* ... */
+        else
+        if cmbComment.ItemIndex = 1 then // /* ... */
             e.Text.Lines.Insert(Line, #9#9'/*');
 
         // insert, if needed, the scope string
-        If AddScopeStr Then
-            Case VarScope Of
+        if AddScopeStr then
+            case VarScope of
                 scsPrivate:
                     e.Text.Lines.Insert(Line, #9'private:');
                 scsProtected:
@@ -299,59 +299,59 @@ Begin
                     e.Text.Lines.Insert(Line, #9'public:');
                 scsPublished:
                     e.Text.Lines.Insert(Line, #9'published:');
-            End;
+            end;
 
         e.GotoLineNr(Line + memDescr.Lines.Count);
-        e.Modified := True;
+        e.Modified := TRUE;
 
         // if needed, insert a new member function for READ access to the new var
-        If VarRead Then
-        Begin
+        if VarRead then
+        begin
             S := #9#9 + VarType + ' ' + VarReadFunc + '()';
-            If chkInlineR.Checked Then
-            Begin
+            if chkInlineR.Checked then
+            begin
                 e.Text.Lines.Insert(PublicLine, #9#9'}');
                 e.Text.Lines.Insert(PublicLine, #9#9#9'return ' + VarName + ';');
                 e.Text.Lines.Insert(PublicLine, #9#9'{');
-            End
-            Else
+            end
+            else
                 S := S + '; // returns the value of ' + VarName;
             e.Text.Lines.Insert(PublicLine, S);
-            If fAddScopeStr Then
+            if fAddScopeStr then
                 e.Text.Lines.Insert(PublicLine, #9'public:');
-        End;
+        end;
 
         // if needed, insert a new member function for WRITE access to the new var
-        If VarWrite Then
-        Begin
+        if VarWrite then
+        begin
             S := #9#9'void ' + VarWriteFunc + '(' + VarType + ' x)';
-            If chkInlineW.Checked Then
-            Begin
+            if chkInlineW.Checked then
+            begin
                 e.Text.Lines.Insert(PublicLine, #9#9'}');
                 e.Text.Lines.Insert(PublicLine, #9#9#9 + VarName + ' = x;');
                 e.Text.Lines.Insert(PublicLine, #9#9'{');
-            End
-            Else
+            end
+            else
                 S := S + '; // sets the value of ' + VarName;
             e.Text.Lines.Insert(PublicLine, S);
-            If fAddScopeStr Then
+            if fAddScopeStr then
                 e.Text.Lines.Insert(PublicLine, #9'public:');
-        End;
+        end;
 
         // set the parent class's name
         ClsName := cmbClass.Text;
 
-        If ((Not VarRead) Or (VarRead And chkInlineR.Checked)) And
-            ((Not VarWrite) Or (VarWrite And chkInlineW.Checked)) Then
+        if ((not VarRead) or (VarRead and chkInlineR.Checked)) and
+            ((not VarWrite) or (VarWrite and chkInlineW.Checked)) then
             Exit;
 
         e := GetEditorFromFileName(CppFname);
-        If Not Assigned(e) Then
+        if not Assigned(e) then
             Exit;
 
         // if needed, insert a new member function for READ access to the new var
-        If VarRead And Not chkInlineR.Checked Then
-        Begin
+        if VarRead and not chkInlineR.Checked then
+        begin
             e.Text.Lines.Append('');
             e.Text.Lines.Append('// returns the value of ' + VarName);
             e.Text.Lines.Append(VarType + ' ' + ClsName + '::' + VarReadFunc + '()');
@@ -360,12 +360,12 @@ Begin
             e.Text.Lines.Append('}');
             e.Text.Lines.Append('');
             e.GotoLineNr(e.Text.Lines.Count - 1);
-            e.Modified := True;
-        End;
+            e.Modified := TRUE;
+        end;
 
         // if needed, insert a new member function for WRITE access to the new var
-        If VarWrite And Not chkInlineW.Checked Then
-        Begin
+        if VarWrite and not chkInlineW.Checked then
+        begin
             e.Text.Lines.Append('');
             e.Text.Lines.Append('// sets the value of ' + VarName);
             e.Text.Lines.Append('void ' + ClsName + '::' + VarWriteFunc +
@@ -375,23 +375,23 @@ Begin
             e.Text.Lines.Append('}');
             e.Text.Lines.Append('');
             e.GotoLineNr(e.Text.Lines.Count - 1);
-            e.Modified := True;
-        End;
-    End;
+            e.Modified := TRUE;
+        end;
+    end;
     Exit;
-End;
+end;
 
-Procedure TNewVarForm.memDescrChange(Sender: TObject);
-Begin
-    If memDescr.Lines.Count > 1 Then
+procedure TNewVarForm.memDescrChange(Sender: TObject);
+begin
+    if memDescr.Lines.Count > 1 then
         cmbComment.ItemIndex := 0
-    Else
+    else
         cmbComment.ItemIndex := 2;
-End;
+end;
 
-Procedure TNewVarForm.LoadText;
-Begin
-    DesktopFont := True;
+procedure TNewVarForm.LoadText;
+begin
+    DesktopFont := TRUE;
     XPMenu.Active := devData.XPTheme;
     Caption := Lang[ID_POP_NEWVAR];
     Label1.Caption := Lang[ID_NEWVAR_VARTYPE];
@@ -406,6 +406,6 @@ Begin
     Label7.Caption := Lang[ID_NEWVAR_COMMENTSSTYLE];
     btnCreate.Caption := Lang[ID_NEWVAR_BTN_CREATE];
     btnCancel.Caption := Lang[ID_NEWVAR_BTN_CANCEL];
-End;
+end;
 
-End.
+end.

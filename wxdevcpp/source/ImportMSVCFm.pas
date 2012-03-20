@@ -17,11 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-Unit ImportMSVCFm;
+unit ImportMSVCFm;
 
-Interface
+interface
 
-Uses
+uses
     xprocs,
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
@@ -32,8 +32,8 @@ Uses
   QDialogs, QButtons, QStdCtrls;
 {$ENDIF}
 
-Type
-    TImportMSVCForm = Class(TForm)
+type
+    TImportMSVCForm = class(TForm)
         lbSelect: TLabel;
         txtVC: TEdit;
         btnBrowse: TSpeedButton;
@@ -46,197 +46,197 @@ Type
         btnCancel: TButton;
         XPMenu: TXPMenu;
         btnBrowseDev: TButton;
-        Procedure FormCreate(Sender: TObject);
-        Procedure FormDestroy(Sender: TObject);
-        Procedure FormShow(Sender: TObject);
-        Procedure btnImportClick(Sender: TObject);
-        Procedure FormClose(Sender: TObject; Var Action: TCloseAction);
-        Procedure btnBrowseClick(Sender: TObject);
-        Procedure txtDevChange(Sender: TObject);
-        Procedure btnBrowseDevClick(Sender: TObject);
-    Private
+        procedure FormCreate(Sender: TObject);
+        procedure FormDestroy(Sender: TObject);
+        procedure FormShow(Sender: TObject);
+        procedure btnImportClick(Sender: TObject);
+        procedure FormClose(Sender: TObject; var Action: TCloseAction);
+        procedure btnBrowseClick(Sender: TObject);
+        procedure txtDevChange(Sender: TObject);
+        procedure btnBrowseDevClick(Sender: TObject);
+    private
         { Private declarations }
         fSL: TStringList;
-        fFilename: String;
-        fInvalidFiles: String;
+        fFilename: string;
+        fInvalidFiles: string;
         SaveDialog1: TSaveDialogEx;
         OpenDialog1: TOpenDialogEx;
-        Procedure LoadText;
-        Procedure WriteDev(Section, Key, Value: String);
-        Procedure ImportFile(Filename: String);
-        Procedure WriteDefaultEntries;
-        Procedure SetFilename(Value: String);
-        Procedure SetDevName(Value: String);
-        Function ReadTargets(Targets: TStringList): Boolean;
-        Function LocateTarget(Var StartAt, EndAt: Integer): Boolean;
-        Function LocateSourceTarget(Var StartAt, EndAt: Integer): Boolean;
-        Function ReadCompilerOptions(StartAt, EndAt: Integer): Boolean;
-        Function ReadLinkerOptions(StartAt, EndAt: Integer): Boolean;
-        Procedure ReadSourceFiles(StartAt, EndAt: Integer);
-        Procedure ReadProjectType;
-        Function GetLineValue(StartAt, EndAt: Integer; StartsWith: String): String;
-        Function StripQuotesIfNecessary(s: String): String;
-        Procedure UpdateButtons;
-        Function CheckVersion: Boolean;
-    Public
+        procedure LoadText;
+        procedure WriteDev(Section, Key, Value: string);
+        procedure ImportFile(Filename: string);
+        procedure WriteDefaultEntries;
+        procedure SetFilename(Value: string);
+        procedure SetDevName(Value: string);
+        function ReadTargets(Targets: TStringList): boolean;
+        function LocateTarget(var StartAt, EndAt: integer): boolean;
+        function LocateSourceTarget(var StartAt, EndAt: integer): boolean;
+        function ReadCompilerOptions(StartAt, EndAt: integer): boolean;
+        function ReadLinkerOptions(StartAt, EndAt: integer): boolean;
+        procedure ReadSourceFiles(StartAt, EndAt: integer);
+        procedure ReadProjectType;
+        function GetLineValue(StartAt, EndAt: integer; StartsWith: string): string;
+        function StripQuotesIfNecessary(s: string): string;
+        procedure UpdateButtons;
+        function CheckVersion: boolean;
+    public
         { Public declarations }
-        Function GetFilename: String;
-    Protected
-        Procedure CreateParams(Var Params: TCreateParams); Override;
-    End;
+        function GetFilename: string;
+    protected
+        procedure CreateParams(var Params: TCreateParams); override;
+    end;
 
-Var
+var
     ImportMSVCForm: TImportMSVCForm;
 
-Implementation
+implementation
 
-Uses IniFiles, StrUtils, version, MultiLangSupport, devcfg, utils, main;
+uses IniFiles, StrUtils, version, MultiLangSupport, devcfg, utils, main;
 
 {$R *.dfm}
 
 { TImportMSVCForm }
 
-Procedure TImportMSVCForm.UpdateButtons;
-Begin
-    btnImport.Enabled := FileExists(txtVC.Text) And
+procedure TImportMSVCForm.UpdateButtons;
+begin
+    btnImport.Enabled := FileExists(txtVC.Text) and
         DirectoryExists(ExtractFilePath(txtDev.Text));
     cmbConf.Enabled := txtVC.Text <> '';
     txtDev.Enabled := txtVC.Text <> '';
     btnBrowseDev.Enabled := txtVC.Text <> '';
-End;
+end;
 
-Procedure TImportMSVCForm.FormCreate(Sender: TObject);
-Begin
+procedure TImportMSVCForm.FormCreate(Sender: TObject);
+begin
     SaveDialog1 := TSaveDialogEx.Create(MainForm);
     OpenDialog1 := TOpenDialogEx.Create(MainForm);
     OpenDialog1.Filter := 'MSVC++ files|*.dsp';
     fSL := TStringList.Create;
     LoadText;
-End;
+end;
 
-Procedure TImportMSVCForm.FormDestroy(Sender: TObject);
-Begin
+procedure TImportMSVCForm.FormDestroy(Sender: TObject);
+begin
     fSL.Free;
-End;
+end;
 
-Procedure TImportMSVCForm.FormShow(Sender: TObject);
-Begin
+procedure TImportMSVCForm.FormShow(Sender: TObject);
+begin
     txtVC.Text := '';
     txtDev.Text := '';
     cmbConf.Clear;
     UpdateButtons;
-End;
+end;
 
-Function TImportMSVCForm.GetLineValue(StartAt, EndAt: Integer;
-    StartsWith: String): String;
-Var
-    I: Integer;
-Begin
+function TImportMSVCForm.GetLineValue(StartAt, EndAt: integer;
+    StartsWith: string): string;
+var
+    I: integer;
+begin
     Result := '';
-    If EndAt > fSL.Count - 1 Then
+    if EndAt > fSL.Count - 1 then
         EndAt := fSL.Count - 1;
     I := StartAt;
-    While I <= EndAt Do
-    Begin
-        If AnsiStartsText(StartsWith, fSL[I]) Then
-        Begin
+    while I <= EndAt do
+    begin
+        if AnsiStartsText(StartsWith, fSL[I]) then
+        begin
             Result := StripQuotesIfNecessary(
                 Trim(Copy(fSL[I], Length(StartsWith) + 1, Length(fSL[I]) -
                 Length(StartsWith))));
             Break;
-        End;
+        end;
         Inc(I);
-    End;
-End;
+    end;
+end;
 
-Procedure TImportMSVCForm.ImportFile(Filename: String);
-Var
+procedure TImportMSVCForm.ImportFile(Filename: string);
+var
     Targets: TStringList;
-Begin
+begin
     fSL.LoadFromFile(Filename);
 
     Targets := TStringList.Create;
-    Try
+    try
         // check file for version
-        If Not CheckVersion Then
+        if not CheckVersion then
             Exit;
 
         // read targets
-        If Not ReadTargets(Targets) Then
+        if not ReadTargets(Targets) then
             Exit;
 
         // fill the targets combo
         cmbConf.Items.Assign(Targets);
-        If cmbConf.Items.Count > 0 Then
-        Begin
+        if cmbConf.Items.Count > 0 then
+        begin
             cmbConf.ItemIndex := 0;
-        End;
-    Finally
+        end;
+    finally
         Targets.Free;
-    End;
-End;
+    end;
+end;
 
-Function TImportMSVCForm.LocateTarget(Var StartAt,
-    EndAt: Integer): Boolean;
-Var
-    I: Integer;
-Begin
-    Result := False;
+function TImportMSVCForm.LocateTarget(var StartAt,
+    EndAt: integer): boolean;
+var
+    I: integer;
+begin
+    Result := FALSE;
     I := 0;
-    While I < fSL.Count Do
-    Begin
-        If (AnsiStartsStr('!IF ', fSL[I]) Or AnsiStartsStr('!ELSEIF ', fSL[I])) And
-            AnsiContainsStr(fSL[I], cmbConf.Text) Then
-        Begin
+    while I < fSL.Count do
+    begin
+        if (AnsiStartsStr('!IF ', fSL[I]) or AnsiStartsStr('!ELSEIF ', fSL[I])) and
+            AnsiContainsStr(fSL[I], cmbConf.Text) then
+        begin
             Inc(I);
             StartAt := I;
-            While Not (AnsiStartsStr('!ENDIF', fSL[I]) Or
-                    AnsiStartsStr('!ELSEIF', fSL[I])) And (I < fSL.Count) Do
+            while not (AnsiStartsStr('!ENDIF', fSL[I]) or
+                    AnsiStartsStr('!ELSEIF', fSL[I])) and (I < fSL.Count) do
                 Inc(I);
             EndAt := I - 1;
-            Result := True;
+            Result := TRUE;
             Break;
-        End;
+        end;
         Inc(I);
-    End;
-End;
+    end;
+end;
 
-Function TImportMSVCForm.LocateSourceTarget(Var StartAt,
-    EndAt: Integer): Boolean;
-Var
-    I: Integer;
-Begin
-    Result := False;
+function TImportMSVCForm.LocateSourceTarget(var StartAt,
+    EndAt: integer): boolean;
+var
+    I: integer;
+begin
+    Result := FALSE;
     I := 0;
-    While I < fSL.Count Do
-    Begin
-        If (AnsiStartsStr('# Begin Target', fSL[I])) Then
-        Begin
+    while I < fSL.Count do
+    begin
+        if (AnsiStartsStr('# Begin Target', fSL[I])) then
+        begin
             Inc(I);
             StartAt := I;
-            While Not (AnsiStartsStr('# End Target', fSL[I])) Do
+            while not (AnsiStartsStr('# End Target', fSL[I])) do
                 Inc(I);
             EndAt := I - 1;
-            Result := True;
+            Result := TRUE;
             Break;
-        End;
+        end;
         Inc(I);
-    End;
-End;
+    end;
+end;
 
-Function TImportMSVCForm.ReadCompilerOptions(StartAt,
-    EndAt: Integer): Boolean;
-Var
-    I: Integer;
-    inQuotes: Boolean;
+function TImportMSVCForm.ReadCompilerOptions(StartAt,
+    EndAt: integer): boolean;
+var
+    I: integer;
+    inQuotes: boolean;
     Options, Options_temp: TStringList;
-    sCompiler, sCompiler2003, sCompiler2008: String;
-    sCompilerSettings, sCompilerSettings2003, sCompilerSettings2008: String;
-    sDirs, sDirs2003, sDirs2008: String;
-    sPreProc, sPreProc2003, sPreProc2008: String;
-    S, Stemp: String;
-Begin
-    Result := False;
+    sCompiler, sCompiler2003, sCompiler2008: string;
+    sCompilerSettings, sCompilerSettings2003, sCompilerSettings2008: string;
+    sDirs, sDirs2003, sDirs2008: string;
+    sPreProc, sPreProc2003, sPreProc2008: string;
+    S, Stemp: string;
+begin
+    Result := FALSE;
 
     sCompiler := '';
     sDirs := '';
@@ -255,7 +255,7 @@ Begin
 
     Options := TStringList.Create;
     Options_temp := TStringList.Create;
-    Try
+    try
 
         S := GetLineValue(StartAt, EndAt, '# ADD CPP');
 
@@ -268,57 +268,57 @@ Begin
         // recombine items that are within double quotes to correct
         // that tokenizing error.  Also, let's remove any blank
         // options
-        inQuotes := False;
+        inQuotes := FALSE;
         Stemp := '';
-        For I := 0 To (Options_temp.Count - 1) Do
-        Begin
+        for I := 0 to (Options_temp.Count - 1) do
+        begin
 
-            If (inQuotes) Then
-            Begin
-                If AnsiContainsText(Options_temp[I], '"') Then
-                Begin
-                    inQuotes := False;
+            if (inQuotes) then
+            begin
+                if AnsiContainsText(Options_temp[I], '"') then
+                begin
+                    inQuotes := FALSE;
                     Stemp := Stemp + ' ' + Options_temp[I];
                     Options.Add(Stemp);
-                End
-                Else
+                end
+                else
                     Stemp := Stemp + ' ' + Options_temp[I];
 
-            End
-            Else
-            Begin
+            end
+            else
+            begin
                 // If there's only one double quote, then we're at the
                 //   start of a string. Continue parsing until the next
                 //   double quote. If there's 2 double quotes, then
                 //   we don't need to keep parsing.
-                If (StrTokenCount(Options_temp[I], '"') = 1) Then
-                Begin
-                    inQuotes := True;
+                if (StrTokenCount(Options_temp[I], '"') = 1) then
+                begin
+                    inQuotes := TRUE;
                     Stemp := Options_temp[I];
-                End
-                Else
-                If (Length(strTrim(Options_temp[I])) > 0) Then
-                Begin
+                end
+                else
+                if (Length(strTrim(Options_temp[I])) > 0) then
+                begin
                     Options.Add(Options_temp[I]);
-                End;
-            End;
+                end;
+            end;
 
-        End;
+        end;
 
         // If we ended within a double quotes, then let's add whatever
         //   was leftover.
-        If (inQuotes) Then
+        if (inQuotes) then
             Options.Add(Stemp);
 
         I := 0;
 
-        While I < Options.Count Do
-        Begin
+        while I < Options.Count do
+        begin
 
             // ShowMessage('compiler:  ' +  Options[I]);
 
-            If strEqual('/Za', Options[I]) Then
-            Begin // disable language extensions
+            if strEqual('/Za', Options[I]) then
+            begin // disable language extensions
 
                 // MingW gcc
                 //sCompiler := sCompiler + '-ansi ';
@@ -332,10 +332,10 @@ Begin
                 sCompiler2008 := sCompiler2008 + Options[I] + '_@@_';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/GX', Options[I]) Then
-            Begin // enable exception handling
+            end
+            else
+            if strEqual('/GX', Options[I]) then
+            begin // enable exception handling
 
                 // I think /GX and /EHa are the same
                 // http://msdn.microsoft.com/en-us/library/d42ws1f6.aspx
@@ -354,10 +354,10 @@ Begin
                 sCompilerSettings2008[14] := 'a';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/Ot', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/Ot', Options[I]) then
+            begin
 
                 // MingW gcc
                 // CompilerOptions position 11 (O1 is probably the closest analog)
@@ -372,10 +372,10 @@ Begin
                 sCompilerSettings2008[1] := '1';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/Os', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/Os', Options[I]) then
+            begin
 
                 // MingW gcc
                 sCompiler := sCompiler + '-Os' + '_@@_';
@@ -390,10 +390,10 @@ Begin
                 sCompilerSettings2008[1] := 'a';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/O2', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/O2', Options[I]) then
+            begin
 
                 // MingW gcc
                 // CompilerOptions position 12
@@ -408,10 +408,10 @@ Begin
                 sCompilerSettings2008[2] := '1';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/O1', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/O1', Options[I]) then
+            begin
 
                 // MingW gcc
                 // CompilerOptions position 11
@@ -426,10 +426,10 @@ Begin
                 sCompilerSettings2008[2] := 'a';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/Og', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/Og', Options[I]) then
+            begin
 
                 // MingW gcc
                 // CompilerOptions position 13 (-O3 is probably closest analog)
@@ -444,10 +444,10 @@ Begin
                 sCompilerSettings2008[3] := '1';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/Oa', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/Oa', Options[I]) then
+            begin
 
                 // MingW gcc
                 // CompilerOptions position 11  (-O1 is probably closest analog)
@@ -462,10 +462,10 @@ Begin
                 sCompilerSettings2008[4] := '1';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/Oi', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/Oi', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -479,10 +479,10 @@ Begin
                 sCompilerSettings2008[5] := '1';
 
                 Inc(I);
-            End
-            Else
-            If StrEqual('/Ow', Options[I]) Then
-            Begin
+            end
+            else
+            if StrEqual('/Ow', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -496,10 +496,10 @@ Begin
                 sCompilerSettings2008[6] := '1';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/GA', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/GA', Options[I]) then
+            begin
                 // Optimize for Windows applications
 
                 // MingW gcc
@@ -514,10 +514,10 @@ Begin
                 sCompilerSettings2008[7] := '1';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/Oy', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/Oy', Options[I]) then
+            begin
 
                 // MingW gcc
                 sCompiler := sCompiler + '-fomit-frame-pointer' + '_@@_';
@@ -531,10 +531,10 @@ Begin
                 sCompilerSettings2008[8] := '1';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/GB', Options[I]) Then
-            Begin // blend optimization
+            end
+            else
+            if strEqual('/GB', Options[I]) then
+            begin // blend optimization
 
                 // MingW gcc
                 // sCompiler := sCompiler + '-mcpu=pentiumpro -D_M_IX86=500 ';
@@ -549,10 +549,10 @@ Begin
                 sCompiler2008 := sCompiler2008 + Options[I] + '_@@_';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/G5', Options[I]) Then
-            Begin // pentium optimization
+            end
+            else
+            if strEqual('/G5', Options[I]) then
+            begin // pentium optimization
 
                 // MingW gcc
                 // sCompiler := sCompiler + '-mcpu=pentium -D_M_IX86=500 ';
@@ -567,10 +567,10 @@ Begin
                 sCompiler2008 := sCompiler2008 + Options[I] + '_@@_';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/G6', Options[I]) Then
-            Begin // pentium pro optimization
+            end
+            else
+            if strEqual('/G6', Options[I]) then
+            begin // pentium pro optimization
 
                 // MingW gcc
                 //sCompiler := sCompiler + '-mcpu=pentiumpro -D_M_IX86=600 ';
@@ -585,10 +585,10 @@ Begin
                 sCompiler2008 := sCompiler2008 + Options[I] + '_@@_';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/Gr', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/Gr', Options[I]) then
+            begin
                 // __fastcall
 
                 // MingW gcc
@@ -603,10 +603,10 @@ Begin
                 sCompilerSettings2008[9] := '1';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/Gz', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/Gz', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -620,10 +620,10 @@ Begin
                 sCompilerSettings2008[9] := 'a';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/Gf', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/Gf', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -637,10 +637,10 @@ Begin
                 sCompilerSettings2008[10] := '1';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/GF', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/GF', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -654,10 +654,10 @@ Begin
                 sCompilerSettings2008[10] := 'a';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/clr', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/clr', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -671,10 +671,10 @@ Begin
                 sCompilerSettings2008[11] := '1';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/clr:noAssembly', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/clr:noAssembly', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -688,10 +688,10 @@ Begin
                 sCompilerSettings2008[11] := 'a';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/clr:pure', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/clr:pure', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -705,10 +705,10 @@ Begin
                 sCompilerSettings2008[11] := 'b';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/clr:safe', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/clr:safe', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -722,10 +722,10 @@ Begin
                 sCompilerSettings2008[11] := 'c';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/clr:oldSyntax', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/clr:oldSyntax', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -739,10 +739,10 @@ Begin
                 sCompilerSettings2008[11] := 'd';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/clr:initialAppDomain', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/clr:initialAppDomain', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -756,10 +756,10 @@ Begin
                 sCompilerSettings2008[11] := 'e';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/arch:SSE', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/arch:SSE', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -773,10 +773,10 @@ Begin
                 sCompilerSettings2008[13] := '1';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/arch:SSE2', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/arch:SSE2', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -790,10 +790,10 @@ Begin
                 sCompilerSettings2008[13] := 'a';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/EHs', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/EHs', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -807,10 +807,10 @@ Begin
                 sCompilerSettings2008[14] := '1';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/EHa', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/EHa', Options[I]) then
+            begin
 
                 // I think /GX and /EHa are the same
                 // http://msdn.microsoft.com/en-us/library/d42ws1f6.aspx
@@ -830,10 +830,10 @@ Begin
                 sCompilerSettings2008[14] := 'a';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/Gh', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/Gh', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -847,10 +847,10 @@ Begin
                 sCompilerSettings2008[15] := '1';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/GH', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/GH', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -864,10 +864,10 @@ Begin
                 sCompilerSettings2008[16] := '1';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/GR', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/GR', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -881,10 +881,10 @@ Begin
                 sCompilerSettings2008[17] := '1';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/Gm', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/Gm', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -898,10 +898,10 @@ Begin
                 sCompilerSettings2008[18] := '1';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/GL', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/GL', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -915,10 +915,10 @@ Begin
                 sCompilerSettings2008[19] := '1';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/EHc', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/EHc', Options[I]) then
+            begin
                 // MingW gcc
                 // Do nothing
 
@@ -931,10 +931,10 @@ Begin
                 sCompilerSettings2008[20] := '1';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/EHsc', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/EHsc', Options[I]) then
+            begin
 
                 // MingW gcc
                 // sCompiler := sCompiler + '-fexceptions ';
@@ -951,10 +951,10 @@ Begin
                 sCompilerSettings2008[14] := 'a';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/Gy', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/Gy', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -968,10 +968,10 @@ Begin
                 sCompilerSettings2008[21] := '1';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/GT', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/GT', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -985,10 +985,10 @@ Begin
                 sCompilerSettings2008[22] := '1';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/Ge', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/Ge', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -1002,10 +1002,10 @@ Begin
                 sCompilerSettings2008[23] := '1';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/GS', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/GS', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -1019,10 +1019,10 @@ Begin
                 sCompilerSettings2008[23] := '1';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/RTCc', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/RTCc', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -1036,10 +1036,10 @@ Begin
                 sCompilerSettings2008[24] := '1';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/RTCs', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/RTCs', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -1053,10 +1053,10 @@ Begin
                 sCompilerSettings2008[25] := '1';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/RTCu', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/RTCu', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -1070,10 +1070,10 @@ Begin
                 sCompilerSettings2008[25] := '1';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/Zi', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/Zi', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -1087,10 +1087,10 @@ Begin
                 sCompilerSettings2008[27] := '1';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/ZI', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/ZI', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -1104,10 +1104,10 @@ Begin
                 sCompilerSettings2008[27] := 'a';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/Z7', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/Z7', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -1121,10 +1121,10 @@ Begin
                 sCompilerSettings2008[27] := 'b';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/Zd', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/Zd', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -1138,10 +1138,10 @@ Begin
                 sCompilerSettings2008[27] := 'c';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/Zl', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/Zl', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -1155,10 +1155,10 @@ Begin
                 sCompilerSettings2008[28] := '1';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/Zg', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/Zg', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -1172,10 +1172,10 @@ Begin
                 sCompilerSettings2008[29] := '1';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/openmp', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/openmp', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -1189,10 +1189,10 @@ Begin
                 sCompilerSettings2008[30] := '1';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/Zc:forScope', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/Zc:forScope', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -1206,10 +1206,10 @@ Begin
                 sCompilerSettings2008[31] := '1';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/Zc:wchar_t', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/Zc:wchar_t', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -1223,10 +1223,10 @@ Begin
                 sCompilerSettings2008[32] := '1';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/WX', Options[I]) Then
-            Begin // warnings as errors
+            end
+            else
+            if strEqual('/WX', Options[I]) then
+            begin // warnings as errors
 
                 // MingW gcc
                 sCompiler := sCompiler + '-Werror' + '_@@_';
@@ -1240,37 +1240,37 @@ Begin
                 sCompilerSettings2008[33] := '1';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/W1', Options[I]) Or
-                strEqual('/W2', Options[I]) Or
-                strEqual('/W3', Options[I]) Then
-            Begin // warning messages
+            end
+            else
+            if strEqual('/W1', Options[I]) or
+                strEqual('/W2', Options[I]) or
+                strEqual('/W3', Options[I]) then
+            begin // warning messages
 
                 // MingW gcc
                 sCompiler := sCompiler + '-W' + '_@@_';
 
                 // MSVC6/2003
                 // CompilerOptions position 37
-                If strEqual('/W2', Options[I]) Then
+                if strEqual('/W2', Options[I]) then
                     sCompilerSettings2003[37] := '1';
 
-                If strEqual('/W3', Options[I]) Then
+                if strEqual('/W3', Options[I]) then
                     sCompilerSettings2003[37] := 'a';
 
                 // MSVC2005/2008
                 // CompilerOptions position 34
-                If strEqual('/W2', Options[I]) Then
+                if strEqual('/W2', Options[I]) then
                     sCompilerSettings2008[34] := '1';
 
-                If strEqual('/W3', Options[I]) Then
+                if strEqual('/W3', Options[I]) then
                     sCompilerSettings2008[34] := 'a';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/W4', Options[I]) Then
-            Begin // all warning messages
+            end
+            else
+            if strEqual('/W4', Options[I]) then
+            begin // all warning messages
 
                 // MingW gcc
                 sCompiler := sCompiler + '-Wall' + '_@@_';
@@ -1284,10 +1284,10 @@ Begin
                 sCompilerSettings2008[34] := 'b';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/Wp64', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/Wp64', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -1301,10 +1301,10 @@ Begin
                 sCompilerSettings2008[35] := '1';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/INCREMENTAL:NO', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/INCREMENTAL:NO', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -1318,24 +1318,24 @@ Begin
                 sCompilerSettings2008[36] := '1';
 
                 Inc(I);
-            End
+            end
             // /D = Defines a preprocessing symbol for your source file.
-            Else
-            If strEqual('/D', Options[I]) Or
-                strEqual('/d', Options[I]) Then
-            Begin
+            else
+            if strEqual('/D', Options[I]) or
+                strEqual('/d', Options[I]) then
+            begin
 
                 // The format should be /D "option". However, let's just
                 // check to make sure that the .dsp file somehow didn't
                 // use the space.
-                If AnsiStartsStr('/', Options[I + 1]) Then
-                Begin
+                if AnsiStartsStr('/', Options[I + 1]) then
+                begin
                     // Next token is another option.
                     Stemp := Options[I];
                     Delete(Stemp, 1, 2); // Delete the /D
 
-                    If (Length(strTrim(Stemp)) > 0) Then
-                    Begin
+                    if (Length(strTrim(Stemp)) > 0) then
+                    begin
 
                         // MingW gcc
                         S := Format('%s', [AnsiDequotedStr(Stemp, '"')]);
@@ -1349,13 +1349,13 @@ Begin
                         S := Format('%s', [AnsiDequotedStr(Stemp, '"')]);
                         sPreProc2008 := sPreProc2008 + S + '_@@_';
 
-                    End;
+                    end;
 
                     Inc(I);
 
-                End
-                Else
-                Begin
+                end
+                else
+                begin
                     // Next token is the value for this option
 
                     // MingW gcc
@@ -1372,24 +1372,24 @@ Begin
 
                     Inc(I); Inc(I);
 
-                End;
+                end;
 
-            End
-            Else
-            If strEqual('/U', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/U', Options[I]) then
+            begin
 
                 // The format should be /U "option". However, let's just
                 // check to make sure that the .dsp file somehow didn't
                 // use the space.
-                If AnsiStartsStr('/', Options[I + 1]) Then
-                Begin
+                if AnsiStartsStr('/', Options[I + 1]) then
+                begin
                     // Next token is another option.
                     Stemp := Options[I];
                     Delete(Stemp, 1, 2); // Delete the /U
 
-                    If (Length(strTrim(Stemp)) > 0) Then
-                    Begin
+                    if (Length(strTrim(Stemp)) > 0) then
+                    begin
 
                         S := Format('-U%s', [Stemp]);
                         sCompiler := sCompiler + S + '_@@_';
@@ -1402,13 +1402,13 @@ Begin
                         S := Format('/U %s', [Stemp]);
                         sCompiler2008 := sCompiler2008 + S + '_@@_';
 
-                    End;
+                    end;
 
                     Inc(I);
 
-                End
-                Else
-                Begin
+                end
+                else
+                begin
 
                     S := Format('-U%s', [Options[I + 1]]);
                     sCompiler := sCompiler + S + '_@@_';
@@ -1423,37 +1423,37 @@ Begin
 
                     Inc(I); Inc(I);
 
-                End;
+                end;
 
-            End
-            Else
-            If strEqual('/I', Options[I]) Or strEqual('/i', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/I', Options[I]) or strEqual('/i', Options[I]) then
+            begin
 
                 // The format should be /I "option". However, let's just
                 // check to make sure that the .dsp file somehow didn't
                 // use the space.
-                If AnsiStartsStr('/', Options[I + 1]) Then
-                Begin
+                if AnsiStartsStr('/', Options[I + 1]) then
+                begin
                     // Next token is another option.
                     Stemp := Options[I];
                     Delete(Stemp, 1, 2); // Delete the /I
 
-                    If (Length(strTrim(Stemp)) > 0) Then
-                    Begin
+                    if (Length(strTrim(Stemp)) > 0) then
+                    begin
 
                         // MingW gcc  +   MSVC2005/2008
                         sDirs := sDirs + Stemp + ';';
                         sDirs2003 := sDirs2003 + Stemp + ';';
                         sDirs2008 := sDirs2008 + Stemp + ';';
 
-                    End;
+                    end;
 
                     Inc(I);
 
-                End
-                Else
-                Begin
+                end
+                else
+                begin
 
                     // MingW gcc  +   MSVC2005/2008
                     sDirs := sDirs + Options[I + 1] + ';';
@@ -1461,11 +1461,11 @@ Begin
                     sDirs2008 := sDirs2008 + Options[I + 1] + ';';
 
                     Inc(I); Inc(I);
-                End;
-            End
-            Else
-            If strEqual('/Ob0', Options[I]) Then
-            Begin // disable inline expansion
+                end;
+            end
+            else
+            if strEqual('/Ob0', Options[I]) then
+            begin // disable inline expansion
 
                 // MingW gcc
                 sCompiler := sCompiler + '-fno-inline' + '_@@_';
@@ -1477,10 +1477,10 @@ Begin
                 sCompiler2008 := sCompiler2008 + Options[I] + '_@@_';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/Ob2', Options[I]) Then
-            Begin // auto inline function expansion
+            end
+            else
+            if strEqual('/Ob2', Options[I]) then
+            begin // auto inline function expansion
 
                 // MingW gcc
                 sCompiler := sCompiler + '-finline-functions' + '_@@_';
@@ -1492,10 +1492,10 @@ Begin
                 sCompiler2008 := sCompiler2008 + Options[I] + '_@@_';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/G4', Options[I]) Then
-            Begin // 486 optimization
+            end
+            else
+            if strEqual('/G4', Options[I]) then
+            begin // 486 optimization
 
                 // MingW gcc
                 //sCompiler := sCompiler + '-mcpu=i486 -D_M_IX86=400 ';
@@ -1509,10 +1509,10 @@ Begin
                 sCompiler2008 := sCompiler2008 + Options[I] + '_@@_';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/G3', Options[I]) Then
-            Begin // 386 optimization
+            end
+            else
+            if strEqual('/G3', Options[I]) then
+            begin // 386 optimization
 
                 // MingW gcc
                 //sCompiler := sCompiler + '-mcpu=i386 -D_M_IX86=300 ';
@@ -1526,10 +1526,10 @@ Begin
                 sCompiler2008 := sCompiler2008 + Options[I] + '_@@_';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/Zp1', Options[I]) Then
-            Begin // pack structures
+            end
+            else
+            if strEqual('/Zp1', Options[I]) then
+            begin // pack structures
 
                 // MingW gcc
                 sCompiler := sCompiler + '-fpack-struct' + '_@@_';
@@ -1541,10 +1541,10 @@ Begin
                 sCompiler2008 := sCompiler2008 + Options[I] + '_@@_';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/W0', Options[I]) Then
-            Begin // no warning messages
+            end
+            else
+            if strEqual('/W0', Options[I]) then
+            begin // no warning messages
 
                 // MingW gcc
                 sCompiler := sCompiler + '-w' + '_@@_';
@@ -1556,10 +1556,10 @@ Begin
                 sCompiler2008 := sCompiler2008 + Options[I] + '_@@_';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/c', Options[I]) Then
-            Begin // compile only
+            end
+            else
+            if strEqual('/c', Options[I]) then
+            begin // compile only
 
                 // MingW gcc
                 sCompiler := sCompiler + '-c' + '_@@_';
@@ -1571,10 +1571,10 @@ Begin
                 sCompiler2008 := sCompiler2008 + Options[I] + '_@@_';
 
                 Inc(I);
-            End
-            Else
-            If strEqual('/nologo', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/nologo', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -1586,20 +1586,20 @@ Begin
                 sCompiler2008 := sCompiler2008 + Options[I] + '_@@_';
 
                 Inc(I);
-            End
-            Else     // No idea what to do with this so let's just send it as is
-            Begin
+            end
+            else     // No idea what to do with this so let's just send it as is
+            begin
 
-                If (Length(strTrim(Options[I])) > 0) Then
-                Begin
+                if (Length(strTrim(Options[I])) > 0) then
+                begin
                     sCompiler := sCompiler + Options[I] + '_@@_';
                     sCompiler2003 := sCompiler2003 + Options[I] + '_@@_';
                     sCompiler2008 := sCompiler2008 + Options[I] + '_@@_';
-                End;
+                end;
                 Inc(I);
 
-            End;
-        End;
+            end;
+        end;
 
         // MingW gcc
         WriteDev('Profile1', 'Compiler', sCompiler);
@@ -1608,7 +1608,7 @@ Begin
         WriteDev('Profile1', 'CompilerSettings', sCompilerSettings);
         WriteDev('Profile1', 'PreprocDefines', sPreProc);
 
-        If sDirs <> '' Then
+        if sDirs <> '' then
             sDirs := Copy(sDirs, 1, Length(sDirs) - 1);
 
         WriteDev('Profile1', 'Includes', sDirs);
@@ -1621,7 +1621,7 @@ Begin
 
         WriteDev('Profile2', 'PreprocDefines', sPreProc2003);
 
-        If sDirs2003 <> '' Then
+        if sDirs2003 <> '' then
             sDirs2003 := Copy(sDirs2003, 1, Length(sDirs2003) - 1);
 
         WriteDev('Profile2', 'Includes', sDirs2003);
@@ -1633,35 +1633,35 @@ Begin
         WriteDev('Profile3', 'CompilerSettings', sCompilerSettings2008);
         WriteDev('Profile3', 'PreprocDefines', sPreProc2008);
 
-        If sDirs2008 <> '' Then
+        if sDirs2008 <> '' then
             sDirs2008 := Copy(sDirs2008, 1, Length(sDirs2008) - 1);
 
         WriteDev('Profile3', 'Includes', sDirs2008);
 
-    Finally
+    finally
         Options.Free;
         Options_temp.Free;
-    End;
-End;
+    end;
+end;
 
-Function TImportMSVCForm.ReadLinkerOptions(StartAt,
-    EndAt: Integer): Boolean;
-Var
-    I: Integer;
-    inQuotes: Boolean;
+function TImportMSVCForm.ReadLinkerOptions(StartAt,
+    EndAt: integer): boolean;
+var
+    I: integer;
+    inQuotes: boolean;
     Options, Options_temp: TStringList;
-    sLibs, sLibs2003, sLibs2008: String;
-    sDirs, sDirs2003, sDirs2008: String;
-    S, Stemp: String;
-Begin
+    sLibs, sLibs2003, sLibs2008: string;
+    sDirs, sDirs2003, sDirs2008: string;
+    S, Stemp: string;
+begin
 
-    Result := False;
+    Result := FALSE;
     sLibs := '';  sLibs2003 := ''; sLibs2008 := '';
     sDirs := '';  sDirs2003 := ''; sDirs2008 := '';
 
     Options := TStringList.Create;
     Options_temp := TStringList.Create;
-    Try
+    try
 
         S := GetLineValue(StartAt, EndAt, '# ADD LINK32');
 
@@ -1674,56 +1674,56 @@ Begin
         // recombine items that are within double quotes to correct
         // that tokenizing error.  Also, let's remove any blank
         // options
-        inQuotes := False;
+        inQuotes := FALSE;
         Stemp := '';
-        For I := 0 To (Options_temp.Count - 1) Do
-        Begin
-            If (inQuotes) Then
-            Begin
-                If AnsiContainsText(Options_temp[I], '"') Then
-                Begin
-                    inQuotes := False;
+        for I := 0 to (Options_temp.Count - 1) do
+        begin
+            if (inQuotes) then
+            begin
+                if AnsiContainsText(Options_temp[I], '"') then
+                begin
+                    inQuotes := FALSE;
                     Stemp := Stemp + ' ' + Options_temp[I];
                     Options.Add(Stemp);
-                End
-                Else
+                end
+                else
                     Stemp := Stemp + ' ' + Options_temp[I];
 
-            End
-            Else
-            Begin
+            end
+            else
+            begin
                 // If there's only one double quote, then we're at the
                 //   start of a string. Continue parsing until the next
                 //   double quote. If there's 2 double quotes, then
                 //   we don't need to keep parsing.
-                If (StrTokenCount(Options_temp[I], '"') = 1) Then
-                Begin
-                    inQuotes := True;
+                if (StrTokenCount(Options_temp[I], '"') = 1) then
+                begin
+                    inQuotes := TRUE;
                     Stemp := Options_temp[I];
-                End
-                Else
-                If (Length(strTrim(Options_temp[I])) > 0) Then
-                Begin
+                end
+                else
+                if (Length(strTrim(Options_temp[I])) > 0) then
+                begin
                     Options.Add(Options_temp[I]);
-                End;
-            End;
+                end;
+            end;
 
-        End;
+        end;
 
         // If we ended within a double quotes, then let's add whatever
         //   was leftover.
-        If (inQuotes) Then
+        if (inQuotes) then
             Options.Add(Stemp);
 
-        For I := 0 To (Options.Count - 1) Do
-        Begin
+        for I := 0 to (Options.Count - 1) do
+        begin
             //ShowMessage('Linker: ' + Options[I]);
 
-            If AnsiEndsText('.lib', Options[I]) Then
-            Begin
+            if AnsiEndsText('.lib', Options[I]) then
+            begin
                 // MingW gcc
                 S := Copy(Options[I], 1, Length(Options[I]) - 4);
-                If ExtractFilePath(S) <> '' Then
+                if ExtractFilePath(S) <> '' then
                     sDirs := sDirs + ExtractFilePath(S) + ';';
                 S := Format('-l%s', [ExtractFileName(S)]);
                 sLibs := sLibs + S + '_@@_';
@@ -1731,61 +1731,61 @@ Begin
                 sLibs2003 := sLibs2003 + Options[I] + '_@@_';
                 sLibs2008 := sLibs2008 + Options[I] + '_@@_';
 
-            End
-            Else
-            If AnsiStartsText('/base:', Options[I]) Then
-            Begin
+            end
+            else
+            if AnsiStartsText('/base:', Options[I]) then
+            begin
                 S := Copy(Options[I], Length('/base:') + 1, MaxInt);
                 sLibs := sLibs + '--image-base ' + S + '_@@_';
                 sLibs2003 := sLibs2003 + Options[I] + '_@@_';
                 sLibs2008 := sLibs2008 + Options[I] + '_@@_';
-            End
-            Else
-            If AnsiStartsText('/implib:', Options[I]) Then
-            Begin
+            end
+            else
+            if AnsiStartsText('/implib:', Options[I]) then
+            begin
                 S := Copy(Options[I], Length('/implib:') + 1, MaxInt);
                 sLibs := sLibs + '--implib ' + S + '_@@_';
                 sLibs2003 := sLibs2003 + Options[I] + '_@@_';
                 sLibs2008 := sLibs2008 + Options[I] + '_@@_';
-            End
-            Else
-            If AnsiStartsText('/map:', Options[I]) Then
-            Begin
+            end
+            else
+            if AnsiStartsText('/map:', Options[I]) then
+            begin
                 S := Copy(Options[I], Length('/map:') + 1, MaxInt);
                 sLibs := sLibs + '-Map ' + S + '.map';
                 sLibs2003 := sLibs2003 + Options[I] + '_@@_';
                 sLibs2008 := sLibs2008 + Options[I] + '_@@_';
-            End
-            Else
-            If AnsiStartsText('/subsystem:', Options[I]) Then
-            Begin
+            end
+            else
+            if AnsiStartsText('/subsystem:', Options[I]) then
+            begin
                 S := Copy(Options[I], Length('/subsystem:') + 1, MaxInt);
-                If S = 'windows' Then
-                Begin
+                if S = 'windows' then
+                begin
                     WriteDev('Profile1', 'Type', '0'); // win32 gui
                     WriteDev('Profile2', 'Type', '0'); // win32 gui
                     WriteDev('Profile3', 'Type', '0'); // win32 gui
-                End
-                Else
-                If S = 'console' Then
-                Begin
+                end
+                else
+                if S = 'console' then
+                begin
                     WriteDev('Profile1', 'Type', '1'); // console app
                     WriteDev('Profile2', 'Type', '1'); // console app
                     WriteDev('Profile3', 'Type', '1'); // console app
-                End;
+                end;
                 //        sLibs := sLibs + '-Wl --subsystem ' + S + ' ';
-            End
-            Else
-            If AnsiStartsText('/libpath:', Options[I]) Then
-            Begin
+            end
+            else
+            if AnsiStartsText('/libpath:', Options[I]) then
+            begin
                 S := Copy(Options[I], Length('/libpath:') + 1, MaxInt);
                 sDirs := sDirs + S + ';';
                 sDirs2003 := sDirs2003 + S + ';';
                 sDirs2008 := sDirs2008 + S + ';';
-            End
-            Else
-            If strEqual('/nologo', Options[I]) Then
-            Begin
+            end
+            else
+            if strEqual('/nologo', Options[I]) then
+            begin
 
                 // MingW gcc
                 // Do nothing
@@ -1796,164 +1796,164 @@ Begin
                 // MSVC2005/2008
                 sLibs2008 := sLibs2008 + Options[I] + '_@@_';
 
-            End
-            Else
-            Begin
+            end
+            else
+            begin
                 S := strTrim(Options[I]);
                 sLibs := sLibs + S + '_@@_';
                 sLibs2003 := sLibs2003 + Options[I] + '_@@_';
                 sLibs2008 := sLibs2008 + Options[I] + '_@@_';
-            End;
-        End;
+            end;
+        end;
 
         WriteDev('Profile1', 'Linker', sLibs);
         WriteDev('Profile2', 'Linker', sLibs2003);
         WriteDev('Profile3', 'Linker', sLibs2008);
-        If sDirs <> '' Then
+        if sDirs <> '' then
             sDirs := Copy(sDirs, 1, Length(sDirs) - 1);
         WriteDev('Profile1', 'Libs', sDirs);
         WriteDev('Profile2', 'Libs', sDirs2003);
         WriteDev('Profile3', 'Libs', sDirs2008);
-    Finally
+    finally
         Options.Free;
         Options_temp.Free;
-    End;
-End;
+    end;
+end;
 
-Procedure TImportMSVCForm.ReadSourceFiles(StartAt,
-    EndAt: Integer);
-Var
+procedure TImportMSVCForm.ReadSourceFiles(StartAt,
+    EndAt: integer);
+var
     flds: TStringList;
-    I, C: Integer;
-    UnitName: String;
-    folder: String;
-    folders: String;
-Begin
+    I, C: integer;
+    UnitName: string;
+    folder: string;
+    folders: string;
+begin
     fInvalidFiles := '';
     C := 0;
     folders := '';
     flds := TStringList.Create;
-    Try
+    try
         flds.Delimiter := '/';
-        For I := StartAt To EndAt Do
-            If (Length(fSL[I]) > 0) Then
-            Begin
-                If AnsiStartsText('# Begin Group ', fSL[I]) Then
-                Begin
+        for I := StartAt to EndAt do
+            if (Length(fSL[I]) > 0) then
+            begin
+                if AnsiStartsText('# Begin Group ', fSL[I]) then
+                begin
                     folder := StripQuotesIfNecessary(Copy(fSL[I], 15, MaxInt));
                     flds.Add(folder);
                     folders := folders + flds.DelimitedText + ',';
-                End
-                Else
-                If AnsiStartsText('# End Group', fSL[I]) Then
-                Begin
-                    If flds.Count > 0 Then
+                end
+                else
+                if AnsiStartsText('# End Group', fSL[I]) then
+                begin
+                    if flds.Count > 0 then
                         flds.Delete(flds.Count - 1);
-                End
-                Else
-                If AnsiStartsText('SOURCE=', fSL[I]) Then
-                Begin
+                end
+                else
+                if AnsiStartsText('SOURCE=', fSL[I]) then
+                begin
                     UnitName := Copy(fSL[I], 8, Length(fSL[I]) - 7);
-                    If FileExists(UnitName) Then
-                    Begin
+                    if FileExists(UnitName) then
+                    begin
                         UnitName := StringReplace(UnitName, '\', '/', [rfReplaceAll]);
                         WriteDev('Unit' + IntToStr(C + 1), 'FileName', UnitName);
                         WriteDev('Unit' + IntToStr(C + 1), 'Folder', flds.DelimitedText);
-                        Case GetFileTyp(UnitName) Of
+                        case GetFileTyp(UnitName) of
                             utSrc, utHead:
-                            Begin
+                            begin
                                 WriteDev('Unit' + IntToStr(C + 1), 'Compile', '1');
-                                If AnsiSameText(ExtractFileExt(UnitName), '.c') Then
+                                if AnsiSameText(ExtractFileExt(UnitName), '.c') then
                                     WriteDev('Unit' + IntToStr(C + 1), 'CompileCpp', '0')
-                                Else
+                                else
                                     WriteDev('Unit' + IntToStr(C + 1), 'CompileCpp', '1');
                                 WriteDev('Unit' + IntToStr(C + 1), 'Link', '1');
-                            End;
+                            end;
                             utRes:
-                            Begin
+                            begin
                                 WriteDev('Unit' + IntToStr(C + 1), 'Compile', '1');
                                 WriteDev('Unit' + IntToStr(C + 1), 'CompileCpp', '1');
                                 WriteDev('Unit' + IntToStr(C + 1), 'Link', '0');
-                            End;
-                        Else
-                        Begin
+                            end;
+                        else
+                        begin
                             WriteDev('Unit' + IntToStr(C + 1), 'Compile', '0');
                             WriteDev('Unit' + IntToStr(C + 1), 'CompileCpp', '0');
                             WriteDev('Unit' + IntToStr(C + 1), 'Link', '0');
-                        End;
-                        End;
+                        end;
+                        end;
                         WriteDev('Unit' + IntToStr(C + 1), 'Priority', '1000');
                         Inc(C);
-                    End
-                    Else
+                    end
+                    else
                         fInvalidFiles := fInvalidFiles + UnitName + #13#10;
-                End;
-            End;
-    Finally
+                end;
+            end;
+    finally
         flds.Free;
-    End;
+    end;
 
-    If folders <> '' Then
+    if folders <> '' then
         Delete(folders, Length(folders), 1);
     WriteDev('Project', 'UnitCount', IntToStr(C));
     WriteDev('Project', 'Folders', folders);
-End;
+end;
 
-Function TImportMSVCForm.ReadTargets(Targets: TStringList): Boolean;
-Var
-    I: Integer;
-    P: Pchar;
-Begin
+function TImportMSVCForm.ReadTargets(Targets: TStringList): boolean;
+var
+    I: integer;
+    P: pchar;
+begin
     Targets.Clear;
-    Result := False;
+    Result := FALSE;
     I := 0;
-    While I < fSL.Count Do
-    Begin
-        If AnsiStartsText('# Begin Target', fSL[I]) Then
-        Begin
+    while I < fSL.Count do
+    begin
+        if AnsiStartsText('# Begin Target', fSL[I]) then
+        begin
             // got it
             Inc(I);
-            Repeat
-                If AnsiStartsText('# Name', fSL[I]) Then
-                Begin
-                    P := Pchar(Trim(Copy(fSL[I], 7, Length(fSL[I]) - 6)));
+            repeat
+                if AnsiStartsText('# Name', fSL[I]) then
+                begin
+                    P := pchar(Trim(Copy(fSL[I], 7, Length(fSL[I]) - 6)));
                     Targets.Add(AnsiExtractQuotedStr(P, '"'));
-                    Result := True;
-                End;
+                    Result := TRUE;
+                end;
                 Inc(I);
-            Until (I = fSL.Count) Or AnsiStartsText('# Begin Source File', fSL[I]);
+            until (I = fSL.Count) or AnsiStartsText('# Begin Source File', fSL[I]);
             Break;
-        End;
+        end;
         Inc(I);
-    End;
-End;
+    end;
+end;
 
-Procedure TImportMSVCForm.SetDevName(Value: String);
-Begin
+procedure TImportMSVCForm.SetDevName(Value: string);
+begin
     WriteDev('Project', 'Name', Value);
-End;
+end;
 
-Procedure TImportMSVCForm.SetFilename(Value: String);
-Begin
+procedure TImportMSVCForm.SetFilename(Value: string);
+begin
     WriteDev('Project', 'FileName', Value);
     fFilename := Value;
-End;
+end;
 
-Function TImportMSVCForm.StripQuotesIfNecessary(s: String): String;
-Var
-    P: Pchar;
-Begin
-    If AnsiStartsText('"', s) And AnsiEndsText('"', s) Then
-    Begin
-        P := Pchar(S);
+function TImportMSVCForm.StripQuotesIfNecessary(s: string): string;
+var
+    P: pchar;
+begin
+    if AnsiStartsText('"', s) and AnsiEndsText('"', s) then
+    begin
+        P := pchar(S);
         Result := AnsiExtractQuotedStr(P, '"');
-    End
-    Else
+    end
+    else
         Result := S;
-End;
+end;
 
-Procedure TImportMSVCForm.WriteDefaultEntries;
-Begin
+procedure TImportMSVCForm.WriteDefaultEntries;
+begin
     WriteDev('Project', 'Ver', '3');
     WriteDev('Project', 'IsCpp', '1');
     // all MSVC projects are C++ (correct me if I 'm wrong)
@@ -1979,49 +1979,49 @@ Begin
     WriteDev('Profile3', 'CompilerSet', '5');
     WriteDev('Profile3', 'CompilerType', '5');
 
-End;
+end;
 
-Procedure TImportMSVCForm.WriteDev(Section, Key, Value: String);
-Var
+procedure TImportMSVCForm.WriteDev(Section, Key, Value: string);
+var
     fIni: TIniFile;
-Begin
+begin
     fIni := TIniFile.Create(fFilename);
-    Try
+    try
         fIni.WriteString(Section, Key, Value);
-    Finally
+    finally
         fIni.Free;
-    End;
-End;
+    end;
+end;
 
-Procedure TImportMSVCForm.btnImportClick(Sender: TObject);
-Var
-    StartAt, EndAt: Integer;
-    SrcStartAt, SrcEndAt: Integer;
-    sMsg: String;
-Begin
-    If FileExists(fFilename) Then
-    Begin
-        If MessageDlg(fFilename +
+procedure TImportMSVCForm.btnImportClick(Sender: TObject);
+var
+    StartAt, EndAt: integer;
+    SrcStartAt, SrcEndAt: integer;
+    sMsg: string;
+begin
+    if FileExists(fFilename) then
+    begin
+        if MessageDlg(fFilename +
             ' exists. Are you sure you want to overwrite it?',
-            mtConfirmation, [mbYes, mbNo], 0) = mrNo Then
+            mtConfirmation, [mbYes, mbNo], 0) = mrNo then
             Exit;
         DeleteFile(fFilename);
-    End;
+    end;
 
     Screen.Cursor := crHourGlass;
-    btnImport.Enabled := False;
+    btnImport.Enabled := FALSE;
 
     SetFilename(fFilename);
     SetDevName(StringReplace(ExtractFileName(fFilename), DEV_EXT, '', []));
     WriteDefaultEntries;
 
     // locate selected target
-    If Not LocateTarget(StartAt, EndAt) Then
-    Begin
+    if not LocateTarget(StartAt, EndAt) then
+    begin
         sMsg := Format(Lang[ID_MSVC_MSG_CANTLOCATETARGET], [cmbConf.Text]);
         MessageDlg(sMsg, mtError, [mbOK], 0);
         Exit;
-    End;
+    end;
 
     //  WriteDev('Project', 'Type', '0');
     ReadProjectType;
@@ -2029,92 +2029,92 @@ Begin
     ReadLinkerOptions(StartAt, EndAt);
     LocateSourceTarget(SrcStartAt, SrcEndAt);
     ReadSourceFiles(SrcStartAt, SrcEndAt);
-    If fInvalidFiles = '' Then
+    if fInvalidFiles = '' then
         sMsg := Lang[ID_MSVC_MSG_SUCCESS]
-    Else
+    else
         sMsg := 'Some files belonging to project could not be located.'#13#10 +
             'Please locate them and add them to the project manually...'#13#10#13#10 +
             fInvalidFiles + #13#10'Project created with errors. Do you want to open it?';
-    If MessageDlg(sMsg, mtConfirmation, [mbYes, mbNo], 0) = mrYes Then
+    if MessageDlg(sMsg, mtConfirmation, [mbYes, mbNo], 0) = mrYes then
         ModalResult := mrOk
-    Else
+    else
         Close;
 
-    btnImport.Enabled := True;
+    btnImport.Enabled := TRUE;
     Screen.Cursor := crDefault;
 
-End;
+end;
 
-Procedure TImportMSVCForm.ReadProjectType();
-Var
-    I: Integer;
-    P: Pchar;
-Begin
+procedure TImportMSVCForm.ReadProjectType();
+var
+    I: integer;
+    P: pchar;
+begin
     I := 0;
-    While I < fSL.Count Do
-    Begin
-        If AnsiStartsText('# TARGTYPE', fSL[I]) Then
-        Begin
+    while I < fSL.Count do
+    begin
+        if AnsiStartsText('# TARGTYPE', fSL[I]) then
+        begin
             // got it
-            P := Pchar(Copy(fSL[I], Length(fSL[I]) - 5, 7));
-            If (P = '0x0102') Then // "Win32 (x86) Dynamic-Link Library"
+            P := pchar(Copy(fSL[I], Length(fSL[I]) - 5, 7));
+            if (P = '0x0102') then // "Win32 (x86) Dynamic-Link Library"
                 WriteDev('Project', 'Type', '3')
-            Else
-            If (P = '0x0103') Then // "Win32 (x86) Console Application"
+            else
+            if (P = '0x0103') then // "Win32 (x86) Console Application"
                 WriteDev('Project', 'Type', '1')
-            Else
-            If (P = '0x0104') Then // "Win32 (x86) Static Library"
+            else
+            if (P = '0x0104') then // "Win32 (x86) Static Library"
                 WriteDev('Project', 'Type', '2')
-            Else // unknown
+            else // unknown
                 WriteDev('Project', 'Type', '0');
             Break;
-        End;
+        end;
         Inc(I);
-    End;
-End;
+    end;
+end;
 
-Procedure TImportMSVCForm.FormClose(Sender: TObject;
-    Var Action: TCloseAction);
-Begin
+procedure TImportMSVCForm.FormClose(Sender: TObject;
+    var Action: TCloseAction);
+begin
     Action := caFree;
-End;
+end;
 
-Procedure TImportMSVCForm.btnBrowseClick(Sender: TObject);
-Begin
+procedure TImportMSVCForm.btnBrowseClick(Sender: TObject);
+begin
     OpenDialog1.Filter := FLT_MSVCPROJECTS;
     OpenDialog1.Title := Lang[ID_MSVC_SELECTMSVC];
-    If OpenDialog1.Execute Then
-    Begin
+    if OpenDialog1.Execute then
+    begin
         fFileName := StringReplace(OpenDialog1.FileName,
             ExtractFileExt(OpenDialog1.FileName), DEV_EXT, []);
         txtVC.Text := OpenDialog1.FileName;
         txtDev.Text := fFilename;
         ImportFile(OpenDialog1.FileName);
-    End;
+    end;
     UpdateButtons;
-End;
+end;
 
-Function TImportMSVCForm.GetFilename: String;
-Begin
+function TImportMSVCForm.GetFilename: string;
+begin
     Result := fFilename;
-End;
+end;
 
-Procedure TImportMSVCForm.txtDevChange(Sender: TObject);
-Begin
+procedure TImportMSVCForm.txtDevChange(Sender: TObject);
+begin
     UpdateButtons;
-End;
+end;
 
-Procedure TImportMSVCForm.btnBrowseDevClick(Sender: TObject);
-Begin
+procedure TImportMSVCForm.btnBrowseDevClick(Sender: TObject);
+begin
     SaveDialog1.Filter := FLT_PROJECTS;
     SaveDialog1.Title := Lang[ID_MSVC_SELECTDEV];
-    If SaveDialog1.Execute Then
+    if SaveDialog1.Execute then
         txtDev.Text := SaveDialog1.Filename;
-End;
+end;
 
-Procedure TImportMSVCForm.LoadText;
-Begin
-    DesktopFont := True;
+procedure TImportMSVCForm.LoadText;
+begin
+    DesktopFont := TRUE;
     XPMenu.Active := devData.XPTheme;
     Caption := Lang[ID_MSVC_MENUITEM];
 
@@ -2124,14 +2124,14 @@ Begin
     gbOptions.Caption := Lang[ID_MSVC_OPTIONS];
     btnImport.Caption := Lang[ID_BTN_IMPORT];
     btnCancel.Caption := Lang[ID_BTN_CANCEL];
-End;
+end;
 
-Function TImportMSVCForm.CheckVersion: Boolean;
+function TImportMSVCForm.CheckVersion: boolean;
 //var
 //    I: integer;
-Begin
+begin
 
-    Result := True;
+    Result := TRUE;
 
     // GAR 24 Oct 2008
     // I think there's no need to check the version. This either works or
@@ -2145,19 +2145,19 @@ Begin
     //  end;
     //if not Result then
     //  MessageDlg('This file''s version is not one that can be imported...', mtWarning, [mbOK], 0);
-End;
+end;
 
-Procedure TImportMSVCForm.CreateParams(Var Params: TCreateParams);
-Begin
-    Inherited;
-    If (Parent <> Nil) Or (ParentWindow <> 0) Then
+procedure TImportMSVCForm.CreateParams(var Params: TCreateParams);
+begin
+    inherited;
+    if (Parent <> NIL) or (ParentWindow <> 0) then
         Exit;  // must not mess with wndparent if form is embedded
 
-    If Assigned(Owner) And (Owner Is TWincontrol) Then
+    if Assigned(Owner) and (Owner is TWincontrol) then
         Params.WndParent := TWinControl(Owner).handle
-    Else
-    If Assigned(Screen.Activeform) Then
+    else
+    if Assigned(Screen.Activeform) then
         Params.WndParent := Screen.Activeform.Handle;
-End;
+end;
 
-End.
+end.

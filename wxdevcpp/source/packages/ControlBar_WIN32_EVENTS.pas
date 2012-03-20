@@ -1,38 +1,38 @@
-Unit ControlBar_WIN32_EVENTS;
+unit ControlBar_WIN32_EVENTS;
 
-Interface
+interface
 
-Uses
+uses
     Windows, Messages, SysUtils, Classes, Controls, ExtCtrls, Forms;
 
-Type
-    TWMCommandEvent = Procedure(Sender: TObject; Var TheMessage: TWMCommand) Of Object;
+type
+    TWMCommandEvent = procedure(Sender: TObject; var TheMessage: TWMCommand) of object;
 
-    TControlBar_WIN32_EVENTS = Class(TControlBar)
-    Private
+    TControlBar_WIN32_EVENTS = class(TControlBar)
+    private
         fOnWM_COMMAND: TWMCommandEvent;
-    Protected
-        Procedure WM_COMMAND_EVENT(Var Message: TWMCommand); Message WM_COMMAND;
-    Public
+    protected
+        procedure WM_COMMAND_EVENT(var Message: TWMCommand); message WM_COMMAND;
+    public
     { Public declarations }
-    Published
-        Property OnWM_COMMAND: TWMCommandEvent Read fOnWM_COMMAND Write fOnWM_COMMAND;
-    End;
+    published
+        property OnWM_COMMAND: TWMCommandEvent read fOnWM_COMMAND write fOnWM_COMMAND;
+    end;
 
-Procedure Register;
+procedure Register;
 
-Implementation
+implementation
 
-Procedure Register;
-Begin
+procedure Register;
+begin
     RegisterComponents('dev-c++', [TControlBar_WIN32_EVENTS]);
-End;
+end;
 
-Procedure TControlBar_WIN32_EVENTS.WM_COMMAND_EVENT(Var Message: TWMCommand);
-Begin
-    If Assigned(fOnWM_COMMAND) Then
+procedure TControlBar_WIN32_EVENTS.WM_COMMAND_EVENT(var Message: TWMCommand);
+begin
+    if Assigned(fOnWM_COMMAND) then
         fOnWM_COMMAND(Self, Message);
-    Inherited;  {Call default processing.}
-End;
+    inherited;  {Call default processing.}
+end;
 
-End.
+end.

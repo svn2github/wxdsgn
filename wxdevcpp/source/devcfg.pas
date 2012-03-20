@@ -35,10 +35,10 @@
            i.e. opt:= TdevData.Create;
 *)
 
-Unit devcfg;
-Interface
+unit devcfg;
+interface
 
-Uses
+uses
 {$IFDEF WIN32}
     Dialogs, Windows, Classes, Graphics, SynEdit, CFGData, CFGTypes,
     IniFiles, prjtypes; //, SynEditCodeFolding;  //, DbugIntf; EAB removed Gexperts debug stuff.
@@ -47,9 +47,9 @@ Uses
   QDialogs, Classes, QGraphics, QSynEdit, CFGData, CFGTypes, IniFiles, prjtypes;
 {$ENDIF}
 
-Const
-    BoolValYesNo: Array[Boolean] Of String = ('No', 'Yes');
-    BoolVal10: Array[0..27] Of String =
+const
+    BoolValYesNo: array[boolean] of string = ('No', 'Yes');
+    BoolVal10: array[0..27] of string =
         ('0', '1', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
         // Had to use letters for multiple choices
         'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
@@ -70,823 +70,823 @@ Const
     ID_COMPILER_VC_CURRENT = [ID_COMPILER_VC2005, ID_COMPILER_VC2008,
         ID_COMPILER_VC2010];
 
-Type
+type
     // the comments are an example of the record
     PCompilerOption = ^TCompilerOption;
-    TCompilerOption = Packed Record
-        optName: String; // "Generate debugging info"
-        optIsGroup: Boolean; // False
-        optIsC: Boolean; // True  (C option?)
-        optIsCpp: Boolean; // True (C++ option?) - can be both C and C++ option...
-        optIsLinker: Boolean; // Is it a linker param
-        optValue: Integer; // True
-        optSetting: String; // "-g3"
-        optSection: String; // "Linker options"
+    TCompilerOption = packed record
+        optName: string; // "Generate debugging info"
+        optIsGroup: boolean; // False
+        optIsC: boolean; // True  (C option?)
+        optIsCpp: boolean; // True (C++ option?) - can be both C and C++ option...
+        optIsLinker: boolean; // Is it a linker param
+        optValue: integer; // True
+        optSetting: string; // "-g3"
+        optSection: string; // "Linker options"
         optExcludeFromTypes: TProjTypeSet;
         // [dptGUI] (don't show option if project is of type dptGUI)
         optChoices: TStringList;
         // replaces "Yes/No" standard choices (max 26 different choices)
-    End;
+    end;
 
     // compiler-set configuration
-    TdevCompilerSet = Class(TCFGOptions)
-    Private
+    TdevCompilerSet = class(TCFGOptions)
+    private
         fSets: TStrings;
-        fgccName: String;
-        fgppName: String;
-        fgdbName: String;
-        fmakeName: String;
-        fwindresName: String;
-        fdllwrapName: String;
-        fgprofName: String;
+        fgccName: string;
+        fgppName: string;
+        fgdbName: string;
+        fmakeName: string;
+        fwindresName: string;
+        fdllwrapName: string;
+        fgprofName: string;
 
-        fBinDir: String;
-        fCDir: String;
-        fCppDir: String;
-        fLibDir: String;
-        fRCDir: String;
-        fOptions: String;
-        fCompilerType: Integer;
+        fBinDir: string;
+        fCDir: string;
+        fCppDir: string;
+        fLibDir: string;
+        fRCDir: string;
+        fOptions: string;
+        fCompilerType: integer;
 
-        fLinkerPaths: String;
-        fDllFormat: String;
-        fLibFormat: String;
-        fPreprocDefines: String;
-        fCmdOptions: String;
-        fLinkOptions: String;
-        fMakeOptions: String;
+        fLinkerPaths: string;
+        fDllFormat: string;
+        fLibFormat: string;
+        fPreprocDefines: string;
+        fCmdOptions: string;
+        fLinkOptions: string;
+        fMakeOptions: string;
 
-        fCheckSyntaxFormat: String;
-        fOutputFormat: String;
-        fResourceIncludeFormat: String;
-        fResourceFormat: String;
-        fLinkerFormat: String;
-        fIncludeFormat: String;
-        fPchCreateFormat: String;
-        fPchUseFormat: String;
-        fPchFileFormat: String;
-        fSingleCompile: String;
+        fCheckSyntaxFormat: string;
+        fOutputFormat: string;
+        fResourceIncludeFormat: string;
+        fResourceFormat: string;
+        fLinkerFormat: string;
+        fIncludeFormat: string;
+        fPchCreateFormat: string;
+        fPchUseFormat: string;
+        fPchFileFormat: string;
+        fSingleCompile: string;
 
         //Private ctor and dtor, since we are singletons
-        Constructor Create;
+        constructor Create;
 
-        Procedure WriteSets;
-        Procedure UpdateSets;
+        procedure WriteSets;
+        procedure UpdateSets;
 
-    Public
+    public
 {$IFDEF PLUGIN_BUILD}
-        optComKey: String;
+        optComKey: string;
 {$ENDIF PLUGIN_BUILD}
-  	     Destructor Destroy; Override;
-        Procedure SettoDefaults; Override;
-        Procedure SaveSettings; Override;
-        Procedure LoadSettings; Override;
-        Procedure SaveSet(Index: Integer);
-        Procedure SaveSetDirs(Index: Integer);
-        Procedure SaveSetProgs(Index: Integer);
-        Procedure LoadSet(Index: Integer);
-        Procedure LoadSetDirs(Index: Integer);
-        Procedure LoadSetProgs(Index: Integer);
-        Procedure LoadDefaultCompilerDefaults;
-        Procedure AssignToCompiler;
-        Function SetName(Index: Integer): String;
+  	     destructor Destroy; override;
+        procedure SettoDefaults; override;
+        procedure SaveSettings; override;
+        procedure LoadSettings; override;
+        procedure SaveSet(Index: integer);
+        procedure SaveSetDirs(Index: integer);
+        procedure SaveSetProgs(Index: integer);
+        procedure LoadSet(Index: integer);
+        procedure LoadSetDirs(Index: integer);
+        procedure LoadSetProgs(Index: integer);
+        procedure LoadDefaultCompilerDefaults;
+        procedure AssignToCompiler;
+        function SetName(Index: integer): string;
 
-        Property Name;
-        Property Sets: TStrings Read fSets Write fSets;
+        property Name;
+        property Sets: TStrings read fSets write fSets;
 
-    Published
-        Property CompilerType: Integer Read fCompilerType Write fCompilerType;
-        Property CheckSyntaxFormat: String
-            Read fCheckSyntaxFormat Write fCheckSyntaxFormat;
-        Property OutputFormat: String Read fOutputFormat Write fOutputFormat;
-        Property PchCreateFormat: String Read fPchCreateFormat
-            Write fPchCreateFormat;
-        Property PchUseFormat: String Read fPchUseFormat Write fPchUseFormat;
-        Property PchFileFormat: String Read fPchFileFormat Write fPchFileFormat;
-        Property ResourceIncludeFormat: String
-            Read fResourceIncludeFormat Write fResourceIncludeFormat;
-        Property ResourceFormat: String Read fResourceFormat Write fResourceFormat;
-        Property LinkerFormat: String Read fLinkerFormat Write fLinkerFormat;
-        Property LinkerPaths: String Read fLinkerPaths Write fLinkerPaths;
-        Property IncludeFormat: String Read fIncludeFormat Write fIncludeFormat;
-        Property DllFormat: String Read fDllFormat Write fDllFormat;
-        Property LibFormat: String Read fLibFormat Write fLibFormat;
-        Property SingleCompile: String Read fSingleCompile Write fSingleCompile;
-        Property PreprocDefines: String Read fPreprocDefines Write fPreprocDefines;
+    published
+        property CompilerType: integer read fCompilerType write fCompilerType;
+        property CheckSyntaxFormat: string
+            read fCheckSyntaxFormat write fCheckSyntaxFormat;
+        property OutputFormat: string read fOutputFormat write fOutputFormat;
+        property PchCreateFormat: string read fPchCreateFormat
+            write fPchCreateFormat;
+        property PchUseFormat: string read fPchUseFormat write fPchUseFormat;
+        property PchFileFormat: string read fPchFileFormat write fPchFileFormat;
+        property ResourceIncludeFormat: string
+            read fResourceIncludeFormat write fResourceIncludeFormat;
+        property ResourceFormat: string read fResourceFormat write fResourceFormat;
+        property LinkerFormat: string read fLinkerFormat write fLinkerFormat;
+        property LinkerPaths: string read fLinkerPaths write fLinkerPaths;
+        property IncludeFormat: string read fIncludeFormat write fIncludeFormat;
+        property DllFormat: string read fDllFormat write fDllFormat;
+        property LibFormat: string read fLibFormat write fLibFormat;
+        property SingleCompile: string read fSingleCompile write fSingleCompile;
+        property PreprocDefines: string read fPreprocDefines write fPreprocDefines;
 
-        Property gccName: String Read fgccName Write fgccName;
-        Property gppName: String Read fgppName Write fgppName;
-        Property gdbName: String Read fgdbName Write fgdbName;
-        Property makeName: String Read fmakeName Write fmakeName;
-        Property windresName: String Read fwindresName Write fwindresName;
-        Property dllwrapName: String Read fdllwrapName Write fdllwrapName;
-        Property gprofName: String Read fgprofName Write fgprofName;
+        property gccName: string read fgccName write fgccName;
+        property gppName: string read fgppName write fgppName;
+        property gdbName: string read fgdbName write fgdbName;
+        property makeName: string read fmakeName write fmakeName;
+        property windresName: string read fwindresName write fwindresName;
+        property dllwrapName: string read fdllwrapName write fdllwrapName;
+        property gprofName: string read fgprofName write fgprofName;
 
-        Property BinDir: String Read fBinDir Write fBinDir;
-        Property CDir: String Read fCDir Write fCDir;
-        Property CppDir: String Read fCppDir Write fCppDir;
-        Property LibDir: String Read fLibDir Write fLibDir;
-        Property RCDir: String Read fRCDir Write fRCDir;
-        Property OptionsStr: String Read fOptions Write fOptions; //0, 1, a-z list
-        Property CmdOpts: String Read fCmdOptions Write fCmdOptions;
+        property BinDir: string read fBinDir write fBinDir;
+        property CDir: string read fCDir write fCDir;
+        property CppDir: string read fCppDir write fCppDir;
+        property LibDir: string read fLibDir write fLibDir;
+        property RCDir: string read fRCDir write fRCDir;
+        property OptionsStr: string read fOptions write fOptions; //0, 1, a-z list
+        property CmdOpts: string read fCmdOptions write fCmdOptions;
         //Manual commands
-        Property LinkOpts: String Read fLinkOptions Write fLinkOptions;
+        property LinkOpts: string read fLinkOptions write fLinkOptions;
         //Manual commands
-        Property MakeOpts: String Read fMakeOptions Write fMakeOptions;
-    End;
+        property MakeOpts: string read fMakeOptions write fMakeOptions;
+    end;
 
     // compiler options
-    TdevCompiler = Class(TCFGOptions)
-    Private
-        fUseParams: Boolean;   // Use fparams when running prog
-        fRunParams: String;    // params to send on execution
+    TdevCompiler = class(TCFGOptions)
+    private
+        fUseParams: boolean;   // Use fparams when running prog
+        fRunParams: string;    // params to send on execution
 
         // program filenames
-        fgccName: String;
-        fgppName: String;
-        fgdbName: String;
-        fmakeName: String;
-        fwindresName: String;
-        fgprofName: String;
-        fdllwrapName: String;
-        fCompilerSet: Integer;
-        fCompilerType: Integer;
-        fLinkerFormat: String;
-        fLinkerPaths: String;
-        fIncludeFormat: String;
-        fSingleCompile: String;
-        fPreprocDefines: String;
+        fgccName: string;
+        fgppName: string;
+        fgdbName: string;
+        fmakeName: string;
+        fwindresName: string;
+        fgprofName: string;
+        fdllwrapName: string;
+        fCompilerSet: integer;
+        fCompilerType: integer;
+        fLinkerFormat: string;
+        fLinkerPaths: string;
+        fIncludeFormat: string;
+        fSingleCompile: string;
+        fPreprocDefines: string;
 
-        fCheckSyntaxFormat: String;
-        fOutputFormat: String;
-        fResourceIncludeFormat: String;
-        fResourceFormat: String;
-        fDllFormat: String;
-        fLibFormat: String;
-        fPchCreateFormat: String;
-        fPchUseFormat: String;
-        fPchFileFormat: String;
+        fCheckSyntaxFormat: string;
+        fOutputFormat: string;
+        fResourceIncludeFormat: string;
+        fResourceFormat: string;
+        fDllFormat: string;
+        fLibFormat: string;
+        fPchCreateFormat: string;
+        fPchUseFormat: string;
+        fPchFileFormat: string;
 
         //Compiler options
         fOptions: TList;
 
         //Makefile
-        fFastDep: Boolean;
+        fFastDep: boolean;
 
-        fcmdOpts: String;  // command-line adds for compiler
-        flinkopts: String; // command-line adds for linker
-        fMakeOpts: String;
+        fcmdOpts: string;  // command-line adds for compiler
+        flinkopts: string; // command-line adds for linker
+        fMakeOpts: string;
 	       //fwxOpts: TdevWxOptions;    
-        fSaveLog: Boolean; // Save Compiler Output
-        fDelay: Integer;   // delay in milliseconds -- for compiling
+        fSaveLog: boolean; // Save Compiler Output
+        fDelay: integer;   // delay in milliseconds -- for compiling
 
         //Private constructors for singletons
-        Constructor Create;
+        constructor Create;
 
-        Procedure SetCompilerSet(Const Value: Integer);
-        Function GetOptions(Index: Integer): TCompilerOption;
-        Procedure SetOptions(Index: Integer; Const Value: TCompilerOption);
+        procedure SetCompilerSet(const Value: integer);
+        function GetOptions(Index: integer): TCompilerOption;
+        procedure SetOptions(Index: integer; const Value: TCompilerOption);
 
-        Function GetOptionStr: String;
-        Procedure SetOptionStr(Const Value: String);
+        function GetOptionStr: string;
+        procedure SetOptionStr(const Value: string);
 
-    Published
-        Procedure AddDefaultOptions;
+    published
+        procedure AddDefaultOptions;
 
-    Public
-        Destructor Destroy; Override;
-        Function OptionsCount: Integer;
-        Function FindOption(Setting: String; Var opt: TCompilerOption;
-            Var Index: Integer): Boolean; // returns the option with setting=<Setting>
-        Function ConvertCharToValue(c: Char): Integer;
-        Procedure AddOption(_Name: String;
-            _IsGroup, _IsC, _IsCpp, IsLinker: Boolean; _Value: Integer;
-            _Setting, _Section: String; ExcludeFromTypes: TProjTypeSet;
+    public
+        destructor Destroy; override;
+        function OptionsCount: integer;
+        function FindOption(Setting: string; var opt: TCompilerOption;
+            var Index: integer): boolean; // returns the option with setting=<Setting>
+        function ConvertCharToValue(c: char): integer;
+        procedure AddOption(_Name: string;
+            _IsGroup, _IsC, _IsCpp, IsLinker: boolean; _Value: integer;
+            _Setting, _Section: string; ExcludeFromTypes: TProjTypeSet;
             Choices: TStringList);
-        Procedure SettoDefaults; Override;
-        Procedure SaveSettings; Override;
-        Procedure LoadSettings; Override;
-        Procedure ClearOptions;
-        Procedure DeleteOption(Index: Integer);
+        procedure SettoDefaults; override;
+        procedure SaveSettings; override;
+        procedure LoadSettings; override;
+        procedure ClearOptions;
+        procedure DeleteOption(Index: integer);
 
-        Property Name;
-        Property Options[Index: Integer]: TCompilerOption
-            Read GetOptions Write SetOptions;
-        Property OptionStr: String Read GetOptionStr Write SetOptionStr;
+        property Name;
+        property Options[Index: integer]: TCompilerOption
+            read GetOptions write SetOptions;
+        property OptionStr: string read GetOptionStr write SetOptionStr;
 
-    Published
-        Property CmdOpts: String Read fcmdOpts Write fcmdOpts;
-        Property LinkOpts: String Read flinkOpts Write flinkOpts;
-        Property MakeOpts: String Read fMakeOpts Write fMakeOpts;
+    published
+        property CmdOpts: string read fcmdOpts write fcmdOpts;
+        property LinkOpts: string read flinkOpts write flinkOpts;
+        property MakeOpts: string read fMakeOpts write fMakeOpts;
 	       //property WxOpts: TdevWxOptions read fWxOpts write fWxOpts;
-        Property FastDep: Boolean Read fFastDep Write fFastDep;
+        property FastDep: boolean read fFastDep write fFastDep;
 
-        Property CompilerType: Integer Read fCompilerType Write fCompilerType;
-        Property CheckSyntaxFormat: String
-            Read fCheckSyntaxFormat Write fCheckSyntaxFormat;
-        Property OutputFormat: String Read fOutputFormat Write fOutputFormat;
-        Property PchCreateFormat: String Read fPchCreateFormat
-            Write fPchCreateFormat;
-        Property PchUseFormat: String Read fPchUseFormat Write fPchUseFormat;
-        Property PchFileFormat: String Read fPchFileFormat Write fPchFileFormat;
-        Property ResourceIncludeFormat: String
-            Read fResourceIncludeFormat Write fResourceIncludeFormat;
-        Property ResourceFormat: String Read fResourceFormat Write fResourceFormat;
-        Property LinkerFormat: String Read fLinkerFormat Write fLinkerFormat;
-        Property LinkerPaths: String Read fLinkerPaths Write fLinkerPaths;
-        Property IncludeFormat: String Read fIncludeFormat Write fIncludeFormat;
-        Property DllFormat: String Read fDllFormat Write fDllFormat;
-        Property LibFormat: String Read fLibFormat Write fLibFormat;
-        Property SingleCompile: String Read fSingleCompile Write fSingleCompile;
-        Property PreprocDefines: String Read fPreprocDefines Write fPreprocDefines;
+        property CompilerType: integer read fCompilerType write fCompilerType;
+        property CheckSyntaxFormat: string
+            read fCheckSyntaxFormat write fCheckSyntaxFormat;
+        property OutputFormat: string read fOutputFormat write fOutputFormat;
+        property PchCreateFormat: string read fPchCreateFormat
+            write fPchCreateFormat;
+        property PchUseFormat: string read fPchUseFormat write fPchUseFormat;
+        property PchFileFormat: string read fPchFileFormat write fPchFileFormat;
+        property ResourceIncludeFormat: string
+            read fResourceIncludeFormat write fResourceIncludeFormat;
+        property ResourceFormat: string read fResourceFormat write fResourceFormat;
+        property LinkerFormat: string read fLinkerFormat write fLinkerFormat;
+        property LinkerPaths: string read fLinkerPaths write fLinkerPaths;
+        property IncludeFormat: string read fIncludeFormat write fIncludeFormat;
+        property DllFormat: string read fDllFormat write fDllFormat;
+        property LibFormat: string read fLibFormat write fLibFormat;
+        property SingleCompile: string read fSingleCompile write fSingleCompile;
+        property PreprocDefines: string read fPreprocDefines write fPreprocDefines;
 
-        Property RunParams: String Read fRunParams Write fRunParams;
-        Property UseExecParams: Boolean Read fUseParams Write fUseParams;
-        Property SaveLog: Boolean Read fSaveLog Write fSaveLog;
-        Property Delay: Integer Read fDelay Write fDelay;
+        property RunParams: string read fRunParams write fRunParams;
+        property UseExecParams: boolean read fUseParams write fUseParams;
+        property SaveLog: boolean read fSaveLog write fSaveLog;
+        property Delay: integer read fDelay write fDelay;
 
-        Property gccName: String Read fgccName Write fgccName;
-        Property gppName: String Read fgppName Write fgppName;
-        Property gdbName: String Read fgdbName Write fgdbName;
-        Property makeName: String Read fmakeName Write fmakeName;
-        Property windresName: String Read fwindresName Write fwindresName;
-        Property dllwrapName: String Read fdllwrapName Write fdllwrapName;
-        Property gprofName: String Read fgprofName Write fgprofName;
-        Property CompilerSet: Integer Read fCompilerSet Write SetCompilerSet;
-    End;
+        property gccName: string read fgccName write fgccName;
+        property gppName: string read fgppName write fgppName;
+        property gdbName: string read fgdbName write fgdbName;
+        property makeName: string read fmakeName write fmakeName;
+        property windresName: string read fwindresName write fwindresName;
+        property dllwrapName: string read fdllwrapName write fdllwrapName;
+        property gprofName: string read fgprofName write fgprofName;
+        property CompilerSet: integer read fCompilerSet write SetCompilerSet;
+    end;
 
     // code-completion window size and other config
-    TdevCodeCompletion = Class(TCFGOptions)
-    Private
-        fWidth: Integer;
-        fHeight: Integer;
-        fDelay: Integer;
-        fBackColor: Integer;
-        fEnabled: Boolean;
-        fUseCacheFiles: Boolean;
+    TdevCodeCompletion = class(TCFGOptions)
+    private
+        fWidth: integer;
+        fHeight: integer;
+        fDelay: integer;
+        fBackColor: integer;
+        fEnabled: boolean;
+        fUseCacheFiles: boolean;
         fCacheFiles: TStrings;
-        Procedure SetDelay(Value: Integer);
-    Public
-        Constructor Create;
-        Destructor Destroy; Override;
-        Procedure SettoDefaults; Override;
-        Procedure SaveSettings; Override;
-        Procedure LoadSettings; Override;
-        Property Name;
-    Published
-        Property Width: Integer Read fWidth Write fWidth;
-        Property Height: Integer Read fHeight Write fHeight;
-        Property Delay: Integer Read fDelay Write SetDelay;
-        Property BackColor: Integer Read fBackColor Write fBackColor;
-        Property Enabled: Boolean Read fEnabled Write fEnabled;
-        Property UseCacheFiles: Boolean Read fUseCacheFiles Write fUseCacheFiles;
-        Property CacheFiles: TStrings Read fCacheFiles Write fCacheFiles;
-    End;
+        procedure SetDelay(Value: integer);
+    public
+        constructor Create;
+        destructor Destroy; override;
+        procedure SettoDefaults; override;
+        procedure SaveSettings; override;
+        procedure LoadSettings; override;
+        property Name;
+    published
+        property Width: integer read fWidth write fWidth;
+        property Height: integer read fHeight write fHeight;
+        property Delay: integer read fDelay write SetDelay;
+        property BackColor: integer read fBackColor write fBackColor;
+        property Enabled: boolean read fEnabled write fEnabled;
+        property UseCacheFiles: boolean read fUseCacheFiles write fUseCacheFiles;
+        property CacheFiles: TStrings read fCacheFiles write fCacheFiles;
+    end;
 
     // class-browsing view style
-    TdevClassBrowsing = Class(TCFGOptions)
-    Private
-        fCBViewStyle: Integer;
-        fEnabled: Boolean;
-        fParseLocalHeaders: Boolean;
-        fParseGlobalHeaders: Boolean;
-        fShowFilter: Integer; // 0 - show all, 1 - show project, 2 - show current
-        fUseColors: Boolean;
-        fShowInheritedMembers: Boolean;
-    Public
-        Constructor Create;
-        Procedure SettoDefaults; Override;
-        Procedure SaveSettings; Override;
-        Procedure LoadSettings; Override;
-        Property Name;
-    Published
-        Property Enabled: Boolean Read fEnabled Write fEnabled;
-        Property ViewStyle: Integer Read fCBViewStyle Write fCBViewStyle;
-        Property ParseLocalHeaders: Boolean
-            Read fParseLocalHeaders Write fParseLocalHeaders;
-        Property ParseGlobalHeaders: Boolean
-            Read fParseGlobalHeaders Write fParseGlobalHeaders;
-        Property ShowFilter: Integer Read fShowFilter Write fShowFilter;
-        Property UseColors: Boolean Read fUseColors Write fUseColors;
-        Property ShowInheritedMembers: Boolean
-            Read fShowInheritedMembers Write fShowInheritedMembers;
-    End;
+    TdevClassBrowsing = class(TCFGOptions)
+    private
+        fCBViewStyle: integer;
+        fEnabled: boolean;
+        fParseLocalHeaders: boolean;
+        fParseGlobalHeaders: boolean;
+        fShowFilter: integer; // 0 - show all, 1 - show project, 2 - show current
+        fUseColors: boolean;
+        fShowInheritedMembers: boolean;
+    public
+        constructor Create;
+        procedure SettoDefaults; override;
+        procedure SaveSettings; override;
+        procedure LoadSettings; override;
+        property Name;
+    published
+        property Enabled: boolean read fEnabled write fEnabled;
+        property ViewStyle: integer read fCBViewStyle write fCBViewStyle;
+        property ParseLocalHeaders: boolean
+            read fParseLocalHeaders write fParseLocalHeaders;
+        property ParseGlobalHeaders: boolean
+            read fParseGlobalHeaders write fParseGlobalHeaders;
+        property ShowFilter: integer read fShowFilter write fShowFilter;
+        property UseColors: boolean read fUseColors write fUseColors;
+        property ShowInheritedMembers: boolean
+            read fShowInheritedMembers write fShowInheritedMembers;
+    end;
 
     // CVS handling module
-    TdevCVSHandler = Class(TCFGOptions)
-    Private
+    TdevCVSHandler = class(TCFGOptions)
+    private
         fRepositories: TStrings;
-        fExecutable: String;
-        fCompression: Byte;
-        fUseSSH: Boolean;
-    Public
-        Constructor Create;
-        Destructor Destroy; Override;
-        Procedure SettoDefaults; Override;
-        Procedure SaveSettings; Override;
-        Procedure LoadSettings; Override;
-        Property Name;
-    Published
-        Property Repositories: TStrings Read fRepositories Write fRepositories;
-        Property Executable: String Read fExecutable Write fExecutable;
-        Property Compression: Byte Read fCompression Write fCompression;
-        Property UseSSH: Boolean Read fUseSSH Write fUseSSH;
-    End;
+        fExecutable: string;
+        fCompression: byte;
+        fUseSSH: boolean;
+    public
+        constructor Create;
+        destructor Destroy; override;
+        procedure SettoDefaults; override;
+        procedure SaveSettings; override;
+        procedure LoadSettings; override;
+        property Name;
+    published
+        property Repositories: TStrings read fRepositories write fRepositories;
+        property Executable: string read fExecutable write fExecutable;
+        property Compression: byte read fCompression write fCompression;
+        property UseSSH: boolean read fUseSSH write fUseSSH;
+    end;
 
-    TdevExternalPrograms = Class(TCFGOptions)
-    Private
-        fDummy: Boolean;
+    TdevExternalPrograms = class(TCFGOptions)
+    private
+        fDummy: boolean;
         fPrograms: TStrings;
-        Function GetProgramName(Index: Integer): String;
-    Public
-        Constructor Create;
-        Destructor Destroy; Override;
-        Procedure SaveSettings; Override;
-        Procedure LoadSettings; Override;
-        Procedure SetToDefaults; Override;
-        Property Name;
-        Property ProgramName[Index: Integer]: String Read GetProgramName;
-        Function AssignedProgram(ext: String): Integer;
-        Function AddProgram(ext, prog: String): Integer;
-    Published
-        Property Dummy: Boolean Read fDummy Write fDummy;
-        Property Programs: TStrings Read fPrograms Write fPrograms;
-    End;
+        function GetProgramName(Index: integer): string;
+    public
+        constructor Create;
+        destructor Destroy; override;
+        procedure SaveSettings; override;
+        procedure LoadSettings; override;
+        procedure SetToDefaults; override;
+        property Name;
+        property ProgramName[Index: integer]: string read GetProgramName;
+        function AssignedProgram(ext: string): integer;
+        function AddProgram(ext, prog: string): integer;
+    published
+        property Dummy: boolean read fDummy write fDummy;
+        property Programs: TStrings read fPrograms write fPrograms;
+    end;
  {$IFDEF PLUGIN_BUILD}
-    TdevPluginToolbarsX = Class(TCFGOptions)
-    Private
-        fDummy: Boolean;
+    TdevPluginToolbarsX = class(TCFGOptions)
+    private
+        fDummy: boolean;
         fPluginToolbarsX: TStrings;
-        Function GetToolbarsXName(Index: Integer): String;
-    Public
-        Constructor Create;
-        Destructor Destroy; Override;
-        Procedure SaveSettings; Override;
-        Procedure LoadSettings; Override;
-        Procedure SetToDefaults; Override;
-        Property Name;
-        Property ToolbarsXName[Index: Integer]: String Read GetToolbarsXName;
-        Function AssignedToolbarsX(plugin_name: String): Integer;
-        Function AddToolbarsX(plugin_name: String; x: Integer): Integer;
-    Published
-        Property Dummy: Boolean Read fDummy Write fDummy;
-        Property PluginToolbarsX: TStrings Read fPluginToolbarsX
-            Write fPluginToolbarsX;
-    End;
+        function GetToolbarsXName(Index: integer): string;
+    public
+        constructor Create;
+        destructor Destroy; override;
+        procedure SaveSettings; override;
+        procedure LoadSettings; override;
+        procedure SetToDefaults; override;
+        property Name;
+        property ToolbarsXName[Index: integer]: string read GetToolbarsXName;
+        function AssignedToolbarsX(plugin_name: string): integer;
+        function AddToolbarsX(plugin_name: string; x: integer): integer;
+    published
+        property Dummy: boolean read fDummy write fDummy;
+        property PluginToolbarsX: TStrings read fPluginToolbarsX
+            write fPluginToolbarsX;
+    end;
 
-    TdevPluginToolbarsY = Class(TCFGOptions)
-    Private
-        fDummy: Boolean;
+    TdevPluginToolbarsY = class(TCFGOptions)
+    private
+        fDummy: boolean;
         fPluginToolbarsY: TStrings;
-        Function GetToolbarsYName(Index: Integer): String;
-    Public
-        Constructor Create;
-        Destructor Destroy; Override;
-        Procedure SaveSettings; Override;
-        Procedure LoadSettings; Override;
-        Procedure SetToDefaults; Override;
-        Property Name;
-        Property ToolbarsYName[Index: Integer]: String Read GetToolbarsYName;
-        Function AssignedToolbarsY(plugin_name: String): Integer;
-        Function AddToolbarsY(plugin_name: String; y: Integer): Integer;
-    Published
-        Property Dummy: Boolean Read fDummy Write fDummy;
-        Property PluginToolbarsY: TStrings Read fPluginToolbarsY
-            Write fPluginToolbarsY;
-    End;
+        function GetToolbarsYName(Index: integer): string;
+    public
+        constructor Create;
+        destructor Destroy; override;
+        procedure SaveSettings; override;
+        procedure LoadSettings; override;
+        procedure SetToDefaults; override;
+        property Name;
+        property ToolbarsYName[Index: integer]: string read GetToolbarsYName;
+        function AssignedToolbarsY(plugin_name: string): integer;
+        function AddToolbarsY(plugin_name: string; y: integer): integer;
+    published
+        property Dummy: boolean read fDummy write fDummy;
+        property PluginToolbarsY: TStrings read fPluginToolbarsY
+            write fPluginToolbarsY;
+    end;
 {$ENDIF PLUGIN_BUILD}
 
     // global directories
-    TdevDirs = Class(TCFGOptions)
-    Private
-        fCompilerType: Integer;
-        fThemes: String; // Themes Directory
-        fIcons: String; // Icon Library
-        fHelp: String; // Help
-        fLang: String; // Language
-        fTemp: String; // Templates
-        fDefault: String; // user defined default
-        fExec: String; // dev-c start
-        fConfig: String; // config files directory
-        fBinDir: String; // compiler location
-        fCDir: String; // c includes
-        fCppDir: String; // c++ includes
-        fLibDir: String; // Libraries
-        fRCDir: String; // Resource includes
-        fOldPath: String; // Enviroment Path at program start
-        Procedure FixPaths;
-    Public
-        Constructor Create;
-        Procedure SettoDefaults; Override;
-        Procedure SaveSettings; Override;
-        Procedure LoadSettings; Override;
-        Function CallValidatePaths(dirList: String): String;
-        Property Name;
-        Property OriginalPath: String Read fOldPath Write fOldPath;
-    Published
-        Property Exec: String Read fExec Write fExec;
-        Property Config: String Read fConfig Write fConfig;
-        Property Bins: String Read fBinDir Write fBinDir;
-        Property Default: String Read fDefault Write fDefault;
-        Property C: String Read fCDir Write fCDir;
-        Property Cpp: String Read fCppDir Write fCppDir;
-        Property Help: String Read fHelp Write fHelp;
-        Property Icons: String Read fIcons Write fIcons;
-        Property Lang: String Read fLang Write fLang;
-        Property Lib: String Read fLibDir Write fLibDir;
-        Property RC: String Read fRCDir Write fRCDir;
-        Property Templates: String Read fTemp Write fTemp;
-        Property Themes: String Read fThemes Write fThemes;
-        Property CompilerType: Integer Read fCompilerType Write fCompilerType;
-    End;
+    TdevDirs = class(TCFGOptions)
+    private
+        fCompilerType: integer;
+        fThemes: string; // Themes Directory
+        fIcons: string; // Icon Library
+        fHelp: string; // Help
+        fLang: string; // Language
+        fTemp: string; // Templates
+        fDefault: string; // user defined default
+        fExec: string; // dev-c start
+        fConfig: string; // config files directory
+        fBinDir: string; // compiler location
+        fCDir: string; // c includes
+        fCppDir: string; // c++ includes
+        fLibDir: string; // Libraries
+        fRCDir: string; // Resource includes
+        fOldPath: string; // Enviroment Path at program start
+        procedure FixPaths;
+    public
+        constructor Create;
+        procedure SettoDefaults; override;
+        procedure SaveSettings; override;
+        procedure LoadSettings; override;
+        function CallValidatePaths(dirList: string): string;
+        property Name;
+        property OriginalPath: string read fOldPath write fOldPath;
+    published
+        property Exec: string read fExec write fExec;
+        property Config: string read fConfig write fConfig;
+        property Bins: string read fBinDir write fBinDir;
+        property Default: string read fDefault write fDefault;
+        property C: string read fCDir write fCDir;
+        property Cpp: string read fCppDir write fCppDir;
+        property Help: string read fHelp write fHelp;
+        property Icons: string read fIcons write fIcons;
+        property Lang: string read fLang write fLang;
+        property Lib: string read fLibDir write fLibDir;
+        property RC: string read fRCDir write fRCDir;
+        property Templates: string read fTemp write fTemp;
+        property Themes: string read fThemes write fThemes;
+        property CompilerType: integer read fCompilerType write fCompilerType;
+    end;
 
     // editor options -- syntax, synedit options, etc...
-    TdevEditor = Class(TCFGOptions)
-    Private
-        fUseSyn: Boolean; // use syntax highlighting
-        fSynExt: String; // semi-colon seperated list of highlight ext's
+    TdevEditor = class(TCFGOptions)
+    private
+        fUseSyn: boolean; // use syntax highlighting
+        fSynExt: string; // semi-colon seperated list of highlight ext's
         fFont: TFont; // Editor Font
         fGutterFont: TFont; // Gutter font
-        fInsertCaret: Integer; // Editor insert caret
-        fOverwriteCaret: Integer; // Editor overwrite caret
-        fTabSize: Integer; // Editor Tab Size
-        fGutterSize: Integer; // Width of Left margin gutter
-        fMarginSize: Integer; // Width of right margin
+        fInsertCaret: integer; // Editor insert caret
+        fOverwriteCaret: integer; // Editor overwrite caret
+        fTabSize: integer; // Editor Tab Size
+        fGutterSize: integer; // Width of Left margin gutter
+        fMarginSize: integer; // Width of right margin
 
-        fCustomGutter: Boolean; // Use Selected Gutter font
-        fGutterAuto: Boolean; // Gutter Auto Sizes
-        fShowGutter: Boolean; // Show Left gutter in editor
-        fGutterGradient: Boolean; // Draw the gutter with a gradient
-        fLineNumbers: Boolean; // Show Line Numbers
-        fLeadZero: Boolean; // Show leading zero's in line nums
-        fFirstisZero: Boolean; // First line is zero
+        fCustomGutter: boolean; // Use Selected Gutter font
+        fGutterAuto: boolean; // Gutter Auto Sizes
+        fShowGutter: boolean; // Show Left gutter in editor
+        fGutterGradient: boolean; // Draw the gutter with a gradient
+        fLineNumbers: boolean; // Show Line Numbers
+        fLeadZero: boolean; // Show leading zero's in line nums
+        fFirstisZero: boolean; // First line is zero
 
-        fMarginVis: Boolean; // Toggle right margin line
+        fMarginVis: boolean; // Toggle right margin line
 
-        fShowScrollHint: Boolean; // Show line number when scrolling
-        fShowScrollbars: Boolean; // Show Scroll bars
-        fHalfPage: Boolean; // PgUp/PgDn move half a page
+        fShowScrollHint: boolean; // Show line number when scrolling
+        fShowScrollbars: boolean; // Show Scroll bars
+        fHalfPage: boolean; // PgUp/PgDn move half a page
 
-        fPastEOF: Boolean; // Cursor moves past end of file
-        fPastEOL: Boolean; // Cursor moves past end of lines
-        fTrailBlanks: Boolean; // Blanks past EOL are not trimmed
-        fdblLine: Boolean; // Double Click selects a line
-        fFindText: Boolean; // Text at cursor defaults in find dialog
-        fEHomeKey: Boolean; // Home key like visual studio
-        fGroupUndo: Boolean; // treat same undo's as single undo
-        fInsDropFiles: Boolean; // Insert files when drag/dropped else open
-        fInsertMode: Boolean; // Editor defaults to insert mode
-        fAutoIndent: Boolean; // Auto-indent code lines
-        fSmartTabs: Boolean; // Tab to next no whitespace char
-        fSmartUnindent: Boolean; // on backspace move to prev non-whitespace char
-        fSpecialChar: Boolean; // special line characters visible
-        fAppendNewline: Boolean;    // append newline character to the end of line
-        fTabtoSpaces: Boolean; // convert tabs to spaces
-        fAutoCloseBrace: Boolean; // insert closing braces
+        fPastEOF: boolean; // Cursor moves past end of file
+        fPastEOL: boolean; // Cursor moves past end of lines
+        fTrailBlanks: boolean; // Blanks past EOL are not trimmed
+        fdblLine: boolean; // Double Click selects a line
+        fFindText: boolean; // Text at cursor defaults in find dialog
+        fEHomeKey: boolean; // Home key like visual studio
+        fGroupUndo: boolean; // treat same undo's as single undo
+        fInsDropFiles: boolean; // Insert files when drag/dropped else open
+        fInsertMode: boolean; // Editor defaults to insert mode
+        fAutoIndent: boolean; // Auto-indent code lines
+        fSmartTabs: boolean; // Tab to next no whitespace char
+        fSmartUnindent: boolean; // on backspace move to prev non-whitespace char
+        fSpecialChar: boolean; // special line characters visible
+        fAppendNewline: boolean;    // append newline character to the end of line
+        fTabtoSpaces: boolean; // convert tabs to spaces
+        fAutoCloseBrace: boolean; // insert closing braces
         fMarginColor: TColor; // Color of right margin
-        fActiveSyn: String; // Active syntax highlighting set
+        fActiveSyn: string; // Active syntax highlighting set
         fSyntax: TStrings; // Holds attributes settings
-        fDefaultIntoPrj: Boolean;
+        fDefaultIntoPrj: boolean;
         // Insert Default Source Code into "empty" project
-        fParserHints: Boolean; // Show parser's hint for the word under the cursor
-        fMatch: Boolean; // Highlight matching parenthesis
-        fHighCurrLine: Boolean;     // Highlight current line
+        fParserHints: boolean; // Show parser's hint for the word under the cursor
+        fMatch: boolean; // Highlight matching parenthesis
+        fHighCurrLine: boolean;     // Highlight current line
         fHighColor: TColor;         // Color of current line when highlighted
 
         //fCodeFolding : boolean; // Code folding enabled?
-    Public
-        Constructor Create;
-        Destructor Destroy; Override;
-        Procedure SettoDefaults; Override;
-        Procedure SaveSettings; Override;
-        Procedure LoadSettings; Override;
-        Procedure AssignEditor(Editor: TSynEdit);
-        Property Name;
-    Published
+    public
+        constructor Create;
+        destructor Destroy; override;
+        procedure SettoDefaults; override;
+        procedure SaveSettings; override;
+        procedure LoadSettings; override;
+        procedure AssignEditor(Editor: TSynEdit);
+        property Name;
+    published
         //Editor props
-        Property AutoIndent: Boolean Read fAutoIndent Write fAutoIndent;
-        Property InsertMode: Boolean Read fInsertMode Write fInsertMode;
-        Property TabToSpaces: Boolean Read fTabToSpaces Write fTabtoSpaces;
-        Property SmartTabs: Boolean Read fSmartTabs Write fSmartTabs;
-        Property SmartUnindent: Boolean Read fSmartUnindent Write fSmartUnindent;
-        Property TrailBlank: Boolean Read fTrailBlanks Write fTrailBlanks;
-        Property GroupUndo: Boolean Read fGroupUndo Write fGroupUndo;
-        Property EHomeKey: Boolean Read fEHomeKey Write fEHomeKey;
-        Property PastEOF: Boolean Read fPastEOF Write fPastEOF;
-        Property PastEOL: Boolean Read fPastEOL Write fPastEOL;
-        Property DblClkLine: Boolean Read fdblLine Write fdblLine;
-        Property FindText: Boolean Read fFindText Write fFindText;
-        Property Scrollbars: Boolean Read fShowScrollbars Write fShowScrollbars;
-        Property HalfPageScroll: Boolean Read fHalfPage Write fHalfPage;
-        Property ScrollHint: Boolean Read fShowScrollHint Write fShowScrollHint;
-        Property SpecialChars: Boolean Read fSpecialChar Write fSpecialChar;
-        Property AppendNewline: Boolean Read fAppendNewline Write fAppendNewline;
-        Property AutoCloseBrace: Boolean
-            Read fAutoCloseBrace Write fAutoCloseBrace;
+        property AutoIndent: boolean read fAutoIndent write fAutoIndent;
+        property InsertMode: boolean read fInsertMode write fInsertMode;
+        property TabToSpaces: boolean read fTabToSpaces write fTabtoSpaces;
+        property SmartTabs: boolean read fSmartTabs write fSmartTabs;
+        property SmartUnindent: boolean read fSmartUnindent write fSmartUnindent;
+        property TrailBlank: boolean read fTrailBlanks write fTrailBlanks;
+        property GroupUndo: boolean read fGroupUndo write fGroupUndo;
+        property EHomeKey: boolean read fEHomeKey write fEHomeKey;
+        property PastEOF: boolean read fPastEOF write fPastEOF;
+        property PastEOL: boolean read fPastEOL write fPastEOL;
+        property DblClkLine: boolean read fdblLine write fdblLine;
+        property FindText: boolean read fFindText write fFindText;
+        property Scrollbars: boolean read fShowScrollbars write fShowScrollbars;
+        property HalfPageScroll: boolean read fHalfPage write fHalfPage;
+        property ScrollHint: boolean read fShowScrollHint write fShowScrollHint;
+        property SpecialChars: boolean read fSpecialChar write fSpecialChar;
+        property AppendNewline: boolean read fAppendNewline write fAppendNewline;
+        property AutoCloseBrace: boolean
+            read fAutoCloseBrace write fAutoCloseBrace;
 
-        Property TabSize: Integer Read fTabSize Write fTabSize;
-        Property MarginVis: Boolean Read fMarginVis Write fMarginVis;
-        Property MarginSize: Integer Read fMarginSize Write fMarginSize;
-        Property MarginColor: TColor Read fMarginColor Write fMarginColor;
-        Property InsertCaret: Integer Read fInsertCaret Write fInsertCaret;
-        Property OverwriteCaret: Integer
-            Read fOverwriteCaret Write fOverwriteCaret;
-        Property InsDropFiles: Boolean Read fInsDropFiles Write fInsDropFiles;
-        Property Font: TFont Read fFont Write fFont;
+        property TabSize: integer read fTabSize write fTabSize;
+        property MarginVis: boolean read fMarginVis write fMarginVis;
+        property MarginSize: integer read fMarginSize write fMarginSize;
+        property MarginColor: TColor read fMarginColor write fMarginColor;
+        property InsertCaret: integer read fInsertCaret write fInsertCaret;
+        property OverwriteCaret: integer
+            read fOverwriteCaret write fOverwriteCaret;
+        property InsDropFiles: boolean read fInsDropFiles write fInsDropFiles;
+        property Font: TFont read fFont write fFont;
 
         // Gutter options
-        Property GutterVis: Boolean Read fShowGutter Write fShowGutter;
-        Property GutterAuto: Boolean Read fGutterAuto Write fGutterAuto;
-        Property GutterGradient: Boolean
-            Read fGutterGradient Write fGutterGradient;
-        Property LineNumbers: Boolean Read fLineNumbers Write fLineNumbers;
-        Property LeadZero: Boolean Read fLeadZero Write fLeadZero;
-        Property FirstLineZero: Boolean Read fFirstisZero Write fFirstisZero;
-        Property Gutterfnt: Boolean Read fCustomGutter Write fCustomGutter;
-        Property GutterSize: Integer Read fGutterSize Write fGutterSize;
-        Property Gutterfont: TFont Read fGutterfont Write fGutterFont;
+        property GutterVis: boolean read fShowGutter write fShowGutter;
+        property GutterAuto: boolean read fGutterAuto write fGutterAuto;
+        property GutterGradient: boolean
+            read fGutterGradient write fGutterGradient;
+        property LineNumbers: boolean read fLineNumbers write fLineNumbers;
+        property LeadZero: boolean read fLeadZero write fLeadZero;
+        property FirstLineZero: boolean read fFirstisZero write fFirstisZero;
+        property Gutterfnt: boolean read fCustomGutter write fCustomGutter;
+        property GutterSize: integer read fGutterSize write fGutterSize;
+        property Gutterfont: TFont read fGutterfont write fGutterFont;
 
         // syntax
-        Property UseSyntax: Boolean Read fUseSyn Write fUseSyn;
-        Property SyntaxExt: String Read fSynExt Write fSynExt;
-        Property ActiveSyntax: String Read fActiveSyn Write fActiveSyn;
-        Property Syntax: TStrings Read fSyntax Write fSyntax;
+        property UseSyntax: boolean read fUseSyn write fUseSyn;
+        property SyntaxExt: string read fSynExt write fSynExt;
+        property ActiveSyntax: string read fActiveSyn write fActiveSyn;
+        property Syntax: TStrings read fSyntax write fSyntax;
 
         // other
-        Property DefaulttoPrj: Boolean Read fDefaultIntoPrj Write fDefaultIntoPrj;
+        property DefaulttoPrj: boolean read fDefaultIntoPrj write fDefaultIntoPrj;
 
-        Property ParserHints: Boolean Read fParserHints Write fParserHints;
-        Property Match: Boolean Read fMatch Write fMatch;
-        Property HighCurrLine: Boolean Read fHighCurrLine Write fHighCurrLine;
-        Property HighColor: TColor Read fHighColor Write fHighColor;
+        property ParserHints: boolean read fParserHints write fParserHints;
+        property Match: boolean read fMatch write fMatch;
+        property HighCurrLine: boolean read fHighCurrLine write fHighCurrLine;
+        property HighColor: TColor read fHighColor write fHighColor;
        // property CodeFolding: boolean read fCodeFolding write fCodeFolding;
 
-    End;
+    end;
 
     // master option object -- contains program globals
-    TdevData = Class(TConfigData)
-    Private
-        fVersion: String; // The configuration file's version
-        fLang: String; // Language file
-        fTheme: String; // Theme file
-        fFindCols: String; // Find Column widths (comma sep)
-        fCompCols: String; // Compiler Column Widths (comma sep)
-        fMsgTabs: Boolean; // Message Control Tabs (Top/Bottom)
-        fMinOnRun: Boolean; // Minimize IDE on run
-        fOpenStyle: Integer; // Open Dialog Style
-        fMRUMax: Integer; // Max number of files in history list
-        fBackup: Boolean; // Create backup files
-        fAutoOpen: Integer; // Auto Open Project Files Style
-        fClassView: Boolean;
+    TdevData = class(TConfigData)
+    private
+        fVersion: string; // The configuration file's version
+        fLang: string; // Language file
+        fTheme: string; // Theme file
+        fFindCols: string; // Find Column widths (comma sep)
+        fCompCols: string; // Compiler Column Widths (comma sep)
+        fMsgTabs: boolean; // Message Control Tabs (Top/Bottom)
+        fMinOnRun: boolean; // Minimize IDE on run
+        fOpenStyle: integer; // Open Dialog Style
+        fMRUMax: integer; // Max number of files in history list
+        fBackup: boolean; // Create backup files
+        fAutoOpen: integer; // Auto Open Project Files Style
+        fClassView: boolean;
         // if true, shows the class view, else shows the file view
-        fStatusbar: Boolean; // Statusbar Visible
-        fFullScr: Boolean; // IDE is Full screen
-        fShowBars: Boolean; // Show toolbars in FullScreen mode
-        fShowMenu: Boolean; // Show Main Menu in Full Screen Mode
-        fSingleInstance: Boolean; // Allow the IDE to be in single instance
-        fDefCpp: Boolean; // Default to C++ project (compile with g++)
-        fFirst: Boolean; // first run of dev-c
-        fSplash: String; // user selected splash screen
+        fStatusbar: boolean; // Statusbar Visible
+        fFullScr: boolean; // IDE is Full screen
+        fShowBars: boolean; // Show toolbars in FullScreen mode
+        fShowMenu: boolean; // Show Main Menu in Full Screen Mode
+        fSingleInstance: boolean; // Allow the IDE to be in single instance
+        fDefCpp: boolean; // Default to C++ project (compile with g++)
+        fFirst: boolean; // first run of dev-c
+        fSplash: string; // user selected splash screen
         fWinPlace: TWindowPlacement; // Main forms size, state and position.
-        fdblFiles: Boolean; // double click opens files out of project manager
-        fLangChange: Boolean; // flag for language change
-        fthemeChange: Boolean; // did the theme changed
-        fNoSplashScreen: Boolean; // disable splash screen
-        fHiliteActiveTab: Boolean; // Hilite the Active Editor Page Tab
-        fAutoCompile: Integer; // automatically compile when out-of-date
-        fNoToolTip: Boolean; // Don't use Tooltips
-        fAutoAddDebugFlag : Integer; //Automatically add debug flag if not present at debug start
+        fdblFiles: boolean; // double click opens files out of project manager
+        fLangChange: boolean; // flag for language change
+        fthemeChange: boolean; // did the theme changed
+        fNoSplashScreen: boolean; // disable splash screen
+        fHiliteActiveTab: boolean; // Hilite the Active Editor Page Tab
+        fAutoCompile: integer; // automatically compile when out-of-date
+        fNoToolTip: boolean; // Don't use Tooltips
+        fAutoAddDebugFlag: integer; //Automatically add debug flag if not present at debug start
 
-        fDebugCommand: String;
+        fDebugCommand: string;
         // Custom command to send to debugger (default is "finish")
 
         // toolbar layout
-        fToolbarMain: Boolean;
-        fToolbarMainX: Integer;
-        fToolbarMainY: Integer;
-        fToolbarEdit: Boolean;
-        fToolbarEditX: Integer;
-        fToolbarEditY: Integer;
-        fToolbarCompile: Boolean;
-        fToolbarCompileX: Integer;
-        fToolbarCompileY: Integer;
-        fToolbarDebug: Boolean;
-        fToolbarDebugX: Integer;
-        fToolbarDebugY: Integer;
-        fToolbarProject: Boolean;
-        fToolbarProjectX: Integer;
-        fToolbarProjectY: Integer;
-        fToolbarOptions: Boolean;
-        fToolbarOptionsX: Integer;
-        fToolbarOptionsY: Integer;
-        fToolbarSpecials: Boolean;
-        fToolbarSpecialsX: Integer;
-        fToolbarSpecialsY: Integer;
-        fToolbarSearch: Boolean;
-        fToolbarSearchX: Integer;
-        fToolbarSearchY: Integer;
-        fToolbarClasses: Boolean;
-        fToolbarClassesX: Integer;
-        fToolbarClassesY: Integer;
+        fToolbarMain: boolean;
+        fToolbarMainX: integer;
+        fToolbarMainY: integer;
+        fToolbarEdit: boolean;
+        fToolbarEditX: integer;
+        fToolbarEditY: integer;
+        fToolbarCompile: boolean;
+        fToolbarCompileX: integer;
+        fToolbarCompileY: integer;
+        fToolbarDebug: boolean;
+        fToolbarDebugX: integer;
+        fToolbarDebugY: integer;
+        fToolbarProject: boolean;
+        fToolbarProjectX: integer;
+        fToolbarProjectY: integer;
+        fToolbarOptions: boolean;
+        fToolbarOptionsX: integer;
+        fToolbarOptionsY: integer;
+        fToolbarSpecials: boolean;
+        fToolbarSpecialsX: integer;
+        fToolbarSpecialsY: integer;
+        fToolbarSearch: boolean;
+        fToolbarSearchX: integer;
+        fToolbarSearchY: integer;
+        fToolbarClasses: boolean;
+        fToolbarClassesX: integer;
+        fToolbarClassesY: integer;
 
         // file associations (see FileAssocs.pas)
-        fAssociateCpp: Boolean;
-        fAssociateC: Boolean;
-        fAssociateHpp: Boolean;
-        fAssociateH: Boolean;
-        fAssociateDev: Boolean;
-        fAssociateRc: Boolean;
-        fAssociateTemplate: Boolean;
+        fAssociateCpp: boolean;
+        fAssociateC: boolean;
+        fAssociateHpp: boolean;
+        fAssociateH: boolean;
+        fAssociateDev: boolean;
+        fAssociateRc: boolean;
+        fAssociateTemplate: boolean;
 
         // tip of the day
-        fShowTipsOnStart: Boolean;
-        fLastTip: Integer;
-        fXPTheme: Boolean; // Use XP theme
-        fNativeDocks: Boolean; // Use native docking windows under XP
-        fFileDate: Integer; // Dev-C++ File Date for checking old configurations
-        fShowProgress: Boolean; // Show progress window during compile
-        fAutoCloseProgress: Boolean;
+        fShowTipsOnStart: boolean;
+        fLastTip: integer;
+        fXPTheme: boolean; // Use XP theme
+        fNativeDocks: boolean; // Use native docking windows under XP
+        fFileDate: integer; // Dev-C++ File Date for checking old configurations
+        fShowProgress: boolean; // Show progress window during compile
+        fAutoCloseProgress: boolean;
         // Auto close progress bar window after compile
         // Printer
-        fPrintColors: Boolean; // print colors
-        fPrintHighlight: Boolean;
-        fPrintWordWrap: Boolean;
-        fPrintLineNumbers: Boolean;
-        fPrintLineNumbersMargins: Boolean;
+        fPrintColors: boolean; // print colors
+        fPrintHighlight: boolean;
+        fPrintWordWrap: boolean;
+        fPrintLineNumbers: boolean;
+        fPrintLineNumbersMargins: boolean;
 
         // Debug variable browser
-        fWatchHint: Boolean; // watch variable under mouse
-        fWatchError: Boolean; // report watch errors
+        fWatchHint: boolean; // watch variable under mouse
+        fWatchError: boolean; // report watch errors
 
-    Public
-        Constructor Create(aOwner: TComponent); Override;
-        Destructor Destroy; Override;
-        Procedure SettoDefaults; Override;
-        Procedure SaveConfigData; Override;
-        Procedure ReadConfigData; Override;
+    public
+        constructor Create(aOwner: TComponent); override;
+        destructor Destroy; override;
+        procedure SettoDefaults; override;
+        procedure SaveConfigData; override;
+        procedure ReadConfigData; override;
 
-        Class Function DevData: TDevData;
-        Property WindowPlacement: TWindowPlacement Read fWinPlace Write fWinPlace;
-        Property LangChange: Boolean Read fLangChange Write fLangChange;
-        Property ThemeChange: Boolean Read fThemeChange Write fThemeChange;
-    Published
-        Property Version: String Read fVersion Write fVersion;
-        Property Language: String Read fLang Write fLang;
-        Property Theme: String Read fTheme Write fTheme;
-        Property First: Boolean Read fFirst Write fFirst;
-        Property Splash: String Read fSplash Write fSplash;
-        Property MRUMax: Integer Read fMRUMax Write fMRUMax;
-        Property DblFiles: Boolean Read fDblFiles Write fDblFiles;
-        Property NoSplashScreen: Boolean
-            Read fNoSplashScreen Write fNoSplashScreen;
-        Property HiliteActiveTab: Boolean Read fHiliteActiveTab
-            Write fHiliteActiveTab;
-        Property AutoCompile: Integer Read fAutoCompile Write fAutoCompile;
-        Property NoToolTip: Boolean Read fNoToolTip Write fNoToolTip Default True;
-        Property AutoAddDebugFlag: Integer Read fAutoAddDebugFlag Write fAutoAddDebugFlag;
+        class function DevData: TDevData;
+        property WindowPlacement: TWindowPlacement read fWinPlace write fWinPlace;
+        property LangChange: boolean read fLangChange write fLangChange;
+        property ThemeChange: boolean read fThemeChange write fThemeChange;
+    published
+        property Version: string read fVersion write fVersion;
+        property Language: string read fLang write fLang;
+        property Theme: string read fTheme write fTheme;
+        property First: boolean read fFirst write fFirst;
+        property Splash: string read fSplash write fSplash;
+        property MRUMax: integer read fMRUMax write fMRUMax;
+        property DblFiles: boolean read fDblFiles write fDblFiles;
+        property NoSplashScreen: boolean
+            read fNoSplashScreen write fNoSplashScreen;
+        property HiliteActiveTab: boolean read fHiliteActiveTab
+            write fHiliteActiveTab;
+        property AutoCompile: integer read fAutoCompile write fAutoCompile;
+        property NoToolTip: boolean read fNoToolTip write fNoToolTip default TRUE;
+        property AutoAddDebugFlag: integer read fAutoAddDebugFlag write fAutoAddDebugFlag;
 
-        Property DebugCommand: String Read fDebugCommand Write fDebugCommand;
+        property DebugCommand: string read fDebugCommand write fDebugCommand;
         //Execution
-        Property MinOnRun: Boolean Read fMinOnRun Write fMinOnRun;
-        Property OpenStyle: Integer Read fOpenStyle Write fOpenStyle;
+        property MinOnRun: boolean read fMinOnRun write fMinOnRun;
+        property OpenStyle: integer read fOpenStyle write fOpenStyle;
 
-        Property BackUps: Boolean Read fBackup Write fBackup;
-        Property AutoOpen: Integer Read fAutoOpen Write fAutoOpen;
+        property BackUps: boolean read fBackup write fBackup;
+        property AutoOpen: integer read fAutoOpen write fAutoOpen;
 
         //Windows
-        Property MsgTabs: Boolean Read fMsgTabs Write fMsgTabs;
+        property MsgTabs: boolean read fMsgTabs write fMsgTabs;
 
-        Property ShowBars: Boolean Read fShowbars Write fShowbars;
-        Property ShowMenu: Boolean Read fShowMenu Write fShowMenu;
+        property ShowBars: boolean read fShowbars write fShowbars;
+        property ShowMenu: boolean read fShowMenu write fShowMenu;
 
         //Running Status Options
-        Property SingleInstance: Boolean
-            Read fSingleInstance Write fSingleInstance;
-        Property DefCpp: Boolean Read fDefCpp Write fDefCpp;
-        Property ClassView: Boolean Read fClassView Write fClassView;
-        Property Statusbar: Boolean Read fStatusbar Write fStatusbar;
-        Property FullScreen: Boolean Read fFullScr Write fFullScr;
-        Property FindCols: String Read fFindCols Write fFindCols;
-        Property CompCols: String Read fCompCols Write fCompCols;
+        property SingleInstance: boolean
+            read fSingleInstance write fSingleInstance;
+        property DefCpp: boolean read fDefCpp write fDefCpp;
+        property ClassView: boolean read fClassView write fClassView;
+        property Statusbar: boolean read fStatusbar write fStatusbar;
+        property FullScreen: boolean read fFullScr write fFullScr;
+        property FindCols: string read fFindCols write fFindCols;
+        property CompCols: string read fCompCols write fCompCols;
 
         //Toolbars
-        Property ToolbarMain: Boolean Read fToolbarMain Write fToolbarMain;
-        Property ToolbarMainX: Integer Read fToolbarMainX Write fToolbarMainX;
-        Property ToolbarMainY: Integer Read fToolbarMainY Write fToolbarMainY;
-        Property ToolbarEdit: Boolean Read fToolbarEdit Write fToolbarEdit;
-        Property ToolbarEditX: Integer Read fToolbarEditX Write fToolbarEditX;
-        Property ToolbarEditY: Integer Read fToolbarEditY Write fToolbarEditY;
-        Property ToolbarCompile: Boolean
-            Read fToolbarCompile Write fToolbarCompile;
-        Property ToolbarCompileX: Integer Read fToolbarCompileX
-            Write fToolbarCompileX;
-        Property ToolbarCompileY: Integer Read fToolbarCompileY
-            Write fToolbarCompileY;
-        Property ToolbarDebug: Boolean Read fToolbarDebug Write fToolbarDebug;
-        Property ToolbarDebugX: Integer Read fToolbarDebugX Write fToolbarDebugX;
-        Property ToolbarDebugY: Integer Read fToolbarDebugY Write fToolbarDebugY;
-        Property ToolbarProject: Boolean
-            Read fToolbarProject Write fToolbarProject;
-        Property ToolbarProjectX: Integer Read fToolbarProjectX
-            Write fToolbarProjectX;
-        Property ToolbarProjectY: Integer Read fToolbarProjectY
-            Write fToolbarProjectY;
-        Property ToolbarOptions: Boolean
-            Read fToolbarOptions Write fToolbarOptions;
-        Property ToolbarOptionsX: Integer Read fToolbarOptionsX
-            Write fToolbarOptionsX;
-        Property ToolbarOptionsY: Integer Read fToolbarOptionsY
-            Write fToolbarOptionsY;
-        Property ToolbarSpecials: Boolean Read fToolbarSpecials
-            Write fToolbarSpecials;
-        Property ToolbarSpecialsX: Integer
-            Read fToolbarSpecialsX Write fToolbarSpecialsX;
-        Property ToolbarSpecialsY: Integer
-            Read fToolbarSpecialsY Write fToolbarSpecialsY;
-        Property ToolbarSearch: Boolean Read fToolbarSearch Write fToolbarSearch;
-        Property ToolbarSearchX: Integer
-            Read fToolbarSearchX Write fToolbarSearchX;
-        Property ToolbarSearchY: Integer
-            Read fToolbarSearchY Write fToolbarSearchY;
-        Property ToolbarClasses: Boolean
-            Read fToolbarClasses Write fToolbarClasses;
-        Property ToolbarClassesX: Integer Read fToolbarClassesX
-            Write fToolbarClassesX;
-        Property ToolbarClassesY: Integer Read fToolbarClassesY
-            Write fToolbarClassesY;
+        property ToolbarMain: boolean read fToolbarMain write fToolbarMain;
+        property ToolbarMainX: integer read fToolbarMainX write fToolbarMainX;
+        property ToolbarMainY: integer read fToolbarMainY write fToolbarMainY;
+        property ToolbarEdit: boolean read fToolbarEdit write fToolbarEdit;
+        property ToolbarEditX: integer read fToolbarEditX write fToolbarEditX;
+        property ToolbarEditY: integer read fToolbarEditY write fToolbarEditY;
+        property ToolbarCompile: boolean
+            read fToolbarCompile write fToolbarCompile;
+        property ToolbarCompileX: integer read fToolbarCompileX
+            write fToolbarCompileX;
+        property ToolbarCompileY: integer read fToolbarCompileY
+            write fToolbarCompileY;
+        property ToolbarDebug: boolean read fToolbarDebug write fToolbarDebug;
+        property ToolbarDebugX: integer read fToolbarDebugX write fToolbarDebugX;
+        property ToolbarDebugY: integer read fToolbarDebugY write fToolbarDebugY;
+        property ToolbarProject: boolean
+            read fToolbarProject write fToolbarProject;
+        property ToolbarProjectX: integer read fToolbarProjectX
+            write fToolbarProjectX;
+        property ToolbarProjectY: integer read fToolbarProjectY
+            write fToolbarProjectY;
+        property ToolbarOptions: boolean
+            read fToolbarOptions write fToolbarOptions;
+        property ToolbarOptionsX: integer read fToolbarOptionsX
+            write fToolbarOptionsX;
+        property ToolbarOptionsY: integer read fToolbarOptionsY
+            write fToolbarOptionsY;
+        property ToolbarSpecials: boolean read fToolbarSpecials
+            write fToolbarSpecials;
+        property ToolbarSpecialsX: integer
+            read fToolbarSpecialsX write fToolbarSpecialsX;
+        property ToolbarSpecialsY: integer
+            read fToolbarSpecialsY write fToolbarSpecialsY;
+        property ToolbarSearch: boolean read fToolbarSearch write fToolbarSearch;
+        property ToolbarSearchX: integer
+            read fToolbarSearchX write fToolbarSearchX;
+        property ToolbarSearchY: integer
+            read fToolbarSearchY write fToolbarSearchY;
+        property ToolbarClasses: boolean
+            read fToolbarClasses write fToolbarClasses;
+        property ToolbarClassesX: integer read fToolbarClassesX
+            write fToolbarClassesX;
+        property ToolbarClassesY: integer read fToolbarClassesY
+            write fToolbarClassesY;
 
         // file associations
-        Property AssociateCpp: Boolean Read fAssociateCpp Write fAssociateCpp;
-        Property AssociateC: Boolean Read fAssociateC Write fAssociateC;
-        Property AssociateHpp: Boolean Read fAssociateHpp Write fAssociateHpp;
-        Property AssociateH: Boolean Read fAssociateH Write fAssociateH;
-        Property AssociateDev: Boolean Read fAssociateDev Write fAssociateDev;
-        Property AssociateRc: Boolean Read fAssociateRc Write fAssociateRc;
-        Property AssociateTemplate: Boolean
-            Read fAssociateTemplate Write fAssociateTemplate;
+        property AssociateCpp: boolean read fAssociateCpp write fAssociateCpp;
+        property AssociateC: boolean read fAssociateC write fAssociateC;
+        property AssociateHpp: boolean read fAssociateHpp write fAssociateHpp;
+        property AssociateH: boolean read fAssociateH write fAssociateH;
+        property AssociateDev: boolean read fAssociateDev write fAssociateDev;
+        property AssociateRc: boolean read fAssociateRc write fAssociateRc;
+        property AssociateTemplate: boolean
+            read fAssociateTemplate write fAssociateTemplate;
 
         // tip of the day
-        Property ShowTipsOnStart: Boolean Read fShowTipsOnStart
-            Write fShowTipsOnStart;
-        Property LastTip: Integer Read fLastTip Write fLastTip;
+        property ShowTipsOnStart: boolean read fShowTipsOnStart
+            write fShowTipsOnStart;
+        property LastTip: integer read fLastTip write fLastTip;
 
-        Property XPTheme: Boolean Read fXPTheme Write fXPTheme;
-        Property NativeDocks: Boolean Read fNativeDocks Write fNativeDocks;
-        Property FileDate: Integer Read fFileDate Write fFileDate;
+        property XPTheme: boolean read fXPTheme write fXPTheme;
+        property NativeDocks: boolean read fNativeDocks write fNativeDocks;
+        property FileDate: integer read fFileDate write fFileDate;
 
         // progress window
-        Property ShowProgress: Boolean Read fShowProgress Write fShowProgress;
-        Property AutoCloseProgress: Boolean
-            Read fAutoCloseProgress Write fAutoCloseProgress;
+        property ShowProgress: boolean read fShowProgress write fShowProgress;
+        property AutoCloseProgress: boolean
+            read fAutoCloseProgress write fAutoCloseProgress;
 
         //  Printer
-        Property PrintColors: Boolean Read fPrintColors Write fPrintColors;
-        Property PrintHighlight: Boolean
-            Read fPrintHighlight Write fPrintHighlight;
-        Property PrintWordWrap: Boolean Read fPrintWordWrap Write fPrintWordWrap;
-        Property PrintLineNumbers: Boolean
-            Read fPrintLineNumbers Write fPrintLineNumbers;
-        Property PrintLineNumbersMargins: Boolean
-            Read fPrintLineNumbersMargins Write fPrintLineNumbersMargins;
+        property PrintColors: boolean read fPrintColors write fPrintColors;
+        property PrintHighlight: boolean
+            read fPrintHighlight write fPrintHighlight;
+        property PrintWordWrap: boolean read fPrintWordWrap write fPrintWordWrap;
+        property PrintLineNumbers: boolean
+            read fPrintLineNumbers write fPrintLineNumbers;
+        property PrintLineNumbersMargins: boolean
+            read fPrintLineNumbersMargins write fPrintLineNumbersMargins;
 
         // Variable debug browser
-        Property WatchHint: Boolean Read fWatchHint Write fWatchHint;
-        Property WatchError: Boolean Read fWatchError Write fWatchError;
-    End;
+        property WatchHint: boolean read fWatchHint write fWatchHint;
+        property WatchError: boolean read fWatchError write fWatchError;
+    end;
 
-Function DevData: TdevData;
+function DevData: TdevData;
 
-Procedure InitializeOptions;
-Procedure InitializeOptionsAfterPlugins;
-Procedure SaveOptions;
-Procedure FinalizeOptions;
-Procedure ResettoDefaults;
-Procedure CheckForAltConfigFile(filename: String);
-Procedure UpdateAltConfigFile;
+procedure InitializeOptions;
+procedure InitializeOptionsAfterPlugins;
+procedure SaveOptions;
+procedure FinalizeOptions;
+procedure ResettoDefaults;
+procedure CheckForAltConfigFile(filename: string);
+procedure UpdateAltConfigFile;
 
-Var
-    devCompiler: TdevCompiler = Nil;
-    devCompilerSet: TDevCompilerSet = Nil;
-    devDirs: TdevDirs = Nil;
-    devEditor: TdevEditor = Nil;
-    devCodeCompletion: TdevCodeCompletion = Nil;
-    devClassBrowsing: TdevClassBrowsing = Nil;
-    devCVSHandler: TdevCVSHandler = Nil;
-    devExternalPrograms: TdevExternalPrograms = Nil;
+var
+    devCompiler: TdevCompiler = NIL;
+    devCompilerSet: TDevCompilerSet = NIL;
+    devDirs: TdevDirs = NIL;
+    devEditor: TdevEditor = NIL;
+    devCodeCompletion: TdevCodeCompletion = NIL;
+    devClassBrowsing: TdevClassBrowsing = NIL;
+    devCVSHandler: TdevCVSHandler = NIL;
+    devExternalPrograms: TdevExternalPrograms = NIL;
   {$IFDEF PLUGIN_BUILD}
-    devPluginToolbarsX: TdevPluginToolbarsX = Nil;
-    devPluginToolbarsY: TdevPluginToolbarsY = Nil;
+    devPluginToolbarsX: TdevPluginToolbarsX = NIL;
+    devPluginToolbarsY: TdevPluginToolbarsY = NIL;
   {$ENDIF PLUGIN_BUILD}
 
     // Permanent alternate config file (need to be global vars)
     ConfigMode: (CFG_NORMAL, CFG_PARAM, CFG_USER) = CFG_NORMAL;
-    StandardConfigFile: String;
-    UseAltConfigFile: Boolean;
-    AltConfigFile: String;
+    StandardConfigFile: string;
+    UseAltConfigFile: boolean;
+    AltConfigFile: string;
 
-Implementation
+implementation
 
-Uses
+uses
     main,
 {$IFDEF PLUGIN_BUILD}
     iplugin,
@@ -901,27 +901,27 @@ Uses
   datamod, FileAssocs, Types;
 {$ENDIF}
 
-Function ValidatePaths(dirList: String; Var badDirs: String): String;
+function ValidatePaths(dirList: string; var badDirs: string): string;
     //checks if directories in provided ; delimited list exist
     //returns filtered out dirList with only existing paths
     //badDirs returns ; delimited list of non existing dirs
     //also remove duplicates and empty entries
-Var
+var
     strs: TStrings;
-    i, j: Integer;
-    currdir: String;
-    newdir: String;
+    i, j: integer;
+    currdir: string;
+    newdir: string;
 
-    Function makeFullPath(dir: String): String;
-    Begin
+    function makeFullPath(dir: string): string;
+    begin
         Result := dir;
         //check if full path
 {$IFDEF WIN32}
-        If Length(dir) > 1 Then
-            If dir[2] = ':' Then
+        if Length(dir) > 1 then
+            if dir[2] = ':' then
                 Exit;
-        If Length(dir) > 0 Then
-            If dir[1] = '\' Then
+        if Length(dir) > 0 then
+            if dir[1] = '\' then
                 Exit;
 {$ENDIF}
 {$IFDEF LINUX}
@@ -933,9 +933,9 @@ Var
         Result := IncludeTrailingPathDelimiter(ExtractFilePath(
             Application.ExeName))
             + Result;
-    End;
+    end;
 
-Begin
+begin
     Result := '';
     badDirs := '';
 
@@ -944,82 +944,82 @@ Begin
     SetCurrentDir(ExtractFilePath(Application.ExeName));
 
     strs := TStringList.Create;
-    Repeat
-        If Pos(';', dirList) = 0 Then
+    repeat
+        if Pos(';', dirList) = 0 then
             strs.Add(dirList)
-        Else
-        Begin
+        else
+        begin
             newdir := makeFullPath(Copy(dirList, 1, Pos(';', dirList) - 1));
             strs.Add(newdir);
             Delete(dirList, 1, Pos(';', dirList));
-        End;
-    Until Pos(';', dirList) = 0;
+        end;
+    until Pos(';', dirList) = 0;
 
     //eliminate duplicates
-    For i := strs.Count - 1 Downto 0 Do
-        For j := strs.Count - 1 Downto i + 1 Do
-            If (Trim(strs[j]) = '') Or
-                (makeFullPath(Trim(strs[i])) = makeFullPath(Trim(strs[j]))) Then
+    for i := strs.Count - 1 downto 0 do
+        for j := strs.Count - 1 downto i + 1 do
+            if (Trim(strs[j]) = '') or
+                (makeFullPath(Trim(strs[i])) = makeFullPath(Trim(strs[j]))) then
                 strs.Delete(j);
 
     //check the directories
-    For i := strs.Count - 1 Downto 0 Do
-    Begin
-        If DirectoryExists(strs[i]) Then
+    for i := strs.Count - 1 downto 0 do
+    begin
+        if DirectoryExists(strs[i]) then
             Result := Result + ';' + strs[i]
-        Else
+        else
             badDirs := badDirs + ';' + strs[i];
-    End;
+    end;
 
-    If Length(Result) > 0 Then
-        If Result[1] = ';' Then
+    if Length(Result) > 0 then
+        if Result[1] = ';' then
             Delete(Result, 1, 1);
-    If Length(badDirs) > 0 Then
-        If badDirs[1] = ';' Then
+    if Length(badDirs) > 0 then
+        if badDirs[1] = ';' then
             Delete(badDirs, 1, 1);
 
     FreeAndNil(strs);
 
     SetCurrentDir(currdir);
-End;
+end;
 
-Procedure InitializeOptions;
-Begin
+procedure InitializeOptions;
+begin
 
-    If Not assigned(devDirs) Then
+    if not assigned(devDirs) then
         devDirs := TdevDirs.Create;
 
-    If Not assigned(devCompilerSet) Then
+    if not assigned(devCompilerSet) then
         devCompilerSet := TdevCompilerSet.Create;
 
-    If Not assigned(devCompiler) Then
+    if not assigned(devCompiler) then
         devCompiler := TdevCompiler.Create;
 
-    If Not assigned(devEditor) Then
+    if not assigned(devEditor) then
         devEditor := TdevEditor.Create;
 
-    If Not assigned(devCodeCompletion) Then
+    if not assigned(devCodeCompletion) then
         devCodeCompletion := TdevCodeCompletion.Create;
 
-    If Not assigned(devClassBrowsing) Then
+    if not assigned(devClassBrowsing) then
         devClassBrowsing := TdevClassBrowsing.Create;
 
-    If Not assigned(devCVSHandler) Then
+    if not assigned(devCVSHandler) then
         devCVSHandler := TdevCVSHandler.Create;
 
-    If Not assigned(devExternalPrograms) Then
+    if not assigned(devExternalPrograms) then
         devExternalPrograms := TdevExternalPrograms.Create;
 
   {$IFDEF PLUGIN_BUILD}
-    If Not assigned(devPluginToolbarsX) Then
+    if not assigned(devPluginToolbarsX) then
         devPluginToolbarsX := TdevPluginToolbarsX.Create;
-    If Not assigned(devPluginToolbarsY) Then
+    if not assigned(devPluginToolbarsY) then
         devPluginToolbarsY := TdevPluginToolbarsY.Create;
   {$ENDIF PLUGIN_BUILD}
 
     // load the preferred compiler set
-    If (devCompilerSet.Sets.Count = 0) Then
-    Begin      // EAB Comment: Why load all the compiler sets if not all are available?
+    if (devCompilerSet.Sets.Count = 0) then
+    begin      // EAB Comment: Why load all the compiler sets if not all are available?
         // init first-run
 
         //   ID_COMPILER_MINGW = 0;
@@ -1051,7 +1051,7 @@ Begin
         devdirs.SettoDefaults;
         devCompilerSet.LoadSetProgs(ID_COMPILER_MINGW);
         devCompilerSet.LoadSetDirs(ID_COMPILER_MINGW);
-        If MainForm <> Nil Then
+        if MainForm <> NIL then
             devCompilerSet.SaveSet(ID_COMPILER_MINGW);
 
         devCompilerSet.CompilerType := ID_COMPILER_VC2005;
@@ -1059,7 +1059,7 @@ Begin
         devdirs.SettoDefaults;
         devCompilerSet.LoadSetProgs(ID_COMPILER_VC2005);
         devCompilerSet.LoadSetDirs(ID_COMPILER_VC2005);
-        If MainForm <> Nil Then
+        if MainForm <> NIL then
             devCompilerSet.SaveSet(ID_COMPILER_VC2005);
 
         devCompilerSet.CompilerType := ID_COMPILER_VC2003;
@@ -1067,7 +1067,7 @@ Begin
         devdirs.SettoDefaults;
         devCompilerSet.LoadSetProgs(ID_COMPILER_VC2003);
         devCompilerSet.LoadSetDirs(ID_COMPILER_VC2003);
-        If MainForm <> Nil Then
+        if MainForm <> NIL then
             devCompilerSet.SaveSet(ID_COMPILER_VC2003);
 
         devCompilerSet.CompilerType := ID_COMPILER_VC6;
@@ -1075,7 +1075,7 @@ Begin
         devdirs.SettoDefaults;
         devCompilerSet.LoadSetProgs(ID_COMPILER_VC6);
         devCompilerSet.LoadSetDirs(ID_COMPILER_VC6);
-        If MainForm <> Nil Then
+        if MainForm <> NIL then
             devCompilerSet.SaveSet(ID_COMPILER_VC6);
 
         devCompilerSet.CompilerType := ID_COMPILER_DMARS;
@@ -1083,7 +1083,7 @@ Begin
         devdirs.SettoDefaults;
         devCompilerSet.LoadSetProgs(ID_COMPILER_DMARS);
         devCompilerSet.LoadSetDirs(ID_COMPILER_DMARS);
-        If MainForm <> Nil Then
+        if MainForm <> NIL then
             devCompilerSet.SaveSet(ID_COMPILER_DMARS);
 
         devCompilerSet.CompilerType := ID_COMPILER_VC2008;
@@ -1092,7 +1092,7 @@ Begin
         devdirs.SettoDefaults;
         devCompilerSet.LoadSetProgs(ID_COMPILER_VC2008);
         devCompilerSet.LoadSetDirs(ID_COMPILER_VC2008);
-        If MainForm <> Nil Then
+        if MainForm <> NIL then
             devCompilerSet.SaveSet(ID_COMPILER_VC2008);
 
         devCompilerSet.CompilerType := ID_COMPILER_VC2010;
@@ -1101,7 +1101,7 @@ Begin
         devdirs.SettoDefaults;
         devCompilerSet.LoadSetProgs(ID_COMPILER_VC2010);
         devCompilerSet.LoadSetDirs(ID_COMPILER_VC2010);
-        If MainForm <> Nil Then
+        if MainForm <> NIL then
             devCompilerSet.SaveSet(ID_COMPILER_VC2010);
 
         devCompilerSet.CompilerType := ID_COMPILER_BORLAND;
@@ -1109,7 +1109,7 @@ Begin
         devdirs.SettoDefaults;
         devCompilerSet.LoadSetProgs(ID_COMPILER_BORLAND);
         devCompilerSet.LoadSetDirs(ID_COMPILER_BORLAND);
-        If MainForm <> Nil Then
+        if MainForm <> NIL then
             devCompilerSet.SaveSet(ID_COMPILER_BORLAND);
 
         devCompilerSet.CompilerType := ID_COMPILER_WATCOM;
@@ -1117,7 +1117,7 @@ Begin
         devdirs.SettoDefaults;
         devCompilerSet.LoadSetProgs(ID_COMPILER_WATCOM);
         devCompilerSet.LoadSetDirs(ID_COMPILER_WATCOM);
-        If MainForm <> Nil Then
+        if MainForm <> NIL then
             devCompilerSet.SaveSet(ID_COMPILER_WATCOM);
 
         devCompilerSet.CompilerType := ID_COMPILER_LINUX;
@@ -1125,7 +1125,7 @@ Begin
         devdirs.SettoDefaults;
         devCompilerSet.LoadSetProgs(ID_COMPILER_LINUX);
         devCompilerSet.LoadSetDirs(ID_COMPILER_LINUX);
-        If MainForm <> Nil Then
+        if MainForm <> NIL then
             devCompilerSet.SaveSet(ID_COMPILER_LINUX);
 
         //Reset the compiler type back to GCC
@@ -1133,28 +1133,28 @@ Begin
         devdirs.SettoDefaults;
         //Guru: todo: Add More Compiler default sets here
 
-    End;
+    end;
 
     devCompilerSet.LoadSet(devCompiler.CompilerSet);
     devCompiler.AddDefaultOptions;
     devCompilerSet.AssignToCompiler;
-    If MainForm <> Nil Then
-    Begin
+    if MainForm <> NIL then
+    begin
         devCompilerSet.SaveSet(devCompiler.CompilerSet);
         devCompiler.SaveSettings;
-    End;
-End;
+    end;
+end;
 
-Procedure InitializeOptionsAfterPlugins;
+procedure InitializeOptionsAfterPlugins;
 {$IFDEF PLUGIN_BUILD}
-Var
-    i, j: Integer;
+var
+    i, j: integer;
     pluginSettings: TSettings;
-    tempName: String;
+    tempName: string;
 {$ENDIF PLUGIN_BUILD}
-Begin
+begin
 
-    pluginSettings := nil;
+    pluginSettings := NIL;
 
     devCompilerSet.WriteSets;
 
@@ -1178,27 +1178,27 @@ Begin
     devCompilerSet.LoadSetDirs(ID_COMPILER_MINGW);
 
     {$IFDEF PLUGIN_BUILD}
-    For i := 0 To MainForm.pluginsCount - 1 Do
-    Begin
+    for i := 0 to MainForm.pluginsCount - 1 do
+    begin
 
         MainForm.plugins[i].SetCompilerOptionstoDefaults;
         pluginSettings := MainForm.plugins[i].GetCompilerOptions;
 
-        For j := 0 To Length(pluginSettings) - 1 Do
-        Begin
+        for j := 0 to Length(pluginSettings) - 1 do
+        begin
 
             // This line loads it from the .ini file.
             tempName := devData.LoadSetting(devCompilerSet.optComKey,
                 pluginSettings[j].name);
             // Value comes back as a string. Plugin converts
             //  string value to correct type using LoadCompilerSettings
-            If tempName <> '' Then
+            if tempName <> '' then
                 MainForm.plugins[i].LoadCompilerSettings(
                     pluginSettings[j].name, tempName);
-        End;
+        end;
         MainForm.plugins[i].LoadCompilerOptions;
 
-    End;
+    end;
 
     {$ENDIF PLUGIN_BUILD}
 
@@ -1212,26 +1212,26 @@ Begin
     devCompilerSet.LoadSetDirs(ID_COMPILER_VC2005);
 
     {$IFDEF PLUGIN_BUILD}
-    For i := 0 To MainForm.pluginsCount - 1 Do
-    Begin
+    for i := 0 to MainForm.pluginsCount - 1 do
+    begin
 
         pluginSettings := MainForm.plugins[i].GetCompilerOptions;
 
-        For j := 0 To Length(pluginSettings) - 1 Do
-        Begin
+        for j := 0 to Length(pluginSettings) - 1 do
+        begin
 
             // This line loads it from the .ini file.
             tempName := devData.LoadSetting(devCompilerSet.optComKey,
                 pluginSettings[j].name);
             // Value comes back as a string. Plugin converts
             //  string value to correct type using LoadCompilerSettings
-            If tempName <> '' Then
+            if tempName <> '' then
                 MainForm.plugins[i].LoadCompilerSettings(
                     pluginSettings[j].name, tempName);
-        End;
+        end;
         MainForm.plugins[i].LoadCompilerOptions;
 
-    End;
+    end;
 
     {$ENDIF PLUGIN_BUILD}
 
@@ -1244,26 +1244,26 @@ Begin
     devCompilerSet.LoadSetDirs(ID_COMPILER_VC2003);
 
     {$IFDEF PLUGIN_BUILD}
-    For i := 0 To MainForm.pluginsCount - 1 Do
-    Begin
+    for i := 0 to MainForm.pluginsCount - 1 do
+    begin
 
         pluginSettings := MainForm.plugins[i].GetCompilerOptions;
 
-        For j := 0 To Length(pluginSettings) - 1 Do
-        Begin
+        for j := 0 to Length(pluginSettings) - 1 do
+        begin
 
             // This line loads it from the .ini file.
             tempName := devData.LoadSetting(devCompilerSet.optComKey,
                 pluginSettings[j].name);
             // Value comes back as a string. Plugin converts
             //  string value to correct type using LoadCompilerSettings
-            If tempName <> '' Then
+            if tempName <> '' then
                 MainForm.plugins[i].LoadCompilerSettings(
                     pluginSettings[j].name, tempName);
-        End;
+        end;
         MainForm.plugins[i].LoadCompilerOptions;
 
-    End;
+    end;
 
     {$ENDIF PLUGIN_BUILD}
 
@@ -1276,26 +1276,26 @@ Begin
     devCompilerSet.LoadSetDirs(ID_COMPILER_VC6);
 
     {$IFDEF PLUGIN_BUILD}
-    For i := 0 To MainForm.pluginsCount - 1 Do
-    Begin
+    for i := 0 to MainForm.pluginsCount - 1 do
+    begin
 
         pluginSettings := MainForm.plugins[i].GetCompilerOptions;
 
-        For j := 0 To Length(pluginSettings) - 1 Do
-        Begin
+        for j := 0 to Length(pluginSettings) - 1 do
+        begin
 
             // This line loads it from the .ini file.
             tempName := devData.LoadSetting(devCompilerSet.optComKey,
                 pluginSettings[j].name);
             // Value comes back as a string. Plugin converts
             //  string value to correct type using LoadCompilerSettings
-            If tempName <> '' Then
+            if tempName <> '' then
                 MainForm.plugins[i].LoadCompilerSettings(
                     pluginSettings[j].name, tempName);
-        End;
+        end;
         MainForm.plugins[i].LoadCompilerOptions;
 
-    End;
+    end;
 
     {$ENDIF PLUGIN_BUILD}
 
@@ -1308,26 +1308,26 @@ Begin
     devCompilerSet.LoadSetDirs(ID_COMPILER_DMARS);
 
     {$IFDEF PLUGIN_BUILD}
-    For i := 0 To MainForm.pluginsCount - 1 Do
-    Begin
+    for i := 0 to MainForm.pluginsCount - 1 do
+    begin
 
         pluginSettings := MainForm.plugins[i].GetCompilerOptions;
 
-        For j := 0 To Length(pluginSettings) - 1 Do
-        Begin
+        for j := 0 to Length(pluginSettings) - 1 do
+        begin
 
             // This line loads it from the .ini file.
             tempName := devData.LoadSetting(devCompilerSet.optComKey,
                 pluginSettings[j].name);
             // Value comes back as a string. Plugin converts
             //  string value to correct type using LoadCompilerSettings
-            If tempName <> '' Then
+            if tempName <> '' then
                 MainForm.plugins[i].LoadCompilerSettings(
                     pluginSettings[j].name, tempName);
-        End;
+        end;
         MainForm.plugins[i].LoadCompilerOptions;
 
-    End;
+    end;
 
     {$ENDIF PLUGIN_BUILD}
 
@@ -1341,26 +1341,26 @@ Begin
     devCompilerSet.LoadSetDirs(ID_COMPILER_VC2008);
 
     {$IFDEF PLUGIN_BUILD}
-    For i := 0 To MainForm.pluginsCount - 1 Do
-    Begin
+    for i := 0 to MainForm.pluginsCount - 1 do
+    begin
 
         pluginSettings := MainForm.plugins[i].GetCompilerOptions;
 
-        For j := 0 To Length(pluginSettings) - 1 Do
-        Begin
+        for j := 0 to Length(pluginSettings) - 1 do
+        begin
 
             // This line loads it from the .ini file.
             tempName := devData.LoadSetting(devCompilerSet.optComKey,
                 pluginSettings[j].name);
             // Value comes back as a string. Plugin converts
             //  string value to correct type using LoadCompilerSettings
-            If tempName <> '' Then
+            if tempName <> '' then
                 MainForm.plugins[i].LoadCompilerSettings(
                     pluginSettings[j].name, tempName);
-        End;
+        end;
         MainForm.plugins[i].LoadCompilerOptions;
 
-    End;
+    end;
 
     {$ENDIF PLUGIN_BUILD}
 
@@ -1375,26 +1375,26 @@ Begin
     devCompilerSet.LoadSetDirs(ID_COMPILER_VC2010);
 
     {$IFDEF PLUGIN_BUILD}
-    For i := 0 To MainForm.pluginsCount - 1 Do
-    Begin
+    for i := 0 to MainForm.pluginsCount - 1 do
+    begin
 
         pluginSettings := MainForm.plugins[i].GetCompilerOptions;
 
-        For j := 0 To Length(pluginSettings) - 1 Do
-        Begin
+        for j := 0 to Length(pluginSettings) - 1 do
+        begin
 
             // This line loads it from the .ini file.
             tempName := devData.LoadSetting(devCompilerSet.optComKey,
                 pluginSettings[j].name);
             // Value comes back as a string. Plugin converts
             //  string value to correct type using LoadCompilerSettings
-            If tempName <> '' Then
+            if tempName <> '' then
                 MainForm.plugins[i].LoadCompilerSettings(
                     pluginSettings[j].name, tempName);
-        End;
+        end;
         MainForm.plugins[i].LoadCompilerOptions;
 
-    End;
+    end;
 
     {$ENDIF PLUGIN_BUILD}
 
@@ -1408,26 +1408,26 @@ Begin
     devCompilerSet.LoadSetDirs(ID_COMPILER_BORLAND);
 
     {$IFDEF PLUGIN_BUILD}
-    For i := 0 To MainForm.pluginsCount - 1 Do
-    Begin
+    for i := 0 to MainForm.pluginsCount - 1 do
+    begin
 
         pluginSettings := MainForm.plugins[i].GetCompilerOptions;
 
-        For j := 0 To Length(pluginSettings) - 1 Do
-        Begin
+        for j := 0 to Length(pluginSettings) - 1 do
+        begin
 
             // This line loads it from the .ini file.
             tempName := devData.LoadSetting(devCompilerSet.optComKey,
                 pluginSettings[j].name);
             // Value comes back as a string. Plugin converts
             //  string value to correct type using LoadCompilerSettings
-            If tempName <> '' Then
+            if tempName <> '' then
                 MainForm.plugins[i].LoadCompilerSettings(
                     pluginSettings[j].name, tempName);
-        End;
+        end;
         MainForm.plugins[i].LoadCompilerOptions;
 
-    End;
+    end;
 
     {$ENDIF PLUGIN_BUILD}
 
@@ -1440,26 +1440,26 @@ Begin
     devCompilerSet.LoadSetDirs(ID_COMPILER_WATCOM);
 
     {$IFDEF PLUGIN_BUILD}
-    For i := 0 To MainForm.pluginsCount - 1 Do
-    Begin
+    for i := 0 to MainForm.pluginsCount - 1 do
+    begin
 
         pluginSettings := MainForm.plugins[i].GetCompilerOptions;
 
-        For j := 0 To Length(pluginSettings) - 1 Do
-        Begin
+        for j := 0 to Length(pluginSettings) - 1 do
+        begin
 
             // This line loads it from the .ini file.
             tempName := devData.LoadSetting(devCompilerSet.optComKey,
                 pluginSettings[j].name);
             // Value comes back as a string. Plugin converts
             //  string value to correct type using LoadCompilerSettings
-            If tempName <> '' Then
+            if tempName <> '' then
                 MainForm.plugins[i].LoadCompilerSettings(
                     pluginSettings[j].name, tempName);
-        End;
+        end;
         MainForm.plugins[i].LoadCompilerOptions;
 
-    End;
+    end;
 
     {$ENDIF PLUGIN_BUILD}
 
@@ -1472,26 +1472,26 @@ Begin
     devCompilerSet.LoadSetDirs(ID_COMPILER_LINUX);
 
     {$IFDEF PLUGIN_BUILD}
-    For i := 0 To MainForm.pluginsCount - 1 Do
-    Begin
+    for i := 0 to MainForm.pluginsCount - 1 do
+    begin
 
         pluginSettings := MainForm.plugins[i].GetCompilerOptions;
 
-        For j := 0 To Length(pluginSettings) - 1 Do
-        Begin
+        for j := 0 to Length(pluginSettings) - 1 do
+        begin
 
             // This line loads it from the .ini file.
             tempName := devData.LoadSetting(devCompilerSet.optComKey,
                 pluginSettings[j].name);
             // Value comes back as a string. Plugin converts
             //  string value to correct type using LoadCompilerSettings
-            If tempName <> '' Then
+            if tempName <> '' then
                 MainForm.plugins[i].LoadCompilerSettings(
                     pluginSettings[j].name, tempName);
-        End;
+        end;
         MainForm.plugins[i].LoadCompilerOptions;
 
-    End;
+    end;
 
     {$ENDIF PLUGIN_BUILD}
 
@@ -1507,35 +1507,35 @@ Begin
     devCompilerSet.AssignToCompiler;
 
     {$IFDEF PLUGIN_BUILD}
-    For i := 0 To MainForm.pluginsCount - 1 Do
-    Begin
+    for i := 0 to MainForm.pluginsCount - 1 do
+    begin
 
         pluginSettings := MainForm.plugins[i].GetCompilerOptions;
 
-        For j := 0 To Length(pluginSettings) - 1 Do
-        Begin
+        for j := 0 to Length(pluginSettings) - 1 do
+        begin
 
             // This line loads it from the .ini file.
             tempName := devData.LoadSetting(devCompilerSet.optComKey,
                 pluginSettings[j].name);
             // Value comes back as a string. Plugin converts
             //  string value to correct type using LoadCompilerSettings
-            If tempName <> '' Then
+            if tempName <> '' then
                 MainForm.plugins[i].LoadCompilerSettings(
                     pluginSettings[j].name, tempName);
-        End;
+        end;
         MainForm.plugins[i].LoadCompilerOptions;
 
-    End;
+    end;
 
     {$ENDIF PLUGIN_BUILD}
 
     devCompilerSet.SaveSet(devCompiler.CompilerSet);
     devCompiler.SaveSettings;
-End;
+end;
 
-Procedure SaveOptions;
-Begin
+procedure SaveOptions;
+begin
     devData.SaveConfigData;
     devDirs.SaveSettings;
     devCompiler.SaveSettings;
@@ -1548,10 +1548,10 @@ Begin
     devPluginToolbarsX.SaveSettings;
     devPluginToolbarsY.SaveSettings;
   {$ENDIF PLUGIN_BUILD}
-End;
+end;
 
-Procedure ResettoDefaults;
-Begin
+procedure ResettoDefaults;
+begin
     devData.SettoDefaults;
     devCompiler.SettoDefaults;
     devCompilerSet.SettoDefaults;
@@ -1564,14 +1564,14 @@ Begin
     devPluginToolbarsX.SetToDefaults;
     devPluginToolbarsY.SetToDefaults;
   {$ENDIF PLUGIN_BUILD}
-End;
+end;
 
-Procedure FinalizeOptions;
-Begin
+procedure FinalizeOptions;
+begin
     devCompiler.SaveSettings;
     devCompiler.Free;
 
-    If Assigned(devCompiler) Then
+    if Assigned(devCompiler) then
         devCompilerSet.Free;
 
     devDirs.SaveSettings;
@@ -1599,61 +1599,61 @@ Begin
     devPluginToolbarsY.SaveSettings;
     devPluginToolbarsY.Free;
   {$ENDIF PLUGIN_BUILD}
-End;
+end;
 
-Procedure CheckForAltConfigFile(filename: String);
-Var
+procedure CheckForAltConfigFile(filename: string);
+var
     Ini: TIniFile;
-Begin
-    UseAltConfigFile := False;
+begin
+    UseAltConfigFile := FALSE;
     AltConfigFile := '';
-    If Not FileExists(filename) Then
+    if not FileExists(filename) then
         Exit;
     Ini := TIniFile.Create(filename);
-    Try
-        UseAltConfigFile := Ini.ReadBool('Options', 'UseAltConfigFile', False);
+    try
+        UseAltConfigFile := Ini.ReadBool('Options', 'UseAltConfigFile', FALSE);
         AltConfigFile := Ini.ReadString('Options', 'AltConfigFile', '');
-    Finally
+    finally
         Ini.Free;
-    End;
-End;
+    end;
+end;
 
-Procedure UpdateAltConfigFile;
-Var
+procedure UpdateAltConfigFile;
+var
     Ini: TIniFile;
-Begin
+begin
     Ini := TIniFile.Create(StandardConfigFile);
-    Try
+    try
         Ini.WriteBool('Options', 'UseAltConfigFile', UseAltConfigFile);
         Ini.WriteString('Options', 'AltConfigFile', AltConfigFile);
-    Finally
+    finally
         Ini.Free;
-    End;
-End;
+    end;
+end;
 
 { TDevData - Singleton pattern }
-Var
-    fdevData: TdevData = Nil;
-    fExternal: Boolean = True;
+var
+    fdevData: TdevData = NIL;
+    fExternal: boolean = TRUE;
 
-Function devData: TdevData;
-Begin
-    If Not assigned(fdevData) Then
-    Begin
-        fExternal := False;
-        Try
-            fdevData := TdevData.Create(Nil);
-        Finally
-            fExternal := True;
-        End;
-    End;
+function devData: TdevData;
+begin
+    if not assigned(fdevData) then
+    begin
+        fExternal := FALSE;
+        try
+            fdevData := TdevData.Create(NIL);
+        finally
+            fExternal := TRUE;
+        end;
+    end;
     result := fDevData;
-End;
+end;
 
-Class Function TdevData.devData: TdevData;
-Begin
+class function TdevData.devData: TdevData;
+begin
     result := devcfg.devData;
-End;
+end;
 (*
   raises an exception when:
    1 - try to create without call to devdata function
@@ -1662,94 +1662,94 @@ End;
 *)
 
 // add strings to lang file
-Constructor TdevData.Create(aOwner: Tcomponent);
-Begin
-    If assigned(fdevData) Then
-        Raise Exception.Create('Dev Data already created');
-    If fExternal Then
-        Raise Exception.Create('Dev Data Externally Created');
-    Inherited Create(aOwner);
+constructor TdevData.Create(aOwner: Tcomponent);
+begin
+    if assigned(fdevData) then
+        raise Exception.Create('Dev Data already created');
+    if fExternal then
+        raise Exception.Create('Dev Data Externally Created');
+    inherited Create(aOwner);
     IgnoreProperties.Add('Style');
 
     SettoDefaults;
-End;
+end;
 
-Destructor TdevData.Destroy;
-Begin
-    fdevData := Nil;
-    Inherited;
-End;
+destructor TdevData.Destroy;
+begin
+    fdevData := NIL;
+    inherited;
+end;
 
-Procedure TdevData.ReadConfigData;
-Begin
-    Inherited;
+procedure TdevData.ReadConfigData;
+begin
+    inherited;
     LoadWindowPlacement('Position', fWinPlace);
-End;
+end;
 
-Procedure TdevData.SaveConfigData;
-Begin
-    Inherited;
+procedure TdevData.SaveConfigData;
+begin
+    inherited;
     SaveWindowPlacement('Position', fWinPlace);
-End;
+end;
 
-Procedure TdevData.SettoDefaults;
+procedure TdevData.SettoDefaults;
 
-    Function getAssociation(I: Integer): Boolean;
-    Begin
+    function getAssociation(I: integer): boolean;
+    begin
         Result := CheckFiletype('.' + Associations[I, 0],
             'DevCpp.' + Associations[I, 0],
             Associations[I, 1],
             'open',
             Application.Exename + ' "%1"');
-    End;
+    end;
 
-Begin
+begin
     fVersion := ''; // this is filled in MainForm.Create()
-    fFirst := True;
+    fFirst := TRUE;
     fLang := DEFAULT_LANG_FILE;
     fFindCols := '75, 75, 120, 150';
     fCompCols := '75, 75, 120';
-    fMsgTabs := True; // Top
+    fMsgTabs := TRUE; // Top
     fMRUMax := 10;
-    fMinOnRun := False;
-    fBackup := False;
+    fMinOnRun := FALSE;
+    fBackup := FALSE;
     fAutoOpen := 2;
-    fClassView := False;
-    fStatusbar := True;
-    fSingleInstance := True;
-    fShowBars := False;
-    fShowMenu := True;
-    fDefCpp := True;
+    fClassView := FALSE;
+    fStatusbar := TRUE;
+    fSingleInstance := TRUE;
+    fShowBars := FALSE;
+    fShowMenu := TRUE;
+    fDefCpp := TRUE;
     fOpenStyle := 0;
-    fdblFiles := False;
+    fdblFiles := FALSE;
     fAutoCompile := -1;
     fAutoAddDebugFlag := -1;
 
-    fToolbarMain := True;
+    fToolbarMain := TRUE;
     fToolbarMainX := 11;
     fToolbarMainY := 2;
-    fToolbarEdit := True;
+    fToolbarEdit := TRUE;
     fToolbarEditX := 201;
     fToolbarEditY := 2;
-    fToolbarCompile := True;
+    fToolbarCompile := TRUE;
     fToolbarCompileX := 11;
     fToolbarCompileY := 30;
-    fToolbarDebug := True;
+    fToolbarDebug := TRUE;
     fToolbarDebugX := 154;
     fToolbarDebugY := 30;
-    fToolbarProject := True;
+    fToolbarProject := TRUE;
     fToolbarProjectX := 375;
     fToolbarProjectY := 2;
-    fToolbarOptions := True;
+    fToolbarOptions := TRUE;
     fToolbarOptionsX := 143;
     fToolbarOptionsY := 30;
-    fToolbarSpecials := True;
+    fToolbarSpecials := TRUE;
     fToolbarSpecialsX := 202;
     fToolbarSpecialsY := 30;
-    fToolbarSearch := True;
+    fToolbarSearch := TRUE;
     fToolbarSearchX := 261;
     fToolbarSearchY := 2;
-    fToolbarClasses := True;
+    fToolbarClasses := TRUE;
     fToolbarClassesX := 11;
     fToolbarClassesY := 58;
 
@@ -1762,33 +1762,33 @@ Begin
     fAssociateRc := getAssociation(5);
     fAssociateTemplate := getAssociation(6);
 
-    fShowTipsOnStart := True;
+    fShowTipsOnStart := TRUE;
     fLastTip := 0;
-    fXPTheme := False;
-    fNativeDocks := True;
-    fHiliteActiveTab := False;
+    fXPTheme := FALSE;
+    fNativeDocks := TRUE;
+    fHiliteActiveTab := FALSE;
     fFileDate := 0;
-    fShowProgress := True;
-    fAutoCloseProgress := False;
-    fPrintColors := True;
-    fPrintHighlight := True;
-    fPrintWordWrap := False;
-    fPrintLineNumbers := False;
-    fPrintLineNumbersMargins := False;
-    fWatchHint := True;
-    fWatchError := True;
-    fNoToolTip := True;
+    fShowProgress := TRUE;
+    fAutoCloseProgress := FALSE;
+    fPrintColors := TRUE;
+    fPrintHighlight := TRUE;
+    fPrintWordWrap := FALSE;
+    fPrintLineNumbers := FALSE;
+    fPrintLineNumbersMargins := FALSE;
+    fWatchHint := TRUE;
+    fWatchError := TRUE;
+    fNoToolTip := TRUE;
 
     fDebugCommand := '-exec-finish';
 
-End;
+end;
 
 { TCompilerOpts }
-Procedure TdevCompiler.AddDefaultOptions;
-Var
+procedure TdevCompiler.AddDefaultOptions;
+var
     sl: TStringList;
 
-Begin
+begin
     // WARNING: do *not* re-arrange the options. Their values are written to the ini file
     // with the same order. If you change the order here, the next time the configuration
     // is read, it will assign the values to the *wrong* options...
@@ -1800,141 +1800,141 @@ Begin
     //Begin by clearing the compiler options list
     ClearOptions;
 
-    If devCompilerSet.CompilerType In ID_COMPILER_VC Then
-    Begin
+    if devCompilerSet.CompilerType in ID_COMPILER_VC then
+    begin
         sl := TStringList.Create;
         sl.Add('Neither  =');
         sl.Add('Speed=Ot');
         sl.Add('Space=Os');
-        AddOption('Favour', False, True, True, False, 0, '/',
+        AddOption('Favour', FALSE, TRUE, TRUE, FALSE, 0, '/',
             'Code Optimization', [], sl);
         sl := TStringList.Create;
         sl.Add('Neither  =');
         sl.Add('Speed=O2');
         sl.Add('Space=O1');
-        AddOption('Optimize for', False, True, True, False, 0, '/',
+        AddOption('Optimize for', FALSE, TRUE, TRUE, FALSE, 0, '/',
             'Code Optimization', [], sl);
-        AddOption('Enable Global Optimization', False, True, True,
-            False, 0, '/Og', 'Code Optimization', [], Nil);
-        AddOption('Assume aliasing', False, True, True, False, 0,
-            '/Oa', 'Code Optimization', [], Nil);
-        AddOption('Enable intrinsic functions', False, True, True,
-            False, 0, '/Oi', 'Code Optimization', [], Nil);
-        AddOption('Assume cross-function aliasing', False, True,
-            True, False, 0, '/Ow', 'Code Optimization', [], Nil);
-        AddOption('Optimize for Windows Program', False, True, True,
-            False, 0, '/GA', 'Code Optimization', [], Nil);
-        AddOption('Omit frame pointers', False, True, True, False,
-            0, '/Oy', 'Code Optimization', [], Nil);
+        AddOption('Enable Global Optimization', FALSE, TRUE, TRUE,
+            FALSE, 0, '/Og', 'Code Optimization', [], NIL);
+        AddOption('Assume aliasing', FALSE, TRUE, TRUE, FALSE, 0,
+            '/Oa', 'Code Optimization', [], NIL);
+        AddOption('Enable intrinsic functions', FALSE, TRUE, TRUE,
+            FALSE, 0, '/Oi', 'Code Optimization', [], NIL);
+        AddOption('Assume cross-function aliasing', FALSE, TRUE,
+            TRUE, FALSE, 0, '/Ow', 'Code Optimization', [], NIL);
+        AddOption('Optimize for Windows Program', FALSE, TRUE, TRUE,
+            FALSE, 0, '/GA', 'Code Optimization', [], NIL);
+        AddOption('Omit frame pointers', FALSE, TRUE, TRUE, FALSE,
+            0, '/Oy', 'Code Optimization', [], NIL);
 
         //Code generation
-        If (devCompilerSet.CompilerType = ID_COMPILER_VC6) Or
-            (devCompilerSet.CompilerType = ID_COMPILER_VC2003) Then
-        Begin
+        if (devCompilerSet.CompilerType = ID_COMPILER_VC6) or
+            (devCompilerSet.CompilerType = ID_COMPILER_VC2003) then
+        begin
             sl := TStringList.Create;
             sl.Add('Blended model=B');
             sl.Add('Pentium=5');
             sl.Add('Pentium Pro, Pentium II and Pentium III  =6');
             sl.Add('Pentium 4 or Athlon=7');
-            AddOption('Optimize for', False, True, True, False, 0,
+            AddOption('Optimize for', FALSE, TRUE, TRUE, FALSE, 0,
                 '/G', 'Code Generation', [], sl);
-        End;
+        end;
 
         sl := TStringList.Create;
         sl.Add('__cdecl=');
         sl.Add('__fastcall  =/Gr');
         sl.Add('__stdcall=/Gz');
-        AddOption('Calling Convention', False, True, True, False,
+        AddOption('Calling Convention', FALSE, TRUE, TRUE, FALSE,
             0, '', 'Code Generation', [], sl);
 
         sl := TStringList.Create;
         sl.Add('Disable=');
-        If (devCompilerSet.CompilerType = ID_COMPILER_VC6) Or
-            (devCompilerSet.CompilerType = ID_COMPILER_VC2003) Then
+        if (devCompilerSet.CompilerType = ID_COMPILER_VC6) or
+            (devCompilerSet.CompilerType = ID_COMPILER_VC2003) then
             sl.Add('Enable=/Gf');
         sl.Add('Enable (Read-Only)  =/GF');
-        AddOption('String Pooling', False, True, True, False, 0,
+        AddOption('String Pooling', FALSE, TRUE, TRUE, FALSE, 0,
             '', 'Code Generation', [], sl);
 
         sl := TStringList.Create;
         sl.Add('Compile native code  =');
         sl.Add('Compile for CLR=/clr');
         sl.Add('No assembly=/clr:noAssembly');
-        If (devCompilerSet.CompilerType In ID_COMPILER_VC_CURRENT) Then
-        Begin
+        if (devCompilerSet.CompilerType in ID_COMPILER_VC_CURRENT) then
+        begin
             sl.Add('IL-only output file=/clr:pure');
             sl.Add('Verifiable IL-only output=/clr:safe');
             sl.Add('Use old syntax=/clr:oldSyntax');
             sl.Add('Enable initial AppDomain behaviour  =/clr:initialAppDomain');
-        End;
-        AddOption('Common Language Runtime', False, True, True,
-            False, 0, '', 'Code Generation', [], sl);
+        end;
+        AddOption('Common Language Runtime', FALSE, TRUE, TRUE,
+            FALSE, 0, '', 'Code Generation', [], sl);
 
-        If (devCompilerSet.CompilerType In ID_COMPILER_VC_CURRENT) Then
-        Begin
+        if (devCompilerSet.CompilerType in ID_COMPILER_VC_CURRENT) then
+        begin
             sl := TStringList.Create;
             sl.Add('Precise  =precise');
             sl.Add('Fast=fast');
             sl.Add('Strict=strict');
-            AddOption('Floating-Point Model', False, True, True, False,
+            AddOption('Floating-Point Model', FALSE, TRUE, TRUE, FALSE,
                 0, '', 'Code Generation', [], sl);
-        End;
+        end;
 
         sl := TStringList.Create;
         sl.Add('None=');
         sl.Add('SSE=/arch:SSE');
         sl.Add('SSE2  =/arch:SSE2');
-        AddOption('Extended instruction set', False, True, True,
-            False, 0, '', 'Code Generation', [], sl);
+        AddOption('Extended instruction set', FALSE, TRUE, TRUE,
+            FALSE, 0, '', 'Code Generation', [], sl);
 
         sl := TStringList.Create;
         sl.Add('No Exceptions=');
         sl.Add('C++ Exceptions (no SEH)=/EHs');
         sl.Add('C++ Exceptions (with SEH)  =/EHa');
-        AddOption('Exception handling', False, False, True, False,
+        AddOption('Exception handling', FALSE, FALSE, TRUE, FALSE,
             0, '', 'Code Generation', [], sl);
-        AddOption('Enable _penter function call', False, True, True,
-            False, 0, '/Gh', 'Code Generation', [], Nil);
-        AddOption('Enable _pexit function call', False, True, True,
-            False, 0, '/GH', 'Code Generation', [], Nil);
-        AddOption('Enable C++ RTTI', False, False, True, False, 0,
-            '/GR', 'Code Generation', [], Nil);
-        AddOption('Enable Minimal Rebuild', False, True, True, False,
-            0, '/Gm', 'Code Generation', [], Nil);
-        AddOption('Enable Link-Time Code Generation', False, True,
-            True, False, 0, '/GL', 'Code Generation', [], Nil);
-        If (devCompilerSet.CompilerType = ID_COMPILER_VC6) Or
-            (devCompilerSet.CompilerType = ID_COMPILER_VC2003) Then
-        Begin
-            AddOption('Enable Pentium FDIV fix', False, True, True,
-                False, 1, '/QIfdiv', 'Code Generation', [], Nil);
-            AddOption('Enable Pentium 0x0F fix', False, True, True,
-                False, 1, '/QI0f', 'Code Generation', [], Nil);
-            AddOption('Use FIST instead of ftol()', False, True, True,
-                False, 1, '/QIfist', 'Code Generation', [], Nil);
-        End;
-        AddOption('extern "C" implies nothrow', False, False, True,
-            False, 0, '/EHc', 'Code Generation', [], Nil);
-        AddOption('Enable function-level linking', False, False,
-            False, True, 0, '/Gy', 'Code Generation', [], Nil);
-        AddOption('Use fibre-safe TLS accesses', False, True, True,
-            False, 0, '/GT', 'Code Generation', [], Nil);
+        AddOption('Enable _penter function call', FALSE, TRUE, TRUE,
+            FALSE, 0, '/Gh', 'Code Generation', [], NIL);
+        AddOption('Enable _pexit function call', FALSE, TRUE, TRUE,
+            FALSE, 0, '/GH', 'Code Generation', [], NIL);
+        AddOption('Enable C++ RTTI', FALSE, FALSE, TRUE, FALSE, 0,
+            '/GR', 'Code Generation', [], NIL);
+        AddOption('Enable Minimal Rebuild', FALSE, TRUE, TRUE, FALSE,
+            0, '/Gm', 'Code Generation', [], NIL);
+        AddOption('Enable Link-Time Code Generation', FALSE, TRUE,
+            TRUE, FALSE, 0, '/GL', 'Code Generation', [], NIL);
+        if (devCompilerSet.CompilerType = ID_COMPILER_VC6) or
+            (devCompilerSet.CompilerType = ID_COMPILER_VC2003) then
+        begin
+            AddOption('Enable Pentium FDIV fix', FALSE, TRUE, TRUE,
+                FALSE, 1, '/QIfdiv', 'Code Generation', [], NIL);
+            AddOption('Enable Pentium 0x0F fix', FALSE, TRUE, TRUE,
+                FALSE, 1, '/QI0f', 'Code Generation', [], NIL);
+            AddOption('Use FIST instead of ftol()', FALSE, TRUE, TRUE,
+                FALSE, 1, '/QIfist', 'Code Generation', [], NIL);
+        end;
+        AddOption('extern "C" implies nothrow', FALSE, FALSE, TRUE,
+            FALSE, 0, '/EHc', 'Code Generation', [], NIL);
+        AddOption('Enable function-level linking', FALSE, FALSE,
+            FALSE, TRUE, 0, '/Gy', 'Code Generation', [], NIL);
+        AddOption('Use fibre-safe TLS accesses', FALSE, TRUE, TRUE,
+            FALSE, 0, '/GT', 'Code Generation', [], NIL);
 
         //Checks
         sl := TStringList.Create;
         sl.Add('None=');
-        If (devCompilerSet.CompilerType = ID_COMPILER_VC6) Or
-            (devCompilerSet.CompilerType = ID_COMPILER_VC2003) Then
+        if (devCompilerSet.CompilerType = ID_COMPILER_VC6) or
+            (devCompilerSet.CompilerType = ID_COMPILER_VC2003) then
             sl.Add('Enable stack probes=/Ge');
         sl.Add('Control Stack Checking Calls  =/GS');
-        AddOption('Stack checks', False, True, True, False, 0, '',
+        AddOption('Stack checks', FALSE, TRUE, TRUE, FALSE, 0, '',
             'Code Checks', [], sl);
-        AddOption('Type conversion Checks', False, True, True, False,
-            0, '/RTCc', 'Code Checks', [], Nil);
-        AddOption('Stack Frame runtime checking', False, True, True,
-            False, 0, '/RTCs', 'Code Checks', [], Nil);
-        AddOption('Check for Variable Usage', False, True, True,
-            False, 0, '/RTCu', 'Code Checks', [], Nil);
+        AddOption('Type conversion Checks', FALSE, TRUE, TRUE, FALSE,
+            0, '/RTCc', 'Code Checks', [], NIL);
+        AddOption('Stack Frame runtime checking', FALSE, TRUE, TRUE,
+            FALSE, 0, '/RTCs', 'Code Checks', [], NIL);
+        AddOption('Check for Variable Usage', FALSE, TRUE, TRUE,
+            FALSE, 0, '/RTCu', 'Code Checks', [], NIL);
 
         //Language Options
         sl := TStringList.Create;
@@ -1943,59 +1943,59 @@ Begin
         sl.Add('Edit and Continue Debugging Information  =/ZI');
         sl.Add('Old-Style Debugging Information=/Z7');
         sl.Add('Include line numbers only=/Zd');
-        AddOption('Debugging', False, True, True, False, 0, '',
+        AddOption('Debugging', FALSE, TRUE, TRUE, FALSE, 0, '',
             'Language Options', [], sl);
-        If (devCompilerSet.CompilerType = ID_COMPILER_VC6) Or
-            (devCompilerSet.CompilerType = ID_COMPILER_VC2003) Then
-            AddOption('Enable Extensions', False, True, True, False,
-                1, '/Ze', 'Language Options', [], Nil);
-        AddOption('Omit library name in object file', False, True,
-            True, False, 0, '/Zl', 'Language Options', [], Nil);
-        AddOption('Generate function prototypes', False, True, True,
-            False, 0, '/Zg', 'Language Options', [], Nil);
-        If (devCompilerSet.CompilerType In ID_COMPILER_VC_CURRENT) Then
-            AddOption('Enable OpenMP 2.0 Language Extensions', False,
-                False, True, False, 0, '/openmp', 'Language Options', [], Nil);
+        if (devCompilerSet.CompilerType = ID_COMPILER_VC6) or
+            (devCompilerSet.CompilerType = ID_COMPILER_VC2003) then
+            AddOption('Enable Extensions', FALSE, TRUE, TRUE, FALSE,
+                1, '/Ze', 'Language Options', [], NIL);
+        AddOption('Omit library name in object file', FALSE, TRUE,
+            TRUE, FALSE, 0, '/Zl', 'Language Options', [], NIL);
+        AddOption('Generate function prototypes', FALSE, TRUE, TRUE,
+            FALSE, 0, '/Zg', 'Language Options', [], NIL);
+        if (devCompilerSet.CompilerType in ID_COMPILER_VC_CURRENT) then
+            AddOption('Enable OpenMP 2.0 Language Extensions', FALSE,
+                FALSE, TRUE, FALSE, 0, '/openmp', 'Language Options', [], NIL);
 
-        If (devCompilerSet.CompilerType = ID_COMPILER_VC6) Or
-            (devCompilerSet.CompilerType = ID_COMPILER_VC2003) Then
-        Begin
-            AddOption('Enforce Standard C++ scoping', False, False,
-                True, False, 0, '/Zc:forScope', 'Language Options', [], Nil);
-            AddOption('Make wchar_t a native type', False, False,
-                True, False, 0, '/Zc:wchar_t', 'Language Options', [], Nil);
-        End
-        Else
-        Begin
-            AddOption('Don''t Enforce Standard C++ scoping', False,
-                False, True, False, 0, '/Zc:forScope-', 'Language Options', [], Nil);
-            AddOption('Don''t Make wchar_t a native type', False,
-                False, True, False, 0, '/Zc:wchar_t-', 'Language Options', [], Nil);
-        End;
+        if (devCompilerSet.CompilerType = ID_COMPILER_VC6) or
+            (devCompilerSet.CompilerType = ID_COMPILER_VC2003) then
+        begin
+            AddOption('Enforce Standard C++ scoping', FALSE, FALSE,
+                TRUE, FALSE, 0, '/Zc:forScope', 'Language Options', [], NIL);
+            AddOption('Make wchar_t a native type', FALSE, FALSE,
+                TRUE, FALSE, 0, '/Zc:wchar_t', 'Language Options', [], NIL);
+        end
+        else
+        begin
+            AddOption('Don''t Enforce Standard C++ scoping', FALSE,
+                FALSE, TRUE, FALSE, 0, '/Zc:forScope-', 'Language Options', [], NIL);
+            AddOption('Don''t Make wchar_t a native type', FALSE,
+                FALSE, TRUE, FALSE, 0, '/Zc:wchar_t-', 'Language Options', [], NIL);
+        end;
 
         //Miscellaneous
-        AddOption('Treat warnings as errors', False, True, True,
-            False, 0, '/WX', 'Miscellaneous', [], Nil);
+        AddOption('Treat warnings as errors', FALSE, TRUE, TRUE,
+            FALSE, 0, '/WX', 'Miscellaneous', [], NIL);
         sl := TStringList.Create;
         sl.Add('Default (Level 1)  =');
         sl.Add('Level 2=/W2');
         sl.Add('Level 3=/W3');
         sl.Add('Level 4=/W4');
         sl.Add('None=/w');
-        AddOption('Warning Level', False, True, True, False, 0, '',
+        AddOption('Warning Level', FALSE, TRUE, TRUE, FALSE, 0, '',
             'Miscellaneous', [], sl);
-        If (devCompilerSet.CompilerType = ID_COMPILER_VC6) Or
-            (devCompilerSet.CompilerType = ID_COMPILER_VC2003) Then
-            AddOption('Enable automatic precompiled headers', False,
-                True, True, False, 0, '/YX', 'Miscellaneous', [], Nil);
-        AddOption('Enable 64-bit porting warnings', False, True,
-            True, False, 0, '/Wp64', 'Miscellaneous', [], Nil);
-        AddOption('Disable incremental linking', False, False, False,
-            True, 0, '/INCREMENTAL:NO', 'Miscellaneous', [], Nil);
-    End
-    Else
-    If devCompilerSet.CompilerType = ID_COMPILER_DMARS Then
-    Begin
+        if (devCompilerSet.CompilerType = ID_COMPILER_VC6) or
+            (devCompilerSet.CompilerType = ID_COMPILER_VC2003) then
+            AddOption('Enable automatic precompiled headers', FALSE,
+                TRUE, TRUE, FALSE, 0, '/YX', 'Miscellaneous', [], NIL);
+        AddOption('Enable 64-bit porting warnings', FALSE, TRUE,
+            TRUE, FALSE, 0, '/Wp64', 'Miscellaneous', [], NIL);
+        AddOption('Disable incremental linking', FALSE, FALSE, FALSE,
+            TRUE, 0, '/INCREMENTAL:NO', 'Miscellaneous', [], NIL);
+    end
+    else
+    if devCompilerSet.CompilerType = ID_COMPILER_DMARS then
+    begin
         //Start of DMars
         sl := TStringList.Create;
         sl.Add('');
@@ -2004,26 +2004,26 @@ Begin
         sl.Add('2=2');
         sl.Add('4=4');
         sl.Add('8=8');
-        AddOption('alignment of struct members', False, True, True,
-            False, 0, '-a', 'C++ Options', [], sl);
-        AddOption('ANSI X3.159-1989 conformance', False, True, True,
-            False, 0, '-A89', 'C++ Options', [], Nil);
-        AddOption('ISO/IEC 9899:1990 conformance', False, True,
-            True, False, 0, '-A90', 'C++ Options', [], Nil);
-        AddOption('ISO/IEC 9899-1:1994 conformance', False, True,
-            True, False, 0, '-A94', 'C++ Options', [], Nil);
-        AddOption('ISO/IEC 9899:1999 conformance', False, True,
-            True, False, 0, '-A99', 'C++ Options', [], Nil);
-        AddOption('strict ANSI C/C++', False, True, True, False,
-            0, '-A', 'C++ Options', [], Nil);
-        AddOption('enable new[] and delete[]', False, True, True,
-            False, 0, '-Aa', 'C++ Options', [], Nil);
-        AddOption('enable bool', False, True, True, False, 0, '-Ab',
-            'C++ Options', [], Nil);
-        AddOption('enable exception handling', False, True, True,
-            False, 0, '-Ae', 'C++ Options', [], Nil);
-        AddOption('enable RTTI', False, True, True, False, 0, '-Ar',
-            'C++ Options', [], Nil);
+        AddOption('alignment of struct members', FALSE, TRUE, TRUE,
+            FALSE, 0, '-a', 'C++ Options', [], sl);
+        AddOption('ANSI X3.159-1989 conformance', FALSE, TRUE, TRUE,
+            FALSE, 0, '-A89', 'C++ Options', [], NIL);
+        AddOption('ISO/IEC 9899:1990 conformance', FALSE, TRUE,
+            TRUE, FALSE, 0, '-A90', 'C++ Options', [], NIL);
+        AddOption('ISO/IEC 9899-1:1994 conformance', FALSE, TRUE,
+            TRUE, FALSE, 0, '-A94', 'C++ Options', [], NIL);
+        AddOption('ISO/IEC 9899:1999 conformance', FALSE, TRUE,
+            TRUE, FALSE, 0, '-A99', 'C++ Options', [], NIL);
+        AddOption('strict ANSI C/C++', FALSE, TRUE, TRUE, FALSE,
+            0, '-A', 'C++ Options', [], NIL);
+        AddOption('enable new[] and delete[]', FALSE, TRUE, TRUE,
+            FALSE, 0, '-Aa', 'C++ Options', [], NIL);
+        AddOption('enable bool', FALSE, TRUE, TRUE, FALSE, 0, '-Ab',
+            'C++ Options', [], NIL);
+        AddOption('enable exception handling', FALSE, TRUE, TRUE,
+            FALSE, 0, '-Ae', 'C++ Options', [], NIL);
+        AddOption('enable RTTI', FALSE, TRUE, TRUE, FALSE, 0, '-Ar',
+            'C++ Options', [], NIL);
         sl := TStringList.Create;
         sl.Add('');
         // /!\ Must contain a starting empty value in order to do not have always to pass the parameter
@@ -2031,65 +2031,65 @@ Begin
         sl.Add('French=f');
         sl.Add('German=g');
         sl.Add('Japanese=j');
-        AddOption('message language', False, True, True, True, 0,
+        AddOption('message language', FALSE, TRUE, TRUE, TRUE, 0,
             '-B', 'C++ Options', [], sl);
-        AddOption('skip the link, do compile only', False, True,
-            True, False, 0, '-c', 'C++ Options', [], Nil);
-        AddOption('source files are C++', False, True, True, False,
-            0, '-cpp', 'C++ Options', [], Nil);
-        AddOption('generate .cod (assembly) file', False, True,
-            True, False, 0, '-cod', 'C++ Options', [], Nil);
-        AddOption('no inline function expansion', False, True, True,
-            False, 0, '-C', 'C++ Options', [], Nil);
-        AddOption('generate .dep (make dependency) file', False,
-            True, True, False, 0, '-d', 'C++ Options', [], Nil);
-        AddOption('#define DEBUG 1', False, True, True, False, 0,
-            '-D', 'C++ Options', [], Nil);
-        AddOption('strict ANSI C/C++', False, True, True, False,
-            0, '/Zg', 'C++ Options', [], Nil);
-        AddOption('show results of preprocessor', False, True, True,
-            False, 0, '-e', 'C++ Options', [], Nil);
-        AddOption('do not elide comments', False, True, True, False,
-            0, '-EC', 'C++ Options', [], Nil);
-        AddOption('#line directives not output', False, True, True,
-            False, 0, '-EL', 'C++ Options', [], Nil);
+        AddOption('skip the link, do compile only', FALSE, TRUE,
+            TRUE, FALSE, 0, '-c', 'C++ Options', [], NIL);
+        AddOption('source files are C++', FALSE, TRUE, TRUE, FALSE,
+            0, '-cpp', 'C++ Options', [], NIL);
+        AddOption('generate .cod (assembly) file', FALSE, TRUE,
+            TRUE, FALSE, 0, '-cod', 'C++ Options', [], NIL);
+        AddOption('no inline function expansion', FALSE, TRUE, TRUE,
+            FALSE, 0, '-C', 'C++ Options', [], NIL);
+        AddOption('generate .dep (make dependency) file', FALSE,
+            TRUE, TRUE, FALSE, 0, '-d', 'C++ Options', [], NIL);
+        AddOption('#define DEBUG 1', FALSE, TRUE, TRUE, FALSE, 0,
+            '-D', 'C++ Options', [], NIL);
+        AddOption('strict ANSI C/C++', FALSE, TRUE, TRUE, FALSE,
+            0, '/Zg', 'C++ Options', [], NIL);
+        AddOption('show results of preprocessor', FALSE, TRUE, TRUE,
+            FALSE, 0, '-e', 'C++ Options', [], NIL);
+        AddOption('do not elide comments', FALSE, TRUE, TRUE, FALSE,
+            0, '-EC', 'C++ Options', [], NIL);
+        AddOption('#line directives not output', FALSE, TRUE, TRUE,
+            FALSE, 0, '-EL', 'C++ Options', [], NIL);
 
-        AddOption('IEEE 754 inline 8087 code', False, True, True,
-            False, 0, '-f', 'C++ Options', [], Nil);
-        AddOption('work around FDIV problem', False, True, True,
-            False, 0, '-fd', 'C++ Options', [], Nil);
+        AddOption('IEEE 754 inline 8087 code', FALSE, TRUE, TRUE,
+            FALSE, 0, '-f', 'C++ Options', [], NIL);
+        AddOption('work around FDIV problem', FALSE, TRUE, TRUE,
+            FALSE, 0, '-fd', 'C++ Options', [], NIL);
 
-        AddOption('fast inline 8087 code', False, True, True, False,
-            0, '-ff ', 'C++ Options', [], Nil);
-        AddOption('generate debug info', False, True, True, False,
-            0, '-g', 'C++ Options', [], Nil);
+        AddOption('fast inline 8087 code', FALSE, TRUE, TRUE, FALSE,
+            0, '-ff ', 'C++ Options', [], NIL);
+        AddOption('generate debug info', FALSE, TRUE, TRUE, FALSE,
+            0, '-g', 'C++ Options', [], NIL);
 
         //-gf disable debug info optimization
-        AddOption('disable debug info optimization', False, True,
-            True, False, 0, '-gf', 'C++ Options', [], Nil);
+        AddOption('disable debug info optimization', FALSE, TRUE,
+            TRUE, FALSE, 0, '-gf', 'C++ Options', [], NIL);
         //-gg make static functions global
-        AddOption('make static functions global', False, True, True,
-            False, 0, '-gg', 'C++ Options', [], Nil);
+        AddOption('make static functions global', FALSE, TRUE, TRUE,
+            FALSE, 0, '-gg', 'C++ Options', [], NIL);
         //-gh symbol info for globals
-        AddOption('symbol info for globals', False, True, True,
-            False, 0, '-gh', 'C++ Options', [], Nil);
+        AddOption('symbol info for globals', FALSE, TRUE, TRUE,
+            FALSE, 0, '-gh', 'C++ Options', [], NIL);
         //-gl debug line numbers only
-        AddOption('debug line numbers only', False, True, True,
-            False, 0, '-gl', 'C++ Options', [], Nil);
+        AddOption('debug line numbers only', FALSE, TRUE, TRUE,
+            FALSE, 0, '-gl', 'C++ Options', [], NIL);
         //-gp generate pointer validations
-        AddOption('generate pointer validations', False, True, True,
-            False, 0, '-gp', 'C++ Options', [], Nil);
+        AddOption('generate pointer validations', FALSE, TRUE, TRUE,
+            FALSE, 0, '-gp', 'C++ Options', [], NIL);
         //-gs debug symbol info only
-        AddOption('debug symbol info only', False, True, True, False,
-            0, '-gs', 'C++ Options', [], Nil);
+        AddOption('debug symbol info only', FALSE, TRUE, TRUE, FALSE,
+            0, '-gs', 'C++ Options', [], NIL);
         //-gt generate trace prolog/epilog
-        AddOption('generate trace prolog/epilog', False, True, True,
-            False, 0, '-gt', 'C++ Options', [], Nil);
+        AddOption('generate trace prolog/epilog', FALSE, TRUE, TRUE,
+            FALSE, 0, '-gt', 'C++ Options', [], NIL);
         //-GTnnnn set data threshold to nnnn
         //?AddOption('strict ANSI C/C++', false, true, true, false, 0, '/Zg', 'C++ Options', [], nil);
         //-H  use precompiled headers (ph)
-        AddOption('use precompiled headers (ph)', False, True, True,
-            False, 0, '-H', 'C++ Options', [], Nil);
+        AddOption('use precompiled headers (ph)', FALSE, TRUE, TRUE,
+            FALSE, 0, '-H', 'C++ Options', [], NIL);
         //-HDdirectory  use ph from directory
         //?AddOption('strict ANSI C/C++', false, true, true, false, 0, '/Zg', 'C++ Options', [], nil);
         //-HF[filename]  generate ph to filename
@@ -2099,14 +2099,14 @@ Begin
         //-HIfilename   #include "filename"
         //?AddOption('strict ANSI C/C++', false, true, true, false, 0, '/Zg', 'C++ Options', [], nil);
         //-HO include files only once
-        AddOption('include files only once', False, True, True,
-            False, 0, '-HO', 'C++ Options', [], Nil);
+        AddOption('include files only once', FALSE, TRUE, TRUE,
+            FALSE, 0, '-HO', 'C++ Options', [], NIL);
         //-HS only search -I directories
-        AddOption('only search -I directories', False, True, True,
-            False, 0, '-HS', 'C++ Options', [], Nil);
+        AddOption('only search -I directories', FALSE, TRUE, TRUE,
+            FALSE, 0, '-HS', 'C++ Options', [], NIL);
         //-HX automatic precompiled headers
-        AddOption('automatic precompiled headers', False, True,
-            True, False, 0, '-HX', 'C++ Options', [], Nil);
+        AddOption('automatic precompiled headers', FALSE, TRUE,
+            TRUE, FALSE, 0, '-HX', 'C++ Options', [], NIL);
         //-j[0|1|2]  Asian language characters
         //0: Japanese 1: Taiwanese and Chinese 2: Korean
         sl := TStringList.Create;
@@ -2115,20 +2115,20 @@ Begin
         sl.Add('Japanese=0');
         sl.Add('Taiwanese & Chinese=1');
         sl.Add('Korean=2');
-        AddOption('Asian language characters', False, True, True,
-            True, 0, '-j', 'C++ Options', [], sl);
+        AddOption('Asian language characters', FALSE, TRUE, TRUE,
+            TRUE, 0, '-j', 'C++ Options', [], sl);
         //-Jm relaxed type checking
-        AddOption('relaxed type checking', False, True, True, False,
-            0, '-Jm', 'C++ Options', [], Nil);
+        AddOption('relaxed type checking', FALSE, TRUE, TRUE, FALSE,
+            0, '-Jm', 'C++ Options', [], NIL);
         //-Ju char==unsigned char
-        AddOption('char==unsigned char', False, True, True, False,
-            0, '-Ju', 'C++ Options', [], Nil);
+        AddOption('char==unsigned char', FALSE, TRUE, TRUE, FALSE,
+            0, '-Ju', 'C++ Options', [], NIL);
         // - Jb no empty base class optimization
-        AddOption('no empty base class optimization', False, True,
-            True, False, 0, '-Jb', 'C++ Options', [], Nil);
+        AddOption('no empty base class optimization', FALSE, TRUE,
+            TRUE, FALSE, 0, '-Jb', 'C++ Options', [], NIL);
         // - J  chars are unsigned
-        AddOption('chars are unsigned', False, True, True, False,
-            0, '-J', 'C++ Options', [], Nil);
+        AddOption('chars are unsigned', FALSE, TRUE, TRUE, FALSE,
+            0, '-J', 'C++ Options', [], NIL);
         // - m[tsmclvfnrpxz][do][w][u] set memory model
     {s : small code and data              m: large code, small data
     c : small code, large data            l: large code and data
@@ -2158,25 +2158,25 @@ Begin
         //?sl.Add('OS/2 16 bit=o');
         //?sl.Add('SS Not Equal DS=w');
         //?sl.Add('reload DS=u');
-        AddOption('alignment of struct members', False, True, True,
-            False, 0, '-m', 'C++ Options', [], sl);
+        AddOption('alignment of struct members', FALSE, TRUE, TRUE,
+            FALSE, 0, '-m', 'C++ Options', [], sl);
         //-Nc function level linking
-        AddOption('function level linking', False, True, True, False,
-            0, '-Nc', 'C++ Options', [], Nil);
+        AddOption('function level linking', FALSE, TRUE, TRUE, FALSE,
+            0, '-Nc', 'C++ Options', [], NIL);
         //-NL no default library
-        AddOption('no default library', False, True, True, False,
-            0, '-NL', 'C++ Options', [], Nil);
+        AddOption('no default library', FALSE, TRUE, TRUE, FALSE,
+            0, '-NL', 'C++ Options', [], NIL);
         //-Ns place expr strings in code seg
-        AddOption('place expr strings in code seg', False, True,
-            True, False, 0, '-Ns', 'C++ Options', [], Nil);
+        AddOption('place expr strings in code seg', FALSE, TRUE,
+            TRUE, FALSE, 0, '-Ns', 'C++ Options', [], NIL);
         //-NS new code seg for each function
-        AddOption('new code seg for each function', False, True,
-            True, False, 0, '-NS', 'C++ Options', [], Nil);
+        AddOption('new code seg for each function', FALSE, TRUE,
+            TRUE, FALSE, 0, '-NS', 'C++ Options', [], NIL);
         //-NTname  set code segment name
         //?AddOption('strict ANSI C/C++', false, true, true, false, 0, '/Zg', 'C++ Options', [], nil);
         //-NV vtables in far data
-        AddOption('vtables in far data', False, True, True, False,
-            0, '-NV', 'C++ Options', [], Nil);
+        AddOption('vtables in far data', FALSE, TRUE, TRUE, FALSE,
+            0, '-NV', 'C++ Options', [], NIL);
         //-o[-+flag]  run optimizer with flag
         //?AddOption('strict ANSI C/C++', false, true, true, false, 0, '/Zg', 'C++ Options', [], nil);
 
@@ -2184,36 +2184,36 @@ Begin
         //?AddOption('strict ANSI C/C++', false, true, true, false, 0, '/Zg', 'C++ Options', [], nil);
 
         //-p  turn off autoprototyping
-        AddOption('turn off autoprototyping', False, True, True,
-            False, 0, '-p', 'C++ Options', [], Nil);
+        AddOption('turn off autoprototyping', FALSE, TRUE, TRUE,
+            FALSE, 0, '-p', 'C++ Options', [], NIL);
 
         //-P  default to pascal linkage
-        AddOption('default to pascal linkage', False, True, True,
-            False, 0, '-P', 'C++ Options', [], Nil);
+        AddOption('default to pascal linkage', FALSE, TRUE, TRUE,
+            FALSE, 0, '-P', 'C++ Options', [], NIL);
 
         //-Pz default to stdcall linkage
-        AddOption('default to stdcall linkage', False, True, True,
-            False, 0, '-Pz', 'C++ Options', [], Nil);
+        AddOption('default to stdcall linkage', FALSE, TRUE, TRUE,
+            FALSE, 0, '-Pz', 'C++ Options', [], NIL);
 
         //-r  strict prototyping
-        AddOption('strict prototyping', False, True, True, False,
-            0, '-r', 'C++ Options', [], Nil);
+        AddOption('strict prototyping', FALSE, TRUE, TRUE, FALSE,
+            0, '-r', 'C++ Options', [], NIL);
 
         //-R  put switch tables in code seg
-        AddOption('put switch tables in code seg', False, True,
-            True, False, 0, '-R', 'C++ Options', [], Nil);
+        AddOption('put switch tables in code seg', FALSE, TRUE,
+            TRUE, FALSE, 0, '-R', 'C++ Options', [], NIL);
 
         //-s  stack overflow checking
-        AddOption('stack overflow checking', False, True, True,
-            False, 0, '-s', 'C++ Options', [], Nil);
+        AddOption('stack overflow checking', FALSE, TRUE, TRUE,
+            FALSE, 0, '-s', 'C++ Options', [], NIL);
 
         //-S  always generate stack frame
-        AddOption('always generate stack frame', False, True, True,
-            False, 0, '-S', 'C++ Options', [], Nil);
+        AddOption('always generate stack frame', FALSE, TRUE, TRUE,
+            FALSE, 0, '-S', 'C++ Options', [], NIL);
 
         //-u  suppress predefined macros
-        AddOption('suppress predefined macros', False, True, True,
-            False, 0, '-u', 'C++ Options', [], Nil);
+        AddOption('suppress predefined macros', FALSE, TRUE, TRUE,
+            FALSE, 0, '-u', 'C++ Options', [], NIL);
 
         //-v[0|1|2] verbose compile
         sl := TStringList.Create;
@@ -2222,23 +2222,23 @@ Begin
         sl.Add('0=0');
         sl.Add('1=1');
         sl.Add('2=2');
-        AddOption('verbose compile', False, True, True, False, 0,
+        AddOption('verbose compile', FALSE, TRUE, TRUE, FALSE, 0,
             '-v', 'C++ Options', [], sl);
 
         //-w  suppress all warnings
-        AddOption('suppress all warnings', False, True, True, False,
-            0, '-w', 'C++ Options', [], Nil);
+        AddOption('suppress all warnings', FALSE, TRUE, TRUE, FALSE,
+            0, '-w', 'C++ Options', [], NIL);
 
         //-wc warn on C style casts
-        AddOption('warn on C style casts', False, True, True, False,
-            0, '-wc', 'C++ Options', [], Nil);
+        AddOption('warn on C style casts', FALSE, TRUE, TRUE, FALSE,
+            0, '-wc', 'C++ Options', [], NIL);
 
         //-wn suppress warning number n
         //?AddOption('strict ANSI C/C++', false, true, true, false, 0, '/Zg', 'C++ Options', [], nil);
 
         //-wx treat warnings as errors
-        AddOption('treat warnings as errors', False, True, True,
-            False, 0, '-wx', 'C++ Options', [], Nil);
+        AddOption('treat warnings as errors', FALSE, TRUE, TRUE,
+            FALSE, 0, '-wx', 'C++ Options', [], NIL);
 
         //-W{0123ADabdefmrstuvwx-+}  Windows prolog/epilog
         //?AddOption('strict ANSI C/C++', false, true, true, false, 0, '/Zg', 'C++ Options', [], nil);
@@ -2250,12 +2250,12 @@ Begin
         //? AddOption('strict ANSI C/C++', false, true, true, false, 0, '/Zg', 'C++ Options', [], nil);
 
         //-x  turn off error maximum
-        AddOption('turn off error maximum', False, True, True, False,
-            0, '-x', 'C++ Options', [], Nil);
+        AddOption('turn off error maximum', FALSE, TRUE, TRUE, FALSE,
+            0, '-x', 'C++ Options', [], NIL);
 
         //-XD instantiate templates
-        AddOption('instantiate templates', False, True, True, False,
-            0, '-XD', 'C++ Options', [], Nil);
+        AddOption('instantiate templates', FALSE, TRUE, TRUE, FALSE,
+            0, '-XD', 'C++ Options', [], NIL);
 
         //-XItemp<type>  instantiate template class temp<type>
         //? AddOption('strict ANSI C/C++', false, true, true, false, 0, '/Zg', 'C++ Options', [], nil);
@@ -2272,7 +2272,7 @@ Begin
         sl.Add('486=4');
         sl.Add('Pentium=5');
         sl.Add('P6=6');
-        AddOption('Architecture', False, True, True, False, 0, '-',
+        AddOption('Architecture', FALSE, TRUE, TRUE, FALSE, 0, '-',
             'C++ Options', [], sl);
 
         //Linker Options
@@ -2283,24 +2283,24 @@ Begin
         // AddOption('Architecture', False, false, false, true, 0, '-', 'Linker Options', [], nil);
 
         // /BINARY		Generates a .sys file
-        AddOption('Generate a .sys file', False, False, False, True,
-            0, '/BINARY', 'Linker Options', [], Nil);
+        AddOption('Generate a .sys file', FALSE, FALSE, FALSE, TRUE,
+            0, '/BINARY', 'Linker Options', [], NIL);
 
         // /BYORDINAL	Export by ordinal
-        AddOption('Export by ordinal', False, False, False, True, 0,
-            '/BYORDINAL', 'Linker Options', [], Nil);
+        AddOption('Export by ordinal', FALSE, FALSE, FALSE, TRUE, 0,
+            '/BYORDINAL', 'Linker Options', [], NIL);
 
         // /CHECKSUM	Parsed and ignored
-        AddOption('Parsed and ignored', False, False, False, True, 0,
-            '/CHECKSUM', 'Linker Options', [], Nil);
+        AddOption('Parsed and ignored', FALSE, FALSE, FALSE, TRUE, 0,
+            '/CHECKSUM', 'Linker Options', [], NIL);
 
         // /CODEVIEW	Outputs CodeView debugger information
-        AddOption('Generate Debugger information', False, False, False,
-            True, 0, '/CODEVIEW', 'Linker Options', [], Nil);
+        AddOption('Generate Debugger information', FALSE, FALSE, FALSE,
+            TRUE, 0, '/CODEVIEW', 'Linker Options', [], NIL);
 
         // /COMDEFSEARCH	Specifies whether an undefined COMDEF causes a library search
         AddOption('Specifies whether an undefined COMDEF causes a library search',
-            False, False, False, True, 0, 'COMDEFSEARCH', 'Linker Options', [], Nil);
+            FALSE, FALSE, FALSE, TRUE, 0, 'COMDEFSEARCH', 'Linker Options', [], NIL);
 
         // /CPARMAXALLOC	Sets .exe maximum bytes to occupy in DOS RAM
         //AddOption('Architecture', False, false, false, true, 0, '-', 'Linker Options', [], nil);
@@ -2336,16 +2336,16 @@ Begin
         // AddOption('Delete .exe upon linking errors', False, false, false, true, 0, '/DELEXECUTABLE', 'Linker Options', [], nil);
 
         // /DETAILEDMAP	Produces detailed map reports.
-        AddOption('Produce detailed map reports', False, False, False,
-            True, 0, '/DETAILEDMAP', 'Linker Options', [], Nil);
+        AddOption('Produce detailed map reports', FALSE, FALSE, FALSE,
+            TRUE, 0, '/DETAILEDMAP', 'Linker Options', [], NIL);
 
         // /DOSSEG		Controls segment sequence
-        AddOption('Controls segment sequence', False, False, False,
-            True, 0, '/DOSSEG', 'Linker Options', [], Nil);
+        AddOption('Controls segment sequence', FALSE, FALSE, FALSE,
+            TRUE, 0, '/DOSSEG', 'Linker Options', [], NIL);
 
         // /ECHOINDIRECT	Controls echoing of indirect response file input
         AddOption('Controls echoing of indirect response file input',
-            False, False, False, True, 0, '/ECHOINDIRECT', 'Linker Options', [], Nil);
+            FALSE, FALSE, FALSE, TRUE, 0, '/ECHOINDIRECT', 'Linker Options', [], NIL);
 
         // /EMSMAXSIZE	Sets maximum EMS size
         // AddOption('Architecture', False, false, false, true, 0, '-', 'Linker Options', [], nil);
@@ -2358,99 +2358,99 @@ Begin
 
         // /ERRORFLAG	Controls error flag in segmented executable header
         AddOption('Controls error flag in segmented executable header',
-            False, False, False, True, 0, '/ERRORFLAG', 'Linker Options', [], Nil);
+            FALSE, FALSE, FALSE, TRUE, 0, '/ERRORFLAG', 'Linker Options', [], NIL);
 
         // /EXEPACK	Performs run-length encoding (packs executable)
         AddOption('Performs run-length encoding (packs executable)',
-            False, False, False, True, 0, '/EXEPACK', 'Linker Options', [], Nil);
+            FALSE, FALSE, FALSE, TRUE, 0, '/EXEPACK', 'Linker Options', [], NIL);
 
         // /EXETYPE	Specifies the target operating system
         // multiple AddOption('Architecture', False, false, false, true, 0, '-', 'Linker Options', [], nil);
 
         // /FARCALLTRANSLATION Converts intra-segment far calls to near
-        AddOption('Converts intra-segment far calls to near', False,
-            False, False, True, 0, '/FARCALLTRANSLATION', 'Linker Options', [], Nil);
+        AddOption('Converts intra-segment far calls to near', FALSE,
+            FALSE, FALSE, TRUE, 0, '/FARCALLTRANSLATION', 'Linker Options', [], NIL);
 
         // /FIXDS		Identical to the .def directive FIXDS
-        AddOption('Identical to the .def directive FIXDS', False, False,
-            False, True, 0, '/FIXDS', 'Linker Options', [], Nil);
+        AddOption('Identical to the .def directive FIXDS', FALSE, FALSE,
+            FALSE, TRUE, 0, '/FIXDS', 'Linker Options', [], NIL);
 
         // /FIXED		Fixes the executable image in memory
-        AddOption('Fixes the executable image in memory', False, False,
-            False, True, 0, '/FIXED', 'Linker Options', [], Nil);
+        AddOption('Fixes the executable image in memory', FALSE, FALSE,
+            FALSE, TRUE, 0, '/FIXED', 'Linker Options', [], NIL);
 
         // /GROUPASSOCIATION Controls GROUP information found in .obj
-        AddOption('Controls GROUP information found in .obj', False,
-            False, False, True, 0, '/GROUPASSOCIATION', 'Linker Options', [], Nil);
+        AddOption('Controls GROUP information found in .obj', FALSE,
+            FALSE, FALSE, TRUE, 0, '/GROUPASSOCIATION', 'Linker Options', [], NIL);
 
         // /GROUPSTACK	Controls stack definition in .exe file header
-        AddOption('Controls stack definition in .exe file header', False,
-            False, False, True, 0, '/GROUPSTACK', 'Linker Options', [], Nil);
+        AddOption('Controls stack definition in .exe file header', FALSE,
+            FALSE, FALSE, TRUE, 0, '/GROUPSTACK', 'Linker Options', [], NIL);
 
         // /HEAP		Sets the size of the local heap
         // AddOption('Architecture', False, false, false, true, 0, '-', 'Linker Options', [], nil);
 
         // /IGNORECASE	Preserves and ignores case of all symbols
-        AddOption('Preserves and ignores case of all symbols', False,
-            False, False, True, 0, '/IGNORECASE', 'Linker Options', [], Nil);
+        AddOption('Preserves and ignores case of all symbols', FALSE,
+            FALSE, FALSE, TRUE, 0, '/IGNORECASE', 'Linker Options', [], NIL);
 
         // /IMPDEF		Generate .din file from EXPORTS section of .def file
         AddOption('Generate .din file from EXPORTS section of .def file',
-            False, False, False, True, 0, '/IMPDEF', 'Linker Options', [], Nil);
+            FALSE, FALSE, FALSE, TRUE, 0, '/IMPDEF', 'Linker Options', [], NIL);
 
         // /IMPLIB		Create .lib import library for .dll
-        AddOption('Create .lib import library for .dll', False, False,
-            False, True, 0, '/IMPLIB', 'Linker Options', [], Nil);
+        AddOption('Create .lib import library for .dll', FALSE, FALSE,
+            FALSE, TRUE, 0, '/IMPLIB', 'Linker Options', [], NIL);
 
         // /INFORMATION	Display status information throughout the link process
         AddOption('Display status information throughout the link process',
-            False, False, False, True, 0, '/INFORMATION', 'Linker Options', [], Nil);
+            FALSE, FALSE, FALSE, TRUE, 0, '/INFORMATION', 'Linker Options', [], NIL);
 
         // /LINENUMBERS	Outputs line number information in .map file
-        AddOption('Outputs line number information in .map file', False,
-            False, False, True, 0, '/LINENUMBERS', 'Linker Options', [], Nil);
+        AddOption('Outputs line number information in .map file', FALSE,
+            FALSE, FALSE, TRUE, 0, '/LINENUMBERS', 'Linker Options', [], NIL);
 
         // /LOWERCASE	Converts all symbols to lowercase
-        AddOption('Converts all symbols to lowercase', False, False,
-            False, True, 0, '/LOWERCASE', 'Linker Options', [], Nil);
+        AddOption('Converts all symbols to lowercase', FALSE, FALSE,
+            FALSE, TRUE, 0, '/LOWERCASE', 'Linker Options', [], NIL);
 
         // /MACHINE	Specifies the type of the target machine
-        AddOption('Specifies the type of the target machine', False,
-            False, False, True, 0, '/MACHINE', 'Linker Options', [], Nil);
+        AddOption('Specifies the type of the target machine', FALSE,
+            FALSE, FALSE, TRUE, 0, '/MACHINE', 'Linker Options', [], NIL);
 
         // /MAP		Controls information content in .map file
-        AddOption('Controls information content in .map file', False,
-            False, False, True, 0, '/MAP', 'Linker Options', [], Nil);
+        AddOption('Controls information content in .map file', FALSE,
+            FALSE, FALSE, TRUE, 0, '/MAP', 'Linker Options', [], NIL);
 
         // /NOLOGO		Suppresses OPTLINK's sign-on copyright message
         // AddOption('Architecture', False, false, false, true, 0, '-', 'Linker Options', [], nil);
 
         // /NONAMES	Eliminates name text for ordinal exports
-        AddOption('Eliminates name text for ordinal exports', False,
-            False, False, True, 0, '/NONAMES', 'Linker Options', [], Nil);
+        AddOption('Eliminates name text for ordinal exports', FALSE,
+            FALSE, FALSE, TRUE, 0, '/NONAMES', 'Linker Options', [], NIL);
 
         // /NULLDOSSEG	Outputs null bytes in the _TEXT segment
-        AddOption('Outputs null bytes in the _TEXT segment', False,
-            False, False, True, 0, '/NULLDOSSEG', 'Linker Options', [], Nil);
+        AddOption('Outputs null bytes in the _TEXT segment', FALSE,
+            FALSE, FALSE, TRUE, 0, '/NULLDOSSEG', 'Linker Options', [], NIL);
 
         // /ONERROR	Same as /DELEXECUTABLE
         // AddOption('Architecture', False, false, false, true, 0, '-', 'Linker Options', [], nil);
 
         // /PACKCODE	Combines segments of class CODE
-        AddOption('Combines segments of class CODE', False, False, False,
-            True, 0, '/PACKCODE', 'Linker Options', [], Nil);
+        AddOption('Combines segments of class CODE', FALSE, FALSE, FALSE,
+            TRUE, 0, '/PACKCODE', 'Linker Options', [], NIL);
 
         // /PACKDATA	Combines data segments where possible
-        AddOption('Combines data segments where possible', False, False,
-            False, True, 0, '/PACKDATA', 'Linker Options', [], Nil);
+        AddOption('Combines data segments where possible', FALSE, FALSE,
+            FALSE, TRUE, 0, '/PACKDATA', 'Linker Options', [], NIL);
 
         // /PACKFUNCTIONS	Performs "smart-linking" on code and data
-        AddOption('Performs "smart-linking" on code and data', False,
-            False, False, True, 0, '/PACKFUNCTIONS', 'Linker Options', [], Nil);
+        AddOption('Performs "smart-linking" on code and data', FALSE,
+            FALSE, FALSE, TRUE, 0, '/PACKFUNCTIONS', 'Linker Options', [], NIL);
 
         // /PACKIFNOSEGMENTS Forces /PACKCODE on when no SEGMENTS directive
         AddOption('Forces /PACKCODE on when no SEGMENTS directive',
-            False, False, False, True, 0, '/PACKIFNOSEGMENTS', 'Linker Options', [], Nil);
+            FALSE, FALSE, FALSE, TRUE, 0, '/PACKIFNOSEGMENTS', 'Linker Options', [], NIL);
 
         // /PACKSIZE	Packs size for /PACKCODE and /PACKDATA
         // AddOption('Architecture', False, false, false, true, 0, '-', 'Linker Options', [], nil);
@@ -2462,123 +2462,123 @@ Begin
         // AddOption('Architecture', False, false, false, true, 0, '-', 'Linker Options', [], nil);
 
         // /PMTYPE		Specifies type of segmented output
-        AddOption('Specifies type of segmented output', False, False,
-            False, True, 0, '/PMTYPE', 'Linker Options', [], Nil);
+        AddOption('Specifies type of segmented output', FALSE, FALSE,
+            FALSE, TRUE, 0, '/PMTYPE', 'Linker Options', [], NIL);
 
         // /PROMPT		Specifies whether OPTLINK will prompt for more options
         // AddOption('Specifies whether OPTLINK will prompt for more options', False, false, false, true, 0, '-', 'Linker Options', [], nil);
 
         // /RC		Like .def directive RC, automatic resource binding
         AddOption('Like .def directive RC, automatic resource binding',
-            False, False, False, True, 0, '/RC', 'Linker Options', [], Nil);
+            FALSE, FALSE, FALSE, TRUE, 0, '/RC', 'Linker Options', [], NIL);
 
         // /RELOCATIONCHECK Ensures no relocation overlaps have occurred
-        AddOption('Ensures no relocation overlaps have occurred', False,
-            False, False, True, 0, '/RELOCATIONCHECK', 'Linker Options', [], Nil);
+        AddOption('Ensures no relocation overlaps have occurred', FALSE,
+            FALSE, FALSE, TRUE, 0, '/RELOCATIONCHECK', 'Linker Options', [], NIL);
 
         // /REORDERSEGMENTS Performs segment reordering
-        AddOption('Performs segment reordering', False, False, False,
-            True, 0, '/REORDERSEGMENTS', 'Linker Options', [], Nil);
+        AddOption('Performs segment reordering', FALSE, FALSE, FALSE,
+            TRUE, 0, '/REORDERSEGMENTS', 'Linker Options', [], NIL);
 
         // /SCANLIB	Scans the LIB environment variable
-        AddOption('Scans the LIB environment variable', False, False,
-            False, True, 0, '/SCANLIB', 'Linker Options', [], Nil);
+        AddOption('Scans the LIB environment variable', FALSE, FALSE,
+            FALSE, TRUE, 0, '/SCANLIB', 'Linker Options', [], NIL);
 
         // /SCANLINK	Scans the LINK environment variable
-        AddOption('Scans the LINK environment variable', False, False,
-            False, True, 0, '/SCANLINK', 'Linker Options', [], Nil);
+        AddOption('Scans the LINK environment variable', FALSE, FALSE,
+            FALSE, TRUE, 0, '/SCANLINK', 'Linker Options', [], NIL);
 
         // /SILENT		Does not display linking status information
-        AddOption('Does not display linking status information', False,
-            False, False, True, 0, '/SILENT', 'Linker Options', [], Nil);
+        AddOption('Does not display linking status information', FALSE,
+            FALSE, FALSE, TRUE, 0, '/SILENT', 'Linker Options', [], NIL);
 
         // /STACK		Defines stack segment and/ or its size.
         // AddOption('Architecture', False, false, false, true, 0, '-', 'Linker Options', [], nil);
 
         // /STUB		Adds a stub file to the executable
-        AddOption('Adds a stub file to the executable', False, False,
-            False, True, 0, '/STUB', 'Linker Options', [], Nil);
+        AddOption('Adds a stub file to the executable', FALSE, FALSE,
+            FALSE, TRUE, 0, '/STUB', 'Linker Options', [], NIL);
 
         // /SUBSYSTEM	Sets Win32 subsystem
         // multiple AddOption('Sets Win32 subsystem', False, false, false, true, 0, '/SUBSYSTEM', 'Linker Options', [], nil);
 
         // /TINY		Generates a .com file
-        AddOption('Generates a .com file', False, False, False, True,
-            0, '/TINY', 'Linker Options', [], Nil);
+        AddOption('Generates a .com file', FALSE, FALSE, FALSE, TRUE,
+            0, '/TINY', 'Linker Options', [], NIL);
 
         // /UPPERCASE	Converts all symbols to upper case
-        AddOption('Converts all symbols to upper case', False, False,
-            False, True, 0, '/UPPERCASE', 'Linker Options', [], Nil);
+        AddOption('Converts all symbols to upper case', FALSE, FALSE,
+            FALSE, TRUE, 0, '/UPPERCASE', 'Linker Options', [], NIL);
 
         // /VERSION	Adds a version number to the executable
-        AddOption('Adds a version number to the executable', False,
-            False, False, True, 0, '/VERSION', 'Linker Options', [], Nil);
+        AddOption('Adds a version number to the executable', FALSE,
+            FALSE, FALSE, TRUE, 0, '/VERSION', 'Linker Options', [], NIL);
 
         // /WARNDUPS	Warns of duplicate public symbols in .lib
-        AddOption('Warns of duplicate public symbols in .lib', False,
-            False, False, True, 0, '/WARNDUPS', 'Linker Options', [], Nil);
+        AddOption('Warns of duplicate public symbols in .lib', FALSE,
+            FALSE, FALSE, TRUE, 0, '/WARNDUPS', 'Linker Options', [], NIL);
 
         // /WINPACK	Build compressed output utilizing decompressing loader
         AddOption('Build compressed output utilizing decompressing loader',
-            False, False, False, True, 0, '/WINPACK', 'Linker Options', [], Nil);
+            FALSE, FALSE, FALSE, TRUE, 0, '/WINPACK', 'Linker Options', [], NIL);
 
         // /XMSMAXSIZE	Sets maximum XMS size
         // AddOption('Architecture', False, false, false, true, 0, '-', 'Linker Options', [], nil);
 
         // /XNOIGNORECASE	Treats EXPORT and IMPORT symbols as case significant
-        AddOption('Architecture', False, False, False, True, 0, '-',
-            'Linker Options', [], Nil);
+        AddOption('Architecture', FALSE, FALSE, FALSE, TRUE, 0, '-',
+            'Linker Options', [], NIL);
 
         // /XREF		Controls information content in .map file
         // AddOption('Architecture', False, false, false, true, 0, '-', 'Linker Options', [], nil);
 
         // /XUPPERCASE	Forces EXPORT and IMPORT symbols to upper case
         AddOption('Forces EXPORT and IMPORT symbols to upper case',
-            False, False, False, True, 0, '/XUPPERCASE', 'Linker Options', [], Nil);
+            FALSE, FALSE, FALSE, TRUE, 0, '/XUPPERCASE', 'Linker Options', [], NIL);
         //End of DMars
-    End
-    Else
-    Begin
-        AddOption(Lang[ID_COPT_ANSIC], False, True, True, False,
-            0, '-ansi', Lang[ID_COPT_GRP_C], [], Nil);
-        AddOption(Lang[ID_COPT_TRADITIONAL], False, True, True,
-            False, 0, '-traditional-cpp', Lang[ID_COPT_GRP_C], [], Nil);
-        AddOption(Lang[ID_COPT_WARNING], False, True, True, False,
-            0, '-w', Lang[ID_COPT_GRP_C], [], Nil);
-        AddOption(Lang[ID_COPT_ACCESS], False, True, True, False,
-            0, '-fno-access-control', Lang[ID_COPT_GRP_CPP], [], Nil);
-        AddOption(Lang[ID_COPT_DOLLAR], False, True, True, False,
-            0, '-fdollar-in-identifiers', Lang[ID_COPT_GRP_CPP], [], Nil);
-        AddOption(Lang[ID_COPT_HEURISTICS], False, True, True, False,
-            0, '-fsave-memorized', Lang[ID_COPT_GRP_CPP], [], Nil);
-        AddOption(Lang[ID_COPT_EXCEPT], False, True, True, False,
-            0, '-fexceptions', Lang[ID_COPT_GRP_CODEGEN], [], Nil);
-        AddOption(Lang[ID_COPT_DBLFLOAT], False, True, True, False,
-            0, '-fshort-double', Lang[ID_COPT_GRP_CODEGEN], [], Nil);
-        AddOption(Lang[ID_COPT_MEM], False, True, True, False, 0,
-            '-fverbose-asm', Lang[ID_COPT_GRP_CODEGEN], [], Nil);
-        AddOption(Lang[ID_COPT_OPTMINOR], False, True, True, False,
-            0, '-fexpensive-optimizations', Lang[ID_COPT_GRP_OPTIMIZE], [], Nil);
-        AddOption(Lang[ID_COPT_OPT1], True, True, True, False, 0,
-            '-O1', Lang[ID_COPT_GRP_OPTIMIZE] + '/' + Lang[ID_COPT_FURTHEROPTS], [], Nil);
-        AddOption(Lang[ID_COPT_OPTMORE], True, True, True, False,
-            0, '-O2', Lang[ID_COPT_GRP_OPTIMIZE] + '/' + Lang[ID_COPT_FURTHEROPTS], [], Nil);
-        AddOption(Lang[ID_COPT_OPTBEST], True, True, True, False,
-            0, '-O3', Lang[ID_COPT_GRP_OPTIMIZE] + '/' + Lang[ID_COPT_FURTHEROPTS], [], Nil);
-        AddOption(Lang[ID_COPT_PROFILE], False, True, True, False,
-            0, '-pg', Lang[ID_COPT_PROFILING], [], Nil);
-        AddOption(Lang[ID_COPT_OBJC], False, False, False, True,
-            0, '-lobjc', Lang[ID_COPT_LINKERTAB], [], Nil);
-        AddOption(Lang[ID_COPT_DEBUG], False, True, True, True, 0,
-            '-g3', Lang[ID_COPT_LINKERTAB], [], Nil);
-        AddOption(Lang[ID_COPT_NOLIBS], False, True, True, True,
-            0, '-nostdlib', Lang[ID_COPT_LINKERTAB], [], Nil);
-        AddOption(Lang[ID_COPT_WIN32], False, True, True, True, 0,
-            '-mwindows', Lang[ID_COPT_LINKERTAB], [dptGUI], Nil);
-        AddOption(Lang[ID_COPT_ERRORLINE], False, True, True, True,
-            0, '-fmessage-length=0', Lang[ID_COPT_GRP_C], [], Nil);
-        AddOption(Lang[ID_COPT_STRIP], False, False, False, True,
-            0, '-s', Lang[ID_COPT_LINKERTAB], [], Nil);
+    end
+    else
+    begin
+        AddOption(Lang[ID_COPT_ANSIC], FALSE, TRUE, TRUE, FALSE,
+            0, '-ansi', Lang[ID_COPT_GRP_C], [], NIL);
+        AddOption(Lang[ID_COPT_TRADITIONAL], FALSE, TRUE, TRUE,
+            FALSE, 0, '-traditional-cpp', Lang[ID_COPT_GRP_C], [], NIL);
+        AddOption(Lang[ID_COPT_WARNING], FALSE, TRUE, TRUE, FALSE,
+            0, '-w', Lang[ID_COPT_GRP_C], [], NIL);
+        AddOption(Lang[ID_COPT_ACCESS], FALSE, TRUE, TRUE, FALSE,
+            0, '-fno-access-control', Lang[ID_COPT_GRP_CPP], [], NIL);
+        AddOption(Lang[ID_COPT_DOLLAR], FALSE, TRUE, TRUE, FALSE,
+            0, '-fdollar-in-identifiers', Lang[ID_COPT_GRP_CPP], [], NIL);
+        AddOption(Lang[ID_COPT_HEURISTICS], FALSE, TRUE, TRUE, FALSE,
+            0, '-fsave-memorized', Lang[ID_COPT_GRP_CPP], [], NIL);
+        AddOption(Lang[ID_COPT_EXCEPT], FALSE, TRUE, TRUE, FALSE,
+            0, '-fexceptions', Lang[ID_COPT_GRP_CODEGEN], [], NIL);
+        AddOption(Lang[ID_COPT_DBLFLOAT], FALSE, TRUE, TRUE, FALSE,
+            0, '-fshort-double', Lang[ID_COPT_GRP_CODEGEN], [], NIL);
+        AddOption(Lang[ID_COPT_MEM], FALSE, TRUE, TRUE, FALSE, 0,
+            '-fverbose-asm', Lang[ID_COPT_GRP_CODEGEN], [], NIL);
+        AddOption(Lang[ID_COPT_OPTMINOR], FALSE, TRUE, TRUE, FALSE,
+            0, '-fexpensive-optimizations', Lang[ID_COPT_GRP_OPTIMIZE], [], NIL);
+        AddOption(Lang[ID_COPT_OPT1], TRUE, TRUE, TRUE, FALSE, 0,
+            '-O1', Lang[ID_COPT_GRP_OPTIMIZE] + '/' + Lang[ID_COPT_FURTHEROPTS], [], NIL);
+        AddOption(Lang[ID_COPT_OPTMORE], TRUE, TRUE, TRUE, FALSE,
+            0, '-O2', Lang[ID_COPT_GRP_OPTIMIZE] + '/' + Lang[ID_COPT_FURTHEROPTS], [], NIL);
+        AddOption(Lang[ID_COPT_OPTBEST], TRUE, TRUE, TRUE, FALSE,
+            0, '-O3', Lang[ID_COPT_GRP_OPTIMIZE] + '/' + Lang[ID_COPT_FURTHEROPTS], [], NIL);
+        AddOption(Lang[ID_COPT_PROFILE], FALSE, TRUE, TRUE, FALSE,
+            0, '-pg', Lang[ID_COPT_PROFILING], [], NIL);
+        AddOption(Lang[ID_COPT_OBJC], FALSE, FALSE, FALSE, TRUE,
+            0, '-lobjc', Lang[ID_COPT_LINKERTAB], [], NIL);
+        AddOption(Lang[ID_COPT_DEBUG], FALSE, TRUE, TRUE, TRUE, 0,
+            '-g3', Lang[ID_COPT_LINKERTAB], [], NIL);
+        AddOption(Lang[ID_COPT_NOLIBS], FALSE, TRUE, TRUE, TRUE,
+            0, '-nostdlib', Lang[ID_COPT_LINKERTAB], [], NIL);
+        AddOption(Lang[ID_COPT_WIN32], FALSE, TRUE, TRUE, TRUE, 0,
+            '-mwindows', Lang[ID_COPT_LINKERTAB], [dptGUI], NIL);
+        AddOption(Lang[ID_COPT_ERRORLINE], FALSE, TRUE, TRUE, TRUE,
+            0, '-fmessage-length=0', Lang[ID_COPT_GRP_C], [], NIL);
+        AddOption(Lang[ID_COPT_STRIP], FALSE, FALSE, FALSE, TRUE,
+            0, '-s', Lang[ID_COPT_LINKERTAB], [], NIL);
 
         // Architecture params
         sl := TStringList.Create;
@@ -2608,7 +2608,7 @@ Begin
         sl.Add('C3=c3');
         sl.Add('C3-2=c3-2');
 
-        AddOption(Lang[ID_COPT_ARCH], False, True, True, True, 0,
+        AddOption(Lang[ID_COPT_ARCH], FALSE, TRUE, TRUE, TRUE, 0,
             '-march=', Lang[ID_COPT_GRP_CODEGEN], [], sl);
 
         // Built-in processor functions
@@ -2621,21 +2621,21 @@ Begin
         sl.Add('PNI=pni');
         sl.Add('3D Now=3dnow');
 
-        AddOption(Lang[ID_COPT_BUILTINPROC], False, True, True,
-            True, 0, '-m', Lang[ID_COPT_GRP_CODEGEN], [], sl);
-    End;
-End;
+        AddOption(Lang[ID_COPT_BUILTINPROC], FALSE, TRUE, TRUE,
+            TRUE, 0, '-m', Lang[ID_COPT_GRP_CODEGEN], [], sl);
+    end;
+end;
 
-Procedure TdevCompiler.AddOption(_Name: String;
-    _IsGroup, _IsC, _IsCpp, IsLinker: Boolean; _Value: Integer;
-    _Setting, _Section: String; ExcludeFromTypes: TProjTypeSet;
+procedure TdevCompiler.AddOption(_Name: string;
+    _IsGroup, _IsC, _IsCpp, IsLinker: boolean; _Value: integer;
+    _Setting, _Section: string; ExcludeFromTypes: TProjTypeSet;
     Choices: TStringList);
-Var
+var
     P: PCompilerOption;
-Begin
+begin
     P := New(PCompilerOption);
-    With P^ Do
-    Begin
+    with P^ do
+    begin
         optName := _Name;
         optIsGroup := _IsGroup;
         optIsC := _IsC;
@@ -2646,92 +2646,92 @@ Begin
         optSection := _Section;
         optExcludeFromTypes := ExcludeFromTypes;
         optChoices := Choices;
-    End;
+    end;
     fOptions.Add(P);
-End;
+end;
 
-Procedure TdevCompiler.ClearOptions;
-Var
-    i: Integer;
-Begin
-    For i := 0 To fOptions.Count - 1 Do
-    Begin
-        If Assigned(PCompilerOption(fOptions.Items[i]).optChoices) Then
-        Begin
+procedure TdevCompiler.ClearOptions;
+var
+    i: integer;
+begin
+    for i := 0 to fOptions.Count - 1 do
+    begin
+        if Assigned(PCompilerOption(fOptions.Items[i]).optChoices) then
+        begin
             PCompilerOption(fOptions.Items[i]).optChoices.Free;
-        End;
-                Dispose(fOptions.Items[i]);
+        end;
+        Dispose(fOptions.Items[i]);
 
-    End;
+    end;
     fOptions.Clear;
-End;
+end;
 
-Constructor TdevCompiler.Create;
-Begin
-    Inherited;
+constructor TdevCompiler.Create;
+begin
+    inherited;
     fOptions := TList.Create;
     SettoDefaults;
     LoadSettings;
-End;
+end;
 
-Procedure TdevCompiler.DeleteOption(Index: Integer);
-Begin
-    If Assigned(PCompilerOption(fOptions[Index]).optChoices) Then
+procedure TdevCompiler.DeleteOption(Index: integer);
+begin
+    if Assigned(PCompilerOption(fOptions[Index]).optChoices) then
         PCompilerOption(fOptions[Index]).optChoices.Free;
-    If Assigned(fOptions[Index]) Then
-    Begin
+    if Assigned(fOptions[Index]) then
+    begin
         Dispose(fOptions[Index]);
         fOptions.Delete(Index);
-    End;
-End;
+    end;
+end;
 
-Destructor TdevCompiler.Destroy;
-Begin
+destructor TdevCompiler.Destroy;
+begin
     ClearOptions;
-    If Assigned(fOptions) Then
+    if Assigned(fOptions) then
         fOptions.Free;
-    Inherited;
-End;
+    inherited;
+end;
 
-Function TdevCompiler.FindOption(Setting: String; Var opt: TCompilerOption;
-    Var Index: Integer): Boolean;
-Var
-    I: Integer;
-Begin
-    Result := False;
-    For I := 0 To fOptions.Count - 1 Do
-        If Options[I].optSetting = Setting Then
-        Begin
+function TdevCompiler.FindOption(Setting: string; var opt: TCompilerOption;
+    var Index: integer): boolean;
+var
+    I: integer;
+begin
+    Result := FALSE;
+    for I := 0 to fOptions.Count - 1 do
+        if Options[I].optSetting = Setting then
+        begin
             opt := Options[I];
             Index := I;
-            Result := True;
+            Result := TRUE;
             Break;
-        End;
-End;
+        end;
+end;
 
-Function TdevCompiler.GetOptions(Index: Integer): TCompilerOption;
-Begin
+function TdevCompiler.GetOptions(Index: integer): TCompilerOption;
+begin
     Result := TCompilerOption(fOptions[Index]^);
-End;
+end;
 
-Function TdevCompiler.GetOptionStr: String;
-Var
-    I: Integer;
-Begin
+function TdevCompiler.GetOptionStr: string;
+var
+    I: integer;
+begin
     Result := '';
-    For I := 0 To OptionsCount - 1 Do
+    for I := 0 to OptionsCount - 1 do
         Result := Result + BoolVal10[Options[I].optValue];
-End;
+end;
 
-Procedure TdevCompiler.LoadSettings;
-Var
+procedure TdevCompiler.LoadSettings;
+var
     s,
-    key: String;
-    I: Integer;
+    key: string;
+    I: integer;
     opt: TCompilerOption;
-Begin
-    With devData Do
-    Begin
+begin
+    with devData do
+    begin
         key := 'Compiler';
         fUseParams := LoadBoolSetting(key, 'UseParams');
         fRunParams := LoadSetting(key, 'RunParams');
@@ -2739,39 +2739,39 @@ Begin
         flinkopts := LoadSetting(key, 'LinkLine');
         fSaveLog := LoadBoolSetting(key, 'Log');
         s := LoadSetting(key, 'Delay');
-        If s <> '' Then
+        if s <> '' then
             fDelay := strtointdef(s, 0);
 
         CompilerSet := StrToIntDef(LoadSetting(key, 'CompilerSet'), 0);
 
         S := LoadSetting(key, 'Options');
-        For I := 0 To fOptions.Count - 1 Do
-        Begin
+        for I := 0 to fOptions.Count - 1 do
+        begin
             opt := Options[I];
-            If (I < Length(S)) And (StrToIntDef(S[I + 1], 0) = 1) Then
+            if (I < Length(S)) and (StrToIntDef(S[I + 1], 0) = 1) then
                 opt.optValue := 1
-            Else
+            else
                 opt.optValue := 0;
             Options[I] := opt;
-        End;
+        end;
 
         key := 'Makefile';
         fFastDep := LoadboolSetting(fFastDep, key, 'FastDep');
-    End;
-End;
+    end;
+end;
 
-Function TdevCompiler.OptionsCount: Integer;
-Begin
+function TdevCompiler.OptionsCount: integer;
+begin
     Result := fOptions.Count;
-End;
+end;
 
-Procedure TdevCompiler.SaveSettings;
-Var
-    S, key: String;
-    I: Integer;
-Begin
-    With devData Do
-    Begin
+procedure TdevCompiler.SaveSettings;
+var
+    S, key: string;
+    I: integer;
+begin
+    with devData do
+    begin
         key := 'Compiler';
         SaveboolSetting(key, 'UseParams', fUseParams);
         SaveSetting(key, 'RunParams', fRunParams);
@@ -2788,26 +2788,26 @@ Begin
         SaveSetting(key, 'CompilerSet', IntToStr(fCompilerSet));
 
         S := '';
-        For I := 0 To fOptions.Count - 1 Do
-            With PCompilerOption(fOptions[I])^ Do
+        for I := 0 to fOptions.Count - 1 do
+            with PCompilerOption(fOptions[I])^ do
                 S := S + BoolVal10[optValue];
         SaveSetting(key, 'Options', S);
 
         key := 'Makefile';
         SaveBoolSetting(key, 'FastDep', fFastDep);
-    End;
-End;
+    end;
+end;
 
-Procedure TdevCompiler.SetCompilerSet(Const Value: Integer);
-Begin
-    If fCompilerSet = Value Then
+procedure TdevCompiler.SetCompilerSet(const Value: integer);
+begin
+    if fCompilerSet = Value then
         Exit;
-    If Not Assigned(devCompilerSet) Then
+    if not Assigned(devCompilerSet) then
         devCompilerSet := TdevCompilerSet.Create;
     devCompilerSet.LoadSet(Value);
     // Programs
     fCompilerSet := Value;
-    If devDirs.OriginalPath = '' Then // first time only
+    if devDirs.OriginalPath = '' then // first time only
         devDirs.OriginalPath := GetEnvironmentVariable('PATH');
     SetPath(devDirs.Bins);
     devCompilerSet.LoadSet(Value);
@@ -2818,13 +2818,13 @@ Begin
     fwindresName := devCompilerSet.windresName;
     fdllwrapName := devCompilerSet.dllwrapName;
     fgprofName := devCompilerSet.gprofName;
-End;
+end;
 
-Procedure TdevCompiler.SetOptions(Index: Integer;
-    Const Value: TCompilerOption);
-Begin
-    With TCompilerOption(fOptions[Index]^) Do
-    Begin
+procedure TdevCompiler.SetOptions(Index: integer;
+    const Value: TCompilerOption);
+begin
+    with TCompilerOption(fOptions[Index]^) do
+    begin
         optName := Value.optName;
         optIsGroup := Value.optIsGroup;
         optIsC := Value.optIsC;
@@ -2832,43 +2832,43 @@ Begin
         optValue := Value.optValue;
         optSetting := Value.optSetting;
         optSection := Value.optSection;
-    End;
-End;
+    end;
+end;
 
-Procedure TdevCompiler.SetOptionStr(Const Value: String);
-Var
-    I: Integer;
-Begin
-    For I := 0 To fOptions.Count - 1 Do
-        If (I < Length(Value)) Then
-        Begin
+procedure TdevCompiler.SetOptionStr(const Value: string);
+var
+    I: integer;
+begin
+    for I := 0 to fOptions.Count - 1 do
+        if (I < Length(Value)) then
+        begin
             PCompilerOption(fOptions[I])^.optValue :=
                 ConvertCharToValue(Value[I + 1]);
-        End;
-End;
+        end;
+end;
 
-Function TdevCompiler.ConvertCharToValue(c: Char): Integer;
-Begin
-    If c In ['a'..'z'] Then
-        result := Integer(c) - Integer('a') + 2
-    Else
-    If (StrToIntDef(c, 0) = 1) Then
+function TdevCompiler.ConvertCharToValue(c: char): integer;
+begin
+    if c in ['a'..'z'] then
+        result := integer(c) - integer('a') + 2
+    else
+    if (StrToIntDef(c, 0) = 1) then
         result := 1
-    Else
+    else
         result := 0;
-End;
+end;
 
-Procedure TdevCompiler.SettoDefaults;
-Begin
+procedure TdevCompiler.SettoDefaults;
+begin
     fRunParams := '';
-    fUseParams := False;
-    fSaveLog := False;
+    fUseParams := FALSE;
+    fSaveLog := FALSE;
     fcmdOpts := '';
     flinkOpts := '';
     fDelay := 0;
 
     // makefile
-    fFastDep := False;
+    fFastDep := FALSE;
 
     // Programs
     fgccName := CP_PROGRAM(CompilerType);
@@ -2881,29 +2881,29 @@ Begin
     fCompilerSet := 0;
 
     AddDefaultOptions;
-End;
+end;
 
 
 { TDevDirs }
 
-Constructor TdevDirs.Create;
-Begin
-    Inherited Create;
+constructor TdevDirs.Create;
+begin
+    inherited Create;
     Name := OPT_DIRS;
     fCompilerType := 0;
     SettoDefaults;
     LoadSettings;
     fConfig := '';
-End;
+end;
 
-Procedure TdevDirs.SettoDefaults;
-Var
-    tempstr: String;
+procedure TdevDirs.SettoDefaults;
+var
+    tempstr: string;
 {$IFDEF PLUGIN_BUILD}
-    i: Integer;
-    dummy: String;
+    i: integer;
+    dummy: string;
 {$ENDIF PLUGIN_BUILD}
-Begin
+begin
     fBinDir := ValidatePaths(BIN_DIR(fCompilerType), tempstr);
     fCDir := ValidatePaths(C_INCLUDE_DIR(fCompilerType), tempstr);
     fCppDir := ValidatePaths(CPP_INCLUDE_DIR(fCompilerType), tempstr);
@@ -2911,35 +2911,35 @@ Begin
     fLibDir := ValidatePaths(LIB_DIR(fCompilerType), tempstr);
 {$IFDEF PLUGIN_BUILD}
     fRCDir := ValidatePaths(RC_INCLUDE_DIR(fCompilerType), tempstr);
-    If MainForm <> Nil Then
-    Begin
-        For i := 0 To MainForm.pluginsCount - 1 Do
-        Begin
-            If (fCppDir = '') Then
+    if MainForm <> NIL then
+    begin
+        for i := 0 to MainForm.pluginsCount - 1 do
+        begin
+            if (fCppDir = '') then
                 fCppDir := fCppDir +
                     ValidatePaths(MainForm.plugins[i].GET_COMMON_CPP_INCLUDE_DIR, dummy)
             // EAB TODO: make it multiplugin functional.
-            Else
+            else
                 fCppDir := fCppDir + ';' +
                     ValidatePaths(MainForm.plugins[i].GET_COMMON_CPP_INCLUDE_DIR, dummy);
             // EAB TODO: make it multiplugin functional.
-        End;
-    End;
+        end;
+    end;
 
 {$ELSE}
   fRCDir  := '';
 {$ENDIF}
 
-    If (fCompilerType = ID_COMPILER_LINUX) Then
-    Begin
+    if (fCompilerType = ID_COMPILER_LINUX) then
+    begin
         fCppDir := '';
         fCDir := '';
         fRCDir := '';
         fBinDir := '/usr/local/sbin;/usr/local/bin;/usr/sbin;/usr/bin;/sbin;/bin';
-    End;
+    end;
 
     fExec := ExtractFilePath(Application.ExeName);
-    If (fConfig = '') Then
+    if (fConfig = '') then
         // EAB: workaround because of weird calls from InitializeOptionsAfterPlugins that can't be removed for now, or compiler folders get screwed.
         fConfig := fExec;
     fHelp := fExec + HELP_DIR;
@@ -2948,27 +2948,27 @@ Begin
     fTemp := fExec + TEMPLATE_DIR;
     fThemes := fExec + THEME_DIR;
     fOldPath := GetEnvironmentVariable('PATH');
-End;
+end;
 
-Procedure TdevDirs.LoadSettings;
-Begin
+procedure TdevDirs.LoadSettings;
+begin
     devData.LoadObject(Self);
     fExec := ExtractFilePath(Application.ExeName);
-    If fHelp = '' Then
+    if fHelp = '' then
         fHelp := fExec + HELP_DIR;
-    If fIcons = '' Then
+    if fIcons = '' then
         fIcons := fExec + ICON_DIR;
-    If fLang = '' Then
+    if fLang = '' then
         fLang := fExec + LANGUAGE_DIR;
-    If fTemp = '' Then
+    if fTemp = '' then
         fTemp := fExec + TEMPLATE_DIR;
-    If fThemes = '' Then
+    if fThemes = '' then
         fThemes := fExec + THEME_DIR;
     FixPaths;
-End;
+end;
 
-Procedure TdevDirs.SaveSettings;
-Begin
+procedure TdevDirs.SaveSettings;
+begin
     fHelp := ExtractRelativePath(fExec, fHelp);
     fIcons := ExtractRelativePath(fExec, fIcons);
     fLang := ExtractRelativePath(fExec, fLang);
@@ -2976,39 +2976,39 @@ Begin
     fThemes := ExtractRelativePath(fExec, fThemes);
     devData.SaveObject(Self);
     FixPaths;
-End;
+end;
 
-Function TdevDirs.CallValidatePaths(dirList: String): String;
-Var
-    dummy: String;
-Begin
+function TdevDirs.CallValidatePaths(dirList: string): string;
+var
+    dummy: string;
+begin
     Result := ValidatePaths(dirList, dummy);
-End;
+end;
 
-Procedure TdevDirs.FixPaths;
-Begin
+procedure TdevDirs.FixPaths;
+begin
     // if we are called by double-clicking a .dev file in explorer,
     // we must perform the next checks or else the dirs are
     // really screwed up...
     // Basically it checks if it is a relative path (as it should be).
     // If so, it prepends the base Dev-C++ directory...
-    If ExtractFileDrive(fHelp) = '' Then
+    if ExtractFileDrive(fHelp) = '' then
         fHelp := fExec + fHelp;
-    If ExtractFileDrive(fIcons) = '' Then
+    if ExtractFileDrive(fIcons) = '' then
         fIcons := fExec + fIcons;
-    If ExtractFileDrive(fLang) = '' Then
+    if ExtractFileDrive(fLang) = '' then
         fLang := fExec + fLang;
-    If ExtractFileDrive(fTemp) = '' Then
+    if ExtractFileDrive(fTemp) = '' then
         fTemp := fExec + fTemp;
-    If ExtractFileDrive(fThemes) = '' Then
+    if ExtractFileDrive(fThemes) = '' then
         fThemes := fExec + fThemes;
-End;
+end;
 
 { TDevEditor }
 
-Constructor TdevEditor.Create;
-Begin
-    Inherited;
+constructor TdevEditor.Create;
+begin
+    inherited;
     Name := OPT_EDITOR;
 
     fFont := TFont.Create;
@@ -3017,106 +3017,106 @@ Begin
     TStringList(fSynTax).Duplicates := dupIgnore;
     SettoDefaults;
     LoadSettings;
-End;
+end;
 
-Destructor TdevEditor.Destroy;
-Begin
-    If Assigned(fFont) Then
+destructor TdevEditor.Destroy;
+begin
+    if Assigned(fFont) then
         fFont.Free;
-    If Assigned(fGutterfont) Then
+    if Assigned(fGutterfont) then
         fGutterfont.Free;
-    If Assigned(fSynTax) Then
+    if Assigned(fSynTax) then
         fSynTax.Free;
-    Inherited;
-End;
+    inherited;
+end;
 
-Procedure TdevEditor.LoadSettings;
-Begin
+procedure TdevEditor.LoadSettings;
+begin
     devData.LoadObject(Self);
-End;
+end;
 
-Procedure TdevEditor.SaveSettings;
-Begin
+procedure TdevEditor.SaveSettings;
+begin
     devData.SaveObject(Self);
-End;
+end;
 
-Procedure TdevEditor.SettoDefaults;
-Begin
+procedure TdevEditor.SettoDefaults;
+begin
     fFont.name := 'Courier New';
     fFont.Size := 10;
     fTabSize := 4;
-    fShowGutter := True;
-    fCustomGutter := True;
+    fShowGutter := TRUE;
+    fCustomGutter := TRUE;
     fGutterSize := 32;
     fGutterFont.Name := 'Terminal';
     fGutterFont.Size := 9;
-    fGutterAuto := False;
-    GutterGradient := True;
+    fGutterAuto := FALSE;
+    GutterGradient := TRUE;
 
     fInsertCaret := 0;
     fOverwriteCaret := 0;
 
-    fMarginVis := True;
+    fMarginVis := TRUE;
     fMarginSize := 80;
     fMarginColor := cl3DLight;
 
-    fGroupUndo := True;
+    fGroupUndo := TRUE;
 
-    fLineNumbers := False;
-    fLeadZero := False;
-    fFirstisZero := False;
-    fEHomeKey := False;
+    fLineNumbers := FALSE;
+    fLeadZero := FALSE;
+    fFirstisZero := FALSE;
+    fEHomeKey := FALSE;
 
-    fShowScrollHint := True;
-    fShowScrollbars := True;
-    fHalfPage := False;
+    fShowScrollHint := TRUE;
+    fShowScrollbars := TRUE;
+    fHalfPage := FALSE;
 
-    fPastEOF := False;
-    fPastEOL := False;
-    fTrailBlanks := False;
-    fdblLine := False;
-    fFindText := True;
+    fPastEOF := FALSE;
+    fPastEOL := FALSE;
+    fTrailBlanks := FALSE;
+    fdblLine := FALSE;
+    fFindText := TRUE;
 
-    fAutoCloseBrace := False; // not working well/turned off
+    fAutoCloseBrace := FALSE; // not working well/turned off
 
-    fInsertMode := True;
-    fAutoIndent := True;
-    fSmartTabs := False;
-    fSmartUnindent := True;
-    fTabtoSpaces := True;
+    fInsertMode := TRUE;
+    fAutoIndent := TRUE;
+    fSmartTabs := FALSE;
+    fSmartUnindent := TRUE;
+    fTabtoSpaces := TRUE;
 
-    fUseSyn := True;
+    fUseSyn := TRUE;
     //last ; is for files with no extension
     //which should be treated as cpp header files
     fSynExt := 'c;cpp;h;hpp;cc;cxx;cp;hp;rh;inl;';
 
-    fParserHints := True;
-    fMatch := False;
+    fParserHints := TRUE;
+    fMatch := FALSE;
 
-    fHighCurrLine := True;
+    fHighCurrLine := TRUE;
     fHighColor := $FFFFCC; //Light Turquoise
 
     //fCodeFolding := True;
 
-    fAppendNewline := True;
-End;
+    fAppendNewline := TRUE;
+end;
 
-Procedure TdevEditor.AssignEditor(Editor: TSynEdit);
-Var
+procedure TdevEditor.AssignEditor(Editor: TSynEdit);
+var
     pt: TPoint;
-    x: Integer;
-Begin
-    If (Not assigned(Editor)) Or (Not (Editor Is TCustomSynEdit)) Then
+    x: integer;
+begin
+    if (not assigned(Editor)) or (not (Editor is TCustomSynEdit)) then
         exit;
-    With Editor Do
-    Begin
+    with Editor do
+    begin
         BeginUpdate;
-        Try
+        try
             TabWidth := fTabSize;
 
             Font.Assign(fFont);
-            With Gutter Do
-            Begin
+            with Gutter do
+            begin
                 UseFontStyle := fCustomGutter;
                 Font.Assign(fGutterFont);
                 Width := fGutterSize;
@@ -3127,17 +3127,17 @@ Begin
                 ZeroStart := fFirstisZero;
                 //Gradient := fGutterGradient;
                 x := fSyntax.IndexofName(cGut);
-                If x <> -1 Then
-                Begin
+                if x <> -1 then
+                begin
                     StrtoPoint(pt, fSyntax.Values[cGut]);
                     Color := pt.x;
                     Font.Color := pt.y;
-                End;
-            End;
+                end;
+            end;
 
-            If fMarginVis Then
+            if fMarginVis then
                 RightEdge := fMarginSize
-            Else
+            else
                 RightEdge := 0;
 
             RightEdgeColor := fMarginColor;
@@ -3147,9 +3147,9 @@ Begin
 
             ScrollHintFormat := shfTopToBottom;
 
-            If HighCurrLine Then
+            if HighCurrLine then
                 ActiveLineColor := HighColor
-            Else
+            else
                 ActiveLineColor := clNone;
 
             Options := [
@@ -3161,31 +3161,31 @@ Begin
                 ];
 
             //Optional synedit options in devData
-            If fAutoIndent Then
+            if fAutoIndent then
                 Options := Options + [eoAutoIndent];
-            If fEHomeKey Then
+            if fEHomeKey then
                 Options := Options + [eoEnhanceHomeKey];
-            If fGroupUndo Then
+            if fGroupUndo then
                 Options := Options + [eoGroupUndo];
-            If fHalfPage Then
+            if fHalfPage then
                 Options := Options + [eoHalfPageScroll];
-            If fShowScrollbars Then
+            if fShowScrollbars then
                 Options := Options + [eoHideShowScrollbars];
-            If fPastEOF Then
+            if fPastEOF then
                 Options := Options + [eoScrollPastEOF];
-            If fPastEOL Then
+            if fPastEOL then
                 Options := Options + [eoScrollPastEOL];
-            If fShowScrollHint Then
+            if fShowScrollHint then
                 Options := Options + [eoShowScrollHint];
-            If fSmartTabs Then
+            if fSmartTabs then
                 Options := Options - [eoSmartTabs];
-            If fSmartTabs Then
+            if fSmartTabs then
                 Options := Options + [eoSmartTabDelete];
-            If fTabtoSpaces Then
+            if fTabtoSpaces then
                 Options := Options + [eoTabsToSpaces];
-            If fTrailBlanks Then
+            if fTrailBlanks then
                 Options := Options + [eoTrimTrailingSpaces];
-            If fSpecialChar Then
+            if fSpecialChar then
                 Options := Options + [eoShowSpecialChars];
 
                // Code Folding	 
@@ -3216,122 +3216,122 @@ Begin
 	                 CodeFolding.Enabled := False;	 
 	           end;
                    }
-        Finally
+        finally
             EndUpdate;
-        End;
-    End;
-End;
+        end;
+    end;
+end;
 
 
 { TdevCodeCompletion }
 
-Constructor TdevCodeCompletion.Create;
-Begin
-    Inherited Create;
+constructor TdevCodeCompletion.Create;
+begin
+    inherited Create;
     Name := 'CodeCompletion';
     fCacheFiles := TStringList.Create;
     SettoDefaults;
     LoadSettings;
-End;
+end;
 
-Destructor TdevCodeCompletion.Destroy;
-Begin
-    If Assigned(fCacheFiles) Then
+destructor TdevCodeCompletion.Destroy;
+begin
+    if Assigned(fCacheFiles) then
         fCacheFiles.Free;
-End;
+end;
 
-Procedure TdevCodeCompletion.LoadSettings;
-Begin
+procedure TdevCodeCompletion.LoadSettings;
+begin
     devData.LoadObject(Self);
-End;
+end;
 
-Procedure TdevCodeCompletion.SaveSettings;
-Begin
+procedure TdevCodeCompletion.SaveSettings;
+begin
     devData.SaveObject(Self);
-End;
+end;
 
-Procedure TdevCodeCompletion.SetDelay(Value: Integer);
-Begin
+procedure TdevCodeCompletion.SetDelay(Value: integer);
+begin
     fDelay := Max(1, Value); // minimum 1 msec
-End;
+end;
 
-Procedure TdevCodeCompletion.SettoDefaults;
-Begin
+procedure TdevCodeCompletion.SettoDefaults;
+begin
     fWidth := 320;
     fHeight := 240;
     fDelay := 500;
     fBackColor := clWindow;
-    fEnabled := True;
-    fUseCacheFiles := False;
-End;
+    fEnabled := TRUE;
+    fUseCacheFiles := FALSE;
+end;
 
 { TdevClassBrowsing }
 
-Constructor TdevClassBrowsing.Create;
-Begin
-    Inherited Create;
+constructor TdevClassBrowsing.Create;
+begin
+    inherited Create;
     Name := 'ClassBrowsing';
     SettoDefaults;
     LoadSettings;
-End;
+end;
 
-Procedure TdevClassBrowsing.LoadSettings;
-Begin
+procedure TdevClassBrowsing.LoadSettings;
+begin
     devData.LoadObject(Self);
-End;
+end;
 
-Procedure TdevClassBrowsing.SaveSettings;
-Begin
+procedure TdevClassBrowsing.SaveSettings;
+begin
     devData.SaveObject(Self);
-End;
+end;
 
-Procedure TdevClassBrowsing.SettoDefaults;
-Begin
+procedure TdevClassBrowsing.SettoDefaults;
+begin
     fCBViewStyle := 0;
-    fEnabled := True;
-    fParseLocalHeaders := False;
-    fParseGlobalHeaders := False;
+    fEnabled := TRUE;
+    fParseLocalHeaders := FALSE;
+    fParseGlobalHeaders := FALSE;
     fShowFilter := 0;
-    fUseColors := True;
-    fShowInheritedMembers := False;
-End;
+    fUseColors := TRUE;
+    fShowInheritedMembers := FALSE;
+end;
 
 { TdevCVSHandler }
 
-Constructor TdevCVSHandler.Create;
-Begin
-    Inherited Create;
+constructor TdevCVSHandler.Create;
+begin
+    inherited Create;
     Name := 'CVSHandler';
     fRepositories := TStringList.Create;
     SettoDefaults;
     LoadSettings;
-End;
+end;
 
-Destructor TdevCVSHandler.Destroy;
-Begin
+destructor TdevCVSHandler.Destroy;
+begin
     fRepositories.Free;
-End;
+end;
 
-Procedure TdevCVSHandler.LoadSettings;
-Begin
+procedure TdevCVSHandler.LoadSettings;
+begin
     devData.LoadObject(Self);
-End;
+end;
 
-Procedure TdevCVSHandler.SaveSettings;
-Begin
+procedure TdevCVSHandler.SaveSettings;
+begin
     devData.SaveObject(Self);
-End;
+end;
 
-Procedure TdevCVSHandler.SettoDefaults;
-Begin
+procedure TdevCVSHandler.SettoDefaults;
+begin
     fExecutable := 'cvs.exe';
     fCompression := 4;
-    fUseSSH := True;
-End;
+    fUseSSH := TRUE;
+end;
 
 { TdevCompilerSet }
-Procedure TdevCompilerSet.LoadDefaultCompilerDefaults;
-Begin
+procedure TdevCompilerSet.LoadDefaultCompilerDefaults;
+begin
     devCompilerSet.BinDir := BIN_DIR(CompilerType);
     devCompilerSet.CDir := C_INCLUDE_DIR(CompilerType);
     devCompilerSet.CppDir := CPP_INCLUDE_DIR(CompilerType);
@@ -3341,12 +3341,12 @@ Begin
     devDirs.C := devCompilerSet.CDir;
     devDirs.Cpp := devCompilerSet.CppDir;
     devDirs.Lib := devCompilerSet.LibDir;
-End;
+end;
 
-Procedure TdevCompilerSet.AssignToCompiler;
-Var
-    tempstr: String;
-Begin
+procedure TdevCompilerSet.AssignToCompiler;
+var
+    tempstr: string;
+begin
     tempstr := '';
     devCompiler.Name := Name;
     devCompiler.gccName := gccName;
@@ -3383,262 +3383,262 @@ Begin
     devDirs.RC := RCDir;
     devDirs.compilerType := compilerType;
 
-    If ((devCompiler.CompilerType = ID_COMPILER_MINGW) Or
-        (devCompiler.CompilerType = ID_COMPILER_LINUX)) Then
-    Begin
+    if ((devCompiler.CompilerType = ID_COMPILER_MINGW) or
+        (devCompiler.CompilerType = ID_COMPILER_LINUX)) then
+    begin
         OBJ_EXT := '.o';
         LIB_EXT := '.a';
         PCH_EXT := '.h.gch';
-    End
-    Else
-    Begin
+    end
+    else
+    begin
         OBJ_EXT := '.obj';
         LIB_EXT := '.lib';
         PCH_EXT := '.pch';
-    End;
+    end;
 
     devCompiler.AddDefaultOptions;
     devCompiler.OptionStr := OptionsStr;
-End;
+end;
 
-Constructor TdevCompilerSet.Create;
-Begin
-    Inherited;
+constructor TdevCompilerSet.Create;
+begin
+    inherited;
     fSets := TStringList.Create;
     UpdateSets;
     SettoDefaults;
-End;
+end;
 
-Destructor TdevCompilerSet.Destroy;
-Begin
-    If Assigned(fSets) Then
+destructor TdevCompilerSet.Destroy;
+begin
+    if Assigned(fSets) then
         fSets.Free;
-    Inherited;
-End;
+    inherited;
+end;
 
-Procedure TdevCompilerSet.LoadSet(Index: Integer);
-Begin
+procedure TdevCompilerSet.LoadSet(Index: integer);
+begin
     Name := Sets[Index];
     LoadSetProgs(Index);
     LoadSetDirs(Index);
-End;
+end;
 
-Procedure TdevCompilerSet.LoadSetDirs(Index: Integer);
-Var
-    key: String;
+procedure TdevCompilerSet.LoadSetDirs(Index: integer);
+var
+    key: string;
     goodBinDir, goodCDir, goodCppDir, goodLibDir {$IFDEF PLUGIN_BUILD},
-    goodRCDir{$ENDIF}: String;
-    msg: String;
-    tempStr: String;
+    goodRCDir{$ENDIF}: string;
+    msg: string;
+    tempStr: string;
    // maindir: String;
     //makeSig, mingwmakeSig: String;
-    defaultDataForPlugins: Boolean;
-    dummy: String;
-    i: Integer;
-Begin
-    defaultDataForPlugins := False;
-    If Index < 0 Then
+    defaultDataForPlugins: boolean;
+    dummy: string;
+    i: integer;
+begin
+    defaultDataForPlugins := FALSE;
+    if Index < 0 then
         Exit;
 
-    With devData Do
-    Begin
+    with devData do
+    begin
 
         key := OPT_COMPILERSETS + '_' + IntToStr(Index);
 
         // EAB: Temporary hack to fix Cpp includes in wxdsgn plugin if you enable the devpack after using vanilla version:
         // A proper solution requires more descriptive information of the plugins recent installation status.
-        If MainForm <> Nil Then
-        Begin
-            If MainForm.pluginsCount > 0 Then
-            Begin
-                Try
-                    If (LoadSetting(key, 'wxOpts.Static') = '') Then
-                        defaultDataForPlugins := True;
-                Except
-                    defaultDataForPlugins := True;
-                End;
-            End;
-        End;
+        if MainForm <> NIL then
+        begin
+            if MainForm.pluginsCount > 0 then
+            begin
+                try
+                    if (LoadSetting(key, 'wxOpts.Static') = '') then
+                        defaultDataForPlugins := TRUE;
+                except
+                    defaultDataForPlugins := TRUE;
+                end;
+            end;
+        end;
 
         // dirs
         fBinDir := LoadSetting(key, 'Bins');
-        If fBinDir = '' Then
+        if fBinDir = '' then
             fBinDir := devDirs.Bins;
         fCDir := LoadSetting(key, 'C');
-        If fCDir = '' Then
+        if fCDir = '' then
             fCDir := devDirs.C;
         fCppDir := LoadSetting(key, 'Cpp');
-        If fCppDir = '' Then
+        if fCppDir = '' then
             fCppDir := devDirs.Cpp
-        Else
-        If defaultDataForPlugins Then
-        Begin
-            For i := 0 To MainForm.pluginsCount - 1 Do
+        else
+        if defaultDataForPlugins then
+        begin
+            for i := 0 to MainForm.pluginsCount - 1 do
                 fCppDir := fCppDir + ';' +
                     ValidatePaths(MainForm.plugins[i].GET_COMMON_CPP_INCLUDE_DIR, dummy);
-        End;
-        Begin
-        End;
+        end;
+        begin
+        end;
         fLibDir := LoadSetting(key, 'Lib');
-        If fLibDir = '' Then
+        if fLibDir = '' then
             fLibDir := devDirs.Lib;
         fRcDir := LoadSetting(key, 'RC');
-        If fRcDir = '' Then
+        if fRcDir = '' then
             fRcDir := devDirs.RC;
 
         //check for valid paths
         msg := '';
         goodBinDir := ValidatePaths(fBinDir, tempStr);
-        If ((tempStr <> '')) Then
-        Begin
+        if ((tempStr <> '')) then
+        begin
             msg := msg + 'Following Bin directories don''t exist:' + #13#10;
             msg := msg + StringReplace(tempStr, ';', #13#10, [rfReplaceAll]);
             msg := msg + #13#10 + #13#10;
-        End;
+        end;
         goodCDir := ValidatePaths(fCDir, tempStr);
-        If ((tempStr <> '')) Then
-        Begin
+        if ((tempStr <> '')) then
+        begin
             msg := msg + 'Following C Include directories don''t exist:' + #13#10;
             msg := msg + StringReplace(tempStr, ';', #13#10, [rfReplaceAll]);
             msg := msg + #13#10 + #13#10;
-        End;
+        end;
         goodCppDir := ValidatePaths(fCppDir, tempStr);
-        If ((tempStr <> '')) Then
-        Begin
+        if ((tempStr <> '')) then
+        begin
             msg := msg + 'Following C++ Include directories don''t exist:' + #13#10;
             msg := msg + StringReplace(tempStr, ';', #13#10, [rfReplaceAll]);
             msg := msg + #13#10 + #13#10;
-        End;
+        end;
         goodLibDir := ValidatePaths(fLibDir, tempStr);
-        If ((tempStr <> '')) Then
-        Begin
+        if ((tempStr <> '')) then
+        begin
             msg := msg + 'Following Libs directories don''t exist:' + #13#10;
             msg := msg + StringReplace(tempStr, ';', #13#10, [rfReplaceAll]);
             msg := msg + #13#10 + #13#10;
-        End;
+        end;
      {$IFDEF PLUGIN_BUILD}
 
         goodRCDir := ValidatePaths(fRCDir, tempStr);
-        If tempStr <> '' Then
-        Begin
+        if tempStr <> '' then
+        begin
             msg := msg + 'Following resource compiler directories don''t exist:'
                 + #13#10;
             msg := msg + StringReplace(tempStr, ';', #13#10, [rfReplaceAll]);
             msg := msg + #13#10 + #13#10;
-        End;
+        end;
      {$ENDIF}
 
-    End;
+    end;
 
     //check if make is in path + bins directory
     SetPath(devDirs.Bins);
 
-End;
+end;
 
-Procedure TdevCompilerSet.LoadSetProgs(Index: Integer);
-Var
-    key: String;
-Begin
+procedure TdevCompilerSet.LoadSetProgs(Index: integer);
+var
+    key: string;
+begin
 
-    If Index < 0 Then
+    if Index < 0 then
         Exit;
-    With devData Do
-    Begin
+    with devData do
+    begin
         key := OPT_COMPILERSETS + '_' + IntToStr(Index);
-        If (LoadSetting(key, 'CompilerType') <> '') Then
+        if (LoadSetting(key, 'CompilerType') <> '') then
             fCompilerType := StrToIntDef(LoadSetting(key, 'CompilerType'), 0);
         self.SetToDefaults;
 
         // Programs
         fgccName := LoadSetting(key, CP_PROGRAM(CompilerType));
-        If fgccName = '' Then
+        if fgccName = '' then
             fgccName := CP_PROGRAM(CompilerType);
         fgppName := LoadSetting(key, CPP_PROGRAM(CompilerType));
-        If fgppName = '' Then
+        if fgppName = '' then
             fgppName := CPP_PROGRAM(CompilerType);
         fgdbName := LoadSetting(key, DBG_PROGRAM(CompilerType));
-        If fgdbName = '' Then
+        if fgdbName = '' then
             fgdbName := DBG_PROGRAM(CompilerType);
         fmakeName := LoadSetting(key, MAKE_PROGRAM(CompilerType));
-        If fmakeName = '' Then
+        if fmakeName = '' then
             fmakeName := MAKE_PROGRAM(CompilerType);
         fwindresName := LoadSetting(key, RES_PROGRAM(CompilerType));
-        If fwindresName = '' Then
+        if fwindresName = '' then
             fwindresName := RES_PROGRAM(CompilerType);
         fgprofName := LoadSetting(key, PROF_PROGRAM(CompilerType));
-        If fgprofName = '' Then
+        if fgprofName = '' then
             fgprofName := PROF_PROGRAM(CompilerType);
         fdllwrapName := LoadSetting(key, DLL_PROGRAM(CompilerType));
-        If fdllwrapName = '' Then
+        if fdllwrapName = '' then
             fdllwrapName := DLL_PROGRAM(CompilerType);
 
         fOptions := LoadSetting(key, 'Options');
         fCmdOptions := LoadSetting(key, 'cmdline');
-        If (fCmdOptions = '') Then
+        if (fCmdOptions = '') then
             fCmdOptions := COMPILER_CMD_LINE(CompilerType);
 
         fLinkOptions := LoadSetting(key, 'LinkLine');
-        If (fLinkOptions = '') Then
+        if (fLinkOptions = '') then
             fLinkOptions := LINKER_CMD_LINE(CompilerType);
 
         fMakeOptions := LoadSetting(key, 'MakeLine');
-        If (fMakeOptions = '') Then
+        if (fMakeOptions = '') then
             fMakeOptions := MAKE_CMD_LINE(CompilerType);
 
-        If LoadSetting(key, 'CheckSyntax') <> '' Then
+        if LoadSetting(key, 'CheckSyntax') <> '' then
             fCheckSyntaxFormat := LoadSetting(key, 'CheckSyntax');
-        If LoadSetting(key, 'OutputFormat') <> '' Then
+        if LoadSetting(key, 'OutputFormat') <> '' then
             fOutputFormat := LoadSetting(key, 'OutputFormat');
-        If LoadSetting(key, 'ResourceInclude') <> '' Then
+        if LoadSetting(key, 'ResourceInclude') <> '' then
             fResourceIncludeFormat := LoadSetting(key, 'ResourceInclude');
-        If LoadSetting(key, 'ResourceFormat') <> '' Then
+        if LoadSetting(key, 'ResourceFormat') <> '' then
             fResourceFormat := LoadSetting(key, 'ResourceFormat');
-        If LoadSetting(key, 'LinkerFormat') <> '' Then
+        if LoadSetting(key, 'LinkerFormat') <> '' then
             fLinkerFormat := LoadSetting(key, 'LinkerFormat');
-        If LoadSetting(key, 'LinkerPaths') <> '' Then
+        if LoadSetting(key, 'LinkerPaths') <> '' then
             LinkerPaths := LoadSetting(key, 'LinkerPaths');
-        If LoadSetting(key, 'IncludeFormat') <> '' Then
+        if LoadSetting(key, 'IncludeFormat') <> '' then
             fIncludeFormat := LoadSetting(key, 'IncludeFormat');
-        If LoadSetting(key, 'DllFormat') <> '' Then
+        if LoadSetting(key, 'DllFormat') <> '' then
             fDllFormat := LoadSetting(key, 'DllFormat');
-        If LoadSetting(key, 'LibFormat') <> '' Then
+        if LoadSetting(key, 'LibFormat') <> '' then
             fLibFormat := LoadSetting(key, 'LibFormat');
-        If LoadSetting(key, 'SingleCompile') <> '' Then
+        if LoadSetting(key, 'SingleCompile') <> '' then
             fSingleCompile := LoadSetting(key, 'SingleCompile');
-        If LoadSetting(key, 'PreprocDefines') <> '' Then
+        if LoadSetting(key, 'PreprocDefines') <> '' then
             fPreprocDefines := LoadSetting(key, 'PreprocDefines');
-        If LoadSetting(key, 'PchCreateFormat') <> '' Then
+        if LoadSetting(key, 'PchCreateFormat') <> '' then
             fPchCreateFormat := LoadSetting(key, 'PchCreateFormat');
-        If LoadSetting(key, 'PchUseFormat') <> '' Then
+        if LoadSetting(key, 'PchUseFormat') <> '' then
             fPchUseFormat := LoadSetting(key, 'PchUseFormat');
-        If LoadSetting(key, 'PchFileFormat') <> '' Then
+        if LoadSetting(key, 'PchFileFormat') <> '' then
             fPchFileFormat := LoadSetting(key, 'PchFileFormat');
 
 {$IFDEF PLUGIN_BUILD}// Loading Compiler settings:
         optComKey := key;
 {$ENDIF PLUGIN_BUILD}
-    End;
-End;
+    end;
+end;
 
-Procedure TdevCompilerSet.LoadSettings;
-Begin
+procedure TdevCompilerSet.LoadSettings;
+begin
     LoadSet(0);
-End;
+end;
 
-Procedure TdevCompilerSet.SaveSet(Index: Integer);
-Begin
+procedure TdevCompilerSet.SaveSet(Index: integer);
+begin
     SaveSetProgs(Index);
     SaveSetDirs(Index);
-End;
+end;
 
-Procedure TdevCompilerSet.SaveSetDirs(Index: Integer);
-Var
-    key: String;
-Begin
-    If Index < 0 Then
+procedure TdevCompilerSet.SaveSetDirs(Index: integer);
+var
+    key: string;
+begin
+    if Index < 0 then
         Exit;
-    With devData Do
-    Begin
+    with devData do
+    begin
         key := OPT_COMPILERSETS + '_' + IntToStr(Index);
         // dirs
 
@@ -3647,27 +3647,27 @@ Begin
         SaveSetting(key, 'Cpp', fCppDir);
         SaveSetting(key, 'Lib', fLibDir);
         SaveSetting(key, 'RC', fRcDir);
-    End;
-End;
+    end;
+end;
 
-Procedure TdevCompilerSet.SaveSetProgs(Index: Integer);
-Var
-    key: String;
+procedure TdevCompilerSet.SaveSetProgs(Index: integer);
+var
+    key: string;
 {$IFDEF PLUGIN_BUILD}
-    i, j: Integer;
+    i, j: integer;
     pluginSettings: TSettings;
 {$ENDIF PLUGIN_BUILD}
-Begin
+begin
 
 {$IFDEF PLUGIN_BUILD}
-    pluginSettings := nil;
+    pluginSettings := NIL;
 {$ENDIF PLUGIN_BUILD}
 
-    If Index < 0 Then
+    if Index < 0 then
         Exit;
 
-    With devData Do
-    Begin
+    with devData do
+    begin
         key := OPT_COMPILERSETS + '_' + IntToStr(Index);
         // Programs
         SaveSetting(key, CP_PROGRAM(CompilerType), fgccName);
@@ -3699,37 +3699,37 @@ Begin
         SaveSetting(key, 'PreprocDefines', fPreprocDefines);
 
 {$IFDEF PLUGIN_BUILD}
-        If MainForm <> Nil Then
-        Begin
-            For i := 0 To MainForm.pluginsCount - 1 Do
-            Begin
+        if MainForm <> NIL then
+        begin
+            for i := 0 to MainForm.pluginsCount - 1 do
+            begin
                 pluginSettings := MainForm.plugins[i].GetCompilerOptions;
-                For j := 0 To Length(pluginSettings) - 1 Do
+                for j := 0 to Length(pluginSettings) - 1 do
                     SaveSetting(key, pluginSettings[j].name,
                         pluginSettings[j].value);
-            End;
-        End;
+            end;
+        end;
 {$ENDIF PLUGIN_BUILD}
-    End;
-End;
+    end;
+end;
 
-Procedure TdevCompilerSet.SaveSettings;
-Begin
+procedure TdevCompilerSet.SaveSettings;
+begin
     WriteSets;
-End;
+end;
 
-Function TdevCompilerSet.SetName(Index: Integer): String;
-Begin
-    If (Index >= 0) And (Index < devCompilerSet.Sets.Count) Then
+function TdevCompilerSet.SetName(Index: integer): string;
+begin
+    if (Index >= 0) and (Index < devCompilerSet.Sets.Count) then
         Result := devCompilerSet.Sets[Index]
-    Else
+    else
         Result := DEFCOMPILERSET(CompilerType);
-End;
+end;
 
-Procedure TdevCompilerSet.SettoDefaults;
-Var
-    tempstr: String;
-Begin
+procedure TdevCompilerSet.SettoDefaults;
+var
+    tempstr: string;
+begin
 
     tempstr := '';
     // Programs
@@ -3744,8 +3744,8 @@ Begin
     fLinkOptions := '';
     fMakeOptions := '';
 
-    If CompilerType In ID_COMPILER_VC Then
-    Begin
+    if CompilerType in ID_COMPILER_VC then
+    begin
         fCheckSyntaxFormat := '/Zs %s';
         fOutputFormat := '/c %s /Fo%s';
         fResourceIncludeFormat := '/I"%s"';
@@ -3760,10 +3760,10 @@ Begin
         fPchFileFormat := '/Fp%s';
         fSingleCompile := '%s /nologo "%s" %s %s /link %s';
         fPreprocDefines := '/D%s';
-    End
-    Else
-    If CompilerType = ID_COMPILER_DMARS Then
-    Begin
+    end
+    else
+    if CompilerType = ID_COMPILER_DMARS then
+    begin
         fCheckSyntaxFormat := '/Zs %s';
         fOutputFormat := '-c %s -o%s';
         fResourceIncludeFormat := '-I"%s"';
@@ -3780,11 +3780,11 @@ Begin
         fPchFileFormat := '/Fp%s';
         fSingleCompile := '%s "%s" %s %s /link %s';
         fPreprocDefines := '-D%s';
-    End
-    Else
-    If ((CompilerType = ID_COMPILER_MINGW) Or
-        (CompilerType = ID_COMPILER_LINUX)) Then
-    Begin
+    end
+    else
+    if ((CompilerType = ID_COMPILER_MINGW) or
+        (CompilerType = ID_COMPILER_LINUX)) then
+    begin
         fCheckSyntaxFormat := '-fsyntax-only %s';
         fOutputFormat := '-c %s -o %s';
         fResourceIncludeFormat := '--include-dir "%s"';
@@ -3799,7 +3799,7 @@ Begin
         fPchFileFormat := '';
         fSingleCompile := '%s "%s" -o "%s" %s %s %s';
         fPreprocDefines := '-D%s';
-    End;
+    end;
 
     // dirs
     fBinDir := devDirs.Bins;
@@ -3809,264 +3809,264 @@ Begin
     fLibDir := devDirs.Lib;
     fRCDir := devDirs.RC;
 
-End;
+end;
 
-Procedure TdevCompilerSet.UpdateSets;
-Var
+procedure TdevCompilerSet.UpdateSets;
+var
     Ini: TIniFile;
     sl: TStringList;
-    I: Integer;
-Begin
+    I: integer;
+begin
     fSets.Clear;
     Ini := TIniFile.Create(devData.INIFile);
     sl := TStringList.Create;
-    Try
+    try
         Ini.ReadSectionValues(OPT_COMPILERSETS, sl);
 
-        For I := 0 To sl.Count - 1 Do
+        for I := 0 to sl.Count - 1 do
             fSets.Add(sl.Values[sl.Names[I]]);
 
-    Finally
+    finally
         sl.Free;
         Ini.Free;
-    End;
-End;
+    end;
+end;
 
-Procedure TdevCompilerSet.WriteSets;
-Var
+procedure TdevCompilerSet.WriteSets;
+var
     Ini: TIniFile;
-    I: Integer;
-Begin
+    I: integer;
+begin
     Ini := TIniFile.Create(devData.INIFile);
-    Try
+    try
         Ini.EraseSection(OPT_COMPILERSETS);
-        For I := 0 To fSets.Count - 1 Do
+        for I := 0 to fSets.Count - 1 do
             Ini.WriteString(OPT_COMPILERSETS, IntToStr(I), fSets[I]);
-    Finally
+    finally
         Ini.Free;
-    End;
-End;
+    end;
+end;
 
 { TdevExternalPrograms }
 
-Function TdevExternalPrograms.AddProgram(ext, prog: String): Integer;
-Var
-    idx: Integer;
-Begin
-    If ext = '' Then
-    Begin
+function TdevExternalPrograms.AddProgram(ext, prog: string): integer;
+var
+    idx: integer;
+begin
+    if ext = '' then
+    begin
         Result := -1;
         Exit;
-    End;
+    end;
 
     idx := AssignedProgram(ext);
-    If idx = -1 Then
+    if idx = -1 then
         Result := fPrograms.Add(ext + '=' + prog)
-    Else
-    Begin
+    else
+    begin
         fPrograms.Values[fPrograms.Names[idx]] := prog;
         Result := idx;
-    End;
-End;
+    end;
+end;
 
-Function TdevExternalPrograms.AssignedProgram(ext: String): Integer;
-Var
-    I: Integer;
-Begin
+function TdevExternalPrograms.AssignedProgram(ext: string): integer;
+var
+    I: integer;
+begin
     Result := -1;
-    For I := 0 To fPrograms.Count - 1 Do
-        If UpperCase(fPrograms.Names[I]) = UpperCase(ext) Then
-        Begin
+    for I := 0 to fPrograms.Count - 1 do
+        if UpperCase(fPrograms.Names[I]) = UpperCase(ext) then
+        begin
             Result := I;
             Break;
-        End;
-End;
+        end;
+end;
 
-Constructor TdevExternalPrograms.Create;
-Begin
-    Inherited Create;
+constructor TdevExternalPrograms.Create;
+begin
+    inherited Create;
     Name := 'ExternalPrograms';
     fPrograms := TStringList.Create;
     SettoDefaults;
     LoadSettings;
-End;
+end;
 
-Destructor TdevExternalPrograms.Destroy;
-Begin
-    If Assigned(fPrograms) Then
+destructor TdevExternalPrograms.Destroy;
+begin
+    if Assigned(fPrograms) then
         fPrograms.Free;
-End;
+end;
 
-Function TdevExternalPrograms.GetProgramName(Index: Integer): String;
-Begin
+function TdevExternalPrograms.GetProgramName(Index: integer): string;
+begin
     Result := fPrograms.Values[fPrograms.Names[Index]];
-End;
+end;
 
-Procedure TdevExternalPrograms.LoadSettings;
-Begin
+procedure TdevExternalPrograms.LoadSettings;
+begin
     devData.LoadObject(Self);
-End;
+end;
 
-Procedure TdevExternalPrograms.SaveSettings;
-Begin
+procedure TdevExternalPrograms.SaveSettings;
+begin
     devData.SaveObject(Self);
-End;
+end;
 
-Procedure TdevExternalPrograms.SetToDefaults;
-Begin
-    Inherited;
+procedure TdevExternalPrograms.SetToDefaults;
+begin
+    inherited;
 
-End;
+end;
 
 {$IFDEF PLUGIN_BUILD}
 { TdevPluginToolbarsX }
 
-Function TdevPluginToolbarsX.AddToolbarsX(plugin_name: String;
-    x: Integer): Integer;
-Var
-    idx: Integer;
-Begin
-    If plugin_name = '' Then
-    Begin
+function TdevPluginToolbarsX.AddToolbarsX(plugin_name: string;
+    x: integer): integer;
+var
+    idx: integer;
+begin
+    if plugin_name = '' then
+    begin
         Result := -1;
         Exit;
-    End;
+    end;
 
     idx := AssignedToolbarsX(plugin_name);
-    If idx = -1 Then
+    if idx = -1 then
         Result := fPluginToolbarsX.Add(plugin_name + '=' + IntToStr(x))
-    Else
-    Begin
+    else
+    begin
         fPluginToolbarsX.Values[fPluginToolbarsX.Names[idx]] := IntToStr(x);
         Result := idx;
-    End;
-End;
+    end;
+end;
 
-Function TdevPluginToolbarsX.AssignedToolbarsX(plugin_name: String): Integer;
-Var
-    I: Integer;
-Begin
+function TdevPluginToolbarsX.AssignedToolbarsX(plugin_name: string): integer;
+var
+    I: integer;
+begin
     Result := -1;
-    For I := 0 To fPluginToolbarsX.Count - 1 Do
-        If UpperCase(fPluginToolbarsX.Names[I]) = UpperCase(plugin_name) Then
-        Begin
+    for I := 0 to fPluginToolbarsX.Count - 1 do
+        if UpperCase(fPluginToolbarsX.Names[I]) = UpperCase(plugin_name) then
+        begin
             Result := I;
             Break;
-        End;
-End;
+        end;
+end;
 
-Constructor TdevPluginToolbarsX.Create;
-Begin
-    Inherited Create;
+constructor TdevPluginToolbarsX.Create;
+begin
+    inherited Create;
     Name := 'ToolbarsX';
     fPluginToolbarsX := TStringList.Create;
     SettoDefaults;
     LoadSettings;
-End;
+end;
 
-Destructor TdevPluginToolbarsX.Destroy;
-Begin
-    If Assigned(fPluginToolbarsX) Then
+destructor TdevPluginToolbarsX.Destroy;
+begin
+    if Assigned(fPluginToolbarsX) then
         fPluginToolbarsX.Free;
-End;
+end;
 
-Function TdevPluginToolbarsX.GetToolbarsXName(Index: Integer): String;
-Begin
+function TdevPluginToolbarsX.GetToolbarsXName(Index: integer): string;
+begin
     Result := fPluginToolbarsX.Values[fPluginToolbarsX.Names[Index]];
-End;
+end;
 
-Procedure TdevPluginToolbarsX.LoadSettings;
-Begin
+procedure TdevPluginToolbarsX.LoadSettings;
+begin
     devData.LoadObject(Self);
-End;
+end;
 
-Procedure TdevPluginToolbarsX.SaveSettings;
-Begin
+procedure TdevPluginToolbarsX.SaveSettings;
+begin
     devData.SaveObject(Self);
-End;
+end;
 
-Procedure TdevPluginToolbarsX.SetToDefaults;
-Begin
-    Inherited;
+procedure TdevPluginToolbarsX.SetToDefaults;
+begin
+    inherited;
 
-End;
+end;
 
 { TdevPluginToolbarsY }
 
-Function TdevPluginToolbarsY.AddToolbarsY(plugin_name: String;
-    y: Integer): Integer;
-Var
-    idx: Integer;
-Begin
-    If plugin_name = '' Then
-    Begin
+function TdevPluginToolbarsY.AddToolbarsY(plugin_name: string;
+    y: integer): integer;
+var
+    idx: integer;
+begin
+    if plugin_name = '' then
+    begin
         Result := -1;
         Exit;
-    End;
+    end;
 
     idx := AssignedToolbarsY(plugin_name);
-    If idx = -1 Then
+    if idx = -1 then
         Result := fPluginToolbarsY.Add(plugin_name + '=' + IntToStr(y))
-    Else
-    Begin
+    else
+    begin
         fPluginToolbarsY.Values[fPluginToolbarsY.Names[idx]] := IntToStr(y);
         Result := idx;
-    End;
-End;
+    end;
+end;
 
-Function TdevPluginToolbarsY.AssignedToolbarsY(plugin_name: String): Integer;
-Var
-    I: Integer;
-Begin
+function TdevPluginToolbarsY.AssignedToolbarsY(plugin_name: string): integer;
+var
+    I: integer;
+begin
     Result := -1;
-    For I := 0 To fPluginToolbarsY.Count - 1 Do
-        If UpperCase(fPluginToolbarsY.Names[I]) = UpperCase(plugin_name) Then
-        Begin
+    for I := 0 to fPluginToolbarsY.Count - 1 do
+        if UpperCase(fPluginToolbarsY.Names[I]) = UpperCase(plugin_name) then
+        begin
             Result := I;
             Break;
-        End;
-End;
+        end;
+end;
 
-Constructor TdevPluginToolbarsY.Create;
-Begin
-    Inherited Create;
+constructor TdevPluginToolbarsY.Create;
+begin
+    inherited Create;
     Name := 'ToolbarsY';
     fPluginToolbarsY := TStringList.Create;
     SettoDefaults;
     LoadSettings;
-End;
+end;
 
-Destructor TdevPluginToolbarsY.Destroy;
-Begin
-    If Assigned(fPluginToolbarsY) Then
+destructor TdevPluginToolbarsY.Destroy;
+begin
+    if Assigned(fPluginToolbarsY) then
         fPluginToolbarsY.Free;
-End;
+end;
 
-Function TdevPluginToolbarsY.GetToolbarsYName(Index: Integer): String;
-Begin
+function TdevPluginToolbarsY.GetToolbarsYName(Index: integer): string;
+begin
     Result := fPluginToolbarsY.Values[fPluginToolbarsY.Names[Index]];
-End;
+end;
 
-Procedure TdevPluginToolbarsY.LoadSettings;
-Begin
+procedure TdevPluginToolbarsY.LoadSettings;
+begin
     devData.LoadObject(Self);
-End;
+end;
 
-Procedure TdevPluginToolbarsY.SaveSettings;
-Begin
+procedure TdevPluginToolbarsY.SaveSettings;
+begin
     devData.SaveObject(Self);
-End;
+end;
 
-Procedure TdevPluginToolbarsY.SetToDefaults;
-Begin
-    Inherited;
+procedure TdevPluginToolbarsY.SetToDefaults;
+begin
+    inherited;
 
-End;
+end;
 {$ENDIF PLUGIN_BUILD}
 
-Initialization
+initialization
 
-Finalization
+finalization
     fdevData.Free;
     devCompiler.Free;
     devCompilerSet.Free;
@@ -4077,4 +4077,4 @@ Finalization
     devCVSHandler.Free;
     devExternalPrograms.Free;
 
-End.
+end.

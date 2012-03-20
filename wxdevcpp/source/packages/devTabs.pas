@@ -20,11 +20,11 @@
 (*
  devTabs: reimplementation of TabControl from Gavina UI pack.
 *)
-Unit devTabs;
+unit devTabs;
 
-Interface
+interface
 
-Uses
+uses
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ImgList;
 {$ENDIF}
@@ -32,433 +32,433 @@ Uses
   SysUtils, Classes, QGraphics, QControls, QForms, QImgList, Types;
 {$ENDIF}
 
-Type
+type
     TdevTabOrientation = (toTop, toBottom);
 
-    TdevTabChangingEvent = Procedure(Sender: TObject; NewIndex: Integer; Var AllowChange: Boolean) Of Object;
-    TdevTabMovedEvent = Procedure(Sender: TObject; OldIndex, NewIndex: Integer) Of Object;
+    TdevTabChangingEvent = procedure(Sender: TObject; NewIndex: integer; var AllowChange: boolean) of object;
+    TdevTabMovedEvent = procedure(Sender: TObject; OldIndex, NewIndex: integer) of object;
 
-    TdevTabGetImageEvent = Procedure(Sender: TObject; TabIndex: Integer; Var ImageIndex: Integer) Of Object;
+    TdevTabGetImageEvent = procedure(Sender: TObject; TabIndex: integer; var ImageIndex: integer) of object;
 
-    TdevCustomTabs = Class(TCustomControl)
-    Private
+    TdevCustomTabs = class(TCustomControl)
+    private
         FOrientation: TdevTabOrientation;
-        FLeftMargin: Integer;
-        FRightMargin: Integer;
-        FTabMargin: Integer;
+        FLeftMargin: integer;
+        FRightMargin: integer;
+        FTabMargin: integer;
         FTabs: TStrings;
-        FTabIndex: Integer;
-        FTabHeight: Integer;
+        FTabIndex: integer;
+        FTabHeight: integer;
         FBackTextColor: TColor;
         FBackColor: TColor;
         FAMList: TList;
         FImageChangeLink: TChangeLink;
         FImages: TCustomImageList;
-        FStarted: Boolean;
+        FStarted: boolean;
         FOnMoved: TdevTabMovedEvent;
         FOnChanging: TdevTabChangingEvent;
         FOnTabDrag: TNotifyEvent;
         FOnGetImage: TdevTabGetImageEvent;
         fOnChange: TNotifyEvent;
-        FTabHidden: Boolean;
-        Function GetTabHidden: Boolean;
-        Function ClippedTabAtPos(Pos: TPoint; Var AIndex: Integer): Boolean;
-        Function IntTabAtPos(Pos: TPoint; AList: TList): Integer;
-        Function CalcTabWidth(AOriginal: TList): TList;
-        Procedure SetBackTextColor(Value: TColor);
-        Procedure SetBackColor(Value: TColor);
-        Procedure SetLeftMargin(Value: Integer);
-        Procedure SetRightMargin(Value: Integer);
-        Procedure SetTabIndex(Value: Integer);
-        Procedure SetTabMargin(Value: Integer);
-        Procedure SetTabs(Value: TStrings);
-        Procedure SetOrientation(Value: TdevTabOrientation);
-        Procedure CMFontChanged(Var Message: TMessage); Message CM_FONTCHANGED;
-        Procedure WMGetDlgCode(Var Message: TWMGetDlgCode); Message WM_GETDLGCODE;
-        Procedure CMDialogChar(Var Message: TCMDialogChar); Message CM_DIALOGCHAR;
-        Procedure CMHintShow(Var Message: TCMHintShow); Message CM_HINTSHOW;
-        Procedure WMSize(Var Message: TWMSize); Message WM_SIZE;
-        Function GetAutoMove: Boolean;
-        Procedure SetAutoMove(Value: Boolean);
-        Procedure ResetAutoMove;
-        Procedure CalcTabHeight;
-        Procedure AdjustTabs;
-        Procedure GetTabArea(Var ARect: TRect);
-        Procedure GetTabRect(Var ARect: TRect);
-        Procedure SetImages(Value: TCustomImageList);
-        Procedure ImageListChanged(Sender: TObject);
-        Procedure SetTabHidden(Value: Boolean);
-        Procedure Change;
-    Protected
-        Procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); Override;
-        Procedure MouseMove(Shift: TShiftState; X, Y: Integer); Override;
-        Procedure CreateParams(Var Params: TCreateParams); Override;
-        Procedure BeginTabDrag; Dynamic;
-        Procedure AdjustClientRect(Var ARect: TRect); Override;
-        Procedure Paint; Override;
-        Procedure Moved(AFrom, ATo: Integer); Dynamic;
-        Function GetTabBrush: THandle; Virtual;
-        Function GetTabEnabled(TabIndex: Integer): Boolean; Virtual;
-        Function GetImageIndex(TabIndex: Integer): Integer; Virtual;
-        Function CanChange(NewIndex: Integer): Boolean; Dynamic;
-        Function TabAtPos(Pos: TPoint): Integer;
-        Function TabRect(Item: Integer): TRect;
-        Property OnMoved: TdevTabMovedEvent Read FOnMoved Write FOnMoved;
-        Property OnChange: TNotifyEvent Read fOnChange Write fOnChange;
-        Property OnChanging: TdevTabChangingEvent Read FOnChanging Write FOnChanging;
-        Property OnGetImageIndex: TdevTabGetImageEvent Read FOnGetImage Write FOnGetImage;
-        Property OnTabDrag: TNotifyEvent Read FOnTabDrag Write FOnTabDrag;
-        Property AutoMove: Boolean Read GetAutoMove Write SetAutoMove Default False;
-        Property LeftMargin: Integer Read FLeftMargin Write SetLeftMargin Default 5;
-        Property TabMargin: Integer Read FTabMargin Write SetTabMargin Default 4;
-        Property RightMargin: Integer Read FRightMargin Write SetRightMargin Default 5;
-        Property BackTextColor: TColor Read FBackTextColor Write SetBackTextColor Default clBtnHighlight;
-        Property BackColor: TColor Read FBackColor Write SetBackColor Default clBtnShadow;
-        Property Orientation: TdevTabOrientation Read FOrientation Write SetOrientation Default toTop;
-        Property Tabs: TStrings Read FTabs Write SetTabs;
-        Property TabIndex: Integer Read FTabIndex Write SetTabIndex Default -1;
-        Property Images: TCustomImageList Read FImages Write SetImages;
-    Public
-        Constructor Create(AOwner: TComponent); Override;
-        Destructor Destroy; Override;
-        Procedure SelectNext(Direction: Boolean);
-        Property TabHeight: Integer Read FTabHeight;
-        Property TabHidden: Boolean Read FTabHidden Write SetTabHidden Default False;
-        Property Color Nodefault;
-        Property ParentFont Default True;
-        Property ParentColor Default True;
-    End;
+        FTabHidden: boolean;
+        function GetTabHidden: boolean;
+        function ClippedTabAtPos(Pos: TPoint; var AIndex: integer): boolean;
+        function IntTabAtPos(Pos: TPoint; AList: TList): integer;
+        function CalcTabWidth(AOriginal: TList): TList;
+        procedure SetBackTextColor(Value: TColor);
+        procedure SetBackColor(Value: TColor);
+        procedure SetLeftMargin(Value: integer);
+        procedure SetRightMargin(Value: integer);
+        procedure SetTabIndex(Value: integer);
+        procedure SetTabMargin(Value: integer);
+        procedure SetTabs(Value: TStrings);
+        procedure SetOrientation(Value: TdevTabOrientation);
+        procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
+        procedure WMGetDlgCode(var Message: TWMGetDlgCode); message WM_GETDLGCODE;
+        procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
+        procedure CMHintShow(var Message: TCMHintShow); message CM_HINTSHOW;
+        procedure WMSize(var Message: TWMSize); message WM_SIZE;
+        function GetAutoMove: boolean;
+        procedure SetAutoMove(Value: boolean);
+        procedure ResetAutoMove;
+        procedure CalcTabHeight;
+        procedure AdjustTabs;
+        procedure GetTabArea(var ARect: TRect);
+        procedure GetTabRect(var ARect: TRect);
+        procedure SetImages(Value: TCustomImageList);
+        procedure ImageListChanged(Sender: TObject);
+        procedure SetTabHidden(Value: boolean);
+        procedure Change;
+    protected
+        procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
+        procedure MouseMove(Shift: TShiftState; X, Y: integer); override;
+        procedure CreateParams(var Params: TCreateParams); override;
+        procedure BeginTabDrag; dynamic;
+        procedure AdjustClientRect(var ARect: TRect); override;
+        procedure Paint; override;
+        procedure Moved(AFrom, ATo: integer); dynamic;
+        function GetTabBrush: THandle; virtual;
+        function GetTabEnabled(TabIndex: integer): boolean; virtual;
+        function GetImageIndex(TabIndex: integer): integer; virtual;
+        function CanChange(NewIndex: integer): boolean; dynamic;
+        function TabAtPos(Pos: TPoint): integer;
+        function TabRect(Item: integer): TRect;
+        property OnMoved: TdevTabMovedEvent read FOnMoved write FOnMoved;
+        property OnChange: TNotifyEvent read fOnChange write fOnChange;
+        property OnChanging: TdevTabChangingEvent read FOnChanging write FOnChanging;
+        property OnGetImageIndex: TdevTabGetImageEvent read FOnGetImage write FOnGetImage;
+        property OnTabDrag: TNotifyEvent read FOnTabDrag write FOnTabDrag;
+        property AutoMove: boolean read GetAutoMove write SetAutoMove default FALSE;
+        property LeftMargin: integer read FLeftMargin write SetLeftMargin default 5;
+        property TabMargin: integer read FTabMargin write SetTabMargin default 4;
+        property RightMargin: integer read FRightMargin write SetRightMargin default 5;
+        property BackTextColor: TColor read FBackTextColor write SetBackTextColor default clBtnHighlight;
+        property BackColor: TColor read FBackColor write SetBackColor default clBtnShadow;
+        property Orientation: TdevTabOrientation read FOrientation write SetOrientation default toTop;
+        property Tabs: TStrings read FTabs write SetTabs;
+        property TabIndex: integer read FTabIndex write SetTabIndex default -1;
+        property Images: TCustomImageList read FImages write SetImages;
+    public
+        constructor Create(AOwner: TComponent); override;
+        destructor Destroy; override;
+        procedure SelectNext(Direction: boolean);
+        property TabHeight: integer read FTabHeight;
+        property TabHidden: boolean read FTabHidden write SetTabHidden default FALSE;
+        property Color nodefault;
+        property ParentFont default TRUE;
+        property ParentColor default TRUE;
+    end;
 
-    TdevTabs = Class(TdevCustomTabs)
-    Published
-        Property Align;
-        Property AutoMove;
-        Property Anchors;
-        Property BevelEdges;
-        Property BevelKind;
-        Property BevelInner;
-        Property BevelOuter;
-        Property Constraints;
-        Property DragKind;
-        Property OnEndDock;
-        Property OnStartDock;
-        Property OnTabDrag;
-        Property Ctl3D;
-        Property Color;
-        Property DragCursor;
-        Property DragMode;
-        Property Enabled;
-        Property LeftMargin;
-        Property TabMargin;
-        Property Font;
-        Property Images;
-        Property PopupMenu;
-        Property RightMargin;
-        Property ParentColor;
-        Property ParentCtl3D;
-        Property BackTextColor;
-        Property BackColor;
-        Property Orientation;
-        Property Tabs;
-        Property TabIndex;
-        Property TabHidden;
-        Property Visible;
-        Property OnClick;
-        Property OnMoved;
-        Property OnChange;
-        Property OnChanging;
-        Property OnDragDrop;
-        Property OnDragOver;
-        Property OnEndDrag;
-        Property OnEnter;
-        Property OnExit;
-        Property OnMouseDown;
-        Property OnMouseMove;
-        Property OnMouseUp;
-        Property OnKeyDown;
-        Property OnKeyUp;
-        Property OnKeyPress;
-        Property OnStartDrag;
-        Property OnGetImageIndex;
-    End;
+    TdevTabs = class(TdevCustomTabs)
+    published
+        property Align;
+        property AutoMove;
+        property Anchors;
+        property BevelEdges;
+        property BevelKind;
+        property BevelInner;
+        property BevelOuter;
+        property Constraints;
+        property DragKind;
+        property OnEndDock;
+        property OnStartDock;
+        property OnTabDrag;
+        property Ctl3D;
+        property Color;
+        property DragCursor;
+        property DragMode;
+        property Enabled;
+        property LeftMargin;
+        property TabMargin;
+        property Font;
+        property Images;
+        property PopupMenu;
+        property RightMargin;
+        property ParentColor;
+        property ParentCtl3D;
+        property BackTextColor;
+        property BackColor;
+        property Orientation;
+        property Tabs;
+        property TabIndex;
+        property TabHidden;
+        property Visible;
+        property OnClick;
+        property OnMoved;
+        property OnChange;
+        property OnChanging;
+        property OnDragDrop;
+        property OnDragOver;
+        property OnEndDrag;
+        property OnEnter;
+        property OnExit;
+        property OnMouseDown;
+        property OnMouseMove;
+        property OnMouseUp;
+        property OnKeyDown;
+        property OnKeyUp;
+        property OnKeyPress;
+        property OnStartDrag;
+        property OnGetImageIndex;
+    end;
 
-    TdevPage = Class;
+    TdevPage = class;
 
-    TdevCustomPages = Class(TdevCustomTabs)
-    Private
+    TdevCustomPages = class(TdevCustomTabs)
+    private
         FPage: TdevPage;
         FPages: TList;
         FNewDockPage,
         FUndockingPage: TdevPage;
-        Function GetPage(AIndex: Integer): TdevPage;
-        Function GetPageCount: Integer;
-        Function GetActivePageIndex: Integer;
-        Function GetPageFromDockClient(Client: TControl): TdevPage;
-        Function GetDockClientFromPage(APage: TdevPage): TControl;
-        Procedure SetActivePage(Value: TdevPage);
-        Procedure SetActivePageIndex(Value: Integer);
-        Procedure AddPage(APage: TdevPage);
-        Procedure RemovePage(APage: TdevPage);
-        Procedure AddVisPage(APage: TdevPage);
-        Procedure RemoveVisPage(APage: TdevPage);
-        Procedure UpdatePage(APage: TdevPage);
-        Procedure CMDesignHitTest(Var Msg: TCMDesignHitTest); Message CM_DESIGNHITTEST;
-        Procedure CMDockClient(Var Message: TCMDockClient); Message CM_DOCKCLIENT;
-        Procedure CMDockNotification(Var Message: TCMDockNotification); Message CM_DOCKNOTIFICATION;
-        Procedure CMUnDockClient(Var Message: TCMUnDockClient); Message CM_UNDOCKCLIENT;
-        Procedure WMLButtonDblClk(Var Message: TWMLButtonDblClk); Message WM_LBUTTONDBLCLK;
-        Procedure ChangeActive(Page: TdevPage);
-    Protected
-        Function GetTabBrush: THandle; Override;
-        Function GetTabEnabled(ATabIndex: Integer): Boolean; Override;
-        Function CanChange(NewIndex: Integer): Boolean; Override;
-        Function GetImageIndex(ATabIndex: Integer): Integer; Override;
-        Procedure BeginTabDrag; Override;
-        Procedure GetChildren(Proc: TGetChildProc; Root: TComponent); Override;
-        Procedure SetChildOrder(Child: TComponent; Order: Integer); Override;
-        Procedure Moved(AFrom, ATo: Integer); Override;
-        Procedure DoAddDockClient(Client: TControl; Const ARect: TRect); Override;
-        Procedure DockOver(Source: TDragDockObject; X, Y: Integer; State: TDragState; Var Accept: Boolean); Override;
-        Procedure DoRemoveDockClient(Client: TControl); Override;
-        Procedure GetSiteInfo(Client: TControl; Var InfluenceRect: TRect; MousePos: TPoint; Var CanDock: Boolean); Override;
-        Property Pages[AIndex: Integer]: TdevPage Read GetPage;
-        Property PageCount: Integer Read GetPageCount;
-        Property ActivePageIndex: Integer Read GetActivePageIndex Write SetActivePageIndex;
-        Property ActivePage: TdevPage Read FPage Write SetActivePage;
-    Public
-        Constructor Create(AOwner: TComponent); Override;
-        Destructor Destroy; Override;
-    End;
+        function GetPage(AIndex: integer): TdevPage;
+        function GetPageCount: integer;
+        function GetActivePageIndex: integer;
+        function GetPageFromDockClient(Client: TControl): TdevPage;
+        function GetDockClientFromPage(APage: TdevPage): TControl;
+        procedure SetActivePage(Value: TdevPage);
+        procedure SetActivePageIndex(Value: integer);
+        procedure AddPage(APage: TdevPage);
+        procedure RemovePage(APage: TdevPage);
+        procedure AddVisPage(APage: TdevPage);
+        procedure RemoveVisPage(APage: TdevPage);
+        procedure UpdatePage(APage: TdevPage);
+        procedure CMDesignHitTest(var Msg: TCMDesignHitTest); message CM_DESIGNHITTEST;
+        procedure CMDockClient(var Message: TCMDockClient); message CM_DOCKCLIENT;
+        procedure CMDockNotification(var Message: TCMDockNotification); message CM_DOCKNOTIFICATION;
+        procedure CMUnDockClient(var Message: TCMUnDockClient); message CM_UNDOCKCLIENT;
+        procedure WMLButtonDblClk(var Message: TWMLButtonDblClk); message WM_LBUTTONDBLCLK;
+        procedure ChangeActive(Page: TdevPage);
+    protected
+        function GetTabBrush: THandle; override;
+        function GetTabEnabled(ATabIndex: integer): boolean; override;
+        function CanChange(NewIndex: integer): boolean; override;
+        function GetImageIndex(ATabIndex: integer): integer; override;
+        procedure BeginTabDrag; override;
+        procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
+        procedure SetChildOrder(Child: TComponent; Order: integer); override;
+        procedure Moved(AFrom, ATo: integer); override;
+        procedure DoAddDockClient(Client: TControl; const ARect: TRect); override;
+        procedure DockOver(Source: TDragDockObject; X, Y: integer; State: TDragState; var Accept: boolean); override;
+        procedure DoRemoveDockClient(Client: TControl); override;
+        procedure GetSiteInfo(Client: TControl; var InfluenceRect: TRect; MousePos: TPoint; var CanDock: boolean); override;
+        property Pages[AIndex: integer]: TdevPage read GetPage;
+        property PageCount: integer read GetPageCount;
+        property ActivePageIndex: integer read GetActivePageIndex write SetActivePageIndex;
+        property ActivePage: TdevPage read FPage write SetActivePage;
+    public
+        constructor Create(AOwner: TComponent); override;
+        destructor Destroy; override;
+    end;
 
 {  TImageIndex = Integer;
 }
-    TdevPage = Class(TScrollBox)
-    Private
+    TdevPage = class(TScrollBox)
+    private
         FPages: TdevCustomPages;
         FImageIndex: TImageIndex;
         FSaveMode: TDragMode;
-        FSaveDS: Boolean;
+        FSaveDS: boolean;
         FOnShow: TNotifyEvent;
         FOnHide: TNotifyEvent;
-        FTabVisible: Boolean;
-        Function GetIndex: Integer;
-        Procedure SetIndex(Value: Integer);
-        Procedure SetPages(Value: TdevCustomPages);
-        Procedure CMVisibleChanged(Var Msg: TMessage); Message CM_VISIBLECHANGED;
-        Procedure CMTextChanged(Var Msg: TMessage); Message CM_TEXTCHANGED;
-        Procedure CMEnableChanged(Var Msg: TMessage); Message CM_ENABLEDCHANGED;
-        Procedure CMColorChanged(Var Msg: TMessage); Message CM_COLORCHANGED;
-        Procedure SetImageIndex(Value: TImageIndex);
-        Procedure SetTabVisible(Value: Boolean);
-    Protected
-        Procedure SetParent(AParent: TWinControl); Override;
-        Procedure CreateParams(Var Params: TCreateParams); Override;
-    Public
-        Constructor Create(AOwner: TComponent); Override;
-        Destructor Destroy; Override;
-        Property Pages: TdevCustomPages Read FPages Write SetPages;
-    Published
-        Property BevelEdges;
-        Property BevelKind;
-        Property BevelInner;
-        Property BevelOuter;
-        Property BorderStyle Default bsNone;
-        Property PageIndex: Integer Read GetIndex Write SetIndex Stored False;
-        Property ImageIndex: TImageIndex Read FImageIndex Write SetImageIndex Default -1;
-        Property Enabled;
-        Property TabVisible: Boolean Read FTabVisible Write SetTabVisible Default True;
-        Property Caption;
-        Property Color;
-        Property ParentColor Default True;
-        Property Font;
-        Property ParentFont Default True;
-        Property Ctl3D;
-        Property ParentCtl3D;
-        Property OnShow: TNotifyEvent Read FOnShow Write FOnShow;
-        Property OnHide: TNotifyEvent Read FOnHide Write FOnHide;
-        Property OnEnter;
-        Property OnExit;
-        Property OnMouseMove;
-        Property OnMouseDown;
-        Property OnMouseUp;
-        Property OnKeyDown;
-        Property OnKeyUp;
-        Property OnKeyPress;
-        Property OnResize;
-        Property OnEndDrag;
-        Property OnStartDrag;
-        Property OnClick;
-        Property OnDblClick;
-    End;
+        FTabVisible: boolean;
+        function GetIndex: integer;
+        procedure SetIndex(Value: integer);
+        procedure SetPages(Value: TdevCustomPages);
+        procedure CMVisibleChanged(var Msg: TMessage); message CM_VISIBLECHANGED;
+        procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
+        procedure CMEnableChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
+        procedure CMColorChanged(var Msg: TMessage); message CM_COLORCHANGED;
+        procedure SetImageIndex(Value: TImageIndex);
+        procedure SetTabVisible(Value: boolean);
+    protected
+        procedure SetParent(AParent: TWinControl); override;
+        procedure CreateParams(var Params: TCreateParams); override;
+    public
+        constructor Create(AOwner: TComponent); override;
+        destructor Destroy; override;
+        property Pages: TdevCustomPages read FPages write SetPages;
+    published
+        property BevelEdges;
+        property BevelKind;
+        property BevelInner;
+        property BevelOuter;
+        property BorderStyle default bsNone;
+        property PageIndex: integer read GetIndex write SetIndex stored FALSE;
+        property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;
+        property Enabled;
+        property TabVisible: boolean read FTabVisible write SetTabVisible default TRUE;
+        property Caption;
+        property Color;
+        property ParentColor default TRUE;
+        property Font;
+        property ParentFont default TRUE;
+        property Ctl3D;
+        property ParentCtl3D;
+        property OnShow: TNotifyEvent read FOnShow write FOnShow;
+        property OnHide: TNotifyEvent read FOnHide write FOnHide;
+        property OnEnter;
+        property OnExit;
+        property OnMouseMove;
+        property OnMouseDown;
+        property OnMouseUp;
+        property OnKeyDown;
+        property OnKeyUp;
+        property OnKeyPress;
+        property OnResize;
+        property OnEndDrag;
+        property OnStartDrag;
+        property OnClick;
+        property OnDblClick;
+    end;
 
-    TdevPages = Class(TdevCustomPages)
-    Public
-        Property Pages;
-        Property PageCount;
-        Property ActivePageIndex;
-    Published
-        Property Align;
-        Property AutoMove;
-        Property ActivePage;
-        Property Anchors;
-        Property BevelEdges;
-        Property BevelKind;
-        Property BevelInner;
-        Property BevelOuter;
-        Property Constraints;
-        Property DragKind;
-        Property OnEndDock;
-        Property OnStartDock;
-        Property Ctl3D;
-        Property Color;
-        Property DragCursor;
-        Property DragMode;
-        Property DockSite;
-        Property Enabled;
-        Property LeftMargin;
-        Property TabMargin;
-        Property Font;
-        Property PopupMenu;
-        Property RightMargin;
-        Property ParentColor;
-        Property ParentCtl3D;
-        Property BackTextColor;
-        Property BackColor;
-        Property Images;
-        Property TabHidden;
-        Property Orientation;
-        Property Visible;
-        Property OnClick;
-        Property OnChange;
-        Property OnChanging;
-        Property OnDragDrop;
-        Property OnDragOver;
-        Property OnEndDrag;
-        Property OnEnter;
-        Property OnExit;
-        Property OnMouseDown;
-        Property OnMouseMove;
-        Property OnMouseUp;
-        Property OnKeyDown;
-        Property OnKeyUp;
-        Property OnKeyPress;
-        Property OnStartDrag;
-        Property OnResize;
-    End;
+    TdevPages = class(TdevCustomPages)
+    public
+        property Pages;
+        property PageCount;
+        property ActivePageIndex;
+    published
+        property Align;
+        property AutoMove;
+        property ActivePage;
+        property Anchors;
+        property BevelEdges;
+        property BevelKind;
+        property BevelInner;
+        property BevelOuter;
+        property Constraints;
+        property DragKind;
+        property OnEndDock;
+        property OnStartDock;
+        property Ctl3D;
+        property Color;
+        property DragCursor;
+        property DragMode;
+        property DockSite;
+        property Enabled;
+        property LeftMargin;
+        property TabMargin;
+        property Font;
+        property PopupMenu;
+        property RightMargin;
+        property ParentColor;
+        property ParentCtl3D;
+        property BackTextColor;
+        property BackColor;
+        property Images;
+        property TabHidden;
+        property Orientation;
+        property Visible;
+        property OnClick;
+        property OnChange;
+        property OnChanging;
+        property OnDragDrop;
+        property OnDragOver;
+        property OnEndDrag;
+        property OnEnter;
+        property OnExit;
+        property OnMouseDown;
+        property OnMouseMove;
+        property OnMouseUp;
+        property OnKeyDown;
+        property OnKeyUp;
+        property OnKeyPress;
+        property OnStartDrag;
+        property OnResize;
+    end;
 
-Function ExtractCaption(AControl: TControl): String;
+function ExtractCaption(AControl: TControl): string;
 
-Implementation
+implementation
 
-Function Min(A, B: Integer): Integer;
-Begin
-    If A < B Then
-        Result := A Else Result := B;
-End;
+function Min(A, B: integer): integer;
+begin
+    if A < B then
+        Result := A else Result := B;
+end;
 
-Function Max(A, B: Integer): Integer;
-Begin
-    If A > B Then
-        Result := A Else Result := B;
-End;
+function Max(A, B: integer): integer;
+begin
+    if A > B then
+        Result := A else Result := B;
+end;
 
-Type
-    TdevTabItems = Class(TStringList)
-    Private
+type
+    TdevTabItems = class(TStringList)
+    private
         FTabs: TdevCustomTabs;
-        Procedure UpdateTabs(ACount: Integer);
-    Public
-        Constructor Create(ATabs: TdevCustomTabs);
-        Function Add(Const S: String): Integer; Override;
-        Procedure Insert(Index: Integer; Const S: String); Override;
-        Procedure Delete(Index: Integer); Override;
-        Procedure Put(Index: Integer; Const S: String); Override;
-        Procedure Clear; Override;
-        Procedure AddStrings(Strings: TStrings); Override;
-    End;
+        procedure UpdateTabs(ACount: integer);
+    public
+        constructor Create(ATabs: TdevCustomTabs);
+        function Add(const S: string): integer; override;
+        procedure Insert(Index: integer; const S: string); override;
+        procedure Delete(Index: integer); override;
+        procedure Put(Index: integer; const S: string); override;
+        procedure Clear; override;
+        procedure AddStrings(Strings: TStrings); override;
+    end;
 
 { TdevTabItems }
 
-Procedure TdevTabItems.UpdateTabs(ACount: Integer);
-Begin
-    If Count = ACount Then
+procedure TdevTabItems.UpdateTabs(ACount: integer);
+begin
+    if Count = ACount then
         FTabs.AdjustTabs
-    Else FTabs.Invalidate;
-End;
+    else FTabs.Invalidate;
+end;
 
-Function TdevTabItems.Add(Const S: String): Integer;
-Begin
-    Result := Inherited Add(S);
+function TdevTabItems.Add(const S: string): integer;
+begin
+    Result := inherited Add(S);
     UpdateTabs(1);
-End;
+end;
 
-Procedure TdevTabItems.Insert(Index: Integer; Const S: String);
-Begin
-    Inherited Insert(Index, S);
-    If Index <= FTabs.FTabIndex Then
+procedure TdevTabItems.Insert(Index: integer; const S: string);
+begin
+    inherited Insert(Index, S);
+    if Index <= FTabs.FTabIndex then
         Inc(FTabs.FTabIndex);
     UpdateTabs(1);
-End;
+end;
 
-Procedure TdevTabItems.Delete(Index: Integer);
-Var
-    OldIndex: Integer;
-Begin
+procedure TdevTabItems.Delete(Index: integer);
+var
+    OldIndex: integer;
+begin
     OldIndex := FTabs.TabIndex;
-    Inherited Delete(Index);
-    If Index <= OldIndex Then
+    inherited Delete(Index);
+    if Index <= OldIndex then
         Dec(FTabs.FTabIndex);
     FTabs.FTabIndex := Min(Max(0, FTabs.TabIndex), Count - 1);
     UpdateTabs(0);
-    If (OldIndex = Index) Then
+    if (OldIndex = Index) then
         FTabs.Click;
     FTabs.ResetAutoMove;
-End;
+end;
 
-Procedure TdevTabItems.Put(Index: Integer; Const S: String);
-Begin
-    Inherited Put(Index, S);
+procedure TdevTabItems.Put(Index: integer; const S: string);
+begin
+    inherited Put(Index, S);
     FTabs.Invalidate;
-End;
+end;
 
-Procedure TdevTabItems.Clear;
-Begin
-    Inherited Clear;
+procedure TdevTabItems.Clear;
+begin
+    inherited Clear;
     FTabs.FTabIndex := -1;
     FTabs.ResetAutoMove;
     FTabs.Invalidate;
-End;
+end;
 
-Procedure TdevTabItems.AddStrings(Strings: TStrings);
-Begin
+procedure TdevTabItems.AddStrings(Strings: TStrings);
+begin
     BeginUpdate;
-    Try
-        Inherited AddStrings(Strings);
-    Finally
+    try
+        inherited AddStrings(Strings);
+    finally
         EndUpdate;
-    End;
-End;
+    end;
+end;
 
-Constructor TdevTabItems.Create(ATabs: TdevCustomTabs);
-Begin
-    Inherited Create;
+constructor TdevTabItems.Create(ATabs: TdevCustomTabs);
+begin
+    inherited Create;
     FTabs := ATabs;
-End;
+end;
 
 { TdevCustomTabs }
 
-Constructor TdevCustomTabs.Create(AOwner: TComponent);
-Begin
-    Inherited Create(aOwner);
+constructor TdevCustomTabs.Create(AOwner: TComponent);
+begin
+    inherited Create(aOwner);
     FTabs := TdevTabItems.Create(Self);
-    DoubleBuffered := True;
+    DoubleBuffered := TRUE;
     ControlStyle := [csAcceptsControls, csCaptureMouse, csDoubleClicks, csOpaque];
     Width := 185;
     Height := 21;
-    ParentFont := True;
-    ParentColor := True;
-    ParentShowHint := False;
-    ShowHint := True;
+    ParentFont := TRUE;
+    ParentColor := TRUE;
+    ParentShowHint := FALSE;
+    ShowHint := TRUE;
     CalcTabHeight;
     FImageChangeLink := TChangeLink.Create;
     FImageChangeLink.OnChange := ImageListChanged;
@@ -468,1135 +468,1135 @@ Begin
     FRightMargin := 5;
     FBackTextColor := clBtnHighlight;
     FBackColor := clBtnShadow;
-End;
+end;
 
-Destructor TdevCustomTabs.Destroy;
-Begin
-    If Assigned(FTabs) Then
-        FreeAndNil(FTabs) Else FTabs := Nil;
-    If Assigned(FImageChangeLink) Then
+destructor TdevCustomTabs.Destroy;
+begin
+    if Assigned(FTabs) then
+        FreeAndNil(FTabs) else FTabs := NIL;
+    if Assigned(FImageChangeLink) then
         FreeAndNil(FImageChangeLink)
-    Else FImageChangeLink := Nil;
-    AutoMove := False;
-    Inherited Destroy;
-End;
+    else FImageChangeLink := NIL;
+    AutoMove := FALSE;
+    inherited Destroy;
+end;
 
-Procedure TdevCustomTabs.ImageListChanged(Sender: TObject);
-Begin
+procedure TdevCustomTabs.ImageListChanged(Sender: TObject);
+begin
     Invalidate;
-End;
+end;
 
-Function TdevCustomTabs.IntTabAtPos(Pos: TPoint; AList: TList): Integer;
-Var
-    I: Integer;
+function TdevCustomTabs.IntTabAtPos(Pos: TPoint; AList: TList): integer;
+var
+    I: integer;
     RTab: TRect;
-Begin
+begin
     Result := -1;
     GetTabArea(RTab);
-    If (Pos.Y >= RTab.Top) And (Pos.Y < RTab.Bottom) Then
-    Begin
-        For I := 0 To AList.Count - 1 Do
-        Begin
-            RTab.Right := RTab.Left + Integer(AList[I]);
-            If PtInRect(RTab, Pos) Then
-            Begin
+    if (Pos.Y >= RTab.Top) and (Pos.Y < RTab.Bottom) then
+    begin
+        for I := 0 to AList.Count - 1 do
+        begin
+            RTab.Right := RTab.Left + integer(AList[I]);
+            if PtInRect(RTab, Pos) then
+            begin
                 Result := I;
                 exit;
-            End;
+            end;
             RTab.Left := RTab.Right;
-        End;
-    End;
-End;
+        end;
+    end;
+end;
 
-Function TdevCustomTabs.ClippedTabAtPos(Pos: TPoint; Var AIndex: Integer): Boolean;
-Var
+function TdevCustomTabs.ClippedTabAtPos(Pos: TPoint; var AIndex: integer): boolean;
+var
     LWidth: TList;
     OWidth: TList;
-Begin
-    Result := False;
+begin
+    Result := FALSE;
     AIndex := -1;
-    If HandleAllocated Then
-    Begin
+    if HandleAllocated then
+    begin
         OWidth := TList.Create;
-        Try
+        try
             LWidth := CalcTabWidth(OWidth);
-            Try
+            try
                 AIndex := IntTabAtPos(Pos, LWidth);
-                If AIndex >= 0
-                Then
+                if AIndex >= 0
+                then
                     Result := OWidth.IndexOf(Pointer(AIndex)) >= 0;
-            Finally
+            finally
                 LWidth.Free;
-            End;
-        Finally
+            end;
+        finally
             OWidth.Free;
-        End;
-    End;
-End;
+        end;
+    end;
+end;
 
-Function TdevCustomTabs.TabAtPos(Pos: TPoint): Integer;
-Begin
+function TdevCustomTabs.TabAtPos(Pos: TPoint): integer;
+begin
     ClippedTabAtPos(Pos, Result);
-End;
+end;
 
-Procedure TdevCustomTabs.GetTabRect(Var ARect: TRect);
-Begin
+procedure TdevCustomTabs.GetTabRect(var ARect: TRect);
+begin
     Windows.GetClientRect(Handle, ARect);
-    If FOrientation = toTop Then
+    if FOrientation = toTop then
         ARect.Bottom := ARect.Top + FTabHeight
-    Else ARect.Top := ARect.Bottom - FTabHeight;
-End;
+    else ARect.Top := ARect.Bottom - FTabHeight;
+end;
 
-Procedure TdevCustomTabs.GetTabArea(Var ARect: TRect);
-Begin
+procedure TdevCustomTabs.GetTabArea(var ARect: TRect);
+begin
     GetTabRect(ARect);
     InflateRect(ARect, -1, -1);
-    If Orientation = toTop Then
+    if Orientation = toTop then
         Inc(ARect.Top, 3)
-    Else Dec(ARect.Bottom, 3);
+    else Dec(ARect.Bottom, 3);
     Inc(ARect.Left, LeftMargin);
-End;
+end;
 
-Function TdevCustomTabs.TabRect(Item: Integer): TRect;
-Var
-    I: Integer;
+function TdevCustomTabs.TabRect(Item: integer): TRect;
+var
+    I: integer;
     RTab: TRect;
     LWidth: TList;
-Begin
-    If Not GetTabHidden And (Item >= 0) And (Item < Tabs.Count) Then
-    Begin
+begin
+    if not GetTabHidden and (Item >= 0) and (Item < Tabs.Count) then
+    begin
         GetTabArea(RTab);
-        LWidth := CalcTabWidth(Nil);
-        Try
-            For I := 0 To Item - 1 Do
-                Inc(RTab.Left, Integer(LWidth[I]));
-            RTab.Right := RTab.Left + Integer(LWidth[Item]);
+        LWidth := CalcTabWidth(NIL);
+        try
+            for I := 0 to Item - 1 do
+                Inc(RTab.Left, integer(LWidth[I]));
+            RTab.Right := RTab.Left + integer(LWidth[Item]);
             Result := RTab;
-        Finally
+        finally
             LWidth.Free;
-        End;
-    End
-    Else Result := Rect(0, 0, 0, 0);
-End;
+        end;
+    end
+    else Result := Rect(0, 0, 0, 0);
+end;
 
-Procedure TdevCustomTabs.AdjustClientRect(Var ARect: TRect);
-Begin
-    Inherited;
-    If Not GetTabHidden And (Tabs.Count > 0) Then
-        If FOrientation = toTop Then
+procedure TdevCustomTabs.AdjustClientRect(var ARect: TRect);
+begin
+    inherited;
+    if not GetTabHidden and (Tabs.Count > 0) then
+        if FOrientation = toTop then
             Inc(ARect.Top, FTabHeight + 2)
-        Else Dec(ARect.Bottom, FTabHeight + 2);
-End;
+        else Dec(ARect.Bottom, FTabHeight + 2);
+end;
 
-Function TdevCustomTabs.CalcTabWidth(AOriginal: TList): TList;
-Var
+function TdevCustomTabs.CalcTabWidth(AOriginal: TList): TList;
+var
     I, Image,
     OldCount,
     BigCount,
     DiffSize,
     AverSize,
-    FreeSize: Integer;
+    FreeSize: integer;
     MaxList: TList;
-Begin
+begin
     Result := TList.Create;
     FreeSize := ClientWidth - (LeftMargin + RightMargin);
     BigCount := Tabs.Count;
-    If (BigCount > 0) And (FreeSize >= BigCount) Then
-    Begin
+    if (BigCount > 0) and (FreeSize >= BigCount) then
+    begin
         MaxList := TList.Create;
-        Try
+        try
             Canvas.Font := Font;
       // Fill the Result table
-            For I := 0 To BigCount - 1 Do
-            Begin
+            for I := 0 to BigCount - 1 do
+            begin
                 Result.Add(Pointer(Canvas.TextWidth(Tabs[I]) + (TabMargin + 2) * 2));
                 MaxList.Add(Pointer(I));
-            End;
-            If FImages <> Nil Then
-            Begin
+            end;
+            if FImages <> NIL then
+            begin
                 Image := FImages.Width;
-                For I := 0 To BigCount - 1 Do
-                    If GetImageIndex(I) >= 0 Then
-                        Result[I] := Pointer(Integer(Result[I]) + Image);
-            End;
+                for I := 0 to BigCount - 1 do
+                    if GetImageIndex(I) >= 0 then
+                        Result[I] := Pointer(integer(Result[I]) + Image);
+            end;
       // Smart calc average
             AverSize := 0;
             OldCount := 0;
-            While (BigCount > 0) And (BigCount <> OldCount) Do
-            Begin
-                AverSize := FreeSize Div BigCount;
+            while (BigCount > 0) and (BigCount <> OldCount) do
+            begin
+                AverSize := FreeSize div BigCount;
                 OldCount := BigCount;
-                For I := OldCount - 1 Downto 0 Do
-                Begin
-                    DiffSize := Integer(Result[Integer(MaxList[I])]);
-                    If AverSize >= DiffSize Then
-                    Begin
+                for I := OldCount - 1 downto 0 do
+                begin
+                    DiffSize := integer(Result[integer(MaxList[I])]);
+                    if AverSize >= DiffSize then
+                    begin
                         Dec(FreeSize, DiffSize);
                         Dec(BigCount);
                         MaxList.Delete(I);
-                    End;
-                End;
-            End;
-            If BigCount > 0 Then
-            Begin
-                OldCount := (FreeSize Mod AverSize) - 1;
+                    end;
+                end;
+            end;
+            if BigCount > 0 then
+            begin
+                OldCount := (FreeSize mod AverSize) - 1;
         // adjust result table
-                For I := 0 To BigCount - 1 Do
-                    Result[Integer(MaxList[I])] := Pointer(AverSize + Byte(I < OldCount));
-                If AOriginal <> Nil Then
-                Begin
+                for I := 0 to BigCount - 1 do
+                    Result[integer(MaxList[I])] := Pointer(AverSize + byte(I < OldCount));
+                if AOriginal <> NIL then
+                begin
                     AOriginal.Count := BigCount;
-                    Move(MaxList.List^, AOriginal.List^, SizeOf(Integer) * BigCount);
-                End;
-            End;
-        Finally
+                    Move(MaxList.List^, AOriginal.List^, SizeOf(integer) * BigCount);
+                end;
+            end;
+        finally
             MaxList.Free;
-        End;
-    End;
-End;
+        end;
+    end;
+end;
 
-Procedure TdevCustomTabs.Paint;
+procedure TdevCustomTabs.Paint;
 
-    Procedure PaintTab(AIndex: Integer; Const ARect: TRect; ASelected: Boolean);
-    Var
+    procedure PaintTab(AIndex: integer; const ARect: TRect; ASelected: boolean);
+    var
         PR: TRect;
-        II: Integer;
-    Begin
-        If ARect.Right - ARect.Left >= (TabMargin + 2) * 2 Then
-        Begin
+        II: integer;
+    begin
+        if ARect.Right - ARect.Left >= (TabMargin + 2) * 2 then
+        begin
             PR := ARect;
-            If ASelected Then
-            Begin
-                If Orientation = toTop Then
-                    PR.Bottom := 5000 Else PR.Top := -5000;
+            if ASelected then
+            begin
+                if Orientation = toTop then
+                    PR.Bottom := 5000 else PR.Top := -5000;
                 InflateRect(PR, 0, 1);
-                DrawEdge(Canvas.Handle, PR, EDGE_RAISED, BF_RECT Or BF_ADJUST);
+                DrawEdge(Canvas.Handle, PR, EDGE_RAISED, BF_RECT or BF_ADJUST);
                 Windows.FillRect(Canvas.Handle, PR, GetTabBrush);
                 Canvas.Font.Color := Font.Color;
-            End
-            Else
-                With Canvas Do
-                Begin
+            end
+            else
+                with Canvas do
+                begin
                     Pen.Color := clBtnFace;
-                    MoveTo(PR.Right, PR.Top + 2 + Byte(Orientation));
-                    LineTo(PR.Right, PR.Bottom - 3 + Byte(Orientation));
+                    MoveTo(PR.Right, PR.Top + 2 + byte(Orientation));
+                    LineTo(PR.Right, PR.Bottom - 3 + byte(Orientation));
                     Font.Color := BackTextColor;
-                End;
+                end;
             PR := ARect;
             InflateRect(PR, -TabMargin - 2, 0);
-            If (FImages <> Nil) Then
-            Begin
+            if (FImages <> NIL) then
+            begin
                 II := GetImageIndex(AIndex);
-                If II >= 0 Then
-                Begin
+                if II >= 0 then
+                begin
                     FImages.Draw(Canvas, PR.Left - 2, PR.Top, II, GetTabEnabled(AIndex));
                     Inc(PR.Left, FImages.Width);
-                End;
-            End;
+                end;
+            end;
             SetBkMode(Canvas.Handle, TRANSPARENT);
-            DrawText(Canvas.Handle, Pchar(Tabs[AIndex]), -1, PR, DT_SINGLELINE Or DT_VCENTER Or DT_END_ELLIPSIS);
-        End;
-    End;
+            DrawText(Canvas.Handle, pchar(Tabs[AIndex]), -1, PR, DT_SINGLELINE or DT_VCENTER or DT_END_ELLIPSIS);
+        end;
+    end;
 
-Var
+var
     RClient, RTab: TRect;
     LWidth: TList;
-    I: Integer;
-Begin
-    If Not HandleAllocated Then
+    I: integer;
+begin
+    if not HandleAllocated then
         Exit;
-    If (Tabs.Count > 0) And Not GetTabHidden Then
-    Begin
+    if (Tabs.Count > 0) and not GetTabHidden then
+    begin
         GetTabRect(RClient);
         Canvas.Brush.Color := BackColor;
         FillRect(Canvas.Handle, RClient, Canvas.Brush.Handle);
-        DrawEdge(Canvas.Handle, RClient, BDR_SUNKENOUTER, BF_RECT Or BF_SOFT);
-        LWidth := CalcTabWidth(Nil);
-        Try
+        DrawEdge(Canvas.Handle, RClient, BDR_SUNKENOUTER, BF_RECT or BF_SOFT);
+        LWidth := CalcTabWidth(NIL);
+        try
             Canvas.Font := Font;
             Canvas.Pen.Color := BackTextColor;
             GetTabArea(RTab);
-            For I := 0 To LWidth.Count - 1 Do
-            Begin
-                RTab.Right := RTab.Left + Integer(LWidth[I]);
+            for I := 0 to LWidth.Count - 1 do
+            begin
+                RTab.Right := RTab.Left + integer(LWidth[I]);
                 PaintTab(I, RTab, I = TabIndex);
                 RTab.Left := RTab.Right;
-            End;
-        Finally
+            end;
+        finally
             LWidth.Free;
-        End;
+        end;
         ExcludeClipRect(Canvas.Handle, RClient.Left, RClient.Top, RClient.Right, RClient.Bottom);
-    End;
+    end;
     RClient := ClientRect;
     FillRect(Canvas.Handle, RClient, Brush.Handle);
-End;
+end;
 
-Procedure TdevCustomTabs.SetBackTextColor(Value: TColor);
-Begin
-    If Value <> BackTextColor Then
-    Begin
+procedure TdevCustomTabs.SetBackTextColor(Value: TColor);
+begin
+    if Value <> BackTextColor then
+    begin
         FBackTextColor := Value;
         Invalidate;
-    End;
-End;
+    end;
+end;
 
-Procedure TdevCustomTabs.SetBackColor(Value: TColor);
-Begin
-    If Value <> BackColor Then
-    Begin
+procedure TdevCustomTabs.SetBackColor(Value: TColor);
+begin
+    if Value <> BackColor then
+    begin
         FBackColor := Value;
         Invalidate;
-    End;
-End;
+    end;
+end;
 
-Procedure TdevCustomTabs.SetLeftMargin(Value: Integer);
-Begin
-    If Value <> LeftMargin Then
-    Begin
+procedure TdevCustomTabs.SetLeftMargin(Value: integer);
+begin
+    if Value <> LeftMargin then
+    begin
         FLeftMargin := Value;
-        If Tabs.Count > 0 Then
+        if Tabs.Count > 0 then
             Invalidate;
-    End;
-End;
+    end;
+end;
 
-Procedure TdevCustomTabs.SetRightMargin(Value: Integer);
-Begin
-    If Value <> RightMargin Then
-    Begin
+procedure TdevCustomTabs.SetRightMargin(Value: integer);
+begin
+    if Value <> RightMargin then
+    begin
         FRightMargin := Value;
-        If Tabs.Count > 0 Then
+        if Tabs.Count > 0 then
             Invalidate;
-    End;
-End;
+    end;
+end;
 
-Function TdevCustomTabs.CanChange(NewIndex: Integer): Boolean;
-Begin
-    Result := True;
-    If Assigned(FOnChanging) Then
+function TdevCustomTabs.CanChange(NewIndex: integer): boolean;
+begin
+    Result := TRUE;
+    if Assigned(FOnChanging) then
         FOnChanging(Self, NewIndex, Result)
-    Else Result := GetTabEnabled(NewIndex);
-End;
+    else Result := GetTabEnabled(NewIndex);
+end;
 
-Procedure TdevCustomTabs.Change;
-Begin
-    If assigned(fOnChange) Then
+procedure TdevCustomTabs.Change;
+begin
+    if assigned(fOnChange) then
         fOnChange(Self);
-End;
+end;
 
-Procedure TdevCustomTabs.SetTabIndex(Value: Integer);
-Begin
-    If Value <> FTabIndex Then
-    Begin
+procedure TdevCustomTabs.SetTabIndex(Value: integer);
+begin
+    if Value <> FTabIndex then
+    begin
         FTabs[Value];
-        If CanChange(Value) Then
-        Begin
+        if CanChange(Value) then
+        begin
             FTabIndex := Value;
             Caption := Tabs[Value];
             ResetAutoMove;
             Change;
-            If Not (csLoading In ComponentState) Then
+            if not (csLoading in ComponentState) then
                 Click;
             Invalidate;
-        End;
-    End;
-End;
+        end;
+    end;
+end;
 
-Procedure TdevCustomTabs.SelectNext(Direction: Boolean);
-Var
-    NewIndex: Integer;
-Begin
-    If Tabs.Count > 1 Then
-    Begin
+procedure TdevCustomTabs.SelectNext(Direction: boolean);
+var
+    NewIndex: integer;
+begin
+    if Tabs.Count > 1 then
+    begin
         NewIndex := TabIndex;
-        If Direction Then
+        if Direction then
             Inc(NewIndex)
-        Else Dec(NewIndex);
-        If NewIndex = Tabs.Count Then
+        else Dec(NewIndex);
+        if NewIndex = Tabs.Count then
             NewIndex := 0
-        Else
-        If NewIndex < 0 Then
+        else
+        if NewIndex < 0 then
             NewIndex := Tabs.Count - 1;
         TabIndex := NewIndex;
-    End;
-End;
+    end;
+end;
 
-Procedure TdevCustomTabs.SetTabs(Value: TStrings);
-Begin
+procedure TdevCustomTabs.SetTabs(Value: TStrings);
+begin
     FTabs.Assign(Value);
     FTabIndex := -1;
-    If FTabs.Count > 0 Then
+    if FTabs.Count > 0 then
         TabIndex := 0
-    Else Invalidate;
-End;
+    else Invalidate;
+end;
 
-Procedure TdevCustomTabs.SetOrientation(Value: TdevTabOrientation);
-Begin
-    If Value <> Orientation Then
-    Begin
+procedure TdevCustomTabs.SetOrientation(Value: TdevTabOrientation);
+begin
+    if Value <> Orientation then
+    begin
         FOrientation := Value;
         Invalidate;
         Realign;
-    End;
-End;
+    end;
+end;
 
-Procedure TdevCustomTabs.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-Var
-    I: Integer;
-Begin
-    FStarted := False;
-    If Not (ssDouble In Shift) Then
-    Begin
+procedure TdevCustomTabs.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: integer);
+var
+    I: integer;
+begin
+    FStarted := FALSE;
+    if not (ssDouble in Shift) then
+    begin
         I := TabAtPos(Point(X, Y));
-        If I >= 0 Then
-        Begin
+        if I >= 0 then
+        begin
             TabIndex := I;
-            FStarted := True;
-        End;
-    End;
-    Inherited MouseDown(Button, Shift, X, Y);
-End;
+            FStarted := TRUE;
+        end;
+    end;
+    inherited MouseDown(Button, Shift, X, Y);
+end;
 
-Procedure TdevCustomTabs.CMFontChanged(Var Message: TMessage);
-Begin
-    Inherited;
+procedure TdevCustomTabs.CMFontChanged(var Message: TMessage);
+begin
+    inherited;
     CalcTabHeight;
     Invalidate;
-End;
+end;
 
-Procedure TdevCustomTabs.WMGetDlgCode(Var Message: TWMGetDlgCode);
-Begin
+procedure TdevCustomTabs.WMGetDlgCode(var Message: TWMGetDlgCode);
+begin
     Message.Result := DLGC_WANTALLKEYS;
-End;
+end;
 
-Procedure TdevCustomTabs.CMDialogChar(Var Message: TCMDialogChar);
-Var
-    I: Integer;
-Begin
-    For I := 0 To FTabs.Count - 1 Do
-    Begin
-        If IsAccel(Message.CharCode, FTabs[I]) Then
-        Begin
+procedure TdevCustomTabs.CMDialogChar(var Message: TCMDialogChar);
+var
+    I: integer;
+begin
+    for I := 0 to FTabs.Count - 1 do
+    begin
+        if IsAccel(Message.CharCode, FTabs[I]) then
+        begin
             Message.Result := 1;
-            If FTabIndex <> I Then
+            if FTabIndex <> I then
                 SetTabIndex(I);
             Exit;
-        End;
-    End;
-    Inherited;
-End;
+        end;
+    end;
+    inherited;
+end;
 
-Procedure TdevCustomTabs.SetTabMargin(Value: Integer);
-Begin
-    If Value < 0 Then
+procedure TdevCustomTabs.SetTabMargin(Value: integer);
+begin
+    if Value < 0 then
         Value := 0;
-    If Value <> TabMargin Then
-    Begin
+    if Value <> TabMargin then
+    begin
         FTabMargin := Value;
-        If Tabs.Count > 0 Then
+        if Tabs.Count > 0 then
             Invalidate;
-    End;
-End;
+    end;
+end;
 
-Procedure TdevCustomTabs.MouseMove(Shift: TShiftState; X, Y: Integer);
-Var
+procedure TdevCustomTabs.MouseMove(Shift: TShiftState; X, Y: integer);
+var
     R: TRect;
-    I: Integer;
-Begin
-    If GetCapture = Handle Then
-    Begin
-        If FStarted Then
-        Begin
-            If AutoMove Then
-            Begin
+    I: integer;
+begin
+    if GetCapture = Handle then
+    begin
+        if FStarted then
+        begin
+            if AutoMove then
+            begin
                 I := IntTabAtPos(Point(X, Y), FAMList);
-                If (I >= 0) And (I <> TabIndex) Then
-                Begin
+                if (I >= 0) and (I <> TabIndex) then
+                begin
                     Tabs.Exchange(I, TabIndex);
                     Moved(I, TabIndex);
                     FTabIndex := I;
                     Invalidate;
-                End;
-            End;
+                end;
+            end;
             GetTabRect(R);
-            If Not PtInRect(R, Point(X, Y)) Then
+            if not PtInRect(R, Point(X, Y)) then
                 BeginTabDrag;
-        End;
-    End;
-    Inherited;
-End;
+        end;
+    end;
+    inherited;
+end;
 
-Function TdevCustomTabs.GetAutoMove: Boolean;
-Begin
-    Result := FAMList <> Nil;
-End;
+function TdevCustomTabs.GetAutoMove: boolean;
+begin
+    Result := FAMList <> NIL;
+end;
 
-Procedure TdevCustomTabs.SetAutoMove(Value: Boolean);
-Begin
-    If Value <> AutoMove Then
-    Begin
-        If Value Then
-            FAMList := CalcTabWidth(Nil)
-        Else FreeAndNil(FAMList);
-    End;
-End;
+procedure TdevCustomTabs.SetAutoMove(Value: boolean);
+begin
+    if Value <> AutoMove then
+    begin
+        if Value then
+            FAMList := CalcTabWidth(NIL)
+        else FreeAndNil(FAMList);
+    end;
+end;
 
-Procedure TdevCustomTabs.ResetAutoMove;
-Begin
-    If AutoMove Then
-    Begin
-        AutoMove := False;
-        AutoMove := True;
-    End;
-End;
+procedure TdevCustomTabs.ResetAutoMove;
+begin
+    if AutoMove then
+    begin
+        AutoMove := FALSE;
+        AutoMove := TRUE;
+    end;
+end;
 
-Procedure TdevCustomTabs.CalcTabHeight;
-Var
+procedure TdevCustomTabs.CalcTabHeight;
+var
     C: TCanvas;
     DC: HDC;
-Begin
+begin
     DC := GetDC(0);
-    Try
+    try
         C := TCanvas.Create;
-        Try
+        try
             C.Handle := DC;
-            Try
+            try
                 C.Font := Font;
                 FTabHeight := 5 + C.TextHeight('A');
-                If (FImages <> Nil) And (FImages.Height > FTabHeight)
-                Then
+                if (FImages <> NIL) and (FImages.Height > FTabHeight)
+                then
                     FTabHeight := FImages.Height;
                 Inc(FTabHeight, 3);
-            Finally
+            finally
                 C.Handle := 0;
-            End;
-        Finally
+            end;
+        finally
             C.Free;
-        End;
-    Finally
+        end;
+    finally
         ReleaseDC(0, DC);
-    End;
-End;
+    end;
+end;
 
-Procedure TdevCustomTabs.CreateParams(Var Params: TCreateParams);
-Begin
-    Inherited;
-    Params.Style := Params.Style Or WS_CLIPCHILDREN Or WS_CLIPSIBLINGS;
-    With Params.WindowClass Do
-        Style := Style And Not (CS_HREDRAW Or CS_VREDRAW);
-End;
+procedure TdevCustomTabs.CreateParams(var Params: TCreateParams);
+begin
+    inherited;
+    Params.Style := Params.Style or WS_CLIPCHILDREN or WS_CLIPSIBLINGS;
+    with Params.WindowClass do
+        Style := Style and not (CS_HREDRAW or CS_VREDRAW);
+end;
 
-Function TdevCustomTabs.GetTabBrush: THandle;
-Begin
+function TdevCustomTabs.GetTabBrush: THandle;
+begin
     Result := Brush.Handle;
-End;
+end;
 
-Procedure TdevCustomTabs.AdjustTabs;
-Begin
+procedure TdevCustomTabs.AdjustTabs;
+begin
     Invalidate;
     Realign;
-End;
+end;
 
-Procedure TdevCustomTabs.Moved(AFrom, ATo: Integer);
-Begin
-    If Assigned(FOnMoved) Then
+procedure TdevCustomTabs.Moved(AFrom, ATo: integer);
+begin
+    if Assigned(FOnMoved) then
         FOnMoved(Self, AFrom, ATo);
-End;
+end;
 
-Function TdevCustomTabs.GetImageIndex(TabIndex: Integer): Integer;
-Begin
+function TdevCustomTabs.GetImageIndex(TabIndex: integer): integer;
+begin
     Result := -1;
-    If Assigned(FOnGetImage) Then
+    if Assigned(FOnGetImage) then
         FOnGetImage(Self, TabIndex, Result);
-End;
+end;
 
-Procedure TdevCustomTabs.SetImages(Value: TCustomImageList);
-Begin
-    If Images <> Nil Then
+procedure TdevCustomTabs.SetImages(Value: TCustomImageList);
+begin
+    if Images <> NIL then
         Images.UnRegisterChanges(FImageChangeLink);
     FImages := Value;
-    If Images <> Nil Then
-    Begin
+    if Images <> NIL then
+    begin
         Images.RegisterChanges(FImageChangeLink);
         Images.FreeNotification(Self);
-    End;
+    end;
     CalcTabHeight;
     AdjustTabs;
-End;
+end;
 
-Function TdevCustomTabs.GetTabEnabled(TabIndex: Integer): Boolean;
-Begin
-    Result := True;
-End;
+function TdevCustomTabs.GetTabEnabled(TabIndex: integer): boolean;
+begin
+    Result := TRUE;
+end;
 
-Procedure TdevCustomTabs.WMSize(Var Message: TWMSize);
-Var
+procedure TdevCustomTabs.WMSize(var Message: TWMSize);
+var
     R: TRect;
-Begin
-    Inherited;
+begin
+    inherited;
     GetTabRect(R);
     InflateRect(R, 0, 2);
-    InvalidateRect(Handle, @R, False);
-End;
+    InvalidateRect(Handle, @R, FALSE);
+end;
 
-Procedure TdevCustomTabs.BeginTabDrag;
-Begin
-    If Assigned(FOnTabDrag) Then
+procedure TdevCustomTabs.BeginTabDrag;
+begin
+    if Assigned(FOnTabDrag) then
         FOnTabDrag(Self);
-End;
+end;
 
-Procedure TdevCustomTabs.CMHintShow(Var Message: TCMHintShow);
-Var
-    I: Integer;
-Begin
-    Inherited;
-    With Message Do
-        If Result = 0 Then
-        Begin
+procedure TdevCustomTabs.CMHintShow(var Message: TCMHintShow);
+var
+    I: integer;
+begin
+    inherited;
+    with Message do
+        if Result = 0 then
+        begin
             I := TabAtPos(HintInfo^.CursorPos);
             HintInfo^.HintStr := '';
-            If I >= 0 Then
-            Begin
+            if I >= 0 then
+            begin
                 HintInfo^.HintStr := Tabs[I];
-                If pos('&&', HintInfo^.HintStr) > 0 Then
+                if pos('&&', HintInfo^.HintStr) > 0 then
                     Delete(HintInfo^.HintStr, pos('&&', HintInfo^.HintStr), 1);
                 HintInfo^.CursorRect := TabRect(I);
-            End;
-        End;
-End;
+            end;
+        end;
+end;
 
-Function ExtractCaption(AControl: TControl): String;
-Var
-    I: Integer;
-Begin
+function ExtractCaption(AControl: TControl): string;
+var
+    I: integer;
+begin
     Result := THintWindow(AControl).Caption;
-    For I := 1 To Length(Result) Do
-        If Result[I] In [#13, #10] Then
-        Begin
+    for I := 1 to Length(Result) do
+        if Result[I] in [#13, #10] then
+        begin
             SetLength(Result, I - 1);
             Break;
-        End;
-End;
+        end;
+end;
 
-Procedure TdevCustomPages.AddVisPage(APage: TdevPage);
-Var
-    I, VI: Integer;
+procedure TdevCustomPages.AddVisPage(APage: TdevPage);
+var
+    I, VI: integer;
     WPage: TdevPage;
-Begin
+begin
     VI := 0;
-    For I := 0 To FPages.Count - 1 Do
-    Begin
+    for I := 0 to FPages.Count - 1 do
+    begin
         WPage := FPages[I];
-        If WPage = APage Then
+        if WPage = APage then
             Break
-        Else
-        If WPage.TabVisible Or (csDesigning In ComponentState) Then
+        else
+        if WPage.TabVisible or (csDesigning in ComponentState) then
             Inc(VI);
-    End;
+    end;
     Tabs.InsertObject(VI, APage.Caption, APage);
-End;
+end;
 
-Procedure TdevCustomPages.AddPage(APage: TdevPage);
-Begin
+procedure TdevCustomPages.AddPage(APage: TdevPage);
+begin
     FPages.Add(APage);
-    If (csDesigning In ComponentState) Or APage.TabVisible Then
-    Begin
+    if (csDesigning in ComponentState) or APage.TabVisible then
+    begin
         AddVisPage(APage);
-        If (csDesigning In ComponentState) Then
+        if (csDesigning in ComponentState) then
             ActivePage := APage;
-    End;
-End;
+    end;
+end;
 
-Constructor TdevCustomPages.Create(AOwner: TComponent);
-Begin
-    Inherited;
+constructor TdevCustomPages.Create(AOwner: TComponent);
+begin
+    inherited;
     ControlStyle := ControlStyle - [csAcceptsControls];
     FPages := TList.Create;
-End;
+end;
 
-Destructor TdevCustomPages.Destroy;
-Var
-    I: Integer;
-Begin
-    For I := 0 To FPages.Count - 1 Do
-        TdevPage(FPages[I]).FPages := Nil;
+destructor TdevCustomPages.Destroy;
+var
+    I: integer;
+begin
+    for I := 0 to FPages.Count - 1 do
+        TdevPage(FPages[I]).FPages := NIL;
     FPages.Free;
-    Inherited;
-End;
+    inherited;
+end;
 
-Function TdevCustomPages.CanChange(NewIndex: Integer): Boolean;
-Begin
-    Result := Inherited CanChange(NewIndex);
-    If Result Then
+function TdevCustomPages.CanChange(NewIndex: integer): boolean;
+begin
+    Result := inherited CanChange(NewIndex);
+    if Result then
         ActivePage := TdevPage(Tabs.Objects[NewIndex]);
-End;
+end;
 
-Function TdevCustomPages.GetTabEnabled(ATabIndex: Integer): Boolean;
-Begin
-    Result := (csDesigning In ComponentState) Or TdevPage(Tabs.Objects[ATabIndex]).Enabled;
-End;
+function TdevCustomPages.GetTabEnabled(ATabIndex: integer): boolean;
+begin
+    Result := (csDesigning in ComponentState) or TdevPage(Tabs.Objects[ATabIndex]).Enabled;
+end;
 
-Function TdevCustomPages.GetPage(AIndex: Integer): TdevPage;
-Begin
+function TdevCustomPages.GetPage(AIndex: integer): TdevPage;
+begin
     Result := TdevPage(FPages[AIndex]);
-End;
+end;
 
-Function TdevCustomPages.GetPageCount: Integer;
-Begin
+function TdevCustomPages.GetPageCount: integer;
+begin
     Result := FPages.Count;
-End;
+end;
 
-Function TdevCustomPages.GetActivePageIndex: Integer;
-Begin
+function TdevCustomPages.GetActivePageIndex: integer;
+begin
     Result := -1;
-    If FPage <> Nil Then
+    if FPage <> NIL then
         Result := FPage.PageIndex;
-End;
+end;
 
-Procedure TdevCustomPages.RemovePage(APage: TdevPage);
-Begin
+procedure TdevCustomPages.RemovePage(APage: TdevPage);
+begin
     FPages.Remove(APage);
-    If APage.TabVisible Then
+    if APage.TabVisible then
         RemoveVisPage(APage);
-End;
+end;
 
-Procedure TdevCustomPages.RemoveVisPage(APage: TdevPage);
-Var
-    I: Integer;
-Begin
+procedure TdevCustomPages.RemoveVisPage(APage: TdevPage);
+var
+    I: integer;
+begin
     I := Tabs.IndexOfObject(APage);
-    If I >= 0 Then
-    Begin
+    if I >= 0 then
+    begin
         Tabs.Delete(I);
-        UpdatePage(Nil);
-    End;
-End;
+        UpdatePage(NIL);
+    end;
+end;
 
-Procedure TdevCustomPages.ChangeActive(Page: TdevPage);
-Var
+procedure TdevCustomPages.ChangeActive(Page: TdevPage);
+var
     ParentForm: TCustomForm;
-Begin
+begin
     ParentForm := GetParentForm(Self);
-    If (ParentForm <> Nil) And (FPage <> Nil) And FPage.ContainsControl(ParentForm.ActiveControl) Then
-    Begin
+    if (ParentForm <> NIL) and (FPage <> NIL) and FPage.ContainsControl(ParentForm.ActiveControl) then
+    begin
         ParentForm.ActiveControl := FPage;
-        If ParentForm.ActiveControl <> FPage Then
-        Begin
+        if ParentForm.ActiveControl <> FPage then
+        begin
             TabIndex := Tabs.IndexOfObject(FPage);
             Exit;
-        End;
-    End;
-    If Page <> Nil Then
-    Begin
+        end;
+    end;
+    if Page <> NIL then
+    begin
         Page.BringToFront;
-        Page.Visible := True;
-        If (ParentForm <> Nil) And (FPage <> Nil) And
-            (ParentForm.ActiveControl = FPage) Then
-            If Page.CanFocus Then
-                ParentForm.ActiveControl := Page Else
+        Page.Visible := TRUE;
+        if (ParentForm <> NIL) and (FPage <> NIL) and
+            (ParentForm.ActiveControl = FPage) then
+            if Page.CanFocus then
+                ParentForm.ActiveControl := Page else
                 ParentForm.ActiveControl := Self;
-    End;
-    If FPage <> Nil Then
-        FPage.Visible := False;
+    end;
+    if FPage <> NIL then
+        FPage.Visible := FALSE;
     FPage := Page;
-    If (ParentForm <> Nil) And (FPage <> Nil) And
-        (ParentForm.ActiveControl = FPage) Then
+    if (ParentForm <> NIL) and (FPage <> NIL) and
+        (ParentForm.ActiveControl = FPage) then
         FPage.SelectFirst;
-End;
+end;
 
-Procedure TdevCustomPages.SetActivePage(Value: TdevPage);
-Begin
-    If (Value <> Nil) And (Value.Pages <> Self) Then
+procedure TdevCustomPages.SetActivePage(Value: TdevPage);
+begin
+    if (Value <> NIL) and (Value.Pages <> Self) then
         Exit;
-    If Value <> FPage Then
-    Begin
+    if Value <> FPage then
+    begin
         ChangeActive(Value);
-        If Value = Nil Then
+        if Value = NIL then
             TabIndex := -1
-        Else
-        If Value = FPage Then
+        else
+        if Value = FPage then
             TabIndex := Tabs.IndexOfObject(FPage);
-    End;
-End;
+    end;
+end;
 
-Procedure TdevCustomPages.SetActivePageIndex(Value: Integer);
-Begin
+procedure TdevCustomPages.SetActivePageIndex(Value: integer);
+begin
     ActivePage := Pages[Value];
-End;
+end;
 
-Function TdevCustomPages.GetTabBrush: THandle;
-Begin
-    If FPage <> Nil Then
+function TdevCustomPages.GetTabBrush: THandle;
+begin
+    if FPage <> NIL then
         Result := FPage.Brush.Handle
-    Else Result := Brush.Handle;
-End;
+    else Result := Brush.Handle;
+end;
 
-Procedure TdevCustomPages.SetChildOrder(Child: TComponent; Order: Integer);
-Begin
+procedure TdevCustomPages.SetChildOrder(Child: TComponent; Order: integer);
+begin
     TdevPage(Child).PageIndex := Order;
-End;
+end;
 
-Procedure TdevCustomPages.GetChildren(Proc: TGetChildProc; Root: TComponent);
-Var
-    I: Integer;
-Begin
-    For I := 0 To FPages.Count - 1 Do
+procedure TdevCustomPages.GetChildren(Proc: TGetChildProc; Root: TComponent);
+var
+    I: integer;
+begin
+    for I := 0 to FPages.Count - 1 do
         Proc(TComponent(FPages[I]));
-End;
+end;
 
-Procedure TdevCustomPages.UpdatePage(APage: TdevPage);
-Var
-    I: Integer;
-Begin
-    If APage = Nil Then
-    Begin
-        If TabIndex = -1 Then
-            ActivePage := Nil
-        Else ActivePage := TdevPage(Tabs.Objects[TabIndex]);
-    End
-    Else
-    Begin
+procedure TdevCustomPages.UpdatePage(APage: TdevPage);
+var
+    I: integer;
+begin
+    if APage = NIL then
+    begin
+        if TabIndex = -1 then
+            ActivePage := NIL
+        else ActivePage := TdevPage(Tabs.Objects[TabIndex]);
+    end
+    else
+    begin
         I := FTabs.IndexOfObject(APage);
-        If APage.TabVisible Or (csDesigning In ComponentState) Then
-        Begin
-            If I >= 0 Then
+        if APage.TabVisible or (csDesigning in ComponentState) then
+        begin
+            if I >= 0 then
                 Tabs[I] := APage.Caption
-            Else AddVisPage(APage);
-        End
-        Else
-        If I >= 0 Then
+            else AddVisPage(APage);
+        end
+        else
+        if I >= 0 then
             RemoveVisPage(APage);
-    End;
-End;
+    end;
+end;
 
-Procedure TdevCustomPages.CMDesignHitTest(Var Msg: TCMDesignHitTest);
-Begin
-    Inherited;
-    If TabAtPos(SmallPointToPoint(Msg.Pos)) >= 0 Then
+procedure TdevCustomPages.CMDesignHitTest(var Msg: TCMDesignHitTest);
+begin
+    inherited;
+    if TabAtPos(SmallPointToPoint(Msg.Pos)) >= 0 then
         Msg.Result := HTCLIENT;
-End;
+end;
 
-Procedure TdevCustomPages.Moved(AFrom, ATo: Integer);
-Begin
+procedure TdevCustomPages.Moved(AFrom, ATo: integer);
+begin
     FPages.Exchange(TdevPage(Tabs.Objects[AFrom]).PageIndex, TdevPage(Tabs.Objects[ATo]).PageIndex);
-End;
+end;
 
-Function TdevCustomPages.GetImageIndex(ATabIndex: Integer): Integer;
-Begin
+function TdevCustomPages.GetImageIndex(ATabIndex: integer): integer;
+begin
     Result := TdevPage(FTabs.Objects[ATabIndex]).ImageIndex;
-End;
+end;
 
-Procedure TdevCustomPages.WMLButtonDblClk(Var Message: TWMLButtonDblClk);
-Var
+procedure TdevCustomPages.WMLButtonDblClk(var Message: TWMLButtonDblClk);
+var
     DockCtl: TControl;
-Begin
-    Inherited;
+begin
+    inherited;
     DockCtl := GetDockClientFromPage(ActivePage);
-    If DockCtl <> Nil Then
-        DockCtl.ManualDock(Nil, Nil, alNone);
-End;
+    if DockCtl <> NIL then
+        DockCtl.ManualDock(NIL, NIL, alNone);
+end;
 
-Procedure TdevCustomPages.CMDockClient(Var Message: TCMDockClient);
-Var
-    IsVisible: Boolean;
+procedure TdevCustomPages.CMDockClient(var Message: TCMDockClient);
+var
+    IsVisible: boolean;
     DockCtl: TControl;
-Begin
+begin
     Message.Result := 0;
     FNewDockPage := TdevPage.Create(Self);
-    Try
-        Try
+    try
+        try
             DockCtl := Message.DockSource.Control;
             FNewDockPage.Caption := ExtractCaption(DockCtl);
             FNewDockPage.FSaveMode := TdevPages(DockCtl).DragMode;
-            If DockCtl Is TWinControl Then
+            if DockCtl is TWinControl then
                 FNewDockPage.FSaveDS := TdevPages(DockCtl).DockSite;
             TdevPages(DockCtl).DragMode := dmManual;
             FNewDockPage.Pages := Self;
             DockCtl.Dock(Self, Message.DockSource.DockRect);
-        Except
+        except
             FNewDockPage.Free;
-            Raise;
-        End;
+            raise;
+        end;
         IsVisible := DockCtl.Visible;
         FNewDockPage.Visible := IsVisible;
-        If IsVisible Then
+        if IsVisible then
             ActivePage := FNewDockPage;
         DockCtl.Align := alClient;
-    Finally
-        FNewDockPage := Nil;
-    End;
-End;
+    finally
+        FNewDockPage := NIL;
+    end;
+end;
 
-Function TdevCustomPages.GetPageFromDockClient(Client: TControl): TdevPage;
-Var
-    I: Integer;
-Begin
-    Result := Nil;
-    For I := 0 To PageCount - 1 Do
-    Begin
-        If (Client.Parent = Pages[I]) And (Client.HostDockSite = Self) Then
-        Begin
+function TdevCustomPages.GetPageFromDockClient(Client: TControl): TdevPage;
+var
+    I: integer;
+begin
+    Result := NIL;
+    for I := 0 to PageCount - 1 do
+    begin
+        if (Client.Parent = Pages[I]) and (Client.HostDockSite = Self) then
+        begin
             Result := Pages[I];
             exit;
-        End;
-    End;
-End;
+        end;
+    end;
+end;
 
-Procedure TdevCustomPages.CMDockNotification(Var Message: TCMDockNotification);
-Var
+procedure TdevCustomPages.CMDockNotification(var Message: TCMDockNotification);
+var
     Page: TdevPage;
-Begin
+begin
     Page := GetPageFromDockClient(Message.Client);
-    If Page <> Nil Then
-        Case Message.NotifyRec.ClientMsg Of
+    if Page <> NIL then
+        case Message.NotifyRec.ClientMsg of
             WM_SETTEXT:
                 Page.Caption := ExtractCaption(Message.Client);
             CM_VISIBLECHANGED:
-            Begin
-                Page.Visible := Boolean(Message.NotifyRec.MsgWParam);
-                If Page.Visible Then
+            begin
+                Page.Visible := boolean(Message.NotifyRec.MsgWParam);
+                if Page.Visible then
                     ActivePage := Page;
-            End;
-        End;
-    Inherited;
-End;
+            end;
+        end;
+    inherited;
+end;
 
-Procedure TdevCustomPages.CMUnDockClient(Var Message: TCMUnDockClient);
-Var
+procedure TdevCustomPages.CMUnDockClient(var Message: TCMUnDockClient);
+var
     Page: TdevPage;
     DockCtl: TControl;
-Begin
+begin
     Message.Result := 0;
     Page := GetPageFromDockClient(Message.Client);
-    If Page <> Nil Then
-    Begin
+    if Page <> NIL then
+    begin
         FUndockingPage := Page;
         DockCtl := Message.Client;
-        If DockCtl Is TWinControl Then
+        if DockCtl is TWinControl then
             TdevPages(DockCtl).DockSite := Page.FSaveDS;
         TdevPages(DockCtl).DragMode := Page.FSaveMode;
         DockCtl.Align := alNone;
-    End;
-End;
+    end;
+end;
 
-Procedure TdevCustomPages.DoAddDockClient(Client: TControl; Const ARect: TRect);
-Begin
-    If FNewDockPage <> Nil Then
+procedure TdevCustomPages.DoAddDockClient(Client: TControl; const ARect: TRect);
+begin
+    if FNewDockPage <> NIL then
         Client.Parent := FNewDockPage;
-End;
+end;
 
-Procedure TdevCustomPages.DockOver(Source: TDragDockObject; X, Y: Integer;
-    State: TDragState; Var Accept: Boolean);
-Var
+procedure TdevCustomPages.DockOver(Source: TDragDockObject; X, Y: integer;
+    State: TDragState; var Accept: boolean);
+var
     R: TRect;
-Begin
+begin
     GetWindowRect(Handle, R);
     Source.DockRect := R;
     DoDockOver(Source, X, Y, State, Accept);
-End;
+end;
 
-Procedure TdevCustomPages.DoRemoveDockClient(Client: TControl);
-Begin
-    If (FUndockingPage <> Nil) And Not (csDestroying In ComponentState)
-    Then
+procedure TdevCustomPages.DoRemoveDockClient(Client: TControl);
+begin
+    if (FUndockingPage <> NIL) and not (csDestroying in ComponentState)
+    then
         FreeAndNil(FUndockingPage);
-End;
+end;
 
-Procedure TdevCustomPages.GetSiteInfo(Client: TControl;
-    Var InfluenceRect: TRect; MousePos: TPoint; Var CanDock: Boolean);
-Var
+procedure TdevCustomPages.GetSiteInfo(Client: TControl;
+    var InfluenceRect: TRect; MousePos: TPoint; var CanDock: boolean);
+var
     R: TRect;
-Begin
-    CanDock := GetPageFromDockClient(Client) = Nil;
-    If CanDock Then
-    Begin
+begin
+    CanDock := GetPageFromDockClient(Client) = NIL;
+    if CanDock then
+    begin
         GetTabRect(R);
         CanDock := PtInRect(R, ScreenToClient(MousePos));
-    End;
-    Inherited GetSiteInfo(Client, InfluenceRect, MousePos, CanDock);
-End;
+    end;
+    inherited GetSiteInfo(Client, InfluenceRect, MousePos, CanDock);
+end;
 
-Procedure TdevCustomPages.BeginTabDrag;
-Var
+procedure TdevCustomPages.BeginTabDrag;
+var
     DockCtl: TControl;
-Begin
+begin
     DockCtl := GetDockClientFromPage(ActivePage);
-    If (DockCtl <> Nil) Then
-        DockCtl.BeginDrag(False);
-End;
+    if (DockCtl <> NIL) then
+        DockCtl.BeginDrag(FALSE);
+end;
 
-Function TdevCustomPages.GetDockClientFromPage(APage: TdevPage): TControl;
-Begin
-    Result := Nil;
-    If (APage.ControlCount > 0) Then
-    Begin
+function TdevCustomPages.GetDockClientFromPage(APage: TdevPage): TControl;
+begin
+    Result := NIL;
+    if (APage.ControlCount > 0) then
+    begin
         Result := APage.Controls[0];
-        If Result.HostDockSite <> Self Then
-            Result := Nil;
-    End;
-End;
+        if Result.HostDockSite <> Self then
+            Result := NIL;
+    end;
+end;
 
-Procedure TdevCustomTabs.SetTabHidden(Value: Boolean);
-Begin
-    If Value <> FTabHidden Then
-    Begin
+procedure TdevCustomTabs.SetTabHidden(Value: boolean);
+begin
+    if Value <> FTabHidden then
+    begin
         FTabHidden := Value;
-        If Not (csDesigning In ComponentState) Then
-        Begin
+        if not (csDesigning in ComponentState) then
+        begin
             Realign;
             Invalidate;
-        End;
-    End;
-End;
+        end;
+    end;
+end;
 
-Function TdevCustomTabs.GetTabHidden: Boolean;
-Begin
+function TdevCustomTabs.GetTabHidden: boolean;
+begin
     Result := FTabHidden;
-    If csDesigning In ComponentState Then
-        Result := False;
-End;
+    if csDesigning in ComponentState then
+        Result := FALSE;
+end;
 
 { TdevPage }
 
-Procedure TdevPage.CMTextChanged(Var Msg: TMessage);
-Begin
-    Inherited;
-    If FPages <> Nil Then
+procedure TdevPage.CMTextChanged(var Msg: TMessage);
+begin
+    inherited;
+    if FPages <> NIL then
         FPages.UpdatePage(Self);
-End;
+end;
 
-Procedure TdevPage.CMVisibleChanged(Var Msg: TMessage);
-Begin
-    Inherited;
-    If Not (csLoading In ComponentState) Then
-    Begin
-        If Visible Then
-        Begin
-            If Assigned(FOnShow) Then
+procedure TdevPage.CMVisibleChanged(var Msg: TMessage);
+begin
+    inherited;
+    if not (csLoading in ComponentState) then
+    begin
+        if Visible then
+        begin
+            if Assigned(FOnShow) then
                 FOnShow(Self);
-        End
-        Else
-        If Assigned(FOnHide) Then
+        end
+        else
+        if Assigned(FOnHide) then
             FOnHide(Self);
-    End;
-End;
+    end;
+end;
 
-Constructor TdevPage.Create(AOwner: TComponent);
-Begin
-    Inherited;
+constructor TdevPage.Create(AOwner: TComponent);
+begin
+    inherited;
     ControlStyle := ControlStyle + [csAcceptsControls, csNoDesignVisible];
     BorderStyle := bsNone;
-    ParentColor := True;
-    ParentFont := True;
-    Visible := False;
+    ParentColor := TRUE;
+    ParentFont := TRUE;
+    Visible := FALSE;
     Align := alClient;
-    TabVisible := True;
-    HorzScrollBar.Smooth := True;
-    HorzScrollBar.Tracking := True;
-    VertScrollBar.Smooth := True;
-    VertScrollBar.Tracking := True;
+    TabVisible := TRUE;
+    HorzScrollBar.Smooth := TRUE;
+    HorzScrollBar.Tracking := TRUE;
+    VertScrollBar.Smooth := TRUE;
+    VertScrollBar.Tracking := TRUE;
     FImageIndex := -1;
-End;
+end;
 
-Destructor TdevPage.Destroy;
-Begin
-    If (Pages <> Nil) And Not (csDestroying In Pages.ComponentState) Then
-    Begin
-        If Pages.FUndockingPage = Self Then
-            FPages.FUndockingPage := Nil;
-        Pages := Nil;
-    End;
-    Inherited;
-End;
+destructor TdevPage.Destroy;
+begin
+    if (Pages <> NIL) and not (csDestroying in Pages.ComponentState) then
+    begin
+        if Pages.FUndockingPage = Self then
+            FPages.FUndockingPage := NIL;
+        Pages := NIL;
+    end;
+    inherited;
+end;
 
-Function TdevPage.GetIndex: Integer;
-Begin
+function TdevPage.GetIndex: integer;
+begin
     Result := -1;
-    If Pages <> Nil Then
+    if Pages <> NIL then
         Result := Pages.FPages.IndexOf(Self);
-End;
+end;
 
-Procedure TdevPage.SetImageIndex(Value: TImageIndex);
-Begin
-    If FImageIndex <> Value Then
-    Begin
+procedure TdevPage.SetImageIndex(Value: TImageIndex);
+begin
+    if FImageIndex <> Value then
+    begin
         FImageIndex := Value;
-        If FPages <> Nil Then
+        if FPages <> NIL then
             FPages.Invalidate;
-    End;
-End;
+    end;
+end;
 
-Procedure TdevPage.SetIndex(Value: Integer);
-Var
-    I: Integer;
-Begin
-    If (FPages <> Nil) Then
-    Begin
+procedure TdevPage.SetIndex(Value: integer);
+var
+    I: integer;
+begin
+    if (FPages <> NIL) then
+    begin
         I := PageIndex;
-        If Value <> I Then
-        Begin
+        if Value <> I then
+        begin
             FPages.FPages.Move(I, Value);
-            If TabVisible Or (csDesigning In ComponentState) Then
-            Begin
+            if TabVisible or (csDesigning in ComponentState) then
+            begin
                 FPages.RemoveVisPage(Self);
                 FPages.AddVisPage(Self);
-            End;
-        End;
-    End;
-End;
+            end;
+        end;
+    end;
+end;
 
-Procedure TdevPage.SetPages(Value: TdevCustomPages);
-Begin
-    If FPages <> Value Then
-    Begin
-        If FPages <> Nil Then
+procedure TdevPage.SetPages(Value: TdevCustomPages);
+begin
+    if FPages <> Value then
+    begin
+        if FPages <> NIL then
             FPages.RemovePage(Self);
         FPages := Value;
-        If FPages <> Nil Then
-        Begin
+        if FPages <> NIL then
+        begin
             Parent := FPages;
             FPages.AddPage(Self);
-        End;
-    End;
-End;
+        end;
+    end;
+end;
 
-Procedure TdevPage.SetParent(AParent: TWinControl);
-Begin
-    If AParent Is TdevPage Then
+procedure TdevPage.SetParent(AParent: TWinControl);
+begin
+    if AParent is TdevPage then
         AParent := TdevPage(AParent).Pages;
-    Inherited;
-    If (AParent = Nil) Or (AParent Is TdevCustomPages) Then
+    inherited;
+    if (AParent = NIL) or (AParent is TdevCustomPages) then
         Pages := TdevCustomPages(AParent);
-End;
+end;
 
-Procedure TdevPage.CMEnableChanged(Var Msg: TMessage);
-Begin
-    Inherited;
-    If FPages <> Nil Then
+procedure TdevPage.CMEnableChanged(var Msg: TMessage);
+begin
+    inherited;
+    if FPages <> NIL then
         FPages.Invalidate;
-End;
+end;
 
-Procedure TdevPage.CMColorChanged(Var Msg: TMessage);
-Begin
-    Inherited;
-    If Pages <> Nil Then
+procedure TdevPage.CMColorChanged(var Msg: TMessage);
+begin
+    inherited;
+    if Pages <> NIL then
         Pages.Invalidate;
-End;
+end;
 
-Procedure TdevPage.CreateParams(Var Params: TCreateParams);
-Begin
-    Inherited;
-    With Params.WindowClass Do
-        style := style And Not (CS_HREDRAW Or CS_VREDRAW);
-End;
+procedure TdevPage.CreateParams(var Params: TCreateParams);
+begin
+    inherited;
+    with Params.WindowClass do
+        style := style and not (CS_HREDRAW or CS_VREDRAW);
+end;
 
-Procedure TdevPage.SetTabVisible(Value: Boolean);
-Begin
-    If FTabVisible <> Value Then
-    Begin
+procedure TdevPage.SetTabVisible(Value: boolean);
+begin
+    if FTabVisible <> Value then
+    begin
         FTabVisible := Value;
-        If FPages <> Nil Then
+        if FPages <> NIL then
             FPages.UpdatePage(Self);
-    End;
-End;
+    end;
+end;
 
-End.
+end.

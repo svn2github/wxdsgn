@@ -1,73 +1,73 @@
-Unit OpenSaveDialogs;
+unit OpenSaveDialogs;
 
-Interface
+interface
 
-Uses
+uses
     Windows, Controls, SysUtils, Classes, Dialogs, Forms, ShellAPI, ShlObj;
 
-Type
-    TOpenDialogEx = Class(TObject)
+type
+    TOpenDialogEx = class(TObject)
 
         Options: TOpenOptions;
         OptionsEx: TOpenOptionsEx;
 
-    Private
+    private
         OpenDialog: TOpenDialog;
         ParentWND: TWinControl;
 
-    Public
+    public
 
-        Title: String;
-        Filter: String;
-        DefaultExt: String;
-        InitialDir: String;
+        Title: string;
+        Filter: string;
+        DefaultExt: string;
+        InitialDir: string;
         FileName: TFileName;
         Files: TStrings;
-        FilterIndex: Integer;
+        FilterIndex: integer;
         HistoryList: TStrings;
-        Function Execute: Boolean;
-        Constructor Create(AOwner: TWinControl);
-        Destructor Destroy; Override;
-    End;
+        function Execute: boolean;
+        constructor Create(AOwner: TWinControl);
+        destructor Destroy; override;
+    end;
 
-Type
-    TSaveDialogEx = Class(TObject)
+type
+    TSaveDialogEx = class(TObject)
         Options: TOpenOptions;
         OptionsEx: TOpenOptionsEx;
-    Private
+    private
         SaveDialog: TSaveDialog;
         ParentWND: TWinControl;
-    Public
+    public
 
-        Title: String;
-        Filter: String;
-        DefaultExt: String;
-        InitialDir: String;
+        Title: string;
+        Filter: string;
+        DefaultExt: string;
+        InitialDir: string;
         FileName: TFileName;
         Files: TStrings;
-        FilterIndex: Integer;
+        FilterIndex: integer;
         HistoryList: TStrings;
-        Function Execute: Boolean;
-        Constructor Create(AOwner: TWinControl);
-        Destructor Destroy; Override;
-    End;
+        function Execute: boolean;
+        constructor Create(AOwner: TWinControl);
+        destructor Destroy; override;
+    end;
 
-Function BrowseDialogCallBack(Wnd: HWND; uMsg: UINT;
-    lParam, lpData: LPARAM): Integer Stdcall;
+function BrowseDialogCallBack(Wnd: HWND; uMsg: UINT;
+    lParam, lpData: LPARAM): integer stdcall;
 
-Function BrowseDialog(Const Title: String; Const Flag: Integer;
-    Const initialFolder: String = ''): String;
+function BrowseDialog(const Title: string; const Flag: integer;
+    const initialFolder: string = ''): string;
 
-Implementation
+implementation
 
-Uses
+uses
     uvista;
 
-Var
-    lg_StartFolder: String;
+var
+    lg_StartFolder: string;
 
-Constructor TOpenDialogEx.Create(AOwner: TWinControl);
-Begin
+constructor TOpenDialogEx.Create(AOwner: TWinControl);
+begin
     ParentWND := AOwner;
     DefaultExt := '';
     Filter := '';
@@ -77,45 +77,45 @@ Begin
     Files := TStringList.Create;
 
     OpenDialog := TOpenDialog.Create(ParentWND);
-End;
+end;
 
 
-Function TOpenDialogEx.Execute: Boolean;
-Var
-    fileN: String;
-Begin
+function TOpenDialogEx.Execute: boolean;
+var
+    fileN: string;
+begin
 
-    If IsWindowsVista Then
-    Begin
+    if IsWindowsVista then
+    begin
         fileN := FileName;
         Result := OpenSaveFileDialog(ParentWND, DefaultExt,
             Filter, InitialDir, Title, fileN, Files, FilterIndex,
-            (ofReadOnly In Options),
-            (ofOverwritePrompt In Options),
-            (ofHideReadOnly In Options),
-            (ofNoChangeDir In Options),
-            (ofShowHelp In Options),
-            (ofNoValidate In Options),
-            (ofAllowMultiSelect In Options),
-            (ofExtensionDifferent In Options),
-            (ofPathMustExist In Options),
-            (ofFileMustExist In Options),
-            (ofCreatePrompt In Options),
-            (ofShareAware In Options),
-            (ofNoReadOnlyReturn In Options),
-            (ofNoTestFileCreate In Options),
-            (ofNoNetworkButton In Options),
-            (ofNoLongNames In Options),
-            (ofOldStyleDialog In Options),
-            (ofNoDereferenceLinks In Options),
-            (ofEnableIncludeNotify In Options),
-            (ofEnableSizing In Options),
-            (ofDontAddToRecent In Options),
-            True);
+            (ofReadOnly in Options),
+            (ofOverwritePrompt in Options),
+            (ofHideReadOnly in Options),
+            (ofNoChangeDir in Options),
+            (ofShowHelp in Options),
+            (ofNoValidate in Options),
+            (ofAllowMultiSelect in Options),
+            (ofExtensionDifferent in Options),
+            (ofPathMustExist in Options),
+            (ofFileMustExist in Options),
+            (ofCreatePrompt in Options),
+            (ofShareAware in Options),
+            (ofNoReadOnlyReturn in Options),
+            (ofNoTestFileCreate in Options),
+            (ofNoNetworkButton in Options),
+            (ofNoLongNames in Options),
+            (ofOldStyleDialog in Options),
+            (ofNoDereferenceLinks in Options),
+            (ofEnableIncludeNotify in Options),
+            (ofEnableSizing in Options),
+            (ofDontAddToRecent in Options),
+            TRUE);
         FileName := fileN;
-    End
-    Else
-    Begin
+    end
+    else
+    begin
         OpenDialog.DefaultExt := DefaultExt;
         OpenDialog.Filter := Filter;
         OpenDialog.InitialDir := InitialDir;
@@ -127,18 +127,18 @@ Begin
         Result := OpenDialog.Execute;
         FileName := OpenDialog.FileName;
         Files := OpenDialog.Files;
-    End;
+    end;
 
-End;
+end;
 
-Destructor TOpenDialogEx.Destroy;
-Begin
+destructor TOpenDialogEx.Destroy;
+begin
     Files.Free;
     OpenDialog.Free;
-End;
+end;
 
-Constructor TSaveDialogEx.Create(AOwner: TWinControl);
-Begin
+constructor TSaveDialogEx.Create(AOwner: TWinControl);
+begin
     ParentWND := AOwner;
     DefaultExt := '';
     Filter := '';
@@ -149,44 +149,44 @@ Begin
 
     SaveDialog := TSaveDialog.Create(ParentWND);
 
-End;
+end;
 
-Function TSaveDialogEx.Execute: Boolean;
-Var
-    fileN: String;
-Begin
+function TSaveDialogEx.Execute: boolean;
+var
+    fileN: string;
+begin
 
-    If IsWindowsVista Then
-    Begin
+    if IsWindowsVista then
+    begin
         fileN := FileName;
         Result := OpenSaveFileDialog(ParentWND, DefaultExt,
             Filter, InitialDir, Title, fileN, Files, FilterIndex,
-            (ofReadOnly In Options),
-            (ofOverwritePrompt In Options),
-            (ofHideReadOnly In Options),
-            (ofNoChangeDir In Options),
-            (ofShowHelp In Options),
-            (ofNoValidate In Options),
-            (ofAllowMultiSelect In Options),
-            (ofExtensionDifferent In Options),
-            (ofPathMustExist In Options),
-            (ofFileMustExist In Options),
-            (ofCreatePrompt In Options),
-            (ofShareAware In Options),
-            (ofNoReadOnlyReturn In Options),
-            (ofNoTestFileCreate In Options),
-            (ofNoNetworkButton In Options),
-            (ofNoLongNames In Options),
-            (ofOldStyleDialog In Options),
-            (ofNoDereferenceLinks In Options),
-            (ofEnableIncludeNotify In Options),
-            (ofEnableSizing In Options),
-            (ofDontAddToRecent In Options),
-            False);
+            (ofReadOnly in Options),
+            (ofOverwritePrompt in Options),
+            (ofHideReadOnly in Options),
+            (ofNoChangeDir in Options),
+            (ofShowHelp in Options),
+            (ofNoValidate in Options),
+            (ofAllowMultiSelect in Options),
+            (ofExtensionDifferent in Options),
+            (ofPathMustExist in Options),
+            (ofFileMustExist in Options),
+            (ofCreatePrompt in Options),
+            (ofShareAware in Options),
+            (ofNoReadOnlyReturn in Options),
+            (ofNoTestFileCreate in Options),
+            (ofNoNetworkButton in Options),
+            (ofNoLongNames in Options),
+            (ofOldStyleDialog in Options),
+            (ofNoDereferenceLinks in Options),
+            (ofEnableIncludeNotify in Options),
+            (ofEnableSizing in Options),
+            (ofDontAddToRecent in Options),
+            FALSE);
         FileName := fileN;
-    End
-    Else
-    Begin
+    end
+    else
+    begin
         SaveDialog.DefaultExt := DefaultExt;
         SaveDialog.Filter := Filter;
         SaveDialog.InitialDir := InitialDir;
@@ -198,70 +198,70 @@ Begin
         Result := SaveDialog.Execute;
         FileName := SaveDialog.FileName;
         Files := SaveDialog.Files;
-    End;
+    end;
 
-End;
+end;
 
-Destructor TSaveDialogEx.Destroy;
-Begin
+destructor TSaveDialogEx.Destroy;
+begin
     Files.Free;
     SaveDialog.Free;
-End;
+end;
 
 
-Function BrowseDialogCallBack(Wnd: HWND; uMsg: UINT;
-    lParam, lpData: LPARAM): Integer Stdcall;
-Var
+function BrowseDialogCallBack(Wnd: HWND; uMsg: UINT;
+    lParam, lpData: LPARAM): integer stdcall;
+var
     wa, rect: TRect;
     dialogPT: TPoint;
-Begin
+begin
     //center in work area
-    If uMsg = BFFM_INITIALIZED Then
-    Begin
-        SendMessage(Wnd, BFFM_SETSELECTION, 1, Integer(@lg_StartFolder[1]));
+    if uMsg = BFFM_INITIALIZED then
+    begin
+        SendMessage(Wnd, BFFM_SETSELECTION, 1, integer(@lg_StartFolder[1]));
         wa := Screen.WorkAreaRect;
         GetWindowRect(Wnd, Rect);
-        dialogPT.X := ((wa.Right - wa.Left) Div 2) -
-            ((rect.Right - rect.Left) Div 2);
-        dialogPT.Y := ((wa.Bottom - wa.Top) Div 2) -
-            ((rect.Bottom - rect.Top) Div 2);
+        dialogPT.X := ((wa.Right - wa.Left) div 2) -
+            ((rect.Right - rect.Left) div 2);
+        dialogPT.Y := ((wa.Bottom - wa.Top) div 2) -
+            ((rect.Bottom - rect.Top) div 2);
         MoveWindow(Wnd,
             dialogPT.X,
             dialogPT.Y,
             Rect.Right - Rect.Left,
             Rect.Bottom - Rect.Top,
-            True);
-    End;
+            TRUE);
+    end;
 
     Result := 0;
-End; (*BrowseDialogCallBack*)
+end; (*BrowseDialogCallBack*)
 
-Function BrowseDialog(Const Title: String; Const Flag: Integer;
-    Const initialFolder: String = ''): String;
-Var
+function BrowseDialog(const Title: string; const Flag: integer;
+    const initialFolder: string = ''): string;
+var
     lpItemID: PItemIDList;
     BrowseInfo: TBrowseInfo;
-    DisplayName: Array[0..MAX_PATH] Of Char;
-    TempPath: Array[0..MAX_PATH] Of Char;
-Begin
+    DisplayName: array[0..MAX_PATH] of char;
+    TempPath: array[0..MAX_PATH] of char;
+begin
     Result := '';
     FillChar(BrowseInfo, sizeof(TBrowseInfo), #0);
-    With BrowseInfo Do
-    Begin
+    with BrowseInfo do
+    begin
         hwndOwner := Application.Handle;
         lg_StartFolder := initialFolder;
         pszDisplayName := @DisplayName;
-        lpszTitle := Pchar(Title);
+        lpszTitle := pchar(Title);
         ulFlags := Flag;
         lpfn := BrowseDialogCallBack;
-    End;
+    end;
     lpItemID := SHBrowseForFolder(BrowseInfo);
-    If lpItemId <> Nil Then
-    Begin
+    if lpItemId <> NIL then
+    begin
         SHGetPathFromIDList(lpItemID, TempPath);
         Result := TempPath;
         GlobalFreePtr(lpItemID);
-    End;
-End;
+    end;
+end;
 
-End.
+end.

@@ -20,11 +20,11 @@
 }
 
 {$WARN UNIT_PLATFORM OFF}
-Unit CVSFm;
+unit CVSFm;
 
-Interface
+interface
 
-Uses
+uses
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
     Dialogs, devTabs, StdCtrls, Spin, devRun, ComCtrls, StrUtils, FileCtrl,
@@ -36,11 +36,11 @@ Uses
   QGrids, CVSThread, QMenus, QCheckLst, DateUtils, Types;
 {$ENDIF}
 
-Type
+type
     TCVSAction = (caImport, caCheckout, caCommit, caUpdate, caDiff,
         caLog, caAdd, caRemove, caLogin, caLogout);
 
-    TCVSForm = Class(TForm)
+    TCVSForm = class(TForm)
         devPages1: TPageControl;
         tabImport: TTabSheet;
         tabRepos: TTabSheet;
@@ -142,69 +142,69 @@ Type
         chkCORevision: TCheckBox;
         cmbCORevision: TComboBox;
         chkCOMostRecent: TCheckBox;
-        Procedure FormShow(Sender: TObject);
-        Procedure FormClose(Sender: TObject; Var Action: TCloseAction);
-        Procedure cmbMethodChange(Sender: TObject);
-        Procedure btnOKClick(Sender: TObject);
-        Procedure btnCancelClick(Sender: TObject);
-        Procedure btnCVSImportBrwsClick(Sender: TObject);
-        Procedure cmbReposChange(Sender: TObject);
-        Procedure btnCOBrwsClick(Sender: TObject);
-        Procedure chkCOModuleAsClick(Sender: TObject);
-        Procedure vleGetPickList(Sender: TObject; Const KeyName: String;
+        procedure FormShow(Sender: TObject);
+        procedure FormClose(Sender: TObject; var Action: TCloseAction);
+        procedure cmbMethodChange(Sender: TObject);
+        procedure btnOKClick(Sender: TObject);
+        procedure btnCancelClick(Sender: TObject);
+        procedure btnCVSImportBrwsClick(Sender: TObject);
+        procedure cmbReposChange(Sender: TObject);
+        procedure btnCOBrwsClick(Sender: TObject);
+        procedure chkCOModuleAsClick(Sender: TObject);
+        procedure vleGetPickList(Sender: TObject; const KeyName: string;
             Values: TStrings);
-        Procedure txtImpModuleChange(Sender: TObject);
-        Procedure txtCOmoduleChange(Sender: TObject);
-        Procedure chkBeforeDateClick(Sender: TObject);
-        Procedure chkRevisionClick(Sender: TObject);
-        Procedure chkLogFbyRevClick(Sender: TObject);
-        Procedure chkLogFbyDateClick(Sender: TObject);
-        Procedure chkLogFbyUserClick(Sender: TObject);
-        Procedure rgbDiff1Click(Sender: TObject);
-        Procedure FormCreate(Sender: TObject);
-        Procedure FormDestroy(Sender: TObject);
-        Procedure lstFilesDrawItem(Control: TWinControl; Index: Integer;
+        procedure txtImpModuleChange(Sender: TObject);
+        procedure txtCOmoduleChange(Sender: TObject);
+        procedure chkBeforeDateClick(Sender: TObject);
+        procedure chkRevisionClick(Sender: TObject);
+        procedure chkLogFbyRevClick(Sender: TObject);
+        procedure chkLogFbyDateClick(Sender: TObject);
+        procedure chkLogFbyUserClick(Sender: TObject);
+        procedure rgbDiff1Click(Sender: TObject);
+        procedure FormCreate(Sender: TObject);
+        procedure FormDestroy(Sender: TObject);
+        procedure lstFilesDrawItem(Control: TWinControl; Index: integer;
             Rect: TRect; State: TOwnerDrawState);
-        Procedure chkCORevisionClick(Sender: TObject);
-        Procedure chkCOBeforeDateClick(Sender: TObject);
-    Private
+        procedure chkCORevisionClick(Sender: TObject);
+        procedure chkCOBeforeDateClick(Sender: TObject);
+    private
         { Private declarations }
         fCVSAction: TCVSAction;
         fFiles: TStrings;
         fAllFiles: TStrings;
         fRunner: TCVSThread;
-        fTerminateRunner: Boolean;
-        Procedure LoadText;
-        Function CVSActionStr(CVSAct: TCVSAction): String;
-        Function CVSActionTabStr(CVSAct: TCVSAction): String;
-        Procedure UpdateVLE(Path: String);
-        Procedure SetupDefaults;
-        Procedure BreakUpRepository;
-        Procedure UpdateRepositoryDisplay;
-        Procedure CVSLineOutput(Sender: TObject; Const Line: String);
-        Procedure CVSCheckAbort(Var AbortThread: Boolean);
-        Procedure CVSTerminated(Sender: TObject);
-        Procedure CVSNeedPassword(Var Passwd: String);
-        Procedure FindModifiedFiles;
-    Public
+        fTerminateRunner: boolean;
+        procedure LoadText;
+        function CVSActionStr(CVSAct: TCVSAction): string;
+        function CVSActionTabStr(CVSAct: TCVSAction): string;
+        procedure UpdateVLE(Path: string);
+        procedure SetupDefaults;
+        procedure BreakUpRepository;
+        procedure UpdateRepositoryDisplay;
+        procedure CVSLineOutput(Sender: TObject; const Line: string);
+        procedure CVSCheckAbort(var AbortThread: boolean);
+        procedure CVSTerminated(Sender: TObject);
+        procedure CVSNeedPassword(var Passwd: string);
+        procedure FindModifiedFiles;
+    public
         { Public declarations }
-        Property CVSAction: TCVSAction Read fCVSAction Write fCVSAction;
-        Property Files: TStrings Read fFiles Write fFiles;
-        Property AllFiles: TStrings Read fAllFiles Write fAllFiles;
-    End;
+        property CVSAction: TCVSAction read fCVSAction write fCVSAction;
+        property Files: TStrings read fFiles write fFiles;
+        property AllFiles: TStrings read fAllFiles write fAllFiles;
+    end;
 
-Var
+var
     CVSForm: TCVSForm;
 
-Implementation
+implementation
 
-Uses
+uses
     devcfg, utils, MultiLangSupport, CVSPasswdFm;
 
 {$R *.dfm}
 
-Procedure TCVSForm.SetupDefaults;
-Begin
+procedure TCVSForm.SetupDefaults;
+begin
     cmbBeforeDate.Items.Add(FormatDateTime('yyyy-mm-dd hh:nn', Now));
     cmbBeforeDate.Items.Add(FormatDateTime('=yyyy-mm-dd hh:nn', Now));
     cmbBeforeDate.Items.Add(FormatDateTime('=dd-mm-yyyy hh:nn', Now));
@@ -212,20 +212,20 @@ Begin
     cmbBeforeDate.Items.Add(FormatDateTime('dd mmm yyyy', Now));
     cmbBeforeDate.Items.Add(FormatDateTime('dd mmm', Now));
     cmbBeforeDate.Items.Add(FormatDateTime('yyyy-mm', Now));
-    cmbBeforeDate.Enabled := False;
-    cmbRevision.Enabled := False;
+    cmbBeforeDate.Enabled := FALSE;
+    cmbRevision.Enabled := FALSE;
     cmbBeforeDate.Text := '';
     cmbRevision.Text := '';
-    chkMostRecent.Enabled := False;
+    chkMostRecent.Enabled := FALSE;
     txtCOModuleAs.Text := '';
     txtCOmodule.Text := '';
-    If fFiles.Count > 0 Then
+    if fFiles.Count > 0 then
         txtCOdir.Text := ExtractFilePath(fFiles[0])
-    Else
+    else
         txtCOdir.Text := '';
     cmbCOBeforeDate.Text := '';
     cmbCORevision.Text := '';
-    chkCOMostRecent.Enabled := False;
+    chkCOMostRecent.Enabled := FALSE;
     txtImpVendor.Text := 'avendor';
     txtImpRelease.Text := 'arelease';
     txtImpModule.Text := '';
@@ -238,13 +238,13 @@ Begin
 
     txtDiffRev1.Text := '';
     txtDiffRev2.Text := '';
-End;
+end;
 
-Procedure TCVSForm.BreakUpRepository;
-Var
-    idx: Integer;
-    S: String;
-Begin
+procedure TCVSForm.BreakUpRepository;
+var
+    idx: integer;
+    S: string;
+begin
     // take the repository (e.g. ":pserver:user@some.host.com:/remote/dir")
     // and break it up to fill in the respective edit boxes
     cmbMethod.ItemIndex := 1;
@@ -254,60 +254,60 @@ Begin
     txtPort.Text := '';
     txtDir.Text := '';
 
-    Repeat
+    repeat
         S := cmbRepos.Text;
-        If (S = '') Or (S[1] <> ':') Then
+        if (S = '') or (S[1] <> ':') then
             Break;
         Delete(S, 1, 1); // remove first ':'
 
         idx := Pos(':', S);
-        If idx = 0 Then
+        if idx = 0 then
             Break;
 
         // set method
         cmbMethod.ItemIndex := cmbMethod.Items.IndexOf(Copy(S, 1, idx - 1));
-        If cmbMethod.ItemIndex = -1 Then
+        if cmbMethod.ItemIndex = -1 then
             Break;
         Delete(S, 1, idx); // remove second ':'
 
-        If cmbMethod.ItemIndex > 0 Then
-        Begin
+        if cmbMethod.ItemIndex > 0 then
+        begin
             // set user
             idx := Pos('@', S);
-            If idx = 0 Then
+            if idx = 0 then
                 Break;
             txtUser.Text := Copy(S, 1, idx - 1);
             Delete(S, 1, idx); // remove '@'
 
             // set server
             idx := Pos(':', S);
-            If idx = 0 Then
+            if idx = 0 then
                 Break;
             txtServer.Text := Copy(S, 1, idx - 1);
             Delete(S, 1, idx);
-        End;
+        end;
 
         //set port number
         idx := Pos('/', S);
-        If idx > 0 Then
-            If StrToIntDef(Copy(S, 1, idx - 1), -1) <> -1 Then
-            Begin
+        if idx > 0 then
+            if StrToIntDef(Copy(S, 1, idx - 1), -1) <> -1 then
+            begin
                 txtPort.Text := Copy(S, 1, idx - 1);
                 Delete(S, 1, idx - 1);
-            End;
+            end;
 
         // set dir
         txtDir.Text := S;
 
-    Until True;
+    until TRUE;
 
     UpdateRepositoryDisplay;
-End;
+end;
 
-Procedure TCVSForm.FormShow(Sender: TObject);
-Var
-    I, idx: Integer;
-Begin
+procedure TCVSForm.FormShow(Sender: TObject);
+var
+    I, idx: integer;
+begin
     Screen.Cursor := crHourglass;
     LoadText;
     Caption := Format('CVS - %s', [CVSActionStr(fCVSAction)]);
@@ -315,45 +315,45 @@ Begin
     lstFiles.Items.Assign(fAllFiles);
 
     // if whole dir
-    If ((fFiles.Count = 1) And DirectoryExists(fFiles[0])) Or
-        (fFiles.Count = 0) Then
-        tabFiles.TabVisible := False
+    if ((fFiles.Count = 1) and DirectoryExists(fFiles[0])) or
+        (fFiles.Count = 0) then
+        tabFiles.TabVisible := FALSE
 
-    Else
-    If fFiles.Count > 0 Then
-    Begin
-        tabFiles.TabVisible := True;
-        For I := 0 To fFiles.Count - 1 Do
-        Begin
+    else
+    if fFiles.Count > 0 then
+    begin
+        tabFiles.TabVisible := TRUE;
+        for I := 0 to fFiles.Count - 1 do
+        begin
             idx := lstFiles.Items.IndexOf(fFiles[I]);
-            If idx > -1 Then
-                lstFiles.Checked[idx] := True;
-        End;
-    End;
+            if idx > -1 then
+                lstFiles.Checked[idx] := TRUE;
+        end;
+    end;
 
     FindModifiedFiles;
 
     cmbRepos.Items.Clear;
-    For I := 0 To devCVSHandler.Repositories.Count - 1 Do
+    for I := 0 to devCVSHandler.Repositories.Count - 1 do
         cmbRepos.Items.Add(devCVSHandler.Repositories.Values[IntToStr(I)]);
     cmbRepos.Text := '';
-    If fCVSAction In [caImport, caCheckOut, caCommit, caAdd,
-        caLogin, caLogout] Then
-    Begin
-        tabRepos.TabVisible := True;
-        If cmbRepos.Items.Count > 0 Then
+    if fCVSAction in [caImport, caCheckOut, caCommit, caAdd,
+        caLogin, caLogout] then
+    begin
+        tabRepos.TabVisible := TRUE;
+        if cmbRepos.Items.Count > 0 then
             cmbRepos.ItemIndex := 0;
         BreakUpRepository;
-        If fFiles.Count > 0 Then
+        if fFiles.Count > 0 then
             txtCVSImportDir.Text := ExtractFilePath(fFiles[0])
-        Else
+        else
             txtCVSImportDir.Text := '';
-        If (fCVSAction = caImport) And (txtCVSImportDir.Text <> '') And
-            (txtCVSImportDir.Text <> devDirs.Default) Then
+        if (fCVSAction = caImport) and (txtCVSImportDir.Text <> '') and
+            (txtCVSImportDir.Text <> devDirs.Default) then
             UpdateVLE(txtCVSImportDir.Text);
-    End
-    Else
-        tabRepos.TabVisible := False;
+    end
+    else
+        tabRepos.TabVisible := FALSE;
 
     SetupDefaults;
 
@@ -378,34 +378,34 @@ Begin
     tabRemove.TabVisible := fCVSAction = caRemove;
 
     memOutput.Lines.Clear;
-    If fCVSAction In [caLogin, caLogout] Then
+    if fCVSAction in [caLogin, caLogout] then
         devPages1.ActivePage := tabRepos
-    Else
+    else
         devPages1.ActivePageIndex := Ord(fCVSAction);
     Screen.Cursor := crDefault;
-End;
+end;
 
-Procedure TCVSForm.UpdateRepositoryDisplay;
-Begin
-    If (cmbMethod.ItemIndex > 0) And ((txtUser.Text = '') Or
-        (txtServer.Text = '')) Then
-    Begin
-        btnOK.Enabled := False;
+procedure TCVSForm.UpdateRepositoryDisplay;
+begin
+    if (cmbMethod.ItemIndex > 0) and ((txtUser.Text = '') or
+        (txtServer.Text = '')) then
+    begin
+        btnOK.Enabled := FALSE;
         lblRepos.Caption := 'Invalid repository...';
-    End
-    Else
-    If cmbMethod.ItemIndex = 0 Then
-    Begin
-        btnOK.Enabled := True;
+    end
+    else
+    if cmbMethod.ItemIndex = 0 then
+    begin
+        btnOK.Enabled := TRUE;
         lblRepos.Caption := Format(':%s:%s%s', [
             cmbMethod.Text,
             txtPort.Text,
             txtDir.Text
             ]);
-    End
-    Else
-    Begin
-        btnOK.Enabled := True;
+    end
+    else
+    begin
+        btnOK.Enabled := TRUE;
         lblRepos.Caption := Format(':%s:%s@%s:%s%s', [
             cmbMethod.Text,
             txtUser.Text,
@@ -413,17 +413,17 @@ Begin
             txtPort.Text,
             txtDir.Text
             ]);
-    End;
-End;
+    end;
+end;
 
-Procedure TCVSForm.FormClose(Sender: TObject; Var Action: TCloseAction);
-Begin
+procedure TCVSForm.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
     Action := caFree;
-End;
+end;
 
-Function TCVSForm.CVSActionStr(CVSAct: TCVSAction): String;
-Begin
-    Case CVSAct Of
+function TCVSForm.CVSActionStr(CVSAct: TCVSAction): string;
+begin
+    case CVSAct of
         caImport:
             Result := Lang[ID_CVS_IMPORT];
         caCheckout:
@@ -440,14 +440,14 @@ Begin
             Result := Lang[ID_CVS_ADD];
         caRemove:
             Result := Lang[ID_CVS_REMOVE];
-    Else
+    else
         Result := '';
-    End;
-End;
+    end;
+end;
 
-Function TCVSForm.CVSActionTabStr(CVSAct: TCVSAction): String;
-Begin
-    Case CVSAct Of
+function TCVSForm.CVSActionTabStr(CVSAct: TCVSAction): string;
+begin
+    case CVSAct of
         caImport:
             Result := Lang[ID_CVS_IMPORTTAB];
         caCheckout:
@@ -464,249 +464,249 @@ Begin
             Result := Lang[ID_CVS_ADDTAB];
         caRemove:
             Result := Lang[ID_CVS_REMOVETAB];
-    Else
+    else
         Result := '';
-    End;
-End;
+    end;
+end;
 
-Procedure TCVSForm.cmbMethodChange(Sender: TObject);
-Begin
+procedure TCVSForm.cmbMethodChange(Sender: TObject);
+begin
     txtUser.Enabled := cmbMethod.ItemIndex > 0;
     txtServer.Enabled := cmbMethod.ItemIndex > 0;
     UpdateRepositoryDisplay;
-End;
+end;
 
-Procedure TCVSForm.btnOKClick(Sender: TObject);
-Var
-    Cmd, sLog, Dir: String;
-    I: Integer;
-    PrettyCmd: String;
-Begin
-    If Assigned(fRunner) Then
-    Begin
+procedure TCVSForm.btnOKClick(Sender: TObject);
+var
+    Cmd, sLog, Dir: string;
+    I: integer;
+    PrettyCmd: string;
+begin
+    if Assigned(fRunner) then
+    begin
         MessageDlg('Already running a command!', mtWarning, [mbOk], 0);
         Exit;
-    End;
+    end;
 
     //rebuild the fFiles TStrings based on the lstFiles checked items
-    If tabFiles.TabVisible Then
-    Begin
+    if tabFiles.TabVisible then
+    begin
         fFiles.Clear;
-        For I := 0 To lstFiles.Items.Count - 1 Do
-            If lstFiles.Checked[I] Then
+        for I := 0 to lstFiles.Items.Count - 1 do
+            if lstFiles.Checked[I] then
                 fFiles.Add(lstFiles.Items[I]);
-    End;
+    end;
 
-    If tabRepos.TabVisible Then
-    Begin
+    if tabRepos.TabVisible then
+    begin
         I := cmbRepos.Items.IndexOf(lblRepos.Caption);
-        If I = -1 Then
+        if I = -1 then
             cmbRepos.Items.Insert(0, lblRepos.Caption)
-        Else
+        else
             cmbRepos.Items.Move(I, 0);
-        While cmbRepos.Items.Count > 10 Do
+        while cmbRepos.Items.Count > 10 do
             cmbRepos.Items.Delete(cmbRepos.Items.Count - 1);
 
         devCVSHandler.Repositories.Clear;
-        For I := 0 To cmbRepos.Items.Count - 1 Do
+        for I := 0 to cmbRepos.Items.Count - 1 do
             devCVSHandler.Repositories.Add(Format('%d=%s', [I, cmbRepos.Items[I]]));
-    End;
+    end;
     devCVSHandler.Compression := spnCompression.Value;
 
-    If chkUseSSH.Checked Then
+    if chkUseSSH.Checked then
         SetEnvironmentVariable('CVS_RSH', 'ssh.exe')
-    Else
+    else
         SetEnvironmentVariable('CVS_RSH', 'rsh.exe');
 
     memOutput.Lines.Clear;
 
-    If fFiles.Count > 0 Then
+    if fFiles.Count > 0 then
         Dir := ExcludeTrailingPathDelimiter(ExtractFilePath(fFiles[0]))
-    Else
+    else
         Dir := GetCurrentDir;
 
-    Case fCVSAction Of
+    case fCVSAction of
 
         caImport:
-        Begin
+        begin
             Cmd := Format('%s -z%d -d %s import',
                 [devCVSHandler.Executable, devCVSHandler.Compression, lblRepos.Caption]);
 
             Cmd := Format('%s -I ! -I CVS -I .#*', [Cmd]);
-            For I := 1 To vle.Strings.Count Do
-                If vle.Cells[1, I] = 'Ignore' Then
+            for I := 1 to vle.Strings.Count do
+                if vle.Cells[1, I] = 'Ignore' then
                     Cmd := Format('%s -I *%s', [Cmd, vle.Cells[0, I]])
-                Else
-                If vle.Cells[1, I] = 'Binary' Then
+                else
+                if vle.Cells[1, I] = 'Binary' then
                     Cmd := Format('%s -W "*%s -k''b''"', [Cmd, vle.Cells[0, I]]);
 
             Dir := txtCVSImportDir.Text;
 
             sLog := memImpMsg.Text;
-            If Trim(sLog) = '' Then
+            if Trim(sLog) = '' then
                 sLog := '* No message *'
-            Else
-            Begin
+            else
+            begin
                 sLog := StringReplace(memImpMsg.Text, #13#10, #10, [rfReplaceAll]);
                 sLog := StringReplace(sLog, '"', '\"', [rfReplaceAll]);
-            End;
+            end;
             Cmd := Format('%s -m "%s" %s %s %s',
                 [Cmd, sLog, txtImpModule.Text, txtImpVendor.Text, txtImpRelease.Text]);
-        End;
+        end;
 
         caCheckout:
-        Begin
+        begin
             Cmd := Format('%s -z%d -d %s checkout',
                 [devCVSHandler.Executable, devCVSHandler.Compression, lblRepos.Caption]);
 
-            If Not chkCORecurse.Checked Then
+            if not chkCORecurse.Checked then
                 Cmd := Format('%s -l', [Cmd]);
 
-            If chkCOModuleAs.Checked Then
+            if chkCOModuleAs.Checked then
                 Cmd := Format('%s -d %s', [Cmd, txtCOModuleAs.Text]);
 
-            If chkCOBeforeDate.Checked And (Trim(cmbCOBeforeDate.Text) <> '') Then
+            if chkCOBeforeDate.Checked and (Trim(cmbCOBeforeDate.Text) <> '') then
                 Cmd := Format('%s -D "%s"', [Cmd, cmbCOBeforeDate.Text]);
 
-            If chkCORevision.Checked And (Trim(cmbCORevision.Text) <> '') Then
+            if chkCORevision.Checked and (Trim(cmbCORevision.Text) <> '') then
                 Cmd := Format('%s -r %s', [Cmd, cmbCORevision.Text]);
 
-            If chkCOMostRecent.Enabled And
-                ((chkCOBeforeDate.Checked And (Trim(cmbCOBeforeDate.Text) <> '')) Or
-                (chkCORevision.Checked And (Trim(cmbCORevision.Text) <> ''))) Then
+            if chkCOMostRecent.Enabled and
+                ((chkCOBeforeDate.Checked and (Trim(cmbCOBeforeDate.Text) <> '')) or
+                (chkCORevision.Checked and (Trim(cmbCORevision.Text) <> ''))) then
                 Cmd := Format('%s -f', [Cmd]);
 
             Dir := txtCOdir.Text;
 
             Cmd := Format('%s %s', [Cmd, txtCOmodule.Text]);
-        End;
+        end;
 
         caUpdate:
-        Begin
+        begin
             Cmd := Format('%s -z%d update', [devCVSHandler.Executable,
                 devCVSHandler.Compression]);
-            If Not chkUpdRecurse.Checked Then
+            if not chkUpdRecurse.Checked then
                 Cmd := Format('%s -l', [Cmd]);
 
-            If chkUpdResetSticky.Checked Then
+            if chkUpdResetSticky.Checked then
                 Cmd := Format('%s -A', [Cmd]);
 
-            If chkUpdCreateDirs.Checked Then
+            if chkUpdCreateDirs.Checked then
                 Cmd := Format('%s -d', [Cmd]);
 
-            If chkUpdPrune.Checked Then
+            if chkUpdPrune.Checked then
                 Cmd := Format('%s -P', [Cmd]);
 
-            If chkUpdCleanCopy.Checked Then
+            if chkUpdCleanCopy.Checked then
                 Cmd := Format('%s -C', [Cmd]);
 
-            If chkBeforeDate.Checked And (cmbBeforeDate.Text <> '') Then
+            if chkBeforeDate.Checked and (cmbBeforeDate.Text <> '') then
                 Cmd := Format('%s -D "%s"', [Cmd, cmbBeforeDate.Text]);
 
-            If chkRevision.Checked And (cmbRevision.Text <> '') Then
+            if chkRevision.Checked and (cmbRevision.Text <> '') then
                 Cmd := Format('%s -r %s', [Cmd, cmbRevision.Text]);
 
-            If chkMostRecent.Enabled And
-                ((chkBeforeDate.Checked And (cmbBeforeDate.Text <> '')) Or
-                (chkRevision.Checked And (cmbRevision.Text <> ''))) Then
+            if chkMostRecent.Enabled and
+                ((chkBeforeDate.Checked and (cmbBeforeDate.Text <> '')) or
+                (chkRevision.Checked and (cmbRevision.Text <> ''))) then
                 Cmd := Format('%s -f', [Cmd]);
 
-            For I := 0 To fFiles.Count - 1 Do
+            for I := 0 to fFiles.Count - 1 do
                 Cmd := Format('%s %s',
                     [Cmd, ExtractRelativePath(Dir, ExtractFileName(fFiles[I]))]);
-        End;
+        end;
 
         caDiff:
-        Begin
+        begin
             Cmd := Format('%s -z%d diff', [devCVSHandler.Executable,
                 devCVSHandler.Compression]);
-            If Not chkDiffRecurse.Checked Then
+            if not chkDiffRecurse.Checked then
                 Cmd := Format('%s -l', [Cmd]);
-            If chkDiffUnified.Checked Then
+            if chkDiffUnified.Checked then
                 Cmd := Format('%s -u', [Cmd]);
-            If (rgbDiff1.Checked Or rgbDiff2.Checked) And
-                (txtDiffRev1.Text <> '') Then
-            Begin
-                If chkDiffDate1.Checked Then
+            if (rgbDiff1.Checked or rgbDiff2.Checked) and
+                (txtDiffRev1.Text <> '') then
+            begin
+                if chkDiffDate1.Checked then
                     Cmd := Format('%s -D "%s"', [Cmd, txtDiffRev1.Text])
-                Else
+                else
                     Cmd := Format('%s -r%s', [Cmd, txtDiffRev1.Text]);
-            End;
-            If rgbDiff2.Checked And (txtDiffRev2.Text <> '') Then
-            Begin
-                If chkDiffDate2.Checked Then
+            end;
+            if rgbDiff2.Checked and (txtDiffRev2.Text <> '') then
+            begin
+                if chkDiffDate2.Checked then
                     Cmd := Format('%s -D "%s"', [Cmd, txtDiffRev2.Text])
-                Else
+                else
                     Cmd := Format('%s -r%s', [Cmd, txtDiffRev2.Text]);
-            End;
-            For I := 0 To fFiles.Count - 1 Do
+            end;
+            for I := 0 to fFiles.Count - 1 do
                 Cmd := Format('%s %s',
                     [Cmd, ExtractRelativePath(Dir, ExtractFileName(fFiles[I]))]);
-        End;
+        end;
 
         caLog:
-        Begin
+        begin
             Cmd := Format('%s -z%d log', [devCVSHandler.Executable,
                 devCVSHandler.Compression]);
-            If Not chkLogRecurse.Checked Then
+            if not chkLogRecurse.Checked then
                 Cmd := Format('%s -l', [Cmd]);
-            If chkLogDefBranch.Checked Then
+            if chkLogDefBranch.Checked then
                 Cmd := Format('%s -r', [Cmd]);
-            If chkLogRCS.Checked Then
+            if chkLogRCS.Checked then
                 Cmd := Format('%s -R', [Cmd]);
-            If chkLogNoTag.Checked Then
+            if chkLogNoTag.Checked then
                 Cmd := Format('%s -N', [Cmd]);
-            If chkLogFbyRev.Checked And (cmbLogFbyRev.Text <> '') Then
+            if chkLogFbyRev.Checked and (cmbLogFbyRev.Text <> '') then
                 Cmd := Format('%s -r%s', [Cmd, cmbLogFbyRev.Text]);
-            If chkLogFbyDate.Checked And (cmbLogFbyDate.Text <> '') Then
+            if chkLogFbyDate.Checked and (cmbLogFbyDate.Text <> '') then
                 Cmd := Format('%s -d "%s"', [Cmd, cmbLogFbyDate.Text]);
-            If chkLogFbyUser.Checked And (cmbLogFbyUser.Text <> '') Then
+            if chkLogFbyUser.Checked and (cmbLogFbyUser.Text <> '') then
                 Cmd := Format('%s -w%s', [Cmd, cmbLogFbyUser.Text]);
-            For I := 0 To fFiles.Count - 1 Do
+            for I := 0 to fFiles.Count - 1 do
                 Cmd := Format('%s %s',
                     [Cmd, ExtractRelativePath(Dir, ExtractFileName(fFiles[I]))]);
-        End;
+        end;
 
         caAdd:
-        Begin
+        begin
             Cmd := Format('%s -d %s -z%d add',
                 [devCVSHandler.Executable, lblRepos.Caption, devCVSHandler.Compression]);
-            If memAddMsg.Text <> '' Then
+            if memAddMsg.Text <> '' then
                 Cmd := Format('%s -m"%s"', [Cmd, memAddMsg.Text]);
-            For I := 0 To fFiles.Count - 1 Do
+            for I := 0 to fFiles.Count - 1 do
                 Cmd := Format('%s %s',
                     [Cmd, ExtractRelativePath(Dir, ExtractFileName(fFiles[I]))]);
-        End;
+        end;
 
         caRemove:
-        Begin
+        begin
             Cmd := Format('%s -z%d remove', [devCVSHandler.Executable,
                 devCVSHandler.Compression]);
-            If chkRemove.Checked Then
+            if chkRemove.Checked then
                 Cmd := Format('%s -f', [Cmd]);
-            For I := 0 To fFiles.Count - 1 Do
+            for I := 0 to fFiles.Count - 1 do
                 Cmd := Format('%s %s',
                     [Cmd, ExtractRelativePath(Dir, ExtractFileName(fFiles[I]))]);
-        End;
+        end;
 
         caCommit:
-        Begin
+        begin
             Cmd := Format('%s -d %s -z%d commit',
                 [devCVSHandler.Executable, lblRepos.Caption, devCVSHandler.Compression]);
             sLog := memCommitMsg.Text;
-            If Trim(sLog) = '' Then
+            if Trim(sLog) = '' then
                 sLog := '* No message *'
-            Else
-            Begin
+            else
+            begin
                 sLog := StringReplace(memCommitMsg.Text, #13#10, #10,
                     [rfReplaceAll]);
                 sLog := StringReplace(sLog, '"', '\"', [rfReplaceAll]);
-            End;
+            end;
             Cmd := Format('%s -m"%s"', [Cmd, sLog]);
-            For I := 0 To fFiles.Count - 1 Do
+            for I := 0 to fFiles.Count - 1 do
                 Cmd := Format('%s %s',
                     [Cmd, ExtractRelativePath(Dir, ExtractFileName(fFiles[I]))]);
-        End;
+        end;
 
         caLogin:
             Cmd := Format('%s -z%d -d %s login', [devCVSHandler.Executable,
@@ -715,308 +715,308 @@ Begin
         caLogout:
             Cmd := Format('%s -z%d -d %s logout', [devCVSHandler.Executable,
                 devCVSHandler.Compression, lblRepos.Caption]);
-    End;
+    end;
 
-    If Cmd <> '' Then
-    Begin
+    if Cmd <> '' then
+    begin
         PrettyCmd := StringReplace(Cmd, devCVSHandler.Executable, 'cvs', []);
-        If Length(sLog) > 32 Then
+        if Length(sLog) > 32 then
             PrettyCmd := StringReplace(PrettyCmd, sLog,
                 Copy(sLog, 1, 32) + '...', []);
         PrettyCmd := StringReplace(PrettyCmd, #10, ' ', [rfReplaceAll]);
-        CVSLineOutput(Nil, Format('>> Running "%s" (in "%s")', [PrettyCmd, Dir]));
-        btnOK.Enabled := False;
-        fRunner := TCVSThread.Create(True);
+        CVSLineOutput(NIL, Format('>> Running "%s" (in "%s")', [PrettyCmd, Dir]));
+        btnOK.Enabled := FALSE;
+        fRunner := TCVSThread.Create(TRUE);
         fRunner.Command := Cmd;
         fRunner.Directory := Dir;
         fRunner.OnTerminate := CVSTerminated;
         fRunner.OnLineOutput := CVSLineOutput;
         fRunner.OnCheckAbort := CVSCheckAbort;
         fRunner.OnNeedPassword := CVSNeedPassword;
-        fRunner.FreeOnTerminate := True;
+        fRunner.FreeOnTerminate := TRUE;
         fRunner.Resume;
         btnCancel.Caption := Lang[ID_BTN_CLOSE];
         devPages1.ActivePage := tabOutput;
         memOutput.SetFocus;
         Screen.Cursor := crHourglass;
-        fTerminateRunner := False;
-    End;
-End;
+        fTerminateRunner := FALSE;
+    end;
+end;
 
-Procedure TCVSForm.CVSTerminated(Sender: TObject);
-Var
-    RetValue: Integer;
-    S: String;
-    I: Integer;
-Begin
+procedure TCVSForm.CVSTerminated(Sender: TObject);
+var
+    RetValue: integer;
+    S: string;
+    I: integer;
+begin
     S := fRunner.Output;
     I := LastDelimiter(' ', S);
-    If I > 0 Then
+    if I > 0 then
         Delete(S, 1, I);
     RetValue := StrToIntDef(Trim(S), -1);
-    CVSLineOutput(Nil, Format('>> Command complete (exit code: %d)',
+    CVSLineOutput(NIL, Format('>> Command complete (exit code: %d)',
         [RetValue]));
     Screen.Cursor := crDefault;
-    fRunner := Nil;
+    fRunner := NIL;
     btnCancel.Caption := Lang[ID_BTN_CLOSE];
     btnOK.Enabled := RetValue <> 0;
-End;
+end;
 
-Procedure TCVSForm.CVSCheckAbort(Var AbortThread: Boolean);
-Begin
+procedure TCVSForm.CVSCheckAbort(var AbortThread: boolean);
+begin
     AbortThread := fTerminateRunner;
-End;
+end;
 
-Procedure TCVSForm.CVSNeedPassword(Var Passwd: String);
-Begin
-    With TCVSPasswdForm.Create(Nil) Do
-    Begin
+procedure TCVSForm.CVSNeedPassword(var Passwd: string);
+begin
+    with TCVSPasswdForm.Create(NIL) do
+    begin
         ShowModal;
         Passwd := txtPass.Text;
         Free;
-    End;
-End;
+    end;
+end;
 
-Procedure TCVSForm.btnCancelClick(Sender: TObject);
-Begin
-    If Assigned(fRunner) Then
-    Begin
-        If fTerminateRunner Then
-        Begin
-            If MessageDlg('Do you want to force-terminate process?',
-                mtConfirmation, [mbYes, mbNo], 0) = mrYes Then
-                If TerminateThread(fRunner.Handle, Cardinal(-1)) Then
-                    CVSTerminated(Nil);
-        End
-        Else
-            fTerminateRunner := True;
-    End
-    Else
+procedure TCVSForm.btnCancelClick(Sender: TObject);
+begin
+    if Assigned(fRunner) then
+    begin
+        if fTerminateRunner then
+        begin
+            if MessageDlg('Do you want to force-terminate process?',
+                mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+                if TerminateThread(fRunner.Handle, cardinal(-1)) then
+                    CVSTerminated(NIL);
+        end
+        else
+            fTerminateRunner := TRUE;
+    end
+    else
         Close;
-End;
+end;
 
-Procedure TCVSForm.CVSLineOutput(Sender: TObject; Const Line: String);
-Type
+procedure TCVSForm.CVSLineOutput(Sender: TObject; const Line: string);
+type
     THighlightType = (htNone, htDevCpp, htServer, htUpdated,
         htModified, htConflict, htUnknown, htDiffIn, htDiffOut, htIgnored,
         htNew, htPatched);
-Const
-    HighlightColors: Array[Low(THighlightType)..High(THighlightType)] Of TColor =
+const
+    HighlightColors: array[Low(THighlightType)..High(THighlightType)] of TColor =
         (clBlack, clBlack, clBlack, clGreen, clRed, clMaroon, clGray,
         clBlue, clRed, clGray, clFuchsia, clGreen);
-    HighlightStyles: Array[Low(THighlightType)..High(THighlightType)] Of
+    HighlightStyles: array[Low(THighlightType)..High(THighlightType)] of
         TFontStyles =
         ([], [fsBold], [fsBold], [], [fsBold], [fsBold], [], [], [],
         [], [fsBold], [fsBold]);
-Var
+var
     HiType: THighlightType;
     sl: TStringList;
-    I: Integer;
-Begin
+    I: integer;
+begin
     sl := TStringList.Create;
-    Try
+    try
         sl.Text := Line;
 
-        For I := 0 To sl.Count - 1 Do
-        Begin
-            If AnsiStartsStr('>> ', sl[I]) Or
-                AnsiStartsStr('@@', sl[I]) Then
+        for I := 0 to sl.Count - 1 do
+        begin
+            if AnsiStartsStr('>> ', sl[I]) or
+                AnsiStartsStr('@@', sl[I]) then
                 HiType := htDevCPP
-            Else
-            If AnsiStartsStr('? ', sl[I]) Then
+            else
+            if AnsiStartsStr('? ', sl[I]) then
                 HiType := htUnknown
-            Else
-            If AnsiStartsStr('U ', sl[I]) Then
+            else
+            if AnsiStartsStr('U ', sl[I]) then
                 HiType := htUpdated
-            Else
-            If AnsiStartsStr('M ', sl[I]) Then
+            else
+            if AnsiStartsStr('M ', sl[I]) then
                 HiType := htModified
-            Else
-            If AnsiStartsStr('C ', sl[I]) Then
+            else
+            if AnsiStartsStr('C ', sl[I]) then
                 HiType := htConflict
-            Else
-            If AnsiStartsStr('I ', sl[I]) Then
+            else
+            if AnsiStartsStr('I ', sl[I]) then
                 HiType := htIgnored
-            Else
-            If AnsiStartsStr('N ', sl[I]) Then
+            else
+            if AnsiStartsStr('N ', sl[I]) then
                 HiType := htNew
-            Else
-            If AnsiStartsStr('P ', sl[I]) Then
+            else
+            if AnsiStartsStr('P ', sl[I]) then
                 HiType := htPatched
-            Else
-            If AnsiStartsStr('> ', sl[I]) Or
-                AnsiStartsStr('+', sl[I]) Then
+            else
+            if AnsiStartsStr('> ', sl[I]) or
+                AnsiStartsStr('+', sl[I]) then
                 HiType := htDiffIn
-            Else
-            If AnsiStartsStr('< ', sl[I]) Or
-                AnsiStartsStr('-', sl[I]) Then
+            else
+            if AnsiStartsStr('< ', sl[I]) or
+                AnsiStartsStr('-', sl[I]) then
                 HiType := htDiffOut
-            Else
-            If AnsiStartsStr('cvs server: ', sl[I]) Then
+            else
+            if AnsiStartsStr('cvs server: ', sl[I]) then
                 HiType := htServer
-            Else
+            else
                 HiType := htNone;
 
             memOutput.SelAttributes.Color := HighlightColors[HiType];
             memOutput.SelAttributes.Style := HighlightStyles[HiType];
             memOutput.Lines.Add(sl[I]);
-        End;
-    Finally
+        end;
+    finally
         sl.Free;
-    End;
-End;
+    end;
+end;
 
-Procedure TCVSForm.btnCVSImportBrwsClick(Sender: TObject);
-Var
-    s: String;
-Begin
+procedure TCVSForm.btnCVSImportBrwsClick(Sender: TObject);
+var
+    s: string;
+begin
     s := txtCVSImportDir.Text;
-    If SelectDirectory(Lang[ID_ENV_SELUSERDIR], '', s) Then
+    if SelectDirectory(Lang[ID_ENV_SELUSERDIR], '', s) then
         txtCVSImportDir.Text := IncludeTrailingPathDelimiter(s);
 
     vle.Strings.Clear;
     UpdateVLE(txtCVSImportDir.Text);
-End;
+end;
 
-Procedure TCVSForm.cmbReposChange(Sender: TObject);
-Begin
+procedure TCVSForm.cmbReposChange(Sender: TObject);
+begin
     BreakUpRepository;
-End;
+end;
 
-Procedure TCVSForm.btnCOBrwsClick(Sender: TObject);
-Var
-    s: String;
-Begin
+procedure TCVSForm.btnCOBrwsClick(Sender: TObject);
+var
+    s: string;
+begin
     s := txtCOdir.Text;
-    If SelectDirectory(Lang[ID_ENV_SELUSERDIR], '', s) Then
+    if SelectDirectory(Lang[ID_ENV_SELUSERDIR], '', s) then
         txtCOdir.Text := IncludeTrailingPathDelimiter(s);
-End;
+end;
 
-Procedure TCVSForm.chkCOModuleAsClick(Sender: TObject);
-Begin
+procedure TCVSForm.chkCOModuleAsClick(Sender: TObject);
+begin
     txtCOModuleAs.Enabled := chkCOModuleAs.Checked;
-    If txtCOModuleAs.Enabled Then
+    if txtCOModuleAs.Enabled then
         txtCOModuleAs.Text := txtCOmodule.Text;
-End;
+end;
 
-Procedure TCVSForm.UpdateVLE(Path: String);
-    Function IsTextOrBinary(Filename: String): Integer;
+procedure TCVSForm.UpdateVLE(Path: string);
+    function IsTextOrBinary(Filename: string): integer;
         // 0:text, 1:binary, 2:ignore
-    Var
-        hFile: Integer;
-        Buf: Array[1..1024] Of Char;
-    Begin
+    var
+        hFile: integer;
+        Buf: array[1..1024] of char;
+    begin
         Result := 2;
         hFile := FileOpen(Filename, fmOpenRead);
-        If hFile = -1 Then
+        if hFile = -1 then
             Exit;
-        While FileRead(hFile, Buf, SizeOf(Buf)) > 0 Do
-        Begin
+        while FileRead(hFile, Buf, SizeOf(Buf)) > 0 do
+        begin
             Result := 0;
-            If Pos(#01, Buf) > 0 Then
-            Begin
+            if Pos(#01, Buf) > 0 then
+            begin
                 Result := 1;
                 Break;
-            End;
-        End;
+            end;
+        end;
         FileClose(hFile);
-    End;
-Var
-    R: Integer;
+    end;
+var
+    R: integer;
     SR: TSearchRec;
-Begin
-    If FindFirst(Path + '*.*', faAnyFile, SR) = 0 Then
-        Repeat
-            If (SR.Name = '.') Or (SR.Name = '..') Then
+begin
+    if FindFirst(Path + '*.*', faAnyFile, SR) = 0 then
+        repeat
+            if (SR.Name = '.') or (SR.Name = '..') then
                 Continue;
-            If (SR.Attr And faDirectory) = faDirectory Then
+            if (SR.Attr and faDirectory) = faDirectory then
                 UpdateVLE(Path + SR.Name + '\')
-            Else
-            Begin
-                If (Not AnsiStartsStr('.#', SR.Name)) And
-                    (ExtractFileExt(SR.Name) <> '') Then
-                    If Not vle.FindRow(ExtractFileExt(SR.Name), R) Then
-                    Begin
-                        Case IsTextOrBinary(Path + SR.Name) Of
+            else
+            begin
+                if (not AnsiStartsStr('.#', SR.Name)) and
+                    (ExtractFileExt(SR.Name) <> '') then
+                    if not vle.FindRow(ExtractFileExt(SR.Name), R) then
+                    begin
+                        case IsTextOrBinary(Path + SR.Name) of
                             0:
-                                vle.InsertRow(ExtractFileExt(SR.Name), 'Text', True);
+                                vle.InsertRow(ExtractFileExt(SR.Name), 'Text', TRUE);
                             1:
-                                vle.InsertRow(ExtractFileExt(SR.Name), 'Binary', True);
+                                vle.InsertRow(ExtractFileExt(SR.Name), 'Binary', TRUE);
                             2:
-                                vle.InsertRow(ExtractFileExt(SR.Name), 'Ignore', True);
-                        End;
-                        vle.ItemProps[ExtractFileExt(SR.Name)].ReadOnly := True;
-                    End;
-            End;
-        Until FindNext(SR) <> 0;
-End;
+                                vle.InsertRow(ExtractFileExt(SR.Name), 'Ignore', TRUE);
+                        end;
+                        vle.ItemProps[ExtractFileExt(SR.Name)].ReadOnly := TRUE;
+                    end;
+            end;
+        until FindNext(SR) <> 0;
+end;
 
-Procedure TCVSForm.vleGetPickList(Sender: TObject; Const KeyName: String;
+procedure TCVSForm.vleGetPickList(Sender: TObject; const KeyName: string;
     Values: TStrings);
-Begin
+begin
     Values.Clear;
     Values.Add('Text');
     Values.Add('Binary');
     Values.Add('Ignore');
-End;
+end;
 
-Procedure TCVSForm.txtImpModuleChange(Sender: TObject);
-Begin
-    If fCVSAction = caImport Then
-        btnOK.Enabled := (txtImpModule.Text <> '') And
-            (txtImpVendor.Text <> '') And
+procedure TCVSForm.txtImpModuleChange(Sender: TObject);
+begin
+    if fCVSAction = caImport then
+        btnOK.Enabled := (txtImpModule.Text <> '') and
+            (txtImpVendor.Text <> '') and
             (txtImpRelease.Text <> '');
-End;
+end;
 
-Procedure TCVSForm.txtCOmoduleChange(Sender: TObject);
-Begin
-    If fCVSAction = caCheckout Then
-        btnOK.Enabled := (txtCOmodule.Text <> '') And
-            (txtCOdir.Text <> '') And
+procedure TCVSForm.txtCOmoduleChange(Sender: TObject);
+begin
+    if fCVSAction = caCheckout then
+        btnOK.Enabled := (txtCOmodule.Text <> '') and
+            (txtCOdir.Text <> '') and
             (lblRepos.Caption <> 'Invalid repository...');
-End;
+end;
 
-Procedure TCVSForm.chkBeforeDateClick(Sender: TObject);
-Begin
+procedure TCVSForm.chkBeforeDateClick(Sender: TObject);
+begin
     cmbBeforeDate.Enabled := chkBeforeDate.Checked;
-    chkMostRecent.Enabled := chkBeforeDate.Checked Or chkRevision.Checked;
-End;
+    chkMostRecent.Enabled := chkBeforeDate.Checked or chkRevision.Checked;
+end;
 
-Procedure TCVSForm.chkRevisionClick(Sender: TObject);
-Begin
+procedure TCVSForm.chkRevisionClick(Sender: TObject);
+begin
     cmbRevision.Enabled := chkRevision.Checked;
-    chkMostRecent.Enabled := chkBeforeDate.Checked Or chkRevision.Checked;
-End;
+    chkMostRecent.Enabled := chkBeforeDate.Checked or chkRevision.Checked;
+end;
 
-Procedure TCVSForm.chkLogFbyRevClick(Sender: TObject);
-Begin
+procedure TCVSForm.chkLogFbyRevClick(Sender: TObject);
+begin
     cmbLogFbyRev.Enabled := chkLogFbyRev.Checked;
-End;
+end;
 
-Procedure TCVSForm.chkLogFbyDateClick(Sender: TObject);
-Begin
+procedure TCVSForm.chkLogFbyDateClick(Sender: TObject);
+begin
     cmbLogFbyDate.Enabled := chkLogFbyDate.Checked;
-End;
+end;
 
-Procedure TCVSForm.chkLogFbyUserClick(Sender: TObject);
-Begin
+procedure TCVSForm.chkLogFbyUserClick(Sender: TObject);
+begin
     cmbLogFbyUser.Enabled := chkLogFbyUser.Checked;
-End;
+end;
 
-Procedure TCVSForm.rgbDiff1Click(Sender: TObject);
-Begin
-    txtDiffRev1.Enabled := rgbDiff1.Checked Or rgbDiff2.Checked;
+procedure TCVSForm.rgbDiff1Click(Sender: TObject);
+begin
+    txtDiffRev1.Enabled := rgbDiff1.Checked or rgbDiff2.Checked;
     txtDiffRev2.Enabled := rgbDiff2.Checked;
     chkDiffDate1.Enabled := txtDiffRev1.Enabled;
     chkDiffDate2.Enabled := txtDiffRev2.Enabled;
-End;
+end;
 
-Procedure TCVSForm.LoadText;
-Begin
-    If devData.XPTheme Then
-        XPMenu.Active := True
-    Else
-        XPMenu.Active := False;
+procedure TCVSForm.LoadText;
+begin
+    if devData.XPTheme then
+        XPMenu.Active := TRUE
+    else
+        XPMenu.Active := FALSE;
     tabImport.Caption := Lang[ID_CVS_IMPORTTAB];
     tabRepos.Caption := Lang[ID_CVS_REPOSITORYTAB];
     tabGlobal.Caption := Lang[ID_CVS_GLOBALTAB];
@@ -1095,48 +1095,48 @@ Begin
 
     btnOK.Caption := Lang[ID_BTN_OK];
     btnCancel.Caption := Lang[ID_BTN_CLOSE];
-End;
+end;
 
-Procedure TCVSForm.FormCreate(Sender: TObject);
-Begin
+procedure TCVSForm.FormCreate(Sender: TObject);
+begin
     fFiles := TStringList.Create;
     fAllFiles := TStringList.Create;
-End;
+end;
 
-Procedure TCVSForm.FormDestroy(Sender: TObject);
-Begin
+procedure TCVSForm.FormDestroy(Sender: TObject);
+begin
 
-    If Assigned(fAllFiles) Then
+    if Assigned(fAllFiles) then
         FreeAndNil(fAllFiles)
-    Else
-        fAllFiles := Nil;
+    else
+        fAllFiles := NIL;
 
-    If Assigned(fFiles) Then
+    if Assigned(fFiles) then
         FreeAndNil(fFiles)
-    Else
-        fFiles := Nil;
+    else
+        fFiles := NIL;
 
-End;
+end;
 
-Procedure TCVSForm.FindModifiedFiles;
-    Function GetFileTimeStr(Filename: String): String;
-    Var
+procedure TCVSForm.FindModifiedFiles;
+    function GetFileTimeStr(Filename: string): string;
+    var
         d: TDateTime;
         hFile: THandle;
         st: SYSTEMTIME;
         tz: TTimeZoneInformation;
         ft: TFileTime;
-        daystr, monthstr: Array[0..16] Of Char;
-    Begin
+        daystr, monthstr: array[0..16] of char;
+    begin
         hFile := FileOpen(Filename, fmOpenRead);
-        Try
-            GetFileTime(hFile, Nil, Nil, @ft);
+        try
+            GetFileTime(hFile, NIL, NIL, @ft);
             FileTimeToSystemTime(ft, st);
             d := SystemTimeToDateTime(st);
             GetTimeZoneInformation(tz);
-        Finally
+        finally
             FileClose(hFile);
-        End;
+        end;
 
         GetLocaleInfo($0409, LOCALE_SABBREVDAYNAME1 + DayOfWeek(d) -
             2, daystr, sizeof(daystr));
@@ -1145,85 +1145,85 @@ Procedure TCVSForm.FindModifiedFiles;
 
         Result := FormatDateTime('dd hh:nn:ss yyyy', d);
         Result := Format('%s %s %s', [daystr, monthstr, Result]);
-    End;
-Var
-    I, idx: Integer;
+    end;
+var
+    I, idx: integer;
     sl: TStringList;
-    fname, dstr, S, prefix: String;
-    modif: Integer;
-Begin
+    fname, dstr, S, prefix: string;
+    modif: integer;
+begin
     { Not implemented yet }
     Exit;
 
-    If Not FileExists('CVS\Entries') Then
+    if not FileExists('CVS\Entries') then
         Exit;
-    If fFiles.Count > 0 Then
+    if fFiles.Count > 0 then
         prefix := IncludeTrailingPathDelimiter(ExtractFilePath(fFiles[0]));
     sl := TStringList.Create;
-    Try
+    try
         sl.LoadFromFile('CVS\Entries');
-        For I := 0 To sl.Count - 1 Do
-        Begin
+        for I := 0 to sl.Count - 1 do
+        begin
             S := sl[I];
 
             idx := Pos('/', S); // find /
-            If idx = 0 Then
+            if idx = 0 then
                 Continue;
             Delete(S, 1, idx);
             // the filename is here
             idx := Pos('/', S); // find /
-            If idx = 0 Then
+            if idx = 0 then
                 Continue;
             fname := Copy(S, 1, idx - 1); //fname
             Delete(S, 1, idx);
             idx := Pos('/', S); // find /
-            If idx = 0 Then
+            if idx = 0 then
                 Continue;
             Delete(S, 1, idx);
             // the date is here
             idx := Pos('/', S); // find /
-            If idx = 0 Then
+            if idx = 0 then
                 Continue;
             dstr := Copy(S, 1, idx - 1); //dstr
 
             idx := lstFiles.Items.IndexOf(prefix + fname);
-            If idx > 0 Then
-            Begin
-                If GetFileTimeStr(prefix + fname) <> dstr Then
+            if idx > 0 then
+            begin
+                if GetFileTimeStr(prefix + fname) <> dstr then
                     modif := 1
-                Else
+                else
                     modif := 0;
                 lstFiles.Items.Objects[idx] := Pointer(modif);
-            End
-            Else;
-        End;
-    Finally
+            end
+            else;
+        end;
+    finally
         sl.Free;
-    End;
-End;
+    end;
+end;
 
-Procedure TCVSForm.lstFilesDrawItem(Control: TWinControl; Index: Integer;
+procedure TCVSForm.lstFilesDrawItem(Control: TWinControl; Index: integer;
     Rect: TRect; State: TOwnerDrawState);
-Begin
-    With lstFiles.Canvas Do
-    Begin
-        If lstFiles.Items.Objects[Index] = Pointer(1) Then //modified
+begin
+    with lstFiles.Canvas do
+    begin
+        if lstFiles.Items.Objects[Index] = Pointer(1) then //modified
             Font.Color := clRed;
         FillRect(Rect);
         TextOut(Rect.Left, Rect.Top, lstFiles.Items[Index]);
-    End;
-End;
+    end;
+end;
 
-Procedure TCVSForm.chkCORevisionClick(Sender: TObject);
-Begin
+procedure TCVSForm.chkCORevisionClick(Sender: TObject);
+begin
     cmbCORevision.Enabled := chkCORevision.Checked;
-    chkCOMostRecent.Enabled := chkCOBeforeDate.Checked Or chkCORevision.Checked;
-End;
+    chkCOMostRecent.Enabled := chkCOBeforeDate.Checked or chkCORevision.Checked;
+end;
 
-Procedure TCVSForm.chkCOBeforeDateClick(Sender: TObject);
-Begin
+procedure TCVSForm.chkCOBeforeDateClick(Sender: TObject);
+begin
     cmbCOBeforeDate.Enabled := chkCOBeforeDate.Checked;
-    chkCOMostRecent.Enabled := chkCOBeforeDate.Checked Or chkCORevision.Checked;
-End;
+    chkCOMostRecent.Enabled := chkCOBeforeDate.Checked or chkCORevision.Checked;
+end;
 
-End.
+end.

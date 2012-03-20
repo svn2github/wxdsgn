@@ -32,11 +32,11 @@ me <khaled@shagrouni.com> (Please state the XPMenu version and OS information).
 {$DEFINE VER7U}
 {$ENDIF}
 
-Unit XPMenu;
+unit XPMenu;
 
-Interface
+interface
 
-Uses
+uses
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Classes, Graphics, Controls, ComCtrls, Forms,
     Menus, Commctrl, ExtCtrls, StdCtrls, Buttons;
@@ -46,10 +46,10 @@ Uses
   QMenus, Commctrl, QStdCtrls, QButtons;
 {$ENDIF}
 
-Type
+type
     TXPContainer = (xccForm, xccFrame, xccToolbar, xccCoolbar, xccControlbar, xccPanel,
         xccScrollBox, xccGroupBox, xccTabSheet, xccPageScroller);
-    TXPContainers = Set Of TXPContainer;
+    TXPContainers = set of TXPContainer;
 
     TXPControl = (xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox,
         xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox,
@@ -57,51 +57,51 @@ Type
         xcGroupBox, xcTreeView, xcListView, xcProgressBar, xcHotKey);
                 {xcStringGrid, xcDrawGrid, xcDBGrid);}
 
-    TXPControls = Set Of TXPControl;
+    TXPControls = set of TXPControl;
 
-    TXPMenu = Class;
+    TXPMenu = class;
 
-    TControlSubClass = Class(TComponent)   //:   "Fabian Jakubowski" <fj@sambreville.com>
-    Private
+    TControlSubClass = class(TComponent)   //:   "Fabian Jakubowski" <fj@sambreville.com>
+    private
         fControl: TControl;
-        FBuilding: Boolean;
-        FMouseInControl: Boolean;
-        FLButtonBressed: Boolean;
-        FBressed: Boolean;
-        FIsKeyDown: Boolean;
-        FIsFocused: Boolean;
+        FBuilding: boolean;
+        FMouseInControl: boolean;
+        FLButtonBressed: boolean;
+        FBressed: boolean;
+        FIsKeyDown: boolean;
+        FIsFocused: boolean;
         orgWindowProc: TWndMethod;
         XPMenu: TXPMenu;
-        FCtl3D: Boolean;
+        FCtl3D: boolean;
         FBorderStyle: TBorderStyle;
   {FOnDrawCell: TDrawCellEvent;}
-        FDefaultDrawing: Boolean;
-        FSelCol, FSelRow: Integer;
-        FMsg: Cardinal;
-        Procedure ControlSubClass(Var Message: TMessage);
-        Procedure PaintControlXP;
-        Procedure PaintCombo;
-        Procedure PaintDBLookupCombo;
-        Procedure PaintEdit;
-        Procedure PaintRichEdit;
-        Procedure PaintCheckBox;
-        Procedure PaintRadio;
-        Procedure PaintButton;
-        Procedure PaintBitButn;
-        Procedure PaintUpDownButton;
-        Procedure PaintSpeedButton;
-        Procedure PaintPanel;
-        Procedure PaintGroupBox;
-        Procedure PaintNCWinControl;
-        Procedure PaintProgressBar;
-        Procedure PaintHotKey;
-        Procedure SetControl(AControl: TControl);
-        Property Control: TControl Read fControl Write SetControl;
-    End;
+        FDefaultDrawing: boolean;
+        FSelCol, FSelRow: integer;
+        FMsg: cardinal;
+        procedure ControlSubClass(var Message: TMessage);
+        procedure PaintControlXP;
+        procedure PaintCombo;
+        procedure PaintDBLookupCombo;
+        procedure PaintEdit;
+        procedure PaintRichEdit;
+        procedure PaintCheckBox;
+        procedure PaintRadio;
+        procedure PaintButton;
+        procedure PaintBitButn;
+        procedure PaintUpDownButton;
+        procedure PaintSpeedButton;
+        procedure PaintPanel;
+        procedure PaintGroupBox;
+        procedure PaintNCWinControl;
+        procedure PaintProgressBar;
+        procedure PaintHotKey;
+        procedure SetControl(AControl: TControl);
+        property Control: TControl read fControl write SetControl;
+    end;
 
-    TXPMenu = Class(TComponent)
-    Private
-        FActive: Boolean;
+    TXPMenu = class(TComponent)
+    private
+        FActive: boolean;
     {Changes MMK FForm to TScrollingWinControl}
         FForm: TScrollingWinControl;
         FFont: TFont;
@@ -114,276 +114,276 @@ Type
         FSelectColor: TColor;
         FDisabledColor: TColor;
         FSelectFontColor: TColor;
-        FIconWidth: Integer;
-        FDrawSelect: Boolean;
-        FUseSystemColors: Boolean;
-        FColorsChanged: Boolean; // +jt
+        FIconWidth: integer;
+        FDrawSelect: boolean;
+        FUseSystemColors: boolean;
+        FColorsChanged: boolean; // +jt
 
         FFColor, FFIconBackColor, FFSelectColor, FFSelectBorderColor,
         FFSelectFontColor, FCheckedAreaColor, FCheckedAreaSelectColor,
         FFCheckedColor, FFMenuBarColor, FFDisabledColor, FFSeparatorColor,
         FMenuBorderColor, FMenuShadowColor: TColor;
 
-        Is16Bit: Boolean;
-        FOverrideOwnerDraw: Boolean;
-        FGradient: Boolean;
-        FFlatMenu: Boolean;
-        FAutoDetect: Boolean;
+        Is16Bit: boolean;
+        FOverrideOwnerDraw: boolean;
+        FGradient: boolean;
+        FFlatMenu: boolean;
+        FAutoDetect: boolean;
         FXPContainers: TXPContainers;
         FXPControls: TXPControls;
-        FGrayLevel: Byte;
-        FDimLevel: Byte;
-        FDrawMenuBar: Boolean;
-        FUseDimColor: Boolean;
-        FDimParentColor, FDimParentColorSelect: Integer;
+        FGrayLevel: byte;
+        FDimLevel: byte;
+        FDrawMenuBar: boolean;
+        FUseDimColor: boolean;
+        FDimParentColor, FDimParentColorSelect: integer;
    // FUseParentClor: boolean;
 // +jt
-        FSettingWindowRng: Boolean;
-        FIsW2k: Boolean;
-        FIsWXP: Boolean;
-        FIsWNT: Boolean;
+        FSettingWindowRng: boolean;
+        FIsW2k: boolean;
+        FIsWXP: boolean;
+        FIsWNT: boolean;
 //   FTransparentColor: TColor;
 // +jt
 
    // Do not allow the component to be used for subclassing
-        FDisableSubclassing: Boolean;
-        Procedure SetDisableSubclassing(Const Value: Boolean);
+        FDisableSubclassing: boolean;
+        procedure SetDisableSubclassing(const Value: boolean);
 
-        Procedure SetActive(Const Value: Boolean);
-        Procedure SetAutoDetect(Const Value: Boolean);
-        Procedure SetForm(Const Value: TScrollingWinControl);
-        Procedure SetFont(Const Value: TFont);
-        Procedure SetColor(Const Value: TColor);
-        Procedure SetIconBackColor(Const Value: TColor);
-        Procedure SetMenuBarColor(Const Value: TColor);
-        Procedure SetCheckedColor(Const Value: TColor);
-        Procedure SetDisabledColor(Const Value: TColor);
-        Procedure SetSelectColor(Const Value: TColor);
-        Procedure SetSelectBorderColor(Const Value: TColor);
-        Procedure SetSeparatorColor(Const Value: TColor);
-        Procedure SetSelectFontColor(Const Value: TColor);
-        Procedure SetIconWidth(Const Value: Integer);
-        Procedure SetDrawSelect(Const Value: Boolean);
-        Procedure SetUseSystemColors(Const Value: Boolean);
-        Procedure SetOverrideOwnerDraw(Const Value: Boolean);
-        Procedure SetGradient(Const Value: Boolean);
-        Procedure SetFlatMenu(Const Value: Boolean);
-        Procedure SetXPContainers(Const Value: TXPContainers);
-        Procedure SetXPControls(Const Value: TXPControls);
-        Procedure SetDrawMenuBar(Const Value: Boolean);
-        Procedure SetUseDimColor(Const Value: Boolean);
+        procedure SetActive(const Value: boolean);
+        procedure SetAutoDetect(const Value: boolean);
+        procedure SetForm(const Value: TScrollingWinControl);
+        procedure SetFont(const Value: TFont);
+        procedure SetColor(const Value: TColor);
+        procedure SetIconBackColor(const Value: TColor);
+        procedure SetMenuBarColor(const Value: TColor);
+        procedure SetCheckedColor(const Value: TColor);
+        procedure SetDisabledColor(const Value: TColor);
+        procedure SetSelectColor(const Value: TColor);
+        procedure SetSelectBorderColor(const Value: TColor);
+        procedure SetSeparatorColor(const Value: TColor);
+        procedure SetSelectFontColor(const Value: TColor);
+        procedure SetIconWidth(const Value: integer);
+        procedure SetDrawSelect(const Value: boolean);
+        procedure SetUseSystemColors(const Value: boolean);
+        procedure SetOverrideOwnerDraw(const Value: boolean);
+        procedure SetGradient(const Value: boolean);
+        procedure SetFlatMenu(const Value: boolean);
+        procedure SetXPContainers(const Value: TXPContainers);
+        procedure SetXPControls(const Value: TXPControls);
+        procedure SetDrawMenuBar(const Value: boolean);
+        procedure SetUseDimColor(const Value: boolean);
 
-    Protected
-        Procedure Loaded; Override; //add by Cunha, liyang.
-        Procedure InitItems(wForm: TWinControl; Enable, Update: Boolean);
-        Procedure InitItem(Comp: TComponent; Enable, Update: Boolean); // Tom: "Thomas Knoblauch" <thomas@tom-the-bomb.de> 27.08
-        Procedure DrawItem(Sender: TObject; ACanvas: TCanvas; ARect: TRect;
-            Selected: Boolean);
-        Procedure MenueDrawItem(Sender: TObject; ACanvas: TCanvas; ARect: TRect;
-            Selected: Boolean);
+    protected
+        procedure Loaded; override; //add by Cunha, liyang.
+        procedure InitItems(wForm: TWinControl; Enable, Update: boolean);
+        procedure InitItem(comp: TComponent; Enable, Update: boolean); // Tom: "Thomas Knoblauch" <thomas@tom-the-bomb.de> 27.08
+        procedure DrawItem(Sender: TObject; ACanvas: TCanvas; ARect: TRect;
+            Selected: boolean);
+        procedure MenueDrawItem(Sender: TObject; ACanvas: TCanvas; ARect: TRect;
+            Selected: boolean);
     {$IFDEF VER5U}
-        Procedure ToolBarDrawButton(Sender: TToolBar;
-            Button: TToolButton; State: TCustomDrawState; Var DefaultDraw: Boolean);
+        procedure ToolBarDrawButton(Sender: TToolBar;
+            Button: TToolButton; State: TCustomDrawState; var DefaultDraw: boolean);
     {$ENDIF}
-        Procedure ControlBarPaint(Sender: TObject; Control: TControl;
-            Canvas: TCanvas; Var ARect: TRect; Var Options: TBandPaintOptions);
+        procedure ControlBarPaint(Sender: TObject; Control: TControl;
+            Canvas: TCanvas; var ARect: TRect; var Options: TBandPaintOptions);
 
-        Procedure SetGlobalColor(ACanvas: TCanvas);
-        Procedure DrawTopMenuItem(Sender: TObject; ACanvas: TCanvas; ARect: TRect;
-            BckColor: Tcolor; IsRightToLeft: Boolean);
-        Procedure DrawCheckedItem(FMenuItem: TMenuItem; Selected, Enabled,
-            HasImgLstBitmap: Boolean; ACanvas: TCanvas; CheckedRect: TRect);
-        Procedure DrawTheText(Sender: TObject; txt, ShortCuttext: String;
+        procedure SetGlobalColor(ACanvas: TCanvas);
+        procedure DrawTopMenuItem(Sender: TObject; ACanvas: TCanvas; ARect: TRect;
+            BckColor: Tcolor; IsRightToLeft: boolean);
+        procedure DrawCheckedItem(FMenuItem: TMenuItem; Selected, Enabled,
+            HasImgLstBitmap: boolean; ACanvas: TCanvas; CheckedRect: TRect);
+        procedure DrawTheText(Sender: TObject; txt, ShortCuttext: string;
             ACanvas: TCanvas; TextRect: TRect;
-            Selected, Enabled, Default, TopMenu, IsRightToLeft: Boolean;
-            Var TxtFont: TFont; TextFormat: Integer);
-        Procedure DrawIcon(Sender: TObject; ACanvas: TCanvas; B: TBitmap;
+            Selected, Enabled, Default, TopMenu, IsRightToLeft: boolean;
+            var TxtFont: TFont; TextFormat: integer);
+        procedure DrawIcon(Sender: TObject; ACanvas: TCanvas; B: TBitmap;
             IconRect: Trect; Hot, Selected, Enabled, Checked, FTopMenu,
-            IsRightToLeft: Boolean);
+            IsRightToLeft: boolean);
 
-        Procedure MeasureItem(Sender: TObject; ACanvas: TCanvas;
-            Var Width, Height: Integer);
+        procedure MeasureItem(Sender: TObject; ACanvas: TCanvas;
+            var Width, Height: integer);
 
     //function GetImageExtent(MenuItem: TMenuItem): TPoint;
-        Function GetImageExtent(MenuItem: TMenuItem; FTopMenu: TMenu): TPoint; // +jt
-        Function TopMenuFontColor(ACanvas: TCanvas; Color: TColor): TColor;
-        Procedure DrawGradient(ACanvas: TCanvas; ARect: TRect;
-            IsRightToLeft: Boolean);
+        function GetImageExtent(MenuItem: TMenuItem; FTopMenu: TMenu): TPoint; // +jt
+        function TopMenuFontColor(ACanvas: TCanvas; Color: TColor): TColor;
+        procedure DrawGradient(ACanvas: TCanvas; ARect: TRect;
+            IsRightToLeft: boolean);
 
-        Procedure DrawWindowBorder(hWnd: HWND; IsRightToLeft: Boolean);
+        procedure DrawWindowBorder(hWnd: HWND; IsRightToLeft: boolean);
 
-        Procedure Notification(AComponent: TComponent;
-            Operation: TOperation); Override;
+        procedure Notification(AComponent: TComponent;
+            Operation: TOperation); override;
 
-    Public
-        Constructor Create(AOwner: TComponent); Override;
-        Destructor Destroy; Override;
-        Procedure InitComponent(Comp: TComponent); // Tom: Added for usage by the main program ."Thomas Knoblauch" <thomas@tom-the-bomb.de> 27.08
-        Procedure ActivateMenuItem(MenuItem: TMenuItem; SubMenus: Boolean); // +jt
-        Property Form: TScrollingWinControl Read FForm Write SetForm;
+    public
+        constructor Create(AOwner: TComponent); override;
+        destructor Destroy; override;
+        procedure InitComponent(comp: TComponent); // Tom: Added for usage by the main program ."Thomas Knoblauch" <thomas@tom-the-bomb.de> 27.08
+        procedure ActivateMenuItem(MenuItem: TMenuItem; SubMenus: boolean); // +jt
+        property Form: TScrollingWinControl read FForm write SetForm;
 // +jt
-        Property IsWXP: Boolean Read FIsWXP;
-        Property IsW2k: Boolean Read FIsW2k;
-        Property IsWNT: Boolean Read FIsWNT;
+        property IsWXP: boolean read FIsWXP;
+        property IsW2k: boolean read FIsW2k;
+        property IsWNT: boolean read FIsWNT;
 //   property TransparentColor: TColor read FTransparentColor write FTransparentColor;
 // +jt
-    Published
-        Property DimLevel: Byte Read FDimLevel Write FDimLevel;
-        Property GrayLevel: Byte Read FGrayLevel Write FGrayLevel;
-        Property Font: TFont Read FFont Write SetFont;
-        Property Color: TColor Read FColor Write SetColor;
-        Property DrawMenuBar: Boolean Read FDrawMenuBar Write SetDrawMenuBar;
-        Property IconBackColor: TColor Read FIconBackColor Write SetIconBackColor;
-        Property MenuBarColor: TColor Read FMenuBarColor Write SetMenuBarColor;
-        Property SelectColor: TColor Read FSelectColor Write SetSelectColor;
-        Property SelectBorderColor: TColor Read FSelectBorderColor
-            Write SetSelectBorderColor;
-        Property SelectFontColor: TColor Read FSelectFontColor
-            Write SetSelectFontColor;
-        Property DisabledColor: TColor Read FDisabledColor Write SetDisabledColor;
-        Property SeparatorColor: TColor Read FSeparatorColor
-            Write SetSeparatorColor;
-        Property CheckedColor: TColor Read FCheckedColor Write SetCheckedColor;
-        Property IconWidth: Integer Read FIconWidth Write SetIconWidth;
-        Property DrawSelect: Boolean Read FDrawSelect Write SetDrawSelect;
-        Property UseSystemColors: Boolean Read FUseSystemColors
-            Write SetUseSystemColors;
-        Property UseDimColor: Boolean Read FUseDimColor Write SetUseDimColor;
-        Property OverrideOwnerDraw: Boolean Read FOverrideOwnerDraw
-            Write SetOverrideOwnerDraw;
+    published
+        property DimLevel: byte read FDimLevel write FDimLevel;
+        property GrayLevel: byte read FGrayLevel write FGrayLevel;
+        property Font: TFont read FFont write SetFont;
+        property Color: TColor read FColor write SetColor;
+        property DrawMenuBar: boolean read FDrawMenuBar write SetDrawMenuBar;
+        property IconBackColor: TColor read FIconBackColor write SetIconBackColor;
+        property MenuBarColor: TColor read FMenuBarColor write SetMenuBarColor;
+        property SelectColor: TColor read FSelectColor write SetSelectColor;
+        property SelectBorderColor: TColor read FSelectBorderColor
+            write SetSelectBorderColor;
+        property SelectFontColor: TColor read FSelectFontColor
+            write SetSelectFontColor;
+        property DisabledColor: TColor read FDisabledColor write SetDisabledColor;
+        property SeparatorColor: TColor read FSeparatorColor
+            write SetSeparatorColor;
+        property CheckedColor: TColor read FCheckedColor write SetCheckedColor;
+        property IconWidth: integer read FIconWidth write SetIconWidth;
+        property DrawSelect: boolean read FDrawSelect write SetDrawSelect;
+        property UseSystemColors: boolean read FUseSystemColors
+            write SetUseSystemColors;
+        property UseDimColor: boolean read FUseDimColor write SetUseDimColor;
+        property OverrideOwnerDraw: boolean read FOverrideOwnerDraw
+            write SetOverrideOwnerDraw;
 
-        Property Gradient: Boolean Read FGradient Write SetGradient;
-        Property FlatMenu: Boolean Read FFlatMenu Write SetFlatMenu;
-        Property AutoDetect: Boolean Read FAutoDetect Write SetAutoDetect;
-        Property XPContainers: TXPContainers Read FXPContainers Write SetXPContainers
-            Default [xccForm, xccFrame, xccToolbar, xccCoolbar, xccControlbar, xccPanel,
+        property Gradient: boolean read FGradient write SetGradient;
+        property FlatMenu: boolean read FFlatMenu write SetFlatMenu;
+        property AutoDetect: boolean read FAutoDetect write SetAutoDetect;
+        property XPContainers: TXPContainers read FXPContainers write SetXPContainers
+            default [xccForm, xccFrame, xccToolbar, xccCoolbar, xccControlbar, xccPanel,
             xccScrollBox, xccGroupBox, xccTabSheet, xccPageScroller];
-        Property XPControls: TXPControls Read FXPControls Write SetXPControls
-            Default [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox,
+        property XPControls: TXPControls read FXPControls write SetXPControls
+            default [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox,
             xcEdit, xcMaskEdit, xcMemo, xcRichEdit, xcMiscEdit, xcCheckBox,
             xcRadioButton, xcButton, xcBitBtn, xcSpeedButton, xcUpDown, xcPanel,
             xcGroupBox, xcTreeView, xcListView, xcProgressBar, xcHotKey];
                {xcStringGrid, xcDrawGrid, xcDBGrid];}
 
-        Property Active: Boolean Read FActive Write SetActive;
-        Property DisableSubclassing: Boolean Read FDisableSubclassing Write SetDisablesubclassing
-            Default False;
-    End;
+        property Active: boolean read FActive write SetActive;
+        property DisableSubclassing: boolean read FDisableSubclassing write SetDisablesubclassing
+            default FALSE;
+    end;
 
-    TXPMenuManager = Class(TPersistent)
-    Private
+    TXPMenuManager = class(TPersistent)
+    private
         FXPMenuList: TList;
         FPendingFormsList: TList;
         FFormList: TList;
         FActiveXPMenu: TXPMenu;
-        FDisableSubclassing: Boolean;
+        FDisableSubclassing: boolean;
 
-        Function MainWindowHook(Var Message: TMessage): Boolean;
-        Procedure CollectForms;
-        Procedure RemoveChildSubclassing(AForm: TCustomForm);
-        Procedure SetDisableSubclassing(AValue: Boolean);
-        Function FindSubclassingXPMenu(Exclude: TXPMenu): TXPMenu;
+        function MainWindowHook(var Message: TMessage): boolean;
+        procedure CollectForms;
+        procedure RemoveChildSubclassing(AForm: TCustomForm);
+        procedure SetDisableSubclassing(AValue: boolean);
+        function FindSubclassingXPMenu(Exclude: TXPMenu): TXPMenu;
 
-    Protected
-        Procedure Notification(AComponent: TComponent; Operation: TOperation);
+    protected
+        procedure Notification(AComponent: TComponent; Operation: TOperation);
 
-    Public
-        Constructor Create;
-        Destructor Destroy; Override;
-        Procedure Add(AXPMenu: TXPMenu);
-        Procedure Delete(AXPMenu: TXPMenu);
-        Procedure UpdateActiveXPMenu(AXPMenu: TXPMenu);
-        Procedure AddForm(AForm: TCustomForm);
-        Procedure RemoveForm(AForm: TCustomForm);
-        Function IsFormSubclassed(AForm: TCustomForm): Boolean;
-        Function IsComponentSubclassed(AComponent: TComponent): Boolean;
+    public
+        constructor Create;
+        destructor Destroy; override;
+        procedure Add(AXPMenu: TXPMenu);
+        procedure Delete(AXPMenu: TXPMenu);
+        procedure UpdateActiveXPMenu(AXPMenu: TXPMenu);
+        procedure AddForm(AForm: TCustomForm);
+        procedure RemoveForm(AForm: TCustomForm);
+        function IsFormSubclassed(AForm: TCustomForm): boolean;
+        function IsComponentSubclassed(AComponent: TComponent): boolean;
 
-        Property ActiveXPMenu: TXPMenu Read FActiveXPMenu;
-        Property DisableSubclassing: Boolean Read FDisableSubclassing Write SetDisableSubclassing
-            Default False;
-    End;
+        property ActiveXPMenu: TXPMenu read FActiveXPMenu;
+        property DisableSubclassing: boolean read FDisableSubclassing write SetDisableSubclassing
+            default FALSE;
+    end;
 
-Function GetShadeColor(ACanvas: TCanvas; clr: TColor; Value: Integer): TColor;
-Function MergColor(Colors: Array Of TColor): TColor;
-Function NewColor(ACanvas: TCanvas; clr: TColor; Value: Integer): TColor;
-Procedure DimBitmap(ABitmap: TBitmap; Value: Integer);
+function GetShadeColor(ACanvas: TCanvas; clr: TColor; Value: integer): TColor;
+function MergColor(Colors: array of TColor): TColor;
+function NewColor(ACanvas: TCanvas; clr: TColor; Value: integer): TColor;
+procedure DimBitmap(ABitmap: TBitmap; Value: integer);
 
-Procedure DrawArrow(ACanvas: TCanvas; X, Y: Integer); Overload;
-Procedure DrawArrow(ACanvas: TCanvas; X, Y, Orientation: Integer); Overload;
-Function GrayColor(ACanvas: TCanvas; clr: TColor; Value: Integer): TColor;
-Function GetInverseColor(AColor: TColor): TColor;
+procedure DrawArrow(ACanvas: TCanvas; X, Y: integer); overload;
+procedure DrawArrow(ACanvas: TCanvas; X, Y, Orientation: integer); overload;
+function GrayColor(ACanvas: TCanvas; clr: TColor; Value: integer): TColor;
+function GetInverseColor(AColor: TColor): TColor;
 
-Procedure GrayBitmap(ABitmap: TBitmap; Value: Integer);
-Procedure DrawBitmapShadow(B: TBitmap; ACanvas: TCanvas; X, Y: Integer;
+procedure GrayBitmap(ABitmap: TBitmap; Value: integer);
+procedure DrawBitmapShadow(B: TBitmap; ACanvas: TCanvas; X, Y: integer;
     ShadowColor: TColor);
-Procedure DrawCheckMark(ACanvas: TCanvas; X, Y: Integer);
+procedure DrawCheckMark(ACanvas: TCanvas; X, Y: integer);
 
-Procedure GetSystemMenuFont(Font: TFont);
-Procedure Register;
+procedure GetSystemMenuFont(Font: TFont);
+procedure Register;
 
-Const
+const
     WM_DRAWMENUBORDER = CN_NOTIFY + 101;   // +jt
     WM_DRAWMENUBORDER2 = CN_NOTIFY + 102;   // +jt
 
 // Gloabal access to the XPMenuManager
-Var
+var
     XPMenuManager: TXPMenuManager;
 
-Implementation
+implementation
 
-Procedure Register;
-Begin
+procedure Register;
+begin
     RegisterComponents('XP', [TXPMenu]);
-End;
+end;
 
 // Set up the global variable that represents the XPMenuManager
-Procedure InitControls;
-Begin
-    If XPMenuManager = Nil Then
+procedure InitControls;
+begin
+    if XPMenuManager = NIL then
         XPMenuManager := TXPMenuManager.Create;
-End;
+end;
 
 // Delete the global variable that represents the XPMenuManager
-Procedure DoneControls;
-Begin
-    If (XPMenuManager <> Nil) Then
-    Begin
+procedure DoneControls;
+begin
+    if (XPMenuManager <> NIL) then
+    begin
         XPMenuManager.Free;
-        XPMenuManager := Nil;
-    End;
-End;
+        XPMenuManager := NIL;
+    end;
+end;
 
 // Test if mouse cursor is in the given rect of the application's main form
-Function IsMouseInRect(TheForm: TScrollingWinControl; DestRect: TRect): Boolean;
-Var
+function IsMouseInRect(TheForm: TScrollingWinControl; DestRect: TRect): boolean;
+var
     p: TPoint;
 
-Begin
+begin
 
-    If Assigned(TheForm) Then
-    Begin
+    if Assigned(TheForm) then
+    begin
         p := Mouse.CursorPos;
         p.x := p.x - TheForm.Left;
         p.y := p.y - TheForm.Top;
 
         Dec(DestRect.Right);
         Dec(DestRect.Bottom, 2);
-        Result := (p.x >= DestRect.Left) And (p.x <= DestRect.Right) And
-            (p.y >= DestRect.Top) And (p.y <= DestRect.Bottom);
-    End
-    Else Result := False;
-End;
+        Result := (p.x >= DestRect.Left) and (p.x <= DestRect.Right) and
+            (p.y >= DestRect.Top) and (p.y <= DestRect.Bottom);
+    end
+    else Result := FALSE;
+end;
 
 { TXPMenue }
 
-Constructor TXPMenu.Create(AOwner: TComponent);
-Var
+constructor TXPMenu.Create(AOwner: TComponent);
+var
     OSVersionInfo: TOSVersionInfo; // +jt
-Begin
-    Inherited Create(AOwner);
+begin
+    inherited Create(AOwner);
     FFont := TFont.Create;
 
-    FDisableSubclassing := False;        // enable XPMenu to be used for global subclassing
+    FDisableSubclassing := FALSE;        // enable XPMenu to be used for global subclassing
 
 
 {$IFDEF VER5U}
@@ -391,9 +391,9 @@ Begin
 {$ELSE}
   GetSystemMenuFont(FFont);
 {$ENDIF}
-    FForm := Owner As TScrollingWinControl;
+    FForm := Owner as TScrollingWinControl;
 
-    FUseSystemColors := True;
+    FUseSystemColors := TRUE;
 
     FColor := clBtnFace;
     FIconBackColor := clBtnFace;
@@ -407,7 +407,7 @@ Begin
     FGrayLevel := 10;
     FDimLevel := 30;
     FIconWidth := 24;
-    FDrawSelect := True;
+    FDrawSelect := TRUE;
     XPContainers := [xccForm, xccFrame, xccToolbar, xccCoolbar, xccControlbar, xccPanel,
         xccScrollBox, xccGroupBox, xccTabSheet, xccPageScroller];
     XPControls := [xcMainMenu, xcPopupMenu, xcToolbar, xcControlbar, xcCombo, xcListBox,
@@ -416,445 +416,445 @@ Begin
         xcGroupBox, xcTreeView, xcListView, xcProgressBar, xcHotKey];
             {xcStringGrid, xcDrawGrid, xcDBGrid];}
 
-    If Assigned(FForm) Then
+    if Assigned(FForm) then
         SetGlobalColor(TForm(FForm).Canvas);
 
 // +jt
 // FTransparentColor := clFuchsia;
-    FColorsChanged := False;
+    FColorsChanged := FALSE;
     OSVersionInfo.dwOSVersionInfoSize := sizeof(OSVersionInfo);
     GetVersionEx(OSVersionInfo);
-    FIsWXP := False;
-    FIsW2k := False;
-    FIsWNT := False;
-    If OSVersionInfo.dwPlatformId = VER_PLATFORM_WIN32_NT Then
-    Begin
-        FIsWNT := True;
-        If (OSVersionInfo.dwMajorVersion = 5) And (OSVersionInfo.dwMinorVersion = 0) Then
-            FIsW2k := True;
-        If (OSVersionInfo.dwMajorVersion = 5) And (OSVersionInfo.dwMinorVersion = 1) Then
-            FIsWXP := True;
-    End;
+    FIsWXP := FALSE;
+    FIsW2k := FALSE;
+    FIsWNT := FALSE;
+    if OSVersionInfo.dwPlatformId = VER_PLATFORM_WIN32_NT then
+    begin
+        FIsWNT := TRUE;
+        if (OSVersionInfo.dwMajorVersion = 5) and (OSVersionInfo.dwMinorVersion = 0) then
+            FIsW2k := TRUE;
+        if (OSVersionInfo.dwMajorVersion = 5) and (OSVersionInfo.dwMinorVersion = 1) then
+            FIsWXP := TRUE;
+    end;
 // +jt
 
-    If Not (csDesigning In ComponentState) Then
+    if not (csDesigning in ComponentState) then
         InitControls;
-End;
+end;
 
-Destructor TXPMenu.Destroy;
-Begin
-    If Assigned(FForm) Then    //oleg oleg@vdv-s.ru  Mon Oct  7
-        InitItems(FForm, False, False);
+destructor TXPMenu.Destroy;
+begin
+    if Assigned(FForm) then    //oleg oleg@vdv-s.ru  Mon Oct  7
+        InitItems(FForm, FALSE, FALSE);
 
 // Remove XPMenu from XPMenuManager
-    If Assigned(XPMenuManager) And Not (csDesigning In ComponentState) Then
-    Begin
+    if Assigned(XPMenuManager) and not (csDesigning in ComponentState) then
+    begin
         XPMenuManager.Delete(Self);
         FForm.Update;
-        If XPMenuManager.FXPMenuList.Count = 0 Then
+        if XPMenuManager.FXPMenuList.Count = 0 then
             DoneControls;
-    End;
+    end;
 
     FFont.Free;
-    Inherited;
-End;
+    inherited;
+end;
 
 //add by:
 //liyang <liyang@guangdainfo.com> ,2002-07-19
 //Pedro Miguel Cunha <PCunha@codeware.pt>- 02 Apr 2002
-Procedure TXPMenu.Loaded;
-Begin
-    Inherited Loaded;
+procedure TXPMenu.Loaded;
+begin
+    inherited Loaded;
 
 // Add the XPMenu to the XPMenuManager
-    If Assigned(XPMenuManager) And Not (csDesigning In ComponentState) Then
+    if Assigned(XPMenuManager) and not (csDesigning in ComponentState) then
         XPMenuManager.Add(Self);
-End;
+end;
 
 {to check for new sub items}
-Procedure TXPMenu.ActivateMenuItem(MenuItem: TMenuItem; SubMenus: Boolean); // +jt
+procedure TXPMenu.ActivateMenuItem(MenuItem: TMenuItem; SubMenus: boolean); // +jt
 
-    Procedure Activate(MenuItem: TMenuItem);
-    Begin
-        If (MenuItem.Tag <> 999) Then
-            If addr(MenuItem.OnDrawItem) <> addr(TXPMenu.DrawItem) Then
-            Begin
-                If (Not assigned(MenuItem.OnDrawItem)) Or (FOverrideOwnerDraw) Then
+    procedure Activate(MenuItem: TMenuItem);
+    begin
+        if (MenuItem.Tag <> 999) then
+            if addr(MenuItem.OnDrawItem) <> addr(TXPMenu.DrawItem) then
+            begin
+                if (not assigned(MenuItem.OnDrawItem)) or (FOverrideOwnerDraw) then
                     MenuItem.OnDrawItem := DrawItem;
-                If (Not assigned(MenuItem.OnMeasureItem)) Or (FOverrideOwnerDraw) Then
+                if (not assigned(MenuItem.OnMeasureItem)) or (FOverrideOwnerDraw) then
                     MenuItem.OnMeasureItem := MeasureItem;
-            End;
-    End;
+            end;
+    end;
 
-Var
-    i{, j}: Integer;
-Begin
+var
+    i{, j}: integer;
+begin
 
     Activate(MenuItem);
-    If (SubMenus = True) Then // +jt
-    Begin
-        For i := 0 To MenuItem.Count - 1 Do
-        Begin
-            ActivateMenuItem(MenuItem.Items[i], True);
-        End;
-    End;
-End;
+    if (SubMenus = TRUE) then // +jt
+    begin
+        for i := 0 to MenuItem.Count - 1 do
+        begin
+            ActivateMenuItem(MenuItem.Items[i], TRUE);
+        end;
+    end;
+end;
 
-Procedure TXPMenu.InitItems(wForm: TWinControl; Enable, Update: Boolean);
-Var
-    i: Integer;
-    Comp: TComponent;
-Begin
-    For i := 0 To wForm.ComponentCount - 1 Do
-    Begin
-        Comp := wForm.Components[i];
-        InitItem(Comp, Enable, Update); // Tom: "Thomas Knoblauch" <thomas@tom-the-bomb.de> 27.08
-    End;
-End;
+procedure TXPMenu.InitItems(wForm: TWinControl; Enable, Update: boolean);
+var
+    i: integer;
+    comp: TComponent;
+begin
+    for i := 0 to wForm.ComponentCount - 1 do
+    begin
+        comp := wForm.Components[i];
+        InitItem(comp, Enable, Update); // Tom: "Thomas Knoblauch" <thomas@tom-the-bomb.de> 27.08
+    end;
+end;
 
-Procedure TXPMenu.InitComponent(Comp: TComponent); // Tom: for external (by the main program) use without parameters. "Thomas Knoblauch" <thomas@tom-the-bomb.de> 27.08
-Begin
-    If FActive Then
-        InitItem(Comp, True, True);
-End;
+procedure TXPMenu.InitComponent(comp: TComponent); // Tom: for external (by the main program) use without parameters. "Thomas Knoblauch" <thomas@tom-the-bomb.de> 27.08
+begin
+    if FActive then
+        InitItem(comp, TRUE, TRUE);
+end;
 
 
 
 // Tom: "Thomas Knoblauch" <thomas@tom-the-bomb.de> 27.08
-Procedure TXPMenu.InitItem(Comp: TComponent; Enable, Update: Boolean);
-    Procedure Activate(MenuItem: TMenuItem);
-    Begin
-        If Enable Then
-        Begin
-            If (MenuItem.Tag <> 999) Then
-            Begin
-                If (Not assigned(MenuItem.OnDrawItem)) Or (FOverrideOwnerDraw) Then
+procedure TXPMenu.InitItem(comp: TComponent; Enable, Update: boolean);
+    procedure Activate(MenuItem: TMenuItem);
+    begin
+        if Enable then
+        begin
+            if (MenuItem.Tag <> 999) then
+            begin
+                if (not assigned(MenuItem.OnDrawItem)) or (FOverrideOwnerDraw) then
                     MenuItem.OnDrawItem := DrawItem;
-                If (Not assigned(MenuItem.OnMeasureItem)) Or (FOverrideOwnerDraw) Then
+                if (not assigned(MenuItem.OnMeasureItem)) or (FOverrideOwnerDraw) then
                     MenuItem.OnMeasureItem := MeasureItem;
-            End;
-        End
-        Else
-        Begin
-            If addr(MenuItem.OnDrawItem) = addr(TXPMenu.DrawItem) Then
-                MenuItem.OnDrawItem := Nil;
-            If addr(MenuItem.OnMeasureItem) = addr(TXPMenu.MeasureItem) Then
-                MenuItem.OnMeasureItem := Nil;
-        End;
-    End;
+            end;
+        end
+        else
+        begin
+            if addr(MenuItem.OnDrawItem) = addr(TXPMenu.DrawItem) then
+                MenuItem.OnDrawItem := NIL;
+            if addr(MenuItem.OnMeasureItem) = addr(TXPMenu.MeasureItem) then
+                MenuItem.OnMeasureItem := NIL;
+        end;
+    end;
 
-    Procedure ItrateMenu(MenuItem: TMenuItem);
-    Var
-        i: Integer;
-    Begin
+    procedure ItrateMenu(MenuItem: TMenuItem);
+    var
+        i: integer;
+    begin
         Activate(MenuItem);
-        For i := 0 To MenuItem.Count - 1 Do
-        Begin
+        for i := 0 to MenuItem.Count - 1 do
+        begin
             ItrateMenu(MenuItem.Items[i]);
-        End;
-    End;
+        end;
+    end;
 
-Var
-    x: Integer;
-    s: String;
+var
+    x: integer;
+    s: string;
 
-Begin
-    If (Comp Is TMainMenu) And (xcMainMenu In XPControls) And (TMainMenu(Comp).Tag <> 999) Then
-    Begin
-        TMainMenu(Comp).OwnerDraw := Enable;
-        For x := 0 To TMainMenu(Comp).Items.Count - 1 Do
-            ItrateMenu(TMainMenu(Comp).Items[x]);
+begin
+    if (comp is TMainMenu) and (xcMainMenu in XPControls) and (TMainMenu(comp).Tag <> 999) then
+    begin
+        TMainMenu(comp).OwnerDraw := Enable;
+        for x := 0 to TMainMenu(comp).Items.Count - 1 do
+            ItrateMenu(TMainMenu(comp).Items[x]);
 
     // Selly way to force top menu in other forms to repaint
-        S := TMainMenu(Comp).Items[0].Caption;
-        TMainMenu(Comp).Items[0].Caption := '';
-        TMainMenu(Comp).Items[0].Caption := S;
-    End;
+        S := TMainMenu(comp).Items[0].Caption;
+        TMainMenu(comp).Items[0].Caption := '';
+        TMainMenu(comp).Items[0].Caption := S;
+    end;
 
-    If (Comp Is TMenuItem) And (xcMainMenu In XPControls) Then
-    Begin
-        ItrateMenu(TMenuItem(Comp));
-    End;
+    if (comp is TMenuItem) and (xcMainMenu in XPControls) then
+    begin
+        ItrateMenu(TMenuItem(comp));
+    end;
 
-    If (Comp Is TPopupMenu) And (xcPopupMenu In XPControls) Then
-    Begin
-        For x := 0 To TPopupMenu(Comp).Items.Count - 1 Do
-        Begin
-            TPopupMenu(Comp).OwnerDraw := Enable;
-            ItrateMenu(TPopupMenu(Comp).Items[x]);
+    if (comp is TPopupMenu) and (xcPopupMenu in XPControls) then
+    begin
+        for x := 0 to TPopupMenu(comp).Items.Count - 1 do
+        begin
+            TPopupMenu(comp).OwnerDraw := Enable;
+            ItrateMenu(TPopupMenu(comp).Items[x]);
 
-        End;
-    End;
+        end;
+    end;
 
 {$IFDEF VER5U}
-    If (Comp Is TToolBar) And (xcToolBar In FXPControls) Then
-        If Not (csDesigning In ComponentState) Then
-        Begin
-            If Not TToolBar(Comp).Flat Then
-                TToolBar(Comp).Flat := True;
+    if (comp is TToolBar) and (xcToolBar in FXPControls) then
+        if not (csDesigning in ComponentState) then
+        begin
+            if not TToolBar(comp).Flat then
+                TToolBar(comp).Flat := TRUE;
 
-            If Enable Then
-            Begin
-                For x := 0 To TToolBar(Comp).ButtonCount - 1 Do
-                    If (Not assigned(TToolBar(Comp).OnCustomDrawButton))
-                        Or (FOverrideOwnerDraw) Then
-                    Begin
-                        TToolBar(Comp).OnCustomDrawButton :=
+            if Enable then
+            begin
+                for x := 0 to TToolBar(comp).ButtonCount - 1 do
+                    if (not assigned(TToolBar(comp).OnCustomDrawButton))
+                        or (FOverrideOwnerDraw) then
+                    begin
+                        TToolBar(comp).OnCustomDrawButton :=
                             ToolBarDrawButton;
 
-                    End;
-            End
-            Else
-            Begin
-                If addr(TToolBar(Comp).OnCustomDrawButton) =
-                    addr(TXPMenu.ToolBarDrawButton) Then
-                    TToolBar(Comp).OnCustomDrawButton := Nil;
-            End;
-            If Update Then
-                TToolBar(Comp).Invalidate;
-        End;
+                    end;
+            end
+            else
+            begin
+                if addr(TToolBar(comp).OnCustomDrawButton) =
+                    addr(TXPMenu.ToolBarDrawButton) then
+                    TToolBar(comp).OnCustomDrawButton := NIL;
+            end;
+            if Update then
+                TToolBar(comp).Invalidate;
+        end;
 {$ENDIF}
 
-    If (Comp Is TControlBar) And (xcControlBar In FXPControls) Then
-        If Not (csDesigning In ComponentState) Then
-        Begin
-            If Enable Then
-            Begin
-                If (Not assigned(TControlBar(Comp).OnBandPaint))
-                    Or (FOverrideOwnerDraw) Then
-                Begin
-                    TControlBar(Comp).OnBandPaint := ControlBarPaint;
-                End;
-            End
-            Else
-            Begin
-                If addr(TControlBar(Comp).OnBandPaint) =
-                    addr(TXPMenu.ControlBarPaint) Then
-                    TControlBar(Comp).OnBandPaint := Nil;
-            End;
-            If Update Then
-                TControlBar(Comp).Invalidate;
-        End;
+    if (comp is TControlBar) and (xcControlBar in FXPControls) then
+        if not (csDesigning in ComponentState) then
+        begin
+            if Enable then
+            begin
+                if (not assigned(TControlBar(comp).OnBandPaint))
+                    or (FOverrideOwnerDraw) then
+                begin
+                    TControlBar(comp).OnBandPaint := ControlBarPaint;
+                end;
+            end
+            else
+            begin
+                if addr(TControlBar(comp).OnBandPaint) =
+                    addr(TXPMenu.ControlBarPaint) then
+                    TControlBar(comp).OnBandPaint := NIL;
+            end;
+            if Update then
+                TControlBar(comp).Invalidate;
+        end;
 
-    If Not (csDesigning In ComponentState) Then
-        If {$IFDEF VER6U}
-        ((Comp Is TCustomCombo) And (xcCombo In FXPControls)) Or
-            ((Comp Is TCustomLabeledEdit) And (xcEdit In FXPControls)) Or
+    if not (csDesigning in ComponentState) then
+        if {$IFDEF VER6U}
+        ((comp is TCustomCombo) and (xcCombo in FXPControls)) or
+            ((comp is TCustomLabeledEdit) and (xcEdit in FXPControls)) or
 
        {$ELSE}
        ((Comp is TCustomComboBox) and (xcCombo in FXPControls)) or
        {$ENDIF}
-            ((Comp Is TEdit) And (xcEdit In FXPControls)) Or
-            ((Comp.ClassName = 'TMaskEdit') And (xcMaskEdit In FXPControls)) Or
-            ((Comp.ClassName = 'TDBEdit') And (xcMaskEdit In FXPControls)) Or
-            ((Comp Is TCustomMemo) And (xcMemo In FXPControls)) Or
-            ((Comp Is TCustomRichEdit) And (xcRichEdit In FXPControls)) Or
-            ((Comp Is TCustomCheckBox) And (xcCheckBox In FXPControls)) Or
-            ((Comp Is TRadioButton) And (xcRadioButton In FXPControls)) Or
-            ((Comp.ClassName = 'TBitBtn') And (xcBitBtn In FXPControls)) Or
-            ((Comp.ClassName = 'TButton') And (xcButton In FXPControls)) Or
-            ((Comp.ClassName = 'TUpDown') And (xcUpDown In FXPControls)) Or
-            ((Comp Is TSpeedButton) And (xcSpeedButton In FXPControls)) Or
-            ((Comp Is TCustomPanel) And (xcPanel In FXPControls)) Or
-            ((Comp.ClassName = 'TDBNavigator') And (xcButton In FXPControls)) Or
-            ((Comp.ClassName = 'TDBLookupComboBox') And (xcButton In FXPControls)) Or
-            ((Comp Is TCustomGroupBox) And (xcGroupBox In FXPControls)) Or
-            ((Comp Is TCustomListBox) And (xcListBox In FXPControls)) Or
-            ((Comp Is TCustomTreeView) And (xcTreeView In FXPControls)) Or
-            ((Comp Is TCustomListView) And (xcListView In FXPControls)) Or
-            ((Comp Is TProgressBar) And (xcProgressBar In FXPControls)) Or
-            ((Comp Is TCustomHotKey) And (xcHotKey In FXPControls))
-        Then
-            If ((TControl(Comp).Parent Is TToolbar) And (xccToolBar In FXPContainers)) Or
-                ((TControl(Comp).Parent Is TCoolbar) And (xccCoolbar In FXPContainers)) Or
-                ((TControl(Comp).Parent Is TCustomPanel) And (xccPanel In FXPContainers)) Or
-                ((TControl(Comp).Parent Is TControlbar) And (xccControlbar In FXPContainers)) Or
-                ((TControl(Comp).Parent Is TScrollBox) And (xccScrollBox In FXPContainers)) Or
-                ((TControl(Comp).Parent Is TCustomGroupBox) And (xccGroupBox In FXPContainers)) Or
-                ((TControl(Comp).Parent Is TTabSheet) And (xccTabSheet In FXPContainers)) Or
-                ((TControl(Comp).Parent Is TTabControl) And (xccTabSheet In FXPContainers)) Or
-                ((TControl(Comp).Parent.ClassName = 'TdxTabSheet') And (xccTabSheet In FXPContainers)) Or //DeveloperExpress
-                ((TControl(Comp).Parent Is TPageScroller) And (xccPageScroller In FXPContainers)) Or
+            ((comp is TEdit) and (xcEdit in FXPControls)) or
+            ((comp.ClassName = 'TMaskEdit') and (xcMaskEdit in FXPControls)) or
+            ((comp.ClassName = 'TDBEdit') and (xcMaskEdit in FXPControls)) or
+            ((comp is TCustomMemo) and (xcMemo in FXPControls)) or
+            ((comp is TCustomRichEdit) and (xcRichEdit in FXPControls)) or
+            ((comp is TCustomCheckBox) and (xcCheckBox in FXPControls)) or
+            ((comp is TRadioButton) and (xcRadioButton in FXPControls)) or
+            ((comp.ClassName = 'TBitBtn') and (xcBitBtn in FXPControls)) or
+            ((comp.ClassName = 'TButton') and (xcButton in FXPControls)) or
+            ((comp.ClassName = 'TUpDown') and (xcUpDown in FXPControls)) or
+            ((comp is TSpeedButton) and (xcSpeedButton in FXPControls)) or
+            ((comp is TCustomPanel) and (xcPanel in FXPControls)) or
+            ((comp.ClassName = 'TDBNavigator') and (xcButton in FXPControls)) or
+            ((comp.ClassName = 'TDBLookupComboBox') and (xcButton in FXPControls)) or
+            ((comp is TCustomGroupBox) and (xcGroupBox in FXPControls)) or
+            ((comp is TCustomListBox) and (xcListBox in FXPControls)) or
+            ((comp is TCustomTreeView) and (xcTreeView in FXPControls)) or
+            ((comp is TCustomListView) and (xcListView in FXPControls)) or
+            ((comp is TProgressBar) and (xcProgressBar in FXPControls)) or
+            ((comp is TCustomHotKey) and (xcHotKey in FXPControls))
+        then
+            if ((TControl(comp).Parent is TToolbar) and (xccToolBar in FXPContainers)) or
+                ((TControl(comp).Parent is TCoolbar) and (xccCoolbar in FXPContainers)) or
+                ((TControl(comp).Parent is TCustomPanel) and (xccPanel in FXPContainers)) or
+                ((TControl(comp).Parent is TControlbar) and (xccControlbar in FXPContainers)) or
+                ((TControl(comp).Parent is TScrollBox) and (xccScrollBox in FXPContainers)) or
+                ((TControl(comp).Parent is TCustomGroupBox) and (xccGroupBox in FXPContainers)) or
+                ((TControl(comp).Parent is TTabSheet) and (xccTabSheet in FXPContainers)) or
+                ((TControl(comp).Parent is TTabControl) and (xccTabSheet in FXPContainers)) or
+                ((TControl(comp).Parent.ClassName = 'TdxTabSheet') and (xccTabSheet in FXPContainers)) or //DeveloperExpress
+                ((TControl(comp).Parent is TPageScroller) and (xccPageScroller in FXPContainers)) or
          {$IFDEF VER5U}
-                ((TControl(Comp).Parent Is TCustomFrame) And (xccFrame In FXPContainers)) Or
+                ((TControl(comp).Parent is TCustomFrame) and (xccFrame in FXPContainers)) or
          {$ENDIF}
-                ((TControl(Comp).Parent.ClassName = 'TDBCtrlPanel') And (xccFrame In FXPContainers)) Or
-                ((TControl(Comp).Parent Is TCustomForm) And (xccForm In FXPContainers))
+                ((TControl(comp).Parent.ClassName = 'TDBCtrlPanel') and (xccFrame in FXPContainers)) or
+                ((TControl(comp).Parent is TCustomForm) and (xccForm in FXPContainers))
 
 
-            Then
-            Begin
-                If (Enable) And (Comp.Tag <> 999) And (TControl(Comp).Parent.Tag <> 999) Then
+            then
+            begin
+                if (Enable) and (comp.Tag <> 999) and (TControl(comp).Parent.Tag <> 999) then
                                     {skip if Control/Control.parent.tag = 999}
-                    With TControlSubClass.Create(Self) Do
-                    Begin
-                        Control := TControl(Comp);
-                        If Addr(Control.WindowProc) <> Addr(TControlSubClass.ControlSubClass) Then
-                        Begin
+                    with TControlSubClass.Create(Self) do
+                    begin
+                        Control := TControl(comp);
+                        if Addr(Control.WindowProc) <> Addr(TControlSubClass.ControlSubClass) then
+                        begin
                             orgWindowProc := Control.WindowProc;
                             Control.WindowProc := ControlSubClass;
-                        End;
+                        end;
                         XPMenu := self;
 
-                        If (Control Is TCustomEdit) Then
-                        Begin
+                        if (Control is TCustomEdit) then
+                        begin
                             FCtl3D := TEdit(Control).Ctl3D;
                             FBorderStyle := TRichEdit(Control).BorderStyle;
-                        End;
-                        If Control.ClassName = 'TDBLookupComboBox' Then
-                        Begin
+                        end;
+                        if Control.ClassName = 'TDBLookupComboBox' then
+                        begin
                             FCtl3D := TComboBox(Control).Ctl3D;
-                        End;
-                        If (Control Is TCustomListBox) Then
-                        Begin
+                        end;
+                        if (Control is TCustomListBox) then
+                        begin
                             FCtl3D := TListBox(Control).Ctl3D;
                             FBorderStyle := TListBox(Control).BorderStyle;
-                        End;
-                        If (Control Is TCustomListView) Then
-                        Begin
+                        end;
+                        if (Control is TCustomListView) then
+                        begin
                             FCtl3D := TListView(Control).Ctl3D;
                             FBorderStyle := TListView(Control).BorderStyle;
-                        End;
-                        If (Control Is TCustomTreeView) Then
-                        Begin
+                        end;
+                        if (Control is TCustomTreeView) then
+                        begin
                             FCtl3D := TTreeView(Control).Ctl3D;
                             FBorderStyle := TTreeView(Control).BorderStyle;
-                        End;
+                        end;
 
-                    End;
+                    end;
 
-                If Update Then
-                Begin
-                    TControl(Comp).invalidate;    //in TControlSubClass.ControlSubClass
-                End;
+                if Update then
+                begin
+                    TControl(comp).invalidate;    //in TControlSubClass.ControlSubClass
+                end;
 
-            End;
+            end;
 
   // Recursive call for possible containers.
   // Do recursive call for RadioGroups
-    If (((Comp Is TCustomRadioGroup)) And (xccGroupBox In FXPContainers)) Then
-        self.InitItems(Comp As TWinControl, Enable, Update);
+    if (((comp is TCustomRadioGroup)) and (xccGroupBox in FXPContainers)) then
+        self.InitItems(comp as TWinControl, Enable, Update);
 
 
-    If {$IFDEF VER5U}((Comp Is TCustomFrame) And (xccFrame In FXPContainers))
-        Or {$ENDIF}(Comp.ClassName = 'TDBNavigator')
-        Or (Comp Is TCustomForm) Then  //By Geir Wikran <gwikran@online.no>
-        self.InitItems(Comp As TWinControl, Enable, Update);
+    if {$IFDEF VER5U}((comp is TCustomFrame) and (xccFrame in FXPContainers))
+        or {$ENDIF}(comp.ClassName = 'TDBNavigator')
+        or (comp is TCustomForm) then  //By Geir Wikran <gwikran@online.no>
+        self.InitItems(comp as TWinControl, Enable, Update);
 
 
-End;
+end;
 
-Procedure TXPMenu.DrawItem(Sender: TObject; ACanvas: TCanvas; ARect: TRect;
-    Selected: Boolean);
-Begin
-    Try  //"Steve Rice" <srice@pclink.com>
-        If FActive Then
+procedure TXPMenu.DrawItem(Sender: TObject; ACanvas: TCanvas; ARect: TRect;
+    Selected: boolean);
+begin
+    try  //"Steve Rice" <srice@pclink.com>
+        if FActive then
             MenueDrawItem(Sender, ACanvas, ARect, Selected);
-    Except
-    End;
-End;
+    except
+    end;
+end;
 
-Function TXPMenu.GetImageExtent(MenuItem: TMenuItem; FTopMenu: TMenu): TPoint;
-Var
-    HasImgLstBitmap: Boolean;
+function TXPMenu.GetImageExtent(MenuItem: TMenuItem; FTopMenu: TMenu): TPoint;
+var
+    HasImgLstBitmap: boolean;
     B: TBitmap;
-Begin
+begin
     B := TBitmap.Create;
-    Try
+    try
         B.Width := 0;
         B.Height := 0;
         Result.x := 0;
         Result.Y := 0;
-        HasImgLstBitmap := False;
+        HasImgLstBitmap := FALSE;
 // +jt
-        If Assigned(FTopMenu) Then
-        Begin
-            If FTopMenu.Images <> Nil Then
-                If MenuItem.ImageIndex <> -1 Then
-                    HasImgLstBitmap := True;
-        End;
+        if Assigned(FTopMenu) then
+        begin
+            if FTopMenu.Images <> NIL then
+                if MenuItem.ImageIndex <> -1 then
+                    HasImgLstBitmap := TRUE;
+        end;
 
-        If (MenuItem.Parent.GetParentMenu.Images <> Nil)
+        if (MenuItem.Parent.GetParentMenu.Images <> NIL)
     {$IFDEF VER5U}
-            Or (MenuItem.Parent.SubMenuImages <> Nil)
+            or (MenuItem.Parent.SubMenuImages <> NIL)
     {$ENDIF}
-        Then
-        Begin
-            If MenuItem.ImageIndex <> -1 Then
-                HasImgLstBitmap := True
-            Else
-                HasImgLstBitmap := False;
-        End;
+        then
+        begin
+            if MenuItem.ImageIndex <> -1 then
+                HasImgLstBitmap := TRUE
+            else
+                HasImgLstBitmap := FALSE;
+        end;
 
-        If HasImgLstBitmap Then
-        Begin
+        if HasImgLstBitmap then
+        begin
     {$IFDEF VER5U}
-            If MenuItem.Parent.SubMenuImages <> Nil Then
+            if MenuItem.Parent.SubMenuImages <> NIL then
                 MenuItem.Parent.SubMenuImages.GetBitmap(MenuItem.ImageIndex, B)
-            Else
+            else
     {$ENDIF}
                 MenuItem.Parent.GetParentMenu.Images.GetBitmap(MenuItem.ImageIndex, B);
-        End
-        Else
-        If MenuItem.Bitmap.Width > 0 Then
+        end
+        else
+        if MenuItem.Bitmap.Width > 0 then
             B.Assign(TBitmap(MenuItem.Bitmap));
 
         Result.x := B.Width;
         Result.Y := B.Height;
 
-        If Not Assigned(FTopMenu) Then // +jt
-            If Result.x < FIconWidth Then
+        if not Assigned(FTopMenu) then // +jt
+            if Result.x < FIconWidth then
                 Result.x := FIconWidth;
-    Finally
+    finally
         B.Free;
-    End;
-End;
+    end;
+end;
 
-Procedure TXPMenu.MeasureItem(Sender: TObject; ACanvas: TCanvas;
-    Var Width, Height: Integer);
-Var
-    s: String;
-    W, H: Integer;
+procedure TXPMenu.MeasureItem(Sender: TObject; ACanvas: TCanvas;
+    var Width, Height: integer);
+var
+    s: string;
+    W, H: integer;
     P: TPoint;
-    IsLine: Boolean;
-    FTopMenu: Boolean; // +jt
+    IsLine: boolean;
+    FTopMenu: boolean; // +jt
     FMenu: TMenu; // +jt
-    i: Integer; // +jt
-Begin
+    i: integer; // +jt
+begin
 
-    FTopMenu := False; //+jt
-    If FActive Then
-    Begin
+    FTopMenu := FALSE; //+jt
+    if FActive then
+    begin
         S := TMenuItem(Sender).Caption;
 
-        If S = '-' Then
-            IsLine := True Else IsLine := False;
-        If IsLine Then
+        if S = '-' then
+            IsLine := TRUE else IsLine := FALSE;
+        if IsLine then
             S := '';
 
-        If Trim(ShortCutToText(TMenuItem(Sender).ShortCut)) <> '' Then
+        if Trim(ShortCutToText(TMenuItem(Sender).ShortCut)) <> '' then
             S := S + ShortCutToText(TMenuItem(Sender).ShortCut) + 'WWW';
 
         ACanvas.Font.Assign(FFont);
         W := ACanvas.TextWidth(s);
         Inc(W, 5);
-        If pos('&', s) > 0 Then
+        if pos('&', s) > 0 then
             W := W - ACanvas.TextWidth('&');
 
 // +jt
         FMenu := TMenuItem(Sender).Parent.GetParentMenu;
-        If FMenu Is TMainMenu Then
-        Begin
-            For i := 0 To TMenuItem(Sender).GetParentMenu.Items.Count - 1 Do
-                If TMenuItem(Sender).GetParentMenu.Items[i] = TMenuItem(Sender) Then
-                Begin
-                    FTopMenu := True;
+        if FMenu is TMainMenu then
+        begin
+            for i := 0 to TMenuItem(Sender).GetParentMenu.Items.Count - 1 do
+                if TMenuItem(Sender).GetParentMenu.Items[i] = TMenuItem(Sender) then
+                begin
+                    FTopMenu := TRUE;
                     break;
-                End;
-        End;
-        If Not FTopMenu Then
-            FMenu := Nil;
-        If (Not FTopMenu) And (TMenuItem(Sender).Count > 0) Then
+                end;
+        end;
+        if not FTopMenu then
+            FMenu := NIL;
+        if (not FTopMenu) and (TMenuItem(Sender).Count > 0) then
             Inc(W, 6); // +jt
 // +jt
 
@@ -862,60 +862,60 @@ Begin
         W := W + P.x;
 
 
-        If Width < W Then
+        if Width < W then
             Width := W;
 
-        If IsLine Then
+        if IsLine then
             Height := 4
-        Else
-        Begin
+        else
+        begin
             H := ACanvas.TextHeight(s) + Round(ACanvas.TextHeight(s) * 0.75);
-            If P.y + 6 > H Then
+            if P.y + 6 > H then
                 H := P.y + 6;
 
-            If Height < H Then
+            if Height < H then
                 Height := H;
-        End;
-    End;
+        end;
+    end;
 
-End;
+end;
 
-Procedure TXPMenu.MenueDrawItem(Sender: TObject; ACanvas: TCanvas; ARect: TRect;
-    Selected: Boolean);
-Var
-    txt: String;
+procedure TXPMenu.MenueDrawItem(Sender: TObject; ACanvas: TCanvas; ARect: TRect;
+    Selected: boolean);
+var
+    txt: string;
     B: TBitmap;
     IconRect, TextRect, CheckedRect: TRect;
     FillRect: TRect; // +jt
-    i, X1, X2: Integer;
-    TextFormat: Integer;
-    HasImgLstBitmap: Boolean;
-    HasBitmap: Boolean;
+    i, X1, X2: integer;
+    TextFormat: integer;
+    HasImgLstBitmap: boolean;
+    HasBitmap: boolean;
     FMenuItem: TMenuItem;
     FMenu: TMenu;
-    FTopMenu: Boolean;
-    IsLine: Boolean;
+    FTopMenu: boolean;
+    IsLine: boolean;
     ImgListHandle: HImageList;  {Commctrl.pas}
-    ImgIndex: Integer;
+    ImgIndex: integer;
     hWndM: HWND;
     hDcM: HDC;
-    DrawTopMenuBorder: Boolean;
+    DrawTopMenuBorder: boolean;
     msg: TMSG; // +jt
     buff: TBitmap; // +jt
     OrigRect: TRect; // +jt
     OrigCanvas: TCanvas; // +jt
-Begin
+begin
 
 
-    OrigCanvas := Nil;
+    OrigCanvas := NIL;
 
-    FTopMenu := False;
+    FTopMenu := FALSE;
     FMenuItem := TMenuItem(Sender);
 
 // +jt
     B := TBitmap.Create;
     buff := TBitmap.Create;
-    Try
+    try
         origrect := ARect;
         Dec(origrect.Left, 4);
         origcanvas := ACanvas;
@@ -929,16 +929,16 @@ Begin
   // +jt
   //SetGlobalColor(ACanvas);
 
-        If FMenuItem.Caption = '-' Then
-            IsLine := True Else IsLine := False;
+        if FMenuItem.Caption = '-' then
+            IsLine := TRUE else IsLine := FALSE;
 
         FMenu := FMenuItem.Parent.GetParentMenu;
 
-        If FMenu Is TMainMenu Then
-            For i := 0 To FMenuItem.GetParentMenu.Items.Count - 1 Do
-                If FMenuItem.GetParentMenu.Items[i] = FMenuItem Then
-                Begin
-                    FTopMenu := True;
+        if FMenu is TMainMenu then
+            for i := 0 to FMenuItem.GetParentMenu.Items.Count - 1 do
+                if FMenuItem.GetParentMenu.Items[i] = FMenuItem then
+                begin
+                    FTopMenu := TRUE;
   // +jt
                     ARect.Left := 0;
                     Inc(origrect.Left, 4);
@@ -947,8 +947,8 @@ Begin
                     Dec(ARect.Bottom, 1);
   // +jt
                     break;
-                End;
-        If (FColorsChanged) Then
+                end;
+        if (FColorsChanged) then
             SetGlobalColor(ACanvas); // +jt
 
         ACanvas.Font.Assign(FFont);
@@ -958,46 +958,46 @@ Begin
         txt := ' ' + FMenuItem.Caption;
 
 //  B := TBitmap.Create;     //Leslie Cutting lesnes@absamail.co.za  Jul 8 2003
-        HasBitmap := False;
-        HasImgLstBitmap := False;
+        HasBitmap := FALSE;
+        HasImgLstBitmap := FALSE;
 
 
-        If (FMenuItem.Parent.GetParentMenu.Images <> Nil)
+        if (FMenuItem.Parent.GetParentMenu.Images <> NIL)
   {$IFDEF VER5U}
-            Or (FMenuItem.Parent.SubMenuImages <> Nil)
+            or (FMenuItem.Parent.SubMenuImages <> NIL)
   {$ENDIF}
-        Then
-        Begin
-            If FMenuItem.ImageIndex <> -1 Then
-                HasImgLstBitmap := True
-            Else
-                HasImgLstBitmap := False;
-        End;
+        then
+        begin
+            if FMenuItem.ImageIndex <> -1 then
+                HasImgLstBitmap := TRUE
+            else
+                HasImgLstBitmap := FALSE;
+        end;
 
-        If FMenuItem.Bitmap.Width > 0 Then
-            HasBitmap := True;
+        if FMenuItem.Bitmap.Width > 0 then
+            HasBitmap := TRUE;
 
   //-------
-        If HasBitmap Then
-        Begin
+        if HasBitmap then
+        begin
             B.Width := FMenuItem.Bitmap.Width;
             B.Height := FMenuItem.Bitmap.Height;
   // +jt
      //B.Canvas.Brush.Color := FTransparentColor; // ACanvas.Brush.Color;
             B.Canvas.Brush.Color := B.Canvas.Pixels[0, B.Height - 1];//"Todd Asher" <ashert@yadasystems.com>
             B.Canvas.FillRect(Rect(0, 0, B.Width, B.Height));
-            FMenuItem.Bitmap.Transparent := True;
+            FMenuItem.Bitmap.Transparent := TRUE;
             FMenuItem.Bitmap.TransparentMode := tmAuto;
             B.Canvas.Draw(0, 0, FMenuItem.Bitmap);
   // +jt
-        End;
+        end;
 
 
-        If HasImgLstBitmap Then
-        Begin
+        if HasImgLstBitmap then
+        begin
   {$IFDEF VER5U}
-            If FMenuItem.Parent.SubMenuImages <> Nil Then
-            Begin
+            if FMenuItem.Parent.SubMenuImages <> NIL then
+            begin
                 ImgListHandle := FMenuItem.Parent.SubMenuImages.Handle;
                 ImgIndex := FMenuItem.ImageIndex;
 
@@ -1009,11 +1009,11 @@ Begin
                 ImageList_DrawEx(ImgListHandle, ImgIndex,
                     B.Canvas.Handle, 0, 0, 0, 0, clNone, clNone, ILD_Transparent);
 
-            End
-            Else
+            end
+            else
   {$ENDIF}
-            If FMenuItem.Parent.GetParentMenu.Images <> Nil Then
-            Begin
+            if FMenuItem.Parent.GetParentMenu.Images <> NIL then
+            begin
                 ImgListHandle := FMenuItem.Parent.GetParentMenu.Images.Handle;
                 ImgIndex := FMenuItem.ImageIndex;
 
@@ -1025,75 +1025,75 @@ Begin
                 ImageList_DrawEx(ImgListHandle, ImgIndex,
                     B.Canvas.Handle, 0, 0, 0, 0, clNone, clNone, ILD_Transparent);
 
-            End;
+            end;
 
-        End;
+        end;
 
   //-----
 
-        If FMenu.IsRightToLeft Then
-        Begin
+        if FMenu.IsRightToLeft then
+        begin
             X1 := ARect.Right - FIconWidth;
             X2 := ARect.Right;
-        End
-        Else
-        Begin
+        end
+        else
+        begin
             X1 := ARect.Left;
             X2 := ARect.Left + FIconWidth;
-        End;
+        end;
         IconRect := Rect(X1, ARect.Top, X2, ARect.Bottom);
 
 
-        If HasImgLstBitmap Or HasBitmap Then
-        Begin
+        if HasImgLstBitmap or HasBitmap then
+        begin
             CheckedRect := IconRect;
             Inc(CheckedRect.Left, 1);
             Inc(CheckedRect.Top, 2);
             Dec(CheckedRect.Right, 3);
             Dec(CheckedRect.Bottom, 2);
-        End
-        Else
-        Begin
+        end
+        else
+        begin
             CheckedRect.Left := IconRect.Left +
-                (IConRect.Right - IconRect.Left - 10) Div 2;
+                (IConRect.Right - IconRect.Left - 10) div 2;
             CheckedRect.Top := IconRect.Top +
-                (IConRect.Bottom - IconRect.Top - 10) Div 2;
+                (IConRect.Bottom - IconRect.Top - 10) div 2;
             CheckedRect.Right := CheckedRect.Left + 10;
             CheckedRect.Bottom := CheckedRect.Top + 10;
-        End;
+        end;
 
-        If B.Width > FIconWidth Then
-            If FMenu.IsRightToLeft Then
+        if B.Width > FIconWidth then
+            if FMenu.IsRightToLeft then
                 CheckedRect.Left := CheckedRect.Right - B.Width
-            Else
+            else
                 CheckedRect.Right := CheckedRect.Left + B.Width;
 
-        If FTopMenu Then
+        if FTopMenu then
             Dec(CheckedRect.Top, 1);
 
 
-        If FMenu.IsRightToLeft Then
-        Begin
+        if FMenu.IsRightToLeft then
+        begin
             X1 := ARect.Left;
-            If Not FTopMenu Then
+            if not FTopMenu then
                 Dec(X2, FIconWidth)
-            Else
+            else
                 Dec(X2, 4);
-            If (ARect.Right - B.Width) < X2 Then
+            if (ARect.Right - B.Width) < X2 then
                 X2 := ARect.Right - B.Width - 8;
-        End
-        Else
-        Begin
+        end
+        else
+        begin
             X1 := ARect.Left;
-            If Not FTopMenu Then
+            if not FTopMenu then
                 Inc(X1, FIconWidth)
-            Else
+            else
                 Inc(X1, 4);
 
-            If (ARect.Left + B.Width) > X1 Then
+            if (ARect.Left + B.Width) > X1 then
                 X1 := ARect.Left + B.Width + 4;
             X2 := ARect.Right;
-        End;
+        end;
 
         TextRect := Rect(X1, ARect.Top, X2, ARect.Bottom);
   // +jt
@@ -1101,25 +1101,25 @@ Begin
         Dec(FillRect.Left, 4);
   // +jt
 
-        If FTopMenu Then
-        Begin
-            If Not (HasImgLstBitmap Or HasBitmap) Then
-            Begin
+        if FTopMenu then
+        begin
+            if not (HasImgLstBitmap or HasBitmap) then
+            begin
                 TextRect := ARect;
-            End
-            Else
-            Begin
-                If FMenu.IsRightToLeft Then
+            end
+            else
+            begin
+                if FMenu.IsRightToLeft then
                     TextRect.Right := TextRect.Right + 5
-                Else
+                else
                     TextRect.Left := TextRect.Left - 5;
-            End;
+            end;
 
-        End;
+        end;
 
-        If FTopMenu Then
-        Begin
-            If FDrawMenuBar Then
+        if FTopMenu then
+        begin
+            if FDrawMenuBar then
                 FFMenuBarColor := FMenuBarColor;
             ACanvas.brush.color := FFMenuBarColor;
             ACanvas.Pen.Color := FFMenuBarColor;
@@ -1127,64 +1127,64 @@ Begin
             ACanvas.FillRect(ARect);
 
   //--
-            If FDrawMenuBar Then
-            Begin
-                If FMenuItem.GetParentMenu.Items[FMenuItem.GetParentMenu.Items.Count - 1] =
-                    FMenuItem Then
-                Begin
-                    If FMenu.IsRightToLeft Then
+            if FDrawMenuBar then
+            begin
+                if FMenuItem.GetParentMenu.Items[FMenuItem.GetParentMenu.Items.Count - 1] =
+                    FMenuItem then
+                begin
+                    if FMenu.IsRightToLeft then
                         ACanvas.Rectangle(3, ARect.Top, ARect.Right, ARect.Bottom)
-                    Else
+                    else
                         ACanvas.Rectangle(ARect.Left, ARect.Top, TScrollingWinControl(FMenu.Owner).ClientWidth + 5{FForm.ClientWidth+5},
                             ARect.Bottom);
-                End
-                Else
-                If FMenu.IsRightToLeft Then
+                end
+                else
+                if FMenu.IsRightToLeft then
                     ACanvas.Rectangle(ARect.Left, ARect.Top, ARect.Right + 7, ARect.Bottom);
-            End;
+            end;
   //--
-        End
-        Else
-        Begin
-            If (Is16Bit And FGradient) Then
-            Begin
+        end
+        else
+        begin
+            if (Is16Bit and FGradient) then
+            begin
                 inc(ARect.Right, 2);  //needed for RightToLeft
                 DrawGradient(ACanvas, ARect, FMenu.IsRightToLeft);
                 Dec(ARect.Right, 2);
 
-            End
-            Else
-            Begin
+            end
+            else
+            begin
                 ACanvas.brush.color := FFColor;
                 ACanvas.FillRect(FillRect); // +jt
                 ACanvas.brush.color := FFIconBackColor;
                 ACanvas.FillRect(IconRect);
-            End;
+            end;
 
 
   //------------
-        End;
+        end;
 
 
-        If FMenuItem.Enabled Then
+        if FMenuItem.Enabled then
             ACanvas.Font.Color := FFont.Color
-        Else
+        else
             ACanvas.Font.Color := FDisabledColor;
 
-        DrawTopMenuBorder := False;
-        If Selected And FDrawSelect Then
-        Begin
+        DrawTopMenuBorder := FALSE;
+        if Selected and FDrawSelect then
+        begin
             ACanvas.brush.Style := bsSolid;
-            If FTopMenu Then
-            Begin
+            if FTopMenu then
+            begin
                 DrawTopMenuItem(FMenuItem, ACanvas, ARect, FMenuBarColor, FMenu.IsRightToLeft);
-            End
-            Else
-            If FMenuItem.Enabled Then
-            Begin
+            end
+            else
+            if FMenuItem.Enabled then
+            begin
                 Inc(ARect.Top, 1);
                 Dec(ARect.Bottom, 1);
-                If FFlatMenu Then
+                if FFlatMenu then
                     Dec(ARect.Right, 1);
                 ACanvas.brush.color := FFSelectColor;
                 ACanvas.FillRect(ARect);
@@ -1193,72 +1193,72 @@ Begin
                 ACanvas.RoundRect(Arect.Left, Arect.top, Arect.Right, Arect.Bottom, 0, 0);
                 Dec(ARect.Top, 1);
                 Inc(ARect.Bottom, 1);
-                If FFlatMenu Then
+                if FFlatMenu then
                     Inc(ARect.Right, 1);
-            End;
-            DrawTopMenuBorder := True;
-        End
+            end;
+            DrawTopMenuBorder := TRUE;
+        end
 
   // Draw the menubar in XP Style when hovering over an main menu item
-        Else
-        Begin
+        else
+        begin
     //if FMenuItem.Enabled and FTopMenu and IsMouseInRect( TScrollingWinControl(FMenu.Owner), ARect) then
-            If FMenuItem.Enabled And FTopMenu And IsWNT And
-                IsMouseInRect(TScrollingWinControl(FMenu.Owner), origrect) Then // +jt
-            Begin
+            if FMenuItem.Enabled and FTopMenu and IsWNT and
+                IsMouseInRect(TScrollingWinControl(FMenu.Owner), origrect) then // +jt
+            begin
                 ACanvas.brush.Style := bsSolid;
                 ACanvas.brush.color := FFSelectColor;
-                DrawTopMenuBorder := True;
+                DrawTopMenuBorder := TRUE;
                 ACanvas.Pen.color := FFSelectBorderColor;
                 ACanvas.Rectangle(ARect.Left, ARect.Top, ARect.Right - 7, ARect.Bottom);
-            End;
-        End;
+            end;
+        end;
 
 
-        If (FMenuItem.Checked) Or (FMenuItem.RadioItem) Then  //x
-            DrawCheckedItem(FMenuItem, Selected, FMenuItem.Enabled, HasImgLstBitmap Or HasBitmap,
+        if (FMenuItem.Checked) or (FMenuItem.RadioItem) then  //x
+            DrawCheckedItem(FMenuItem, Selected, FMenuItem.Enabled, HasImgLstBitmap or HasBitmap,
                 ACanvas, CheckedRect);
 
-        If (B <> Nil) And (B.Width > 0) Then  // X
+        if (B <> NIL) and (B.Width > 0) then  // X
             DrawIcon(FMenuItem, ACanvas, B, IconRect,
-                Selected Or DrawTopMenuBorder, False, FMenuItem.Enabled, FMenuItem.Checked,
+                Selected or DrawTopMenuBorder, FALSE, FMenuItem.Enabled, FMenuItem.Checked,
                 FTopMenu, FMenu.IsRightToLeft);
 
 
 
-        If Not IsLine Then
-        Begin
+        if not IsLine then
+        begin
 
-            If FMenu.IsRightToLeft Then
-            Begin
+            if FMenu.IsRightToLeft then
+            begin
                 TextFormat := DT_RIGHT + DT_RTLREADING;
                 Dec(TextRect.Right, 3);
-            End
-            Else
-            Begin
+            end
+            else
+            begin
                 TextFormat := 0;
                 Inc(TextRect.Left, 3);
-            End;
+            end;
             TextRect.Top := TextRect.Top +
-                ((TextRect.Bottom - TextRect.Top) - ACanvas.TextHeight('W')) Div 2;
+                ((TextRect.Bottom - TextRect.Top) - ACanvas.TextHeight('W')) div 2;
             DrawTheText(FMenuItem, txt, ShortCutToText(FMenuItem.ShortCut),
                 ACanvas, TextRect,
                 Selected, FMenuItem.Enabled, FMenuItem.Default,
                 FTopMenu, FMenu.IsRightToLeft, FFont, TextFormat);
 
-        End
-        Else
-        Begin
-            If FMenu.IsRightToLeft Then
-            Begin
+        end
+        else
+        begin
+            if FMenu.IsRightToLeft then
+            begin
                 X1 := TextRect.Left;
                 X2 := TextRect.Right - 7;
-            End
-            Else
-            Begin
+            end
+            else
+            begin
                 X1 := TextRect.Left + 7;
                 X2 := TextRect.Right;
-            End;
+            end;
 
             ACanvas.Pen.Color := FFSeparatorColor;
             ACanvas.MoveTo(X1,
@@ -1267,120 +1267,120 @@ Begin
             ACanvas.LineTo(X2,
                 TextRect.Top +
                 Round((TextRect.Bottom - TextRect.Top) / 2));
-        End;
+        end;
 
   // +jt
         BitBlt(origcanvas.Handle, origrect.Left, origrect.Top, buff.Width, buff.Height, ACanvas.Handle, 0, 0, SRCCOPY);
-    Finally
+    finally
         B.free;
         buff.free;
         ACanvas := OrigCanvas;
         ARect := origrect;
-    End;
+    end;
 // +jt
 
-    If Not (csDesigning In ComponentState) Then
-    Begin
-        If (FFlatMenu) And (Not FTopMenu) Then
-        Begin
+    if not (csDesigning in ComponentState) then
+    begin
+        if (FFlatMenu) and (not FTopMenu) then
+        begin
             hDcM := ACanvas.Handle;
             hWndM := WindowFromDC(hDcM);
 // +jt
-            If (hWndM = 0) And (Application.Handle <> 0) Then
-            Begin
-                If Not PeekMessage(msg, Application.Handle, WM_DRAWMENUBORDER, WM_DRAWMENUBORDER2, PM_NOREMOVE) Then
-                    PostMessage(Application.Handle, WM_DRAWMENUBORDER, 0, Integer(FMenuItem));
-            End
-            Else
-            If hWndM <> FForm.Handle Then
-            Begin
-                If Not PeekMessage(msg, Application.Handle, WM_DRAWMENUBORDER, WM_DRAWMENUBORDER2, PM_NOREMOVE) Then
-                    PostMessage(Application.Handle, WM_DRAWMENUBORDER2, Integer(FMenu.IsRightToLeft), Integer(hWndM));
-            End;
-        End;
-    End;
+            if (hWndM = 0) and (Application.Handle <> 0) then
+            begin
+                if not PeekMessage(msg, Application.Handle, WM_DRAWMENUBORDER, WM_DRAWMENUBORDER2, PM_NOREMOVE) then
+                    PostMessage(Application.Handle, WM_DRAWMENUBORDER, 0, integer(FMenuItem));
+            end
+            else
+            if hWndM <> FForm.Handle then
+            begin
+                if not PeekMessage(msg, Application.Handle, WM_DRAWMENUBORDER, WM_DRAWMENUBORDER2, PM_NOREMOVE) then
+                    PostMessage(Application.Handle, WM_DRAWMENUBORDER2, integer(FMenu.IsRightToLeft), integer(hWndM));
+            end;
+        end;
+    end;
 
 //-----
 
-End;
+end;
 
 {$IFDEF VER5U}
-Procedure TXPMenu.ToolBarDrawButton(Sender: TToolBar;
-    Button: TToolButton; State: TCustomDrawState; Var DefaultDraw: Boolean);
+procedure TXPMenu.ToolBarDrawButton(Sender: TToolBar;
+    Button: TToolButton; State: TCustomDrawState; var DefaultDraw: boolean);
 
-Var
+var
     ACanvas: TCanvas;
 
     ARect, HoldRect: TRect;
     B: TBitmap;
-    HasBitmap: Boolean;
+    HasBitmap: boolean;
   {Sylvain ...}
-    HasHotBitMap: Boolean;
-    HasDisBitMap: Boolean;
+    HasHotBitMap: boolean;
+    HasDisBitMap: boolean;
     ImglstHand: THandle;
-    CanDraw: Boolean;
+    CanDraw: boolean;
   {... Sylvain}
-    BitmapWidth: Integer;
-    TextFormat: Integer;
+    BitmapWidth: integer;
+    TextFormat: integer;
     XButton: TToolButton;
-    HasBorder: Boolean;
-    HasBkg: Boolean;
-    IsTransparent: Boolean;
+    HasBorder: boolean;
+    HasBkg: boolean;
+    IsTransparent: boolean;
     FBSelectColor: TColor;
 
-    Procedure DrawBorder;
-    Var
+    procedure DrawBorder;
+    var
         BRect, WRect: TRect;
-        Procedure DrawRect;
-        Begin
+        procedure DrawRect;
+        begin
             ACanvas.Pen.color := FFSelectBorderColor;
             ACanvas.MoveTo(WRect.Left, WRect.Top);
             ACanvas.LineTo(WRect.Right, WRect.Top);
             ACanvas.LineTo(WRect.Right, WRect.Bottom);
             ACanvas.LineTo(WRect.Left, WRect.Bottom);
             ACanvas.LineTo(WRect.Left, WRect.Top);
-        End;
+        end;
 
-    Begin
+    begin
         BRect := HoldRect;
         Dec(BRect.Bottom, 1);
         Inc(BRect.Top, 1);
         Dec(BRect.Right, 1);
 
         WRect := BRect;
-        If Button.Style = tbsDropDown Then
-        Begin
+        if Button.Style = tbsDropDown then
+        begin
             Dec(WRect.Right, 13);
             DrawRect;
 
             WRect := BRect;
             Inc(WRect.Left, WRect.Right - WRect.Left - 13);
             DrawRect;
-        End
-        Else
-        Begin
+        end
+        else
+        begin
 
             DrawRect;
-        End;
-    End;
+        end;
+    end;
 
-Begin
+begin
 
-    B := Nil;
+    B := NIL;
 
   {Added By Sylvain ...}
-    HasHotBitmap := (Sender.HotImages <> Nil) And
-        (Button.ImageIndex <> -1) And
+    HasHotBitmap := (Sender.HotImages <> NIL) and
+        (Button.ImageIndex <> -1) and
         (Button.ImageIndex <= Sender.HotImages.Count - 1);
 
 
-    HasDisBitmap := (Sender.DisabledImages <> Nil) And
-        (Button.ImageIndex <> -1) And
+    HasDisBitmap := (Sender.DisabledImages <> NIL) and
+        (Button.ImageIndex <> -1) and
         (Button.ImageIndex <= Sender.DisabledImages.Count - 1);
   {...Sylvain}
 
-    HasBitmap := (Sender.Images <> Nil) And
-        (Button.ImageIndex <> -1) And
+    HasBitmap := (Sender.Images <> NIL) and
+        (Button.ImageIndex <> -1) and
         (Button.ImageIndex <= Sender.Images.Count - 1);
 
 
@@ -1389,12 +1389,12 @@ Begin
     ACanvas := Sender.Canvas;
 
   //SetGlobalColor(ACanvas);
-    If (FColorsChanged) Then
+    if (FColorsChanged) then
         SetGlobalColor(ACanvas); // +jt
 
-    If (Is16Bit) And (Not UseSystemColors) Then
+    if (Is16Bit) and (not UseSystemColors) then
         FBSelectColor := NewColor(ACanvas, FSelectColor, 68)
-    Else
+    else
         FBSelectColor := FFSelectColor;
 
 
@@ -1402,112 +1402,112 @@ Begin
 
     ARect := HoldRect;
 
-    If Is16Bit Then
+    if Is16Bit then
         ACanvas.brush.color := NewColor(ACanvas, Sender.Color, 16)
-    Else
+    else
         ACanvas.brush.color := Sender.Color;
 
-    If Not IsTransparent Then
+    if not IsTransparent then
         ACanvas.FillRect(ARect);
 
-    HasBorder := False;
-    HasBkg := False;
+    HasBorder := FALSE;
+    HasBkg := FALSE;
 
-    If (cdsHot In State) Then
-    Begin
-        If (cdsChecked In State) Or (Button.Down) Or (cdsSelected In State) Then
+    if (cdsHot in State) then
+    begin
+        if (cdsChecked in State) or (Button.Down) or (cdsSelected in State) then
             ACanvas.Brush.Color := FCheckedAreaSelectColor
-        Else
+        else
             ACanvas.brush.color := FBSelectColor;
-        HasBorder := True;
-        HasBkg := True;
-    End;
+        HasBorder := TRUE;
+        HasBkg := TRUE;
+    end;
 
-    If ((cdsChecked In State) And Not (cdsHot In State)) Then
-    Begin
+    if ((cdsChecked in State) and not (cdsHot in State)) then
+    begin
         ACanvas.Brush.Color := FCheckedAreaColor;
-        HasBorder := True;
-        HasBkg := True;
-    End;
+        HasBorder := TRUE;
+        HasBkg := TRUE;
+    end;
 
-    If (cdsIndeterminate In State) And Not (cdsHot In State) Then
-    Begin
+    if (cdsIndeterminate in State) and not (cdsHot in State) then
+    begin
         ACanvas.Brush.Color := FBSelectColor;
-        HasBkg := True;
-    End;
+        HasBkg := TRUE;
+    end;
 
 
-    If (Button.MenuItem <> Nil) And (State = []) Then
-    Begin
+    if (Button.MenuItem <> NIL) and (State = []) then
+    begin
         ACanvas.brush.color := Sender.Color;
-        If Not IsTransparent Then
-            HasBkg := True;
-    End;
+        if not IsTransparent then
+            HasBkg := TRUE;
+    end;
 
 
     Inc(ARect.Top, 1);
 
 
 
-    If HasBkg Then
+    if HasBkg then
         ACanvas.FillRect(ARect);
 
-    If HasBorder Then
+    if HasBorder then
         DrawBorder;
 
 
-    If ((Button.MenuItem <> Nil) Or (Button.DropdownMenu <> Nil))
-        And (cdsSelected In State) Then
-    Begin
-        DrawTopMenuItem(Button, ACanvas, ARect, Sender.Color, False);
-        DefaultDraw := False;
-    End;
+    if ((Button.MenuItem <> NIL) or (Button.DropdownMenu <> NIL))
+        and (cdsSelected in State) then
+    begin
+        DrawTopMenuItem(Button, ACanvas, ARect, Sender.Color, FALSE);
+        DefaultDraw := FALSE;
+    end;
 
     ARect := HoldRect;
-    DefaultDraw := False;
+    DefaultDraw := FALSE;
 
 
-    If Button.Style = tbsDropDown Then
-    Begin
+    if Button.Style = tbsDropDown then
+    begin
         ACanvas.Pen.Color := clBlack;
-        DrawArrow(ACanvas, (ARect.Right - 14) + ((14 - 5) Div 2),
-            ARect.Top + ((ARect.Bottom - ARect.Top - 3) Div 2) + 1);
-    End;
+        DrawArrow(ACanvas, (ARect.Right - 14) + ((14 - 5) div 2),
+            ARect.Top + ((ARect.Bottom - ARect.Top - 3) div 2) + 1);
+    end;
 
     BitmapWidth := 0;
 { Rem by Sylvain ...
   if HasBitmap then
   begin
 ... Sylvain}
-    Try
+    try
         B := TBitmap.Create;
-        CanDraw := False;
+        CanDraw := FALSE;
         ImglstHand := 0;
-        If (cdsHot In State) And HasHotBitmap Then
-        Begin
+        if (cdsHot in State) and HasHotBitmap then
+        begin
             B.Width := Sender.HotImages.Width;
             B.Height := Sender.HotImages.Height;
             ImglstHand := Sender.HotImages.Handle;
-            CanDraw := True;
-        End
-        Else
-        If (cdsDisabled In State) And HasDisBitmap Then
-        Begin
+            CanDraw := TRUE;
+        end
+        else
+        if (cdsDisabled in State) and HasDisBitmap then
+        begin
             B.Width := Sender.DisabledImages.Width;
             B.Height := Sender.DisabledImages.Height;
             ImglstHand := Sender.DisabledImages.Handle;
-            CanDraw := True;
-        End
-        Else
-        If HasBitMap Then
-        Begin
+            CanDraw := TRUE;
+        end
+        else
+        if HasBitMap then
+        begin
             B.Width := Sender.Images.Width;
             B.Height := Sender.Images.Height;
             ImglstHand := Sender.Images.Handle;
-            CanDraw := True;
-        End;
-        If CanDraw Then
-        Begin {CanDraw}
+            CanDraw := TRUE;
+        end;
+        if CanDraw then
+        begin {CanDraw}
        // B.Canvas.Brush.Color := TransparentColor; // ACanvas.Brush.Color; // +jt
             B.Canvas.Brush.Color := B.Canvas.Pixels[0, B.Height - 1];//"Todd Asher" <ashert@yadasystems.com>
             B.Canvas.FillRect(Rect(0, 0, B.Width, B.Height));
@@ -1516,189 +1516,189 @@ Begin
 
             BitmapWidth := b.Width;
 
-            If Button.Style = tbsDropDown Then
+            if Button.Style = tbsDropDown then
                 Dec(ARect.Right, 12);
 
 
-            If TToolBar(Button.Parent).List Then
-            Begin
+            if TToolBar(Button.Parent).List then
+            begin
 
-                If Button.BiDiMode = bdRightToLeft Then
-                Begin
+                if Button.BiDiMode = bdRightToLeft then
+                begin
                     Dec(ARect.Right, 3);
                     ARect.Left := ARect.Right - BitmapWidth;
 
-                End
-                Else
-                Begin
+                end
+                else
+                begin
                     Inc(ARect.Left, 3);
                     ARect.Right := ARect.Left + BitmapWidth;
-                End;
+                end;
 
 
-            End
-            Else
+            end
+            else
                 ARect.Left := Round(ARect.Left + (ARect.Right - ARect.Left - B.Width) / 2);
 
             inc(ARect.Top, 2);
             ARect.Bottom := ARect.Top + B.Height + 6;
 
-            DrawIcon(Button, ACanvas, B, ARect, (cdsHot In State),
-                (cdsSelected In State), Button.Enabled, (cdsChecked In State), False,
-                False);
+            DrawIcon(Button, ACanvas, B, ARect, (cdsHot in State),
+                (cdsSelected in State), Button.Enabled, (cdsChecked in State), FALSE,
+                FALSE);
 
-        End; {CanDraw}
-    Finally
+        end; {CanDraw}
+    finally
         B.Free;
-    End;
+    end;
     ARect := HoldRect;
-    DefaultDraw := False;
+    DefaultDraw := FALSE;
 {rem by sylvain ...
   end;
 ...Sylvain}
 //-----------
 
-    If Sender.ShowCaptions Then
-    Begin
+    if Sender.ShowCaptions then
+    begin
 
-        If Button.Style = tbsDropDown Then
+        if Button.Style = tbsDropDown then
             Dec(ARect.Right, 12);
 
 
-        If Not TToolBar(Button.Parent).List Then
-        Begin
+        if not TToolBar(Button.Parent).List then
+        begin
             TextFormat := DT_Center;
 
             ARect.Top := ARect.Bottom - ACanvas.TextHeight(Button.Caption) - 6;
-        End
-        Else
-        Begin
+        end
+        else
+        begin
             TextFormat := DT_VCENTER;
-            If Button.BiDiMode = bdRightToLeft Then
-            Begin
+            if Button.BiDiMode = bdRightToLeft then
+            begin
                 TextFormat := TextFormat + DT_Right;
                 Dec(ARect.Right, BitmapWidth + 7);
-            End
-            Else
-            Begin
-                If BitmapWidth > 0 Then //"Dan Downs" <dan@laserformsinc.com>
-                    If Sender.List Then     //Michaël Moreno <michael@weatherderivs.com>
+            end
+            else
+            begin
+                if BitmapWidth > 0 then //"Dan Downs" <dan@laserformsinc.com>
+                    if Sender.List then     //Michaël Moreno <michael@weatherderivs.com>
                         Inc(ARect.Left, BitmapWidth + 6)
-                    Else
+                    else
                         Inc(ARect.Left, BitmapWidth);
-            End;
+            end;
 
-        End;
+        end;
 
-        If (Button.MenuItem <> Nil) Then
-        Begin
+        if (Button.MenuItem <> NIL) then
+        begin
             TextFormat := DT_Center;
       //Inc(ARect.Left, 1);
-        End;
+        end;
 
-        If Button.BiDiMode = bdRightToLeft Then
+        if Button.BiDiMode = bdRightToLeft then
             TextFormat := TextFormat + DT_RTLREADING;
 
-        If Button.Down And Not Button.Enabled Then //"felix" <felix@unidreamtech.com>  23/5
+        if Button.Down and not Button.Enabled then //"felix" <felix@unidreamtech.com>  23/5
             InflateRect(ARect, -1, -1);
 
     {alexs alexs75@hotbox.ru}
-        ARect.Top := ARect.Top + ((ARect.Bottom - ARect.Top) - ACanvas.TextHeight('W')) Div 2;
+        ARect.Top := ARect.Top + ((ARect.Bottom - ARect.Top) - ACanvas.TextHeight('W')) div 2;
 
         DrawTheText(Button, Button.Caption, '',
             ACanvas, ARect,
-            (cdsSelected In State), Button.Enabled, False,
-            (Button.MenuItem <> Nil),
+            (cdsSelected in State), Button.Enabled, FALSE,
+            (Button.MenuItem <> NIL),
             (Button.BidiMode = bdRightToLeft), FFont, TextFormat);
 
         ARect := HoldRect;
-        DefaultDraw := False;
-    End;
+        DefaultDraw := FALSE;
+    end;
 
 
-    If Button.Index > 0 Then
-    Begin
+    if Button.Index > 0 then
+    begin
         XButton := {TToolBar(Button.Parent)}Sender.Buttons[Button.Index - 1];
-        If (XButton.Style = tbsDivider) Or (XButton.Style = tbsSeparator) Then
-        Begin
+        if (XButton.Style = tbsDivider) or (XButton.Style = tbsSeparator) then
+        begin
             ARect := XButton.BoundsRect;
-            If Is16Bit Then
+            if Is16Bit then
                 ACanvas.brush.color := NewColor(ACanvas, Sender.Color, 16)
-            Else
+            else
                 ACanvas.brush.color := Sender.Color;
 
-            If Not IsTransparent Then
+            if not IsTransparent then
                 ACanvas.FillRect(ARect);
      // if (XButton.Style = tbsDivider) then  // Can't get it.
-            If XButton.Tag > 0 Then
-            Begin
+            if XButton.Tag > 0 then
+            begin
                 Inc(ARect.Top, 2);
                 Dec(ARect.Bottom, 1);
 
                 ACanvas.Pen.color := GetShadeColor(ACanvas, Sender.Color, 30);
-                ARect.Left := ARect.Left + (ARect.Right - ARect.Left) Div 2;
+                ARect.Left := ARect.Left + (ARect.Right - ARect.Left) div 2;
                 ACanvas.MoveTo(ARect.Left, ARect.Top);
                 ACanvas.LineTo(ARect.Left, ARect.Bottom);
 
-            End;
+            end;
             ARect := Button.BoundsRect;
-            DefaultDraw := False;
-        End;
+            DefaultDraw := FALSE;
+        end;
 
-    End;
+    end;
 
   {if Button.MenuItem <> nil then
     if (xcMainMenu in XPControls) then
       ActivateMenuItem(Button.MenuItem);}
-End;
+end;
 {$ENDIF}
 
 // Controlbar Paint. Added by Michiel van Oudheusden (27 sep 2001)
 // Paints the bands of a controlbar like the office XP style
-Procedure TXPMenu.ControlBarPaint(Sender: TObject; Control: TControl;
-    Canvas: TCanvas; Var ARect: TRect; Var Options: TBandPaintOptions);
-Var
-    i: Integer;
-    intInc: Integer;
-Begin
+procedure TXPMenu.ControlBarPaint(Sender: TObject; Control: TControl;
+    Canvas: TCanvas; var ARect: TRect; var Options: TBandPaintOptions);
+var
+    i: integer;
+    intInc: integer;
+begin
 
-    If (FColorsChanged) Then
+    if (FColorsChanged) then
         SetGlobalColor(Canvas); // +jt
   // No frame and grabber drawing. We do it ourselfes
     Options := [];
 
   // First background
 
-    If Is16Bit Then
+    if Is16Bit then
         Canvas.brush.color := NewColor(Canvas, TControlBar(Sender).Color, 6)
-    Else
+    else
         Canvas.brush.color := TControlBar(Sender).Color;
 
     Canvas.FillRect(ARect);
 
     intInc := 30;
-    For i := (ARect.Top + 5) To (ARect.Bottom - 5) Do
-    Begin
+    for i := (ARect.Top + 5) to (ARect.Bottom - 5) do
+    begin
         Canvas.Pen.Color := GetShadeColor(Canvas, TControlBar(Sender).Color, intInc);
-        If i Mod 2 = 0 Then
-        Begin
+        if i mod 2 = 0 then
+        begin
             Canvas.MoveTo(ARect.Left + 3, i);
             Canvas.LineTo(ARect.Left + 6, i);
             Inc(intInc, 7);
-        End;
-    End;
+        end;
+    end;
 
-End;
+end;
 
-Procedure TXPMenu.SetGlobalColor(ACanvas: TCanvas);
-Begin
+procedure TXPMenu.SetGlobalColor(ACanvas: TCanvas);
+begin
 //-----
-    FColorsChanged := False; // +jt
+    FColorsChanged := FALSE; // +jt
 
-    If GetDeviceCaps(ACanvas.Handle, BITSPIXEL) < 16 Then
-        Is16Bit := False
-    Else
-        Is16Bit := True;
+    if GetDeviceCaps(ACanvas.Handle, BITSPIXEL) < 16 then
+        Is16Bit := FALSE
+    else
+        Is16Bit := TRUE;
 
 
     FDimParentColor := 16;
@@ -1707,32 +1707,32 @@ Begin
     FFColor := FColor;
     FFIconBackColor := FIconBackColor;
 
-    If Is16Bit Then
-    Begin
-        If FUseDimColor Then
-        Begin
+    if Is16Bit then
+    begin
+        if FUseDimColor then
+        begin
             FFSelectColor := NewColor(ACanvas, FSelectColor, 68);
             FCheckedAreaColor := NewColor(ACanvas, FSelectColor, 80);
             FCheckedAreaSelectColor := NewColor(ACanvas, FSelectColor, 50);
-        End
-        Else
-        Begin
+        end
+        else
+        begin
             FFSelectColor := FSelectColor;
             FCheckedAreaColor := FSelectColor;
             FCheckedAreaSelectColor := FSelectColor;
-        End;
+        end;
 
         FMenuBorderColor := GetShadeColor(ACanvas, clBtnFace, 90);
         FMenuShadowColor := GetShadeColor(ACanvas, clBtnFace, 76);
-    End
-    Else
-    Begin
+    end
+    else
+    begin
         FFSelectColor := FSelectColor;
         FCheckedAreaColor := clWhite;
         FCheckedAreaSelectColor := clSilver;
         FMenuBorderColor := clBtnShadow;
         FMenuShadowColor := clBtnShadow;
-    End;
+    end;
 
     FFSelectBorderColor := FSelectBorderColor;
     FFSelectFontColor := FSelectFontColor;
@@ -1743,12 +1743,12 @@ Begin
 
 
 
-    If FUseSystemColors Then
-    Begin
+    if FUseSystemColors then
+    begin
 //    GetSystemMenuFont(FFont);
         FFSelectFontColor := FFont.Color;
-        If Not Is16Bit Then
-        Begin
+        if not Is16Bit then
+        begin
             FFColor := clWhite;
             FFIconBackColor := clBtnFace;
             FFSelectColor := clWhite;
@@ -1760,9 +1760,9 @@ Begin
             FCheckedAreaColor := clWhite;
             FCheckedAreaSelectColor := clWhite;
 
-        End
-        Else
-        Begin
+        end
+        else
+        begin
             FFColor := NewColor(ACanvas, clBtnFace, 86);
             FFIconBackColor := NewColor(ACanvas, clBtnFace, 16);
             FFSelectColor := NewColor(ACanvas, clHighlight, 68);
@@ -1775,17 +1775,17 @@ Begin
             FCheckedAreaColor := NewColor(ACanvas, clHighlight, 80);
             FCheckedAreaSelectColor := NewColor(ACanvas, clHighlight, 50);
 
-        End;
-    End;
+        end;
+    end;
 
-End;
+end;
 
-Procedure TXPMenu.DrawTopMenuItem(Sender: TObject; ACanvas: TCanvas;
-    ARect: TRect; BckColor: Tcolor; IsRightToLeft: Boolean);
-Var
-    X1, X2: Integer;
+procedure TXPMenu.DrawTopMenuItem(Sender: TObject; ACanvas: TCanvas;
+    ARect: TRect; BckColor: Tcolor; IsRightToLeft: boolean);
+var
+    X1, X2: integer;
     DefColor, HoldColor: TColor;
-Begin
+begin
     X1 := ARect.Left;
     X2 := ARect.Right;
 
@@ -1796,8 +1796,8 @@ Begin
     ACanvas.FillRect(ARect);
     ACanvas.Pen.Color := FFSelectBorderColor;
 
-    If (Not IsRightToLeft) And (Is16Bit) And (Sender Is TMenuItem) Then
-    Begin
+    if (not IsRightToLeft) and (Is16Bit) and (Sender is TMenuItem) then
+    begin
         ACanvas.MoveTo(X1, ARect.Bottom - 1);
         ACanvas.LineTo(X1, ARect.Top);
         ACanvas.LineTo(X2 - 8, ARect.Top);
@@ -1859,9 +1859,9 @@ Begin
         ACanvas.MoveTo(X2 - 6, ARect.Top + 5);
         ACanvas.LineTo(X2 - 6, ARect.Top + 7);
 
-    End
-    Else
-    Begin
+    end
+    else
+    begin
 
         ACanvas.Pen.Color := FFSelectBorderColor;
         ACanvas.Brush.Color := GetShadeColor(ACanvas, BckColor, 70);
@@ -1879,40 +1879,40 @@ Begin
         ACanvas.FillRect(Rect(X2 - 2, ARect.Top, X2, ARect.Top + 2));
 
 
-    End;
+    end;
 
-End;
+end;
 
 
-Procedure TXPMenu.DrawCheckedItem(FMenuItem: TMenuItem; Selected, Enabled,
-    HasImgLstBitmap: Boolean; ACanvas: TCanvas; CheckedRect: TRect);
-Var
-    X1, X2: Integer;
-Begin
-    If FMenuItem.RadioItem Then
-    Begin
-        If FMenuItem.Checked Then
-        Begin
-            If Enabled Then
-            Begin
+procedure TXPMenu.DrawCheckedItem(FMenuItem: TMenuItem; Selected, Enabled,
+    HasImgLstBitmap: boolean; ACanvas: TCanvas; CheckedRect: TRect);
+var
+    X1, X2: integer;
+begin
+    if FMenuItem.RadioItem then
+    begin
+        if FMenuItem.Checked then
+        begin
+            if Enabled then
+            begin
                 ACanvas.Pen.color := FFSelectBorderColor;
-                If selected Then
+                if selected then
                     ACanvas.Brush.Color := FCheckedAreaSelectColor
-                Else
+                else
                     ACanvas.Brush.Color := FCheckedAreaColor;
-            End
-            Else
+            end
+            else
                 ACanvas.Pen.color := FFDisabledColor;
 
             ACanvas.Brush.Style := bsSolid;
-            If HasImgLstBitmap Then
-            Begin
+            if HasImgLstBitmap then
+            begin
                 ACanvas.RoundRect(CheckedRect.Left, CheckedRect.Top,
                     CheckedRect.Right, CheckedRect.Bottom,
                     6, 6);
-            End
-            Else
-            Begin
+            end
+            else
+            begin
                 ACanvas.Ellipse(CheckedRect.Left, CheckedRect.Top,
                     CheckedRect.Right, CheckedRect.Bottom);
 // +jt
@@ -1921,31 +1921,31 @@ Begin
                 ACanvas.Ellipse(CheckedRect.Left, CheckedRect.Top,
                     CheckedRect.Right, CheckedRect.Bottom);
 // +jt
-            End;
-        End;
-    End
-    Else
-    Begin
-        If (FMenuItem.Checked) Then
-            If (Not HasImgLstBitmap) Then
-            Begin
-                If Enabled Then
-                Begin
+            end;
+        end;
+    end
+    else
+    begin
+        if (FMenuItem.Checked) then
+            if (not HasImgLstBitmap) then
+            begin
+                if Enabled then
+                begin
                     ACanvas.Pen.color := FFCheckedColor;
-                    If selected Then
+                    if selected then
                         ACanvas.Brush.Color := FCheckedAreaSelectColor
-                    Else
+                    else
                         ACanvas.Brush.Color := FCheckedAreaColor; ;
-                End
-                Else
+                end
+                else
                     ACanvas.Pen.color := FFDisabledColor;
 
                 ACanvas.Brush.Style := bsSolid;
                 ACanvas.Rectangle(CheckedRect.Left, CheckedRect.Top,
                     CheckedRect.Right, CheckedRect.Bottom);
-                If Enabled Then
+                if Enabled then
                     ACanvas.Pen.color := clBlack
-                Else
+                else
                     ACanvas.Pen.color := FFDisabledColor;
                 x1 := CheckedRect.Left + 1;
                 x2 := CheckedRect.Top + 5;
@@ -1988,57 +1988,57 @@ Begin
                 x2 := CheckedRect.Top + 3;
                 ACanvas.LineTo(x1, x2);
 
-            End
-            Else
-            Begin
+            end
+            else
+            begin
 
 
-                If Enabled Then
-                Begin
+                if Enabled then
+                begin
                     ACanvas.Pen.color := FFSelectBorderColor;
-                    If selected Then
+                    if selected then
                         ACanvas.Brush.Color := FCheckedAreaSelectColor
-                    Else
+                    else
                         ACanvas.Brush.Color := FCheckedAreaColor; ;
-                End
-                Else
+                end
+                else
                     ACanvas.Pen.color := FFDisabledColor;
 
                 ACanvas.Brush.Style := bsSolid;
                 ACanvas.Rectangle(CheckedRect.Left, CheckedRect.Top,
                     CheckedRect.Right, CheckedRect.Bottom);
-            End;
-    End;
+            end;
+    end;
 
-End;
+end;
 
-Procedure TXPMenu.DrawTheText(Sender: TObject; txt, ShortCuttext: String;
+procedure TXPMenu.DrawTheText(Sender: TObject; txt, ShortCuttext: string;
     ACanvas: TCanvas; TextRect: TRect;
-    Selected, Enabled, Default, TopMenu, IsRightToLeft: Boolean;
-    Var TxtFont: TFont; TextFormat: Integer);
-Var
+    Selected, Enabled, Default, TopMenu, IsRightToLeft: boolean;
+    var TxtFont: TFont; TextFormat: integer);
+var
     DefColor: TColor;
     B: TBitmap;
     BRect: TRect;
-Begin
+begin
     TextFormat := TextFormat + DT_EXPANDTABS;
     DefColor := TxtFont.Color;
 
     ACanvas.Font.Assign(TxtFont);
 
-    If Selected Then
+    if Selected then
         DefColor := FFSelectFontColor;
 
-    If Not Enabled Then
-    Begin
+    if not Enabled then
+    begin
         DefColor := FFDisabledColor;
 
-        If (Sender Is TToolButton) Then
-        Begin
+        if (Sender is TToolButton) then
+        begin
             TextRect.Top := TextRect.Top +
-                ((TextRect.Bottom - TextRect.Top) - ACanvas.TextHeight('W')) Div 2;
+                ((TextRect.Bottom - TextRect.Top) - ACanvas.TextHeight('W')) div 2;
             B := TBitmap.Create;
-            Try
+            try
                 B.Width := TextRect.Right - TextRect.Left;
                 B.Height := TextRect.Bottom - TextRect.Top;
                 BRect := Rect(0, 0, B.Width, B.Height);
@@ -2051,20 +2051,20 @@ Begin
                 B.Canvas.Font.color := DefColor;
 
                 DrawtextEx(B.Canvas.Handle,
-                    Pchar(txt),
+                    pchar(txt),
                     Length(txt),
-                    BRect, TextFormat + DT_VCENTER, Nil);
+                    BRect, TextFormat + DT_VCENTER, NIL);
                 ACanvas.CopyRect(TextRect, B.Canvas, BRect);
-            Finally
+            finally
                 B.Free;
-            End;
+            end;
             exit;
-        End;
+        end;
 
-    End;
+    end;
 
-    If (TopMenu And Selected) Then
-        If FUseSystemColors Then
+    if (TopMenu and Selected) then
+        if FUseSystemColors then
             DefColor := TopMenuFontColor(ACanvas, FFIconBackColor);
 
     ACanvas.Font.color := DefColor;    // will not affect Buttons
@@ -2072,16 +2072,16 @@ Begin
     SetBkMode(ACanvas.Handle, TRANSPARENT);
 
 
-    If Default And Enabled Then
-    Begin
+    if Default and Enabled then
+    begin
 
         Inc(TextRect.Left, 1);
         ACanvas.Font.color := GetShadeColor(ACanvas,
             ACanvas.Pixels[TextRect.Left, TextRect.Top], 30);
         DrawtextEx(ACanvas.Handle,
-            Pchar(txt),
+            pchar(txt),
             Length(txt),
-            TextRect, TextFormat, Nil);
+            TextRect, TextFormat, NIL);
         Dec(TextRect.Left, 1);
 
 
@@ -2093,9 +2093,9 @@ Begin
         ACanvas.Font.color := GetShadeColor(ACanvas,
             ACanvas.Pixels[TextRect.Left, TextRect.Top], 30);
         DrawtextEx(ACanvas.Handle,
-            Pchar(txt),
+            pchar(txt),
             Length(txt),
-            TextRect, TextFormat, Nil);
+            TextRect, TextFormat, NIL);
 
 
         Dec(TextRect.Top, 1);
@@ -2105,9 +2105,9 @@ Begin
         ACanvas.Font.color := GetShadeColor(ACanvas,
             ACanvas.Pixels[TextRect.Left, TextRect.Top], 40);
         DrawtextEx(ACanvas.Handle,
-            Pchar(txt),
+            pchar(txt),
             Length(txt),
-            TextRect, TextFormat, Nil);
+            TextRect, TextFormat, NIL);
 
 
         Inc(TextRect.Left, 1);
@@ -2116,21 +2116,21 @@ Begin
         ACanvas.Font.color := GetShadeColor(ACanvas,
             ACanvas.Pixels[TextRect.Left, TextRect.Top], 60);
         DrawtextEx(ACanvas.Handle,
-            Pchar(txt),
+            pchar(txt),
             Length(txt),
-            TextRect, TextFormat, Nil);
+            TextRect, TextFormat, NIL);
 
         Dec(TextRect.Left, 1);
         Dec(TextRect.Right, 1);
         Dec(TextRect.Top, 1);
 
         ACanvas.Font.color := DefColor;
-    End;
+    end;
 
     DrawtextEx(ACanvas.Handle,
-        Pchar(txt),
+        pchar(txt),
         Length(txt),
-        TextRect, TextFormat, Nil);
+        TextRect, TextFormat, NIL);
 
 
     txt := ShortCutText + ' ';
@@ -2142,385 +2142,385 @@ Begin
   }
 
 
-    If IsRightToLeft Then
-    Begin
+    if IsRightToLeft then
+    begin
         Inc(TextRect.Left, 10);
         TextFormat := DT_LEFT;
-    End
-    Else
-    Begin
+    end
+    else
+    begin
         Dec(TextRect.Right, 10);
         TextFormat := DT_RIGHT;
-    End;
+    end;
 
 
     DrawtextEx(ACanvas.Handle,
-        Pchar(txt),
+        pchar(txt),
         Length(txt),
-        TextRect, TextFormat, Nil);
+        TextRect, TextFormat, NIL);
 
-End;
+end;
 
-Procedure TXPMenu.DrawIcon(Sender: TObject; ACanvas: TCanvas; B: TBitmap;
+procedure TXPMenu.DrawIcon(Sender: TObject; ACanvas: TCanvas; B: TBitmap;
     IconRect: Trect; Hot, Selected, Enabled, Checked, FTopMenu,
-    IsRightToLeft: Boolean);
-Var
+    IsRightToLeft: boolean);
+var
     DefColor: TColor;
-    X, Y: Integer;
-Begin
+    X, Y: integer;
+begin
 
-    If (B <> Nil) And (B.Width > 0) Then
-    Begin
+    if (B <> NIL) and (B.Width > 0) then
+    begin
         X := IconRect.Left;
         Y := IconRect.Top + 1;
 
-        If (Sender Is TMenuItem) Then
-        Begin
+        if (Sender is TMenuItem) then
+        begin
             inc(Y, 2);
-            If FIconWidth > B.Width Then
-                X := X + ((FIconWidth - B.Width) Div 2) - 1
-            Else
-            Begin
-                If IsRightToLeft Then
+            if FIconWidth > B.Width then
+                X := X + ((FIconWidth - B.Width) div 2) - 1
+            else
+            begin
+                if IsRightToLeft then
                     X := IconRect.Right - b.Width - 2
-                Else
+                else
                     X := IconRect.Left + 2;
-            End;
-        End;
+            end;
+        end;
 
-        If FTopMenu Then
-        Begin
-            If IsRightToLeft Then
+        if FTopMenu then
+        begin
+            if IsRightToLeft then
                 X := IconRect.Right - b.Width - 5
-            Else
+            else
                 X := IconRect.Left + 1;
-        End;
+        end;
 
-        If (Hot) And (FTopMenu) And (Enabled) Then
-            If Not Selected Then
-            Begin
+        if (Hot) and (FTopMenu) and (Enabled) then
+            if not Selected then
+            begin
                 dec(X, 1);
                 dec(Y, 2);
-            End;
+            end;
 
-        If (Hot) And (Not FTopMenu) And (Enabled) And (Not Checked) Then
-            If Not Selected Then
-            Begin
+        if (Hot) and (not FTopMenu) and (Enabled) and (not Checked) then
+            if not Selected then
+            begin
                 dec(X, 1);
                 dec(Y, 1);
-            End;
+            end;
 
-        If (Not Hot) And (Enabled) And (Not Checked) Then
-            If Is16Bit Then
+        if (not Hot) and (Enabled) and (not Checked) then
+            if Is16Bit then
                 DimBitmap(B, FDimLevel{30});
 
 
-        If Not Enabled Then
-        Begin
+        if not Enabled then
+        begin
             GrayBitmap(B, FGrayLevel);
             DimBitmap(B, 40);
-        End;
+        end;
 
-        If (Hot) And (Enabled) And (Not Checked) Then
-        Begin
-            If (Is16Bit) And (Not UseSystemColors) And (Sender Is TToolButton) Then
+        if (Hot) and (Enabled) and (not Checked) then
+        begin
+            if (Is16Bit) and (not UseSystemColors) and (Sender is TToolButton) then
                 DefColor := NewColor(ACanvas, FSelectColor, 68)
-            Else
+            else
                 DefColor := FFSelectColor;
 
             DefColor := GetShadeColor(ACanvas, DefColor, 50);
             DrawBitmapShadow(B, ACanvas, X + 2, Y + 2, DefColor);
-        End;
+        end;
 
-        B.Transparent := True;
+        B.Transparent := TRUE;
         ACanvas.Draw(X, Y, B);
-    End;
+    end;
 
-End;
+end;
 
 
-Function TXPMenu.TopMenuFontColor(ACanvas: TCanvas; Color: TColor): TColor;
-Var
-    r, g, b, avg: Integer;
-Begin
+function TXPMenu.TopMenuFontColor(ACanvas: TCanvas; Color: TColor): TColor;
+var
+    r, g, b, avg: integer;
+begin
 
     Color := ColorToRGB(Color);
-    r := Color And $000000FF;
-    g := (Color And $0000FF00) Shr 8;
-    b := (Color And $00FF0000) Shr 16;
+    r := Color and $000000FF;
+    g := (Color and $0000FF00) shr 8;
+    b := (Color and $00FF0000) shr 16;
 
-    Avg := (r + b) Div 2;
+    Avg := (r + b) div 2;
 
-    If (Avg > 150) Or (g > 200) Then
+    if (Avg > 150) or (g > 200) then
         Result := FFont.Color
-    Else
+    else
         Result := NewColor(ACanvas, Color, 90);
 
-End;
+end;
 
-Procedure TXPMenu.SetDisableSubclassing(Const Value: Boolean);
-Begin
-    If Value = FDisableSubclassing Then
+procedure TXPMenu.SetDisableSubclassing(const Value: boolean);
+begin
+    if Value = FDisableSubclassing then
         Exit;
-    If XPMenuManager.ActiveXPMenu = Self Then
+    if XPMenuManager.ActiveXPMenu = Self then
         XPMenuManager.UpdateActiveXPMenu(Self)
-    Else
-    If (XPMenuManager.ActiveXPMenu = Nil) And Not (FDisableSubclassing) Then
-        XPMenuManager.UpdateActiveXPMenu(Nil);
-End;
+    else
+    if (XPMenuManager.ActiveXPMenu = NIL) and not (FDisableSubclassing) then
+        XPMenuManager.UpdateActiveXPMenu(NIL);
+end;
 
 
-Procedure TXPMenu.SetActive(Const Value: Boolean);
-Begin
-    If Value = FActive Then
+procedure TXPMenu.SetActive(const Value: boolean);
+begin
+    if Value = FActive then
         exit;
 
     FActive := Value;
-    InitItems(FForm, FActive, True);
+    InitItems(FForm, FActive, TRUE);
 
-    If FForm.Handle <> 0 Then
+    if FForm.Handle <> 0 then
         Windows.DrawMenuBar(FForm.Handle);
-End;
+end;
 
-Procedure TXPMenu.SetAutoDetect(Const Value: Boolean);
-Begin
+procedure TXPMenu.SetAutoDetect(const Value: boolean);
+begin
     FAutoDetect := Value;
-End;
+end;
 
-Procedure TXPMenu.SetForm(Const Value: TScrollingWinControl);
-Var
-    Hold: Boolean;
-Begin
-    If Value <> FForm Then
-    Begin
+procedure TXPMenu.SetForm(const Value: TScrollingWinControl);
+var
+    Hold: boolean;
+begin
+    if Value <> FForm then
+    begin
         Hold := Active;
-        Active := False;
+        Active := FALSE;
         FForm := Value;
-        If Hold Then
-            Active := True;
-    End;
-End;
+        if Hold then
+            Active := TRUE;
+    end;
+end;
 
-Procedure TXPMenu.SetFont(Const Value: TFont);
-Begin
+procedure TXPMenu.SetFont(const Value: TFont);
+begin
     FFont.Assign(Value);
     Windows.DrawMenuBar(FForm.Handle);
 
-End;
+end;
 
-Procedure TXPMenu.SetColor(Const Value: TColor);
-Begin
+procedure TXPMenu.SetColor(const Value: TColor);
+begin
     FColor := Value;
-    FColorsChanged := True; // +jt
-End;
+    FColorsChanged := TRUE; // +jt
+end;
 
-Procedure TXPMenu.SetIconBackColor(Const Value: TColor);
-Begin
+procedure TXPMenu.SetIconBackColor(const Value: TColor);
+begin
     FIconBackColor := Value;
-    FColorsChanged := True; // +jt
-End;
+    FColorsChanged := TRUE; // +jt
+end;
 
-Procedure TXPMenu.SetMenuBarColor(Const Value: TColor);
-Begin
+procedure TXPMenu.SetMenuBarColor(const Value: TColor);
+begin
     FMenuBarColor := Value;
-    FColorsChanged := True; // +jt
+    FColorsChanged := TRUE; // +jt
     Windows.DrawMenuBar(FForm.Handle);
-End;
+end;
 
-Procedure TXPMenu.SetCheckedColor(Const Value: TColor);
-Begin
+procedure TXPMenu.SetCheckedColor(const Value: TColor);
+begin
     FCheckedColor := Value;
-    FColorsChanged := True; // +jt
-End;
+    FColorsChanged := TRUE; // +jt
+end;
 
-Procedure TXPMenu.SetSeparatorColor(Const Value: TColor);
-Begin
+procedure TXPMenu.SetSeparatorColor(const Value: TColor);
+begin
     FSeparatorColor := Value;
-    FColorsChanged := True; // +jt
-End;
+    FColorsChanged := TRUE; // +jt
+end;
 
-Procedure TXPMenu.SetSelectBorderColor(Const Value: TColor);
-Begin
+procedure TXPMenu.SetSelectBorderColor(const Value: TColor);
+begin
     FSelectBorderColor := Value;
-    FColorsChanged := True; // +jt
-End;
+    FColorsChanged := TRUE; // +jt
+end;
 
-Procedure TXPMenu.SetSelectColor(Const Value: TColor);
-Begin
+procedure TXPMenu.SetSelectColor(const Value: TColor);
+begin
     FSelectColor := Value;
-    FColorsChanged := True; // +jt
-End;
+    FColorsChanged := TRUE; // +jt
+end;
 
-Procedure TXPMenu.SetDisabledColor(Const Value: TColor);
-Begin
+procedure TXPMenu.SetDisabledColor(const Value: TColor);
+begin
     FDisabledColor := Value;
-    FColorsChanged := True; // +jt
-End;
+    FColorsChanged := TRUE; // +jt
+end;
 
-Procedure TXPMenu.SetSelectFontColor(Const Value: TColor);
-Begin
+procedure TXPMenu.SetSelectFontColor(const Value: TColor);
+begin
     FSelectFontColor := Value;
-    FColorsChanged := True; // +jt
-End;
+    FColorsChanged := TRUE; // +jt
+end;
 
-Procedure TXPMenu.SetIconWidth(Const Value: Integer);
-Begin
+procedure TXPMenu.SetIconWidth(const Value: integer);
+begin
     FIconWidth := Value;
-End;
+end;
 
-Procedure TXPMenu.SetDrawSelect(Const Value: Boolean);
-Begin
+procedure TXPMenu.SetDrawSelect(const Value: boolean);
+begin
     FDrawSelect := Value;
-End;
+end;
 
 
 
-Procedure TXPMenu.SetOverrideOwnerDraw(Const Value: Boolean);
-Begin
+procedure TXPMenu.SetOverrideOwnerDraw(const Value: boolean);
+begin
     FOverrideOwnerDraw := Value;
-    If FActive Then
-        Active := True;
-End;
+    if FActive then
+        Active := TRUE;
+end;
 
 
-Procedure TXPMenu.SetUseSystemColors(Const Value: Boolean);
-Begin
+procedure TXPMenu.SetUseSystemColors(const Value: boolean);
+begin
     FUseSystemColors := Value;
     Windows.DrawMenuBar(FForm.Handle);
-End;
+end;
 
-Procedure TXPMenu.SetGradient(Const Value: Boolean);
-Begin
+procedure TXPMenu.SetGradient(const Value: boolean);
+begin
     FGradient := Value;
-End;
+end;
 
-Procedure TXPMenu.SetFlatMenu(Const Value: Boolean);
-Begin
+procedure TXPMenu.SetFlatMenu(const Value: boolean);
+begin
     FFlatMenu := Value;
-End;
+end;
 
-Procedure TXPMenu.SetXPContainers(Const Value: TXPContainers);
-Begin
-    If Value <> FXPContainers Then
-    Begin
-        If FActive Then
-        Begin
-            FActive := False;
-            InitItems(FForm, False, True);
-            FActive := True;
+procedure TXPMenu.SetXPContainers(const Value: TXPContainers);
+begin
+    if Value <> FXPContainers then
+    begin
+        if FActive then
+        begin
+            FActive := FALSE;
+            InitItems(FForm, FALSE, TRUE);
+            FActive := TRUE;
             FXPContainers := Value;
-            InitItems(FForm, True, True);
-        End;
-    End;
+            InitItems(FForm, TRUE, TRUE);
+        end;
+    end;
     FXPContainers := Value;
 
-End;
+end;
 
-Procedure TXPMenu.SetXPControls(Const Value: TXPControls);
-Begin
-    If Value <> FXPControls Then
-    Begin
-        If FActive Then
-        Begin
-            FActive := False;
-            InitItems(FForm, False, True);
-            FActive := True;
+procedure TXPMenu.SetXPControls(const Value: TXPControls);
+begin
+    if Value <> FXPControls then
+    begin
+        if FActive then
+        begin
+            FActive := FALSE;
+            InitItems(FForm, FALSE, TRUE);
+            FActive := TRUE;
             FXPControls := Value;
-            InitItems(FForm, True, True);
-        End;
-    End;
+            InitItems(FForm, TRUE, TRUE);
+        end;
+    end;
     FXPControls := Value;
 
-End;
+end;
 
-Procedure TXPMenu.SetDrawMenuBar(Const Value: Boolean);
-Begin
+procedure TXPMenu.SetDrawMenuBar(const Value: boolean);
+begin
     FDrawMenuBar := Value;
-End;
+end;
 
-Procedure TXPMenu.SetUseDimColor(Const Value: Boolean);
-Begin
+procedure TXPMenu.SetUseDimColor(const Value: boolean);
+begin
     FUseDimColor := Value;
-End;
+end;
 
-Procedure GetSystemMenuFont(Font: TFont);
-Var
+procedure GetSystemMenuFont(Font: TFont);
+var
     FNonCLientMetrics: TNonCLientMetrics;
-Begin
+begin
     FNonCLientMetrics.cbSize := Sizeof(TNonCLientMetrics);
-    If SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, @FNonCLientMetrics, 0) Then
-    Begin
+    if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, @FNonCLientMetrics, 0) then
+    begin
         Font.Handle := CreateFontIndirect(FNonCLientMetrics.lfMenuFont);
         Font.Color := clMenuText;
-    End;
-End;
+    end;
+end;
 
-Procedure TXPMenu.DrawGradient(ACanvas: TCanvas; ARect: TRect;
-    IsRightToLeft: Boolean);
-Var
-    i: Integer;
-    v: Integer;
+procedure TXPMenu.DrawGradient(ACanvas: TCanvas; ARect: TRect;
+    IsRightToLeft: boolean);
+var
+    i: integer;
+    v: integer;
     FRect: TRect;
-Begin
+begin
 
     fRect := ARect;
     V := 0;
-    If IsRightToLeft Then
-    Begin
+    if IsRightToLeft then
+    begin
         fRect.Left := fRect.Right - 1;
-        For i := ARect.Right Downto ARect.Left Do
-        Begin
-            If (fRect.Left < ARect.Right)
-                And (fRect.Left > ARect.Right - FIconWidth + 5) Then
+        for i := ARect.Right downto ARect.Left do
+        begin
+            if (fRect.Left < ARect.Right)
+                and (fRect.Left > ARect.Right - FIconWidth + 5) then
                 inc(v, 3)
-            Else
+            else
                 inc(v, 1);
 
-            If v > 96 Then
+            if v > 96 then
                 v := 96;
             ACanvas.Brush.Color := NewColor(ACanvas, FFIconBackColor, v);
             ACanvas.FillRect(fRect);
 
             fRect.Left := fRect.Left - 1;
             fRect.Right := fRect.Left - 1;
-        End;
-    End
-    Else
-    Begin
+        end;
+    end
+    else
+    begin
         fRect.Right := fRect.Left + 1;
-        For i := ARect.Left To ARect.Right Do
-        Begin
-            If (fRect.Left > ARect.Left)
-                And (fRect.Left < ARect.Left + FIconWidth + 5) Then
+        for i := ARect.Left to ARect.Right do
+        begin
+            if (fRect.Left > ARect.Left)
+                and (fRect.Left < ARect.Left + FIconWidth + 5) then
                 inc(v, 3)
-            Else
+            else
                 inc(v, 1);
 
-            If v > 96 Then
+            if v > 96 then
                 v := 96;
             ACanvas.Brush.Color := NewColor(ACanvas, FFIconBackColor, v);
             ACanvas.FillRect(fRect);
 
             fRect.Left := fRect.Left + 1;
             fRect.Right := fRect.Left + 1;
-        End;
-    End;
-End;
+        end;
+    end;
+end;
 
-Function MenuWindowProc(hwnd: HWND; uMsg: Integer; WParam: WPARAM; lParam: LPARAM): LRESULT; Stdcall;
-Var
-    oldproc: Integer;
+function MenuWindowProc(hwnd: HWND; uMsg: integer; WParam: WPARAM; lParam: LPARAM): LRESULT; stdcall;
+var
+    oldproc: integer;
     r: TRect;
     pt: TPoint;
-Begin
-    If (uMsg = WM_ERASEBKGND) Then
-    Begin
+begin
+    if (uMsg = WM_ERASEBKGND) then
+    begin
         Result := 1;
         exit;
-    End;
-    If ((uMsg = WM_SHOWWINDOW) And (Not Boolean(WParam))) Or (uMsg = WM_CLOSE) Or (uMsg = WM_DESTROY) Then
-    Begin
-        SetWindowRgn(hwnd, 0, False);
+    end;
+    if ((uMsg = WM_SHOWWINDOW) and (not boolean(WParam))) or (uMsg = WM_CLOSE) or (uMsg = WM_DESTROY) then
+    begin
+        SetWindowRgn(hwnd, 0, FALSE);
         oldproc := GetWindowLong(hWnd, GWL_USERDATA);
         SetWindowLong(hWnd, GWL_WNDPROC, oldproc);
         SetWindowLong(hWnd, GWL_USERDATA, 0);
@@ -2529,43 +2529,43 @@ Begin
         pt.x := r.Right + 2;
         pt.y := r.Top + 2;
         hWnd := WindowFromPoint(pt);
-        If GetWindowLong(hWnd, GWL_WNDPROC) <> Integer(@MenuWindowProc) Then
-        Begin
+        if GetWindowLong(hWnd, GWL_WNDPROC) <> integer(@MenuWindowProc) then
+        begin
             pt.x := r.Right + 2;
             pt.y := r.Bottom - 2;
             hWnd := WindowFromPoint(pt);
-            If GetWindowLong(hWnd, GWL_WNDPROC) <> Integer(@MenuWindowProc) Then
+            if GetWindowLong(hWnd, GWL_WNDPROC) <> integer(@MenuWindowProc) then
                 exit;
-        End;
-        InvalidateRect(hwnd, Nil, False);
-    End
-    Else Result := CallWindowProc(Pointer(GetWindowLong(hWnd, GWL_USERDATA)), hwnd, uMsg, wParam, lParam);
-End;
+        end;
+        InvalidateRect(hwnd, NIL, FALSE);
+    end
+    else Result := CallWindowProc(Pointer(GetWindowLong(hWnd, GWL_USERDATA)), hwnd, uMsg, wParam, lParam);
+end;
 
-Procedure TXPMenu.DrawWindowBorder(hWnd: HWND; IsRightToLeft: Boolean);
-Var
+procedure TXPMenu.DrawWindowBorder(hWnd: HWND; IsRightToLeft: boolean);
+var
     WRect: TRect;
     dCanvas: TCanvas;
     wDC: HDC; // +jt
 
-    regiontype: Integer; // +jt
+    regiontype: integer; // +jt
     r1, r2, wr, region: HRGN; // +jt
     rgnr: TRect; // +jt
-Begin
+begin
 
 
-    If (hWnd <= 0) Or (FSettingWindowRng) Then
-    Begin
+    if (hWnd <= 0) or (FSettingWindowRng) then
+    begin
         exit;
-    End;
+    end;
 // +jt
     wDC := GetWindowDC(hWnd); //GetDesktopWindow
-    If wDC = 0 Then
+    if wDC = 0 then
         exit;
 // +jt
-    FSettingWindowRng := True; // +jt
+    FSettingWindowRng := TRUE; // +jt
     dCanvas := TCanvas.Create;
-    Try
+    try
         dCanvas.Handle := wDC; // +jt
         GetWindowRect(hWnd, WRect);
   // +jt
@@ -2573,155 +2573,155 @@ Begin
         WRect.Bottom := WRect.Bottom - WRect.Top;
         WRect.Top := 0;
         WRect.Left := 0;
-        If GetWindowLong(hWnd, GWL_WNDPROC) <> Integer(@MenuWindowProc) Then
-        Begin
+        if GetWindowLong(hWnd, GWL_WNDPROC) <> integer(@MenuWindowProc) then
+        begin
             SetWindowLong(hWnd, GWL_USERDATA, GetWindowLong(hWnd, GWL_WNDPROC));
-            SetWindowLong(hWnd, GWL_WNDPROC, Integer(@MenuWindowProc));
-        End;
-        If Not IsWXP Then
-        Begin
+            SetWindowLong(hWnd, GWL_WNDPROC, integer(@MenuWindowProc));
+        end;
+        if not IsWXP then
+        begin
             wr := CreateRectRgn(0, 0, 0, 0);
             regiontype := GetWindowRgn(hWnd, wr);
             GetRgnBox(wr, rgnr);
             DeleteObject(wr);
-            If (regionType = ERROR) Or (abs(rgnr.Right - WRect.Right) > 5) Or (abs(rgnr.Bottom - WRect.Bottom) > 5) Then
-            Begin
+            if (regionType = ERROR) or (abs(rgnr.Right - WRect.Right) > 5) or (abs(rgnr.Bottom - WRect.Bottom) > 5) then
+            begin
                 region := CreateRectRgn(0, 0, 0, 0);
                 r1 := CreateRectRgn(WRect.Left, WRect.Top, WRect.Right - 2, WRect.Bottom - 2);
                 r2 := CreateRectRgn(WRect.Left + 2, WRect.Top + 2, WRect.Right, WRect.Bottom);
                 CombineRgn(region, r1, r2, RGN_OR);
                 DeleteObject(r1);
                 DeleteObject(r2);
-                SetWindowRgn(hWnd, region, True);
-            End;
+                SetWindowRgn(hWnd, region, TRUE);
+            end;
  // +jt
             Dec(WRect.Right, 2);
             Dec(WRect.Bottom, 2);
-        End; // +jt
+        end; // +jt
         dCanvas.Brush.Style := bsClear;
         dCanvas.Pen.Color := FMenuBorderColor;
         dCanvas.Rectangle(WRect.Left, WRect.Top, WRect.Right, WRect.Bottom);
-        If IsRightToLeft Then
-        Begin
+        if IsRightToLeft then
+        begin
             dCanvas.Pen.Color := FFIconBackColor;
             dCanvas.MoveTo(WRect.Right - 3, WRect.Top + 2);
             dCanvas.LineTo(WRect.Right - 2, WRect.Bottom - 1);
-        End
-        Else
-        Begin
+        end
+        else
+        begin
             dCanvas.Pen.Color := FFIconBackColor;
             dCanvas.Rectangle(WRect.Left + 1, WRect.Top + 2,
                 WRect.Left + 3, WRect.Bottom - 1);
-        End;
+        end;
 // +jt
         StretchBlt(dCanvas.Handle, WRect.Left + 1, WRect.Top + 1, WRect.Right - WRect.Left - 1, 2,
             dCanvas.Handle, WRect.Left + 1, WRect.Top + 3, WRect.Right - WRect.Left - 1, 1, SRCCOPY);
-        If IsWXP Then
-        Begin
+        if IsWXP then
+        begin
             StretchBlt(dCanvas.Handle, WRect.Left + 1, WRect.Bottom - 3, WRect.Right - WRect.Left - 1, 2,
                 dCanvas.Handle, WRect.Left + 1, WRect.Top + 3, WRect.Right - WRect.Left - 1, 1, SRCCOPY);
             dCanvas.Pen.Color := FFColor;
             dCanvas.Rectangle(WRect.Right - 3, WRect.Top + 1, WRect.Right - 1,
                 WRect.Bottom - 1);
-        End;
+        end;
 // +jt
         Inc(WRect.Right, 2);
         Inc(WRect.Bottom, 2);
-        If Not IsWXP Then // +jt
-        Begin // +jt
+        if not IsWXP then // +jt
+        begin // +jt
             dCanvas.Pen.Color := FMenuShadowColor;
             dCanvas.Rectangle(WRect.Left + 2, WRect.Bottom, WRect.Right, WRect.Bottom - 2);
             dCanvas.Rectangle(WRect.Right - 2, WRect.Bottom, WRect.Right, WRect.Top + 2);
-        End; // +jt
+        end; // +jt
 
-    Finally
+    finally
         ReleaseDC(hWnd, wDC); // +jt
         dCanvas.Free;
-        FSettingWindowRng := False;
-    End;
+        FSettingWindowRng := FALSE;
+    end;
 
-End;
+end;
 
-Procedure TXPMenu.Notification(AComponent: TComponent; Operation: TOperation);
-Begin
-    If Not Assigned(XPMenuManager) Then
+procedure TXPMenu.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+    if not Assigned(XPMenuManager) then
         Exit;
 // Pass the notification information to the XPMenuManager
-    If Not (csDesigning In ComponentState) Then
+    if not (csDesigning in ComponentState) then
         XPMenuManager.Notification(AComponent, Operation);
 
-    Inherited Notification(AComponent, Operation);
-    If (Not FActive) Or (Not FAutoDetect) Then
+    inherited Notification(AComponent, Operation);
+    if (not FActive) or (not FAutoDetect) then
         Exit;
-    If (Operation = opInsert) And
-        ((AComponent Is TMenuItem) Or (AComponent Is TToolButton) Or (AComponent Is TControlBar)) Then
-        If Not (csDesigning In ComponentState) Then
-            InitItem(AComponent, True, True);  // Tom: This will process this new component
-End;
+    if (Operation = opInsert) and
+        ((AComponent is TMenuItem) or (AComponent is TToolButton) or (AComponent is TControlBar)) then
+        if not (csDesigning in ComponentState) then
+            InitItem(AComponent, TRUE, TRUE);  // Tom: This will process this new component
+end;
 
 
-Function GetShadeColor(ACanvas: TCanvas; clr: TColor; Value: Integer): TColor;
-Var
-    r, g, b: Integer;
+function GetShadeColor(ACanvas: TCanvas; clr: TColor; Value: integer): TColor;
+var
+    r, g, b: integer;
 
-Begin
+begin
     clr := ColorToRGB(clr);
-    r := Clr And $000000FF;
-    g := (Clr And $0000FF00) Shr 8;
-    b := (Clr And $00FF0000) Shr 16;
+    r := Clr and $000000FF;
+    g := (Clr and $0000FF00) shr 8;
+    b := (Clr and $00FF0000) shr 16;
 
     r := (r - value);
-    If r < 0 Then
+    if r < 0 then
         r := 0;
-    If r > 255 Then
+    if r > 255 then
         r := 255;
 
     g := (g - value) + 2;
-    If g < 0 Then
+    if g < 0 then
         g := 0;
-    If g > 255 Then
+    if g > 255 then
         g := 255;
 
     b := (b - value);
-    If b < 0 Then
+    if b < 0 then
         b := 0;
-    If b > 255 Then
+    if b > 255 then
         b := 255;
 
   //Result := Windows.GetNearestColor(ACanvas.Handle, RGB(r, g, b));
     Result := RGB(r, g, b);
-End;
+end;
 
-Function MergColor(Colors: Array Of TColor): TColor;
-Var
-    r, g, b, i: Integer;
+function MergColor(Colors: array of TColor): TColor;
+var
+    r, g, b, i: integer;
     clr: TColor;
-Begin
+begin
     r := 0; g := 0; b := 0;
 
-    For i := 0 To High(Colors) Do
-    Begin
+    for i := 0 to High(Colors) do
+    begin
 
         clr := ColorToRGB(Colors[i]);
-        r := r + (Clr And $000000FF) Div High(Colors);
-        g := g + ((Clr And $0000FF00) Shr 8) Div High(Colors);
-        b := b + ((Clr And $00FF0000) Shr 16) Div High(Colors);
-    End;
+        r := r + (Clr and $000000FF) div High(Colors);
+        g := g + ((Clr and $0000FF00) shr 8) div High(Colors);
+        b := b + ((Clr and $00FF0000) shr 16) div High(Colors);
+    end;
 
     Result := RGB(r, g, b);
 
-End;
-Function NewColor(ACanvas: TCanvas; clr: TColor; Value: Integer): TColor;
-Var
-    r, g, b: Integer;
+end;
+function NewColor(ACanvas: TCanvas; clr: TColor; Value: integer): TColor;
+var
+    r, g, b: integer;
 
-Begin
-    If Value > 100 Then
+begin
+    if Value > 100 then
         Value := 100;
     clr := ColorToRGB(clr);
-    r := Clr And $000000FF;
-    g := (Clr And $0000FF00) Shr 8;
-    b := (Clr And $00FF0000) Shr 16;
+    r := Clr and $000000FF;
+    g := (Clr and $0000FF00) shr 8;
+    b := (Clr and $00FF0000) shr 16;
 
 
     r := r + Round((255 - r) * (value / 100));
@@ -2731,56 +2731,56 @@ Begin
   //Result := Windows.GetNearestColor(ACanvas.Handle, RGB(r, g, b));
     Result := RGB(r, g, b);
 
-End;
+end;
 
-Function GetInverseColor(AColor: TColor): TColor;
-Begin
-    Result := ColorToRGB(AColor) Xor $FFFFFF;
-End;
+function GetInverseColor(AColor: TColor): TColor;
+begin
+    Result := ColorToRGB(AColor) xor $FFFFFF;
+end;
 
-Function GrayColor(ACanvas: TCanvas; Clr: TColor; Value: Integer): TColor;
-Var
-    r, g, b, avg: Integer;
+function GrayColor(ACanvas: TCanvas; Clr: TColor; Value: integer): TColor;
+var
+    r, g, b, avg: integer;
 
-Begin
+begin
 
     clr := ColorToRGB(clr);
-    r := Clr And $000000FF;
-    g := (Clr And $0000FF00) Shr 8;
-    b := (Clr And $00FF0000) Shr 16;
+    r := Clr and $000000FF;
+    g := (Clr and $0000FF00) shr 8;
+    b := (Clr and $00FF0000) shr 16;
 
-    Avg := (r + g + b) Div 3;
+    Avg := (r + g + b) div 3;
     Avg := Avg + Value;
 
-    If Avg > 240 Then
+    if Avg > 240 then
         Avg := 240;
   //if ACanvas <> nil then
   //  Result := Windows.GetNearestColor (ACanvas.Handle,RGB(Avg, avg, avg));
     Result := RGB(Avg, avg, avg);
-End;
+end;
 
-Procedure GrayBitmap(ABitmap: TBitmap; Value: Integer);
-Var
-    x, y: Integer;
+procedure GrayBitmap(ABitmap: TBitmap; Value: integer);
+var
+    x, y: integer;
     LastColor1, LastColor2, Color: TColor;
-Begin
+begin
     LastColor1 := 0;
     LastColor2 := 0;
 
-    For y := 0 To ABitmap.Height Do
-        For x := 0 To ABitmap.Width Do
-        Begin
+    for y := 0 to ABitmap.Height do
+        for x := 0 to ABitmap.Width do
+        begin
             Color := ABitmap.Canvas.Pixels[x, y];
-            If Color = LastColor1 Then
+            if Color = LastColor1 then
                 ABitmap.Canvas.Pixels[x, y] := LastColor2
-            Else
-            Begin
+            else
+            begin
                 LastColor2 := GrayColor(ABitmap.Canvas, Color, Value);
                 ABitmap.Canvas.Pixels[x, y] := LastColor2;
                 LastColor1 := Color;
-            End;
-        End;
-End;
+            end;
+        end;
+end;
 {Modified  by felix@unidreamtech.com}
 {
 procedure GrayBitmap(ABitmap: TBitmap; Value: integer);
@@ -2810,29 +2810,29 @@ begin
 end;
 }
 
-Procedure DimBitmap(ABitmap: TBitmap; Value: Integer);
-Var
-    x, y: Integer;
+procedure DimBitmap(ABitmap: TBitmap; Value: integer);
+var
+    x, y: integer;
     LastColor1, LastColor2, Color: TColor;
-Begin
-    If Value > 100 Then
+begin
+    if Value > 100 then
         Value := 100;
     LastColor1 := -1;
     LastColor2 := -1;
-    For y := 0 To ABitmap.Height - 1 Do
-        For x := 0 To ABitmap.Width - 1 Do
-        Begin
+    for y := 0 to ABitmap.Height - 1 do
+        for x := 0 to ABitmap.Width - 1 do
+        begin
             Color := ABitmap.Canvas.Pixels[x, y];
-            If Color = LastColor1 Then
+            if Color = LastColor1 then
                 ABitmap.Canvas.Pixels[x, y] := LastColor2
-            Else
-            Begin
+            else
+            begin
                 LastColor2 := NewColor(ABitmap.Canvas, Color, Value);
                 ABitmap.Canvas.Pixels[x, y] := LastColor2;
                 LastColor1 := Color;
-            End;
-        End;
-End;
+            end;
+        end;
+end;
 
 // LIne 2647
 {Modified  by felix@unidreamtech.com}
@@ -2862,8 +2862,8 @@ begin
   end;
 end;
 }
-Procedure DrawArrow(ACanvas: TCanvas; X, Y: Integer);
-Begin
+procedure DrawArrow(ACanvas: TCanvas; X, Y: integer);
+begin
     ACanvas.MoveTo(X, Y);
     ACanvas.LineTo(X + 5, Y);
 
@@ -2873,13 +2873,13 @@ Begin
     ACanvas.MoveTo(X + 2, Y + 2);
     ACanvas.LineTo(X + 3, Y);
 
-End;
+end;
 
-Procedure DrawArrow(ACanvas: TCanvas; X, Y, Orientation: Integer);
-Begin
-    Case Orientation Of
+procedure DrawArrow(ACanvas: TCanvas; X, Y, Orientation: integer);
+begin
+    case Orientation of
         0:
-        Begin
+        begin
 
             ACanvas.MoveTo(X, Y);
             ACanvas.LineTo(X, Y - 1);
@@ -2903,9 +2903,9 @@ Begin
             ACanvas.MoveTo(X, Y + 1);
             ACanvas.LineTo(X - 2, Y + 4);
 
-        End;
+        end;
         1:
-        Begin
+        begin
             ACanvas.MoveTo(X, Y + 3);
             ACanvas.LineTo(X, Y + 4);
 
@@ -2930,26 +2930,26 @@ Begin
             ACanvas.LineTo(X - 2, Y + 0);
 
 
-        End;
-    End;
-End;
-Procedure DrawBitmapShadow(B: TBitmap; ACanvas: TCanvas; X, Y: Integer;
+        end;
+    end;
+end;
+procedure DrawBitmapShadow(B: TBitmap; ACanvas: TCanvas; X, Y: integer;
     ShadowColor: TColor);
-Var
-    BX, BY: Integer;
+var
+    BX, BY: integer;
     TransparentColor: TColor;
-Begin
+begin
     TransparentColor := B.Canvas.Pixels[0, B.Height - 1];
-    For BY := 0 To B.Height - 1 Do
-        For BX := 0 To B.Width - 1 Do
-        Begin
-            If B.Canvas.Pixels[BX, BY] <> TransparentColor Then
+    for BY := 0 to B.Height - 1 do
+        for BX := 0 to B.Width - 1 do
+        begin
+            if B.Canvas.Pixels[BX, BY] <> TransparentColor then
                 ACanvas.Pixels[X + BX, Y + BY] := ShadowColor;
-        End;
-End;
+        end;
+end;
 
-Procedure DrawCheckMark(ACanvas: TCanvas; X, Y: Integer);
-Begin
+procedure DrawCheckMark(ACanvas: TCanvas; X, Y: integer);
+begin
     Inc(X, 2);
     Dec(Y, 3);
     ACanvas.MoveTo(X, Y - 2);
@@ -2963,107 +2963,107 @@ Begin
     ACanvas.MoveTo(X, Y - 4);
     ACanvas.LineTo(X + 2, Y - 2);
     ACanvas.LineTo(X + 8, Y - 8);
-End;
+end;
 
 { TCustomComboSubClass }
-Procedure TControlSubClass.SetControl(AControl: TControl);
-Begin
+procedure TControlSubClass.SetControl(AControl: TControl);
+begin
     fControl := AControl;
-End;
+end;
 
 //By Heath Provost (Nov 20, 2001)
 // ComboBox Subclass WndProc.
 // Message processing to allow control to repond to
 // messages needed to paint using Office XP style.
-Procedure TControlSubClass.ControlSubClass(Var Message: TMessage);
+procedure TControlSubClass.ControlSubClass(var Message: TMessage);
 
-Begin
+begin
   //Call original WindowProc FIRST. We are trying to emulate inheritance, so
   //original WindowProc must handle all messages before we do.
-    If ((Message.Msg = WM_PAINT) And ((Control Is TGraphicControl))) Or
-        ((Control.ClassName = 'TDBLookupComboBox') And (Message.Msg = WM_NCPAINT)) Then
+    if ((Message.Msg = WM_PAINT) and ((Control is TGraphicControl))) or
+        ((Control.ClassName = 'TDBLookupComboBox') and (Message.Msg = WM_NCPAINT)) then
         Message.Result := 1
-    Else
+    else
     //"Marcus Paulo Tavares" <marcuspt@terra.com.br>
         orgWindowProc(Message);
 
-    If (XPMenu <> Nil) And (Not XPMenu.FActive) Then
-    Begin
-        Try
+    if (XPMenu <> NIL) and (not XPMenu.FActive) then
+    begin
+        try
             Message.Result := 1;
-            If Control <> Nil Then
-            Begin
+            if Control <> NIL then
+            begin
                 Control.WindowProc := orgWindowProc;
-                If Control Is TCustomEdit Then
+                if Control is TCustomEdit then
                     TEdit(Control).Ctl3D := FCtl3D;
-                If Control Is TCustomRichEdit Then
+                if Control is TCustomRichEdit then
                     TRichEdit(Control).BorderStyle := FBorderStyle;
-                If Control.ClassName = 'TDBLookupComboBox' Then
+                if Control.ClassName = 'TDBLookupComboBox' then
                     TComboBox(Control).Ctl3D := FCtl3D;
-                If Control Is TCustomListBox Then
+                if Control is TCustomListBox then
                     TListBox(Control).BorderStyle := FBorderStyle;
-                If Control Is TCustomListView Then
+                if Control is TCustomListView then
                     TListView(Control).BorderStyle := FBorderStyle;
-                If Control Is TCustomTreeView Then
+                if Control is TCustomTreeView then
                     TTreeView(Control).BorderStyle := FBorderStyle;
-                Control := Nil;
+                Control := NIL;
                 Free;
-            End;
+            end;
             Exit;
-        Except
+        except
             exit;
-        End;
-    End;
+        end;
+    end;
 
     FMsg := Message.Msg;
-    Case Message.Msg Of
+    case Message.Msg of
 
 
         EM_GETMODIFY, // For edit
         CM_INVALIDATE:
-        Begin
-            FBuilding := True;
-        End;
+        begin
+            FBuilding := TRUE;
+        end;
 
         CM_PARENTCOLORCHANGED:
-        Begin
+        begin
             PaintControlXP;
-        End;
+        end;
 
         WM_DESTROY:
-        Begin
-            If Not FBuilding Then
-            Begin
-                Try
-                    If Control <> Nil Then
-                    Begin
+        begin
+            if not FBuilding then
+            begin
+                try
+                    if Control <> NIL then
+                    begin
                         Control.WindowProc := orgWindowProc;
-                        FBuilding := False;
+                        FBuilding := FALSE;
                         Free;
-                    End;
-                Except
-                End;
+                    end;
+                except
+                end;
          //FBuilding := false;
-            End;
+            end;
             Exit;
-        End;
+        end;
 
         WM_PAINT:
-        Begin
-            FBuilding := False;
+        begin
+            FBuilding := FALSE;
             PaintControlXP;
-        End;
+        end;
 
         CM_MOUSEENTER:
-            If TControl(Control).Enabled Then
-            Begin
+            if TControl(Control).Enabled then
+            begin
 //        if FmouseInControl then exit;
-                FmouseInControl := True;
-                If Control Is TGraphicControl Then
-                Begin
+                FmouseInControl := TRUE;
+                if Control is TGraphicControl then
+                begin
                     Control.Repaint;
                     exit;
-                End;
+                end;
                 PaintControlXP;
 
 
@@ -3083,16 +3083,16 @@ Begin
         end;}
 
 
-            End;
+            end;
         CM_MOUSELEAVE:
-            If TControl(Control).Enabled Then
-            Begin
-                FmouseInControl := False;
-                If Control Is TGraphicControl Then
-                Begin
+            if TControl(Control).Enabled then
+            begin
+                FmouseInControl := FALSE;
+                if Control is TGraphicControl then
+                begin
                     Control.Invalidate;
                     exit;
-                End;
+                end;
                 PaintControlXP;
 
 
@@ -3109,224 +3109,224 @@ Begin
           FmouseInControl := false;
           PaintControlXP;
         end;}
-            End;
+            end;
 
         WM_MOUSEMOVE:
-        Begin
-            If TControl(Control).Enabled And (Control.ClassName = 'TUpDown') Then
+        begin
+            if TControl(Control).Enabled and (Control.ClassName = 'TUpDown') then
                 PaintControlXP;
-        End;
+        end;
         WM_LBUTTONDOWN:
-        Begin
-            FLButtonBressed := True;
+        begin
+            FLButtonBressed := TRUE;
             PaintControlXP;
-        End;
+        end;
 
         WM_LBUTTONUP:
-        Begin
-            FLButtonBressed := False;
-            If Control Is TGraphicControl Then
-            Begin
+        begin
+            FLButtonBressed := FALSE;
+            if Control is TGraphicControl then
+            begin
                 Control.Repaint;
                 exit;
-            End;
+            end;
             PaintControlXP;
-        End;
+        end;
 
         WM_KEYDOWN:
-            If Message.WParam = VK_SPACE Then
-            Begin
-                FBressed := True;
-                If Not FIsKeyDown Then
+            if Message.WParam = VK_SPACE then
+            begin
+                FBressed := TRUE;
+                if not FIsKeyDown then
                     PaintControlXP;
-                FIsKeyDown := True;
-            End;
+                FIsKeyDown := TRUE;
+            end;
 
         WM_KEYUP:
-            If Message.WParam = VK_SPACE Then
-            Begin
-                FBressed := False;
-                FIsKeyDown := False;
+            if Message.WParam = VK_SPACE then
+            begin
+                FBressed := FALSE;
+                FIsKeyDown := FALSE;
                 PaintControlXP;
-            End;
+            end;
 
         WM_SETFOCUS:
-        Begin
-            FmouseInControl := True;
+        begin
+            FmouseInControl := TRUE;
             PaintControlXP;
-        End;
+        end;
         WM_KILLFOCUS:
-        Begin
-            FmouseInControl := False;
+        begin
+            FmouseInControl := FALSE;
             PaintControlXP;
-        End;
+        end;
         CM_FOCUSCHANGED:    //??
             PaintControlXP;
 
         CM_EXIT:
-        Begin
-            FmouseInControl := False;
+        begin
+            FmouseInControl := FALSE;
             PaintControlXP;
-        End;
+        end;
 
         BM_SETCHECK:
-        Begin
-            FmouseInControl := False;
+        begin
+            FmouseInControl := FALSE;
             PaintControlXP;
-        End;
+        end;
         BM_GETCHECK:
-        Begin
-            FmouseInControl := False;
+        begin
+            FmouseInControl := FALSE;
             PaintControlXP;
-        End;
+        end;
         CM_ENABLEDCHANGED:
-        Begin
-            If (Message.WParam = 0) Then
-                FmouseInControl := False;//Dirk Bottcher <dirk.boettcher@gmx.net>
+        begin
+            if (Message.WParam = 0) then
+                FmouseInControl := FALSE;//Dirk Bottcher <dirk.boettcher@gmx.net>
             PaintControlXP;
-        End;
+        end;
 
         CM_TEXTCHANGED:
-        Begin
+        begin
             PaintControlXP;
-        End;
+        end;
 
 
         CM_CTL3DCHANGED, CM_PARENTCTL3DCHANGED:
-        Begin
-            FBuilding := True;
-        End;
+        begin
+            FBuilding := TRUE;
+        end;
         WM_LBUTTONDBLCLK:    //for button, check
-        Begin
-            If (Control Is TButton) Or
-                (Control Is TSpeedButton) Or
-                (Control Is TCheckBox) Then
-                Control.Perform(WM_LBUTTONDOWN, Message.WParam, Longint(Message.LParam));
-        End;
+        begin
+            if (Control is TButton) or
+                (Control is TSpeedButton) or
+                (Control is TCheckBox) then
+                Control.Perform(WM_LBUTTONDOWN, Message.WParam, longint(Message.LParam));
+        end;
     {CN_DRAWITEM,} BM_SETSTATE:
-        Begin
+        begin
             PaintControlXP;   // button
-        End;
+        end;
         WM_WINDOWPOSCHANGED, CN_PARENTNOTIFY:     // Moving From parent to other
-        Begin
-            FBuilding := True;
-        End;
+        begin
+            FBuilding := TRUE;
+        end;
         WM_NCPAINT:
-        Begin
+        begin
             Message.Result := 0;
-            If (Control Is TCustomListBox) Or (Control Is TCustomTreeView) Or
-                (Control Is TCustomListBox)
-            Then
+            if (Control is TCustomListBox) or (Control is TCustomTreeView) or
+                (Control is TCustomListBox)
+            then
                 PaintNCWinControl;
-        End;
-    End;
+        end;
+    end;
 
-End;
+end;
 
 // changes added by Heath Provost (Nov 20, 2001)
 { TCustomComboSubClass }
 // paints an overlay over the control to make it mimic
 // Office XP style.
 
-Procedure TControlSubClass.PaintControlXP;
-Begin
+procedure TControlSubClass.PaintControlXP;
+begin
 
-    If Control Is TWinControl Then
+    if Control is TWinControl then
         FIsFocused := TWinControl(Control).Focused
-    Else
-        FIsFocused := False;
+    else
+        FIsFocused := FALSE;
   {$IFDEF VER6U}
-    If (Control Is TCustomCombo) Then
+    if (Control is TCustomCombo) then
         PaintCombo;
   {$ELSE}
   if (Control is TCustomComboBox) then
     PaintCombo;
   {$ENDIF}
-    If Control.ClassName = 'TDBLookupComboBox' Then
+    if Control.ClassName = 'TDBLookupComboBox' then
         PaintDBLookupCombo;
 
-    If Control Is TCustomRichEdit Then
+    if Control is TCustomRichEdit then
         PaintRichEdit
-    Else
-    If Control Is TCustomEdit Then
+    else
+    if Control is TCustomEdit then
         PaintEdit;
 
-    If Control Is TCustomCheckBox Then
+    if Control is TCustomCheckBox then
         PaintCheckBox;
-    If Control Is TRadioButton Then
+    if Control is TRadioButton then
         PaintRadio;
 
-    If Control Is TBitBtn Then
+    if Control is TBitBtn then
         PaintBitButn
-    Else
-    If Control Is TButton Then
+    else
+    if Control is TButton then
         PaintButton;
 
-    If Control Is TUpDown Then
+    if Control is TUpDown then
         PaintUpDownButton;
 
-    If Control Is TSpeedButton Then
-        If Control.Visible Then
+    if Control is TSpeedButton then
+        if Control.Visible then
             PaintSpeedButton;
 
-    If Control Is TCustomPanel Then
+    if Control is TCustomPanel then
         PaintPanel;
 
-    If Control Is TCustomGroupBox Then
+    if Control is TCustomGroupBox then
         PaintGroupBox;
 
-    If (Control Is TCustomListBox) Or (Control Is TCustomTreeView) Or
-        (Control Is TCustomListView)
-    Then
+    if (Control is TCustomListBox) or (Control is TCustomTreeView) or
+        (Control is TCustomListView)
+    then
         PaintNCWinControl;
 
-    If Control Is TProgressBar Then
+    if Control is TProgressBar then
         PaintProgressBar;
 
-    If Control Is TCustomHotKey Then
+    if Control is TCustomHotKey then
         PaintHotKey;
 {
   if Control is TDrawGrid then
     PaintGrid;
 }
-End;
+end;
 
-Procedure TControlSubClass.PaintCombo;
-Var
+procedure TControlSubClass.PaintCombo;
+var
     C: TControlCanvas;
     R: TRect;
     SelectColor, BorderColor, ArrowColor: TColor;
-    X: Integer;
-Begin
+    X: integer;
+begin
 
     C := TControlCanvas.Create;
-    Try
+    try
         C.Control := Control;
 
 //    XPMenu.SetGlobalColor(C);
-        If Control.Enabled Then
-            ArrowColor := clBlack Else ArrowColor := clWhite;
+        if Control.Enabled then
+            ArrowColor := clBlack else ArrowColor := clWhite;
 
 
-        If (FmouseinControl) Then
-        Begin
+        if (FmouseinControl) then
+        begin
             borderColor := XPMenu.FFSelectBorderColor;
             SelectColor := XPMenu.FFSelectColor;
-        End
-        Else
-        Begin
+        end
+        else
+        begin
             borderColor := TComboBox(Control).Color;
-            If Control.Tag = 1000 Then
+            if Control.Tag = 1000 then
                 SelectColor := NewColor(C, TControl(Control).Parent.Brush.Color, xpMenu.FDimParentColor)
-            Else
+            else
                 selectColor := clBtnFace;
-        End;
+        end;
 
-        If (Not FmouseinControl) And (FIsFocused) Then
-        Begin
+        if (not FmouseinControl) and (FIsFocused) then
+        begin
             borderColor := NewColor(C, XPMenu.FFSelectBorderColor, 60);
             SelectColor := XPMenu.FCheckedAreaColor;
-        End;
+        end;
 
         R := Control.ClientRect;
 
@@ -3340,7 +3340,7 @@ Begin
 
         InflateRect(R, 0, -1);
 
-        If (FmouseinControl Or FIsFocused) Then
+        if (FmouseinControl or FIsFocused) then
             InflateRect(R, 1, 1);
 
         C.Brush.Color := TComboBox(Control).Color;;
@@ -3351,40 +3351,40 @@ Begin
         C.FrameRect(R);
 
     {$IFDEF VER6U}
-        If TCustomCombo(Control).DroppedDown Then
+        if TCustomCombo(Control).DroppedDown then
     {$ELSE}
     if TCustomComboBox(Control).DroppedDown then
     {$ENDIF}
-        Begin
+        begin
             BorderColor := XPMenu.FFSelectBorderColor;
             ArrowColor := clWhite;
             SelectColor := XPMenu.FCheckedAreaSelectColor;
-        End;
+        end;
 
-        If TComboBox(Control).style <> csSimple Then
-        Begin
+        if TComboBox(Control).style <> csSimple then
+        begin
 
             InflateRect(R, -1, -1);
 
-            If Control.BiDiMode = bdRightToLeft Then
+            if Control.BiDiMode = bdRightToLeft then
                 R.Right := R.Left + GetSystemMetrics(SM_CXHTHUMB) + 1
-            Else
+            else
                 R.Left := R.Right - GetSystemMetrics(SM_CXHTHUMB) - 1;
 
-            If (FmouseinControl Or FIsFocused) Then
-            Begin
-                If Control.BiDiMode = bdRightToLeft Then
+            if (FmouseinControl or FIsFocused) then
+            begin
+                if Control.BiDiMode = bdRightToLeft then
                     Inc(R.Right, 2)
-                Else
+                else
                     Dec(R.Left, 1);
-            End;
+            end;
 
             C.Brush.Color := SelectColor;
             C.FillRect(R);
 
-            If Control.BiDiMode = bdRightToLeft Then
+            if Control.BiDiMode = bdRightToLeft then
                 R.Left := R.Right - 5
-            Else
+            else
                 R.Right := R.Left + 5;
 
             C.Brush.Color := TComboBox(Control).Color;
@@ -3392,23 +3392,23 @@ Begin
 
             C.Pen.Color := BorderColor;
 
-            If Control.BiDiMode = bdRightToLeft Then
-            Begin
+            if Control.BiDiMode = bdRightToLeft then
+            begin
                 C.Moveto(R.Left, R.Top);
                 C.LineTo(R.Left, R.Bottom);
-            End
-            Else
-            Begin
+            end
+            else
+            begin
                 C.Moveto(R.Right, R.Top);
                 C.LineTo(R.Right, R.Bottom);
-            End;
+            end;
             C.Pen.Color := arrowColor;
 
             R := Control.ClientRect;
 
-            If Control.BiDiMode = bdRightToLeft Then
+            if Control.BiDiMode = bdRightToLeft then
                 X := R.Left + 5
-            Else
+            else
                 X := R.Right - 10;
 
             C.Moveto(X + 0, R.Top + 10);
@@ -3417,56 +3417,56 @@ Begin
             C.LineTo(X + 4, R.Top + 11);
             C.Moveto(X + 2, R.Top + 12);
             C.LineTo(X + 3, R.Top + 12);
-        End;
-    Finally
+        end;
+    finally
         C.Free;
-    End;
+    end;
 
-End;
+end;
 
-Procedure TControlSubClass.PaintDBLookupCombo;
-Var
+procedure TControlSubClass.PaintDBLookupCombo;
+var
     C: TControlCanvas;
     R: TRect;
     FrameColor, SelectColor, BorderColor, ArrowColor: TColor;
-    X: Integer;
+    X: integer;
     DC: HDC;
 
-Begin
+begin
     C := TControlCanvas.Create;
     DC := GetWindowDC(TWinControl(Control).Handle);
-    Try
+    try
         C.Control := Control;
         C.Handle := DC;
-        If TComboBox(Control).Ctl3D Then
-        Begin
-            FBuilding := True;
-            TComboBox(Control).Ctl3D := False;
-        End;
+        if TComboBox(Control).Ctl3D then
+        begin
+            FBuilding := TRUE;
+            TComboBox(Control).Ctl3D := FALSE;
+        end;
 
     //XPMenu.SetGlobalColor(C);
-        If Control.Enabled Then
-            ArrowColor := clBlack Else ArrowColor := clWhite;
+        if Control.Enabled then
+            ArrowColor := clBlack else ArrowColor := clWhite;
 
 
-        If (FmouseinControl) Then
-        Begin
+        if (FmouseinControl) then
+        begin
             FrameColor := XPMenu.FFSelectBorderColor;
             borderColor := XPMenu.FFSelectBorderColor;
             SelectColor := XPMenu.FFSelectColor;
-        End
-        Else
-        Begin
+        end
+        else
+        begin
             FrameColor := GetShadeColor(C, Control.Parent.Brush.Color, 60);
             borderColor := NewColor(C, XPMenu.FFSelectBorderColor, 60);
             selectColor := clBtnFace;
-        End;
-        If (Not FmouseinControl) And (FIsFocused) Then
-        Begin
+        end;
+        if (not FmouseinControl) and (FIsFocused) then
+        begin
             FrameColor := GetShadeColor(C, Control.Parent.Brush.Color, 60);
             borderColor := NewColor(C, XPMenu.FFSelectBorderColor, 60);
             SelectColor := XPMenu.FCheckedAreaColor;
-        End;
+        end;
 
 
         R := Rect(0, 0, Control.Width, Control.Height);
@@ -3485,33 +3485,33 @@ Begin
         C.FrameRect(R);
 
     {$IFDEF VER6U}
-        If TCustomCombo(Control).DroppedDown Then
+        if TCustomCombo(Control).DroppedDown then
     {$ELSE}
     if TCustomComboBox(Control).DroppedDown then
     {$ENDIF}
-        Begin
+        begin
             BorderColor := XPMenu.FFSelectBorderColor;
             ArrowColor := clWhite;
             SelectColor := XPMenu.FCheckedAreaSelectColor;
-        End;
+        end;
 
-        If TComboBox(Control).style <> csSimple Then
-        Begin
+        if TComboBox(Control).style <> csSimple then
+        begin
 
             InflateRect(R, -1, -1);
 
-            If Control.BiDiMode = bdRightToLeft Then
+            if Control.BiDiMode = bdRightToLeft then
                 R.Right := R.Left + GetSystemMetrics(SM_CXHTHUMB) + 1
-            Else
+            else
                 R.Left := R.Right - GetSystemMetrics(SM_CXHTHUMB) - 1;
 
-            If (FmouseinControl Or FIsFocused) Then
-            Begin
-                If Control.BiDiMode = bdRightToLeft Then
+            if (FmouseinControl or FIsFocused) then
+            begin
+                if Control.BiDiMode = bdRightToLeft then
                     Inc(R.Right, 1)
-                Else
+                else
                     Dec(R.Left, 1);
-            End;
+            end;
 
 
             C.Brush.Color := SelectColor;
@@ -3519,9 +3519,9 @@ Begin
             C.Brush.Color := BorderColor;
             C.FrameRect(R);
 
-            If Control.BiDiMode = bdRightToLeft Then
+            if Control.BiDiMode = bdRightToLeft then
                 R.Left := R.Right - 5
-            Else
+            else
                 R.Right := R.Left + 5;
 
             C.Brush.Color := TComboBox(Control).Color;
@@ -3529,23 +3529,23 @@ Begin
 
             C.Pen.Color := BorderColor;
 
-            If Control.BiDiMode = bdRightToLeft Then
-            Begin
+            if Control.BiDiMode = bdRightToLeft then
+            begin
                 C.Moveto(R.Left, R.Top);
                 C.LineTo(R.Left, R.Bottom);
-            End
-            Else
-            Begin
+            end
+            else
+            begin
                 C.Moveto(R.Right, R.Top);
                 C.LineTo(R.Right, R.Bottom);
-            End;
+            end;
             C.Pen.Color := arrowColor;
 
             R := Control.ClientRect;
 
-            If Control.BiDiMode = bdRightToLeft Then
+            if Control.BiDiMode = bdRightToLeft then
                 X := R.Left + 5
-            Else
+            else
                 X := R.Right - 9; // Changed by Uwe Runkel, uwe@runkel.info
                           // Changed value from 10 to 9 because the thumb has
                           // moved one pixel to the right
@@ -3556,48 +3556,48 @@ Begin
             C.LineTo(X + 4, R.Top + 9);
             C.Moveto(X + 2, R.Top + 10);
             C.LineTo(X + 3, R.Top + 10);
-        End;
-    Finally
+        end;
+    finally
         C.Free;
         ReleaseDC(TWinControl(Control).Handle, DC);
-    End;
+    end;
 
-End;
+end;
 
-Procedure TControlSubClass.PaintEdit;
-Var
+procedure TControlSubClass.PaintEdit;
+var
     C: TControlCanvas;
     R: TRect;
     BorderColor: TColor;
-Begin
+begin
 
     C := TControlCanvas.Create;
-    Try
+    try
         C.Control := Control;
 
     //XPMenu.SetGlobalColor(C);
 
-        If TEdit(Control).Ctl3D <> False Then
-        Begin
-            FBuilding := True;
-            TEdit(Control).Ctl3D := False;
-        End;
+        if TEdit(Control).Ctl3D <> FALSE then
+        begin
+            FBuilding := TRUE;
+            TEdit(Control).Ctl3D := FALSE;
+        end;
 
-        If (FmouseinControl) Or (FIsFocused) Then
+        if (FmouseinControl) or (FIsFocused) then
             borderColor := NewColor(C, XPMenu.FFSelectBorderColor, 60)
-        Else
+        else
             borderColor := GetShadeColor(C, Control.Parent.Brush.Color, 60);
 
 
-        If FBorderStyle = bsNone Then
-        Begin
-            If (FmouseinControl) And (Not FIsFocused) Then
+        if FBorderStyle = bsNone then
+        begin
+            if (FmouseinControl) and (not FIsFocused) then
         //borderColor := NewColor(C, Control.Parent.Brush.Color, 60)
                 borderColor := NewColor(C, MergColor([TEdit(Control).Color, Control.Parent.Brush.Color]), 40)
 
-            Else
+            else
                 borderColor := TEdit(Control).Color;
-        End;
+        end;
 
 
         R := Control.ClientRect;
@@ -3606,120 +3606,120 @@ Begin
         C.Brush.Style := bsClear;
 
         C.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
-    Finally
+    finally
         C.Free;
-    End;
-End;
+    end;
+end;
 
-Procedure TControlSubClass.PaintRichEdit;
-Var
+procedure TControlSubClass.PaintRichEdit;
+var
     C: TControlCanvas;
     R: TRect;
     BorderColor: TColor;
-Begin
+begin
 
     C := TControlCanvas.Create;
-    Try
+    try
         C.Control := Control.Parent;
 
         R := Control.BoundsRect;
         InflateRect(R, 1, 1);
 
-        If FBorderStyle = bsSingle Then
-        Begin
-            FBuilding := True;
+        if FBorderStyle = bsSingle then
+        begin
+            FBuilding := TRUE;
             TRichEdit(Control).BorderStyle := bsNone;
-            If TRichEdit(Control).BorderWidth < 2 Then
+            if TRichEdit(Control).BorderWidth < 2 then
                 TRichEdit(Control).BorderWidth := 2;
-        End;
+        end;
 
-        If (FmouseinControl) Or (FIsFocused) Then
+        if (FmouseinControl) or (FIsFocused) then
             borderColor := NewColor(C, XPMenu.FFSelectBorderColor, 60)
 
 
-        Else
-        Begin
-            If FBorderStyle = bsSingle Then
+        else
+        begin
+            if FBorderStyle = bsSingle then
                 borderColor := GetShadeColor(C, Control.Parent.Brush.Color, 60)
-            Else
+            else
                 borderColor := Control.Parent.Brush.Color;
-        End;
+        end;
 
         Frame3D(C, R, borderColor, borderColor, 1);
 
-    Finally
+    finally
         C.Free;
-    End;
+    end;
 
-End;
+end;
 
-Procedure TControlSubClass.PaintCheckBox;
-Var
+procedure TControlSubClass.PaintCheckBox;
+var
     C: TControlCanvas;
     R: TRect;
     SelectColor, BorderColor: TColor;
-Begin
+begin
 
     C := TControlCanvas.Create;
-    Try
+    try
         C.Control := Control;
 
-        If FMouseInControl Then
-        Begin
+        if FMouseInControl then
+        begin
             SelectColor := XPMenu.FFSelectColor;
             BorderColor := xpMenu.FFSelectBorderColor;
-        End
-        Else
-        Begin
+        end
+        else
+        begin
             SelectColor := clWindow;
             BorderColor := clBtnShadow;
-        End;
+        end;
 
-        If (FIsFocused) Then
-        Begin
+        if (FIsFocused) then
+        begin
             SelectColor := XPMenu.FFSelectColor;
             BorderColor := xpMenu.FFSelectBorderColor;
-        End;
-        If (FBressed) Or (FLButtonBressed) Then
+        end;
+        if (FBressed) or (FLButtonBressed) then
             SelectColor := XPMenu.FCheckedAreaSelectColor;
 
-        If TCheckBox(Control).State = cbGrayed Then
+        if TCheckBox(Control).State = cbGrayed then
             SelectColor := clSilver;
         R := Control.ClientRect;
 
     //The minimum size of the check box is 17px, so if the rectangle is smaller than that
     //expand it
-        If R.Bottom - R.Top < 17 Then
-        Begin
+        if R.Bottom - R.Top < 17 then
+        begin
       //We are going to call inflateRect so we have to measure the difference
-            If (17 - R.Bottom - R.Top) Mod 2 = 0 Then
-                InflateRect(R, 0, (17 - R.Bottom - R.Top) Div 2)
-            Else
-            Begin
-                InflateRect(R, 0, (17 - R.Bottom - R.Top) Div 2);
+            if (17 - R.Bottom - R.Top) mod 2 = 0 then
+                InflateRect(R, 0, (17 - R.Bottom - R.Top) div 2)
+            else
+            begin
+                InflateRect(R, 0, (17 - R.Bottom - R.Top) div 2);
                 R.Top := R.Top - 1;
-            End;
-        End;
+            end;
+        end;
     //InflateRect(R, 0, 2);
     //R.Top := R.Top + ((R.Bottom - R.Top - GetSystemMetrics(SM_CXHTHUMB)) div 2);
     //R.Top := R.Top - 2;
     //R.Bottom := R.Top + GetSystemMetrics(SM_CXHTHUMB);
 
-        If ((Control.BiDiMode = bdRightToLeft) And
-            (TCheckBox(Control).Alignment = taRightJustify)) Or
-            ((Control.BiDiMode = bdLeftToRight) And
+        if ((Control.BiDiMode = bdRightToLeft) and
+            (TCheckBox(Control).Alignment = taRightJustify)) or
+            ((Control.BiDiMode = bdLeftToRight) and
             (TCheckBox(Control).Alignment = taLeftJustify))
-        Then
+        then
             R.Left := R.Right - GetSystemMetrics(SM_CXHTHUMB) + 1
-        Else
-        If ((Control.BiDiMode = bdLeftToRight) And
-            (TCheckBox(Control).Alignment = taRightJustify)) Or
-            ((Control.BiDiMode = bdRightToLeft) And
-            (TCheckBox(Control).Alignment = taLeftJustify)) Then
-        Begin
+        else
+        if ((Control.BiDiMode = bdLeftToRight) and
+            (TCheckBox(Control).Alignment = taRightJustify)) or
+            ((Control.BiDiMode = bdRightToLeft) and
+            (TCheckBox(Control).Alignment = taLeftJustify)) then
+        begin
             R.Left := R.Left - 2;
             R.Right := R.Left + GetSystemMetrics(SM_CXHTHUMB);
-        End;
+        end;
 
     //HELP: Extraneous border?
     //C.Brush.Color := TCheckBox(Control).Color;
@@ -3729,151 +3729,151 @@ Begin
         C.Pen.Color := BorderColor;
         C.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
 
-        If (TCheckBox(Control).Checked) Or
-            (TCheckBox(Control).State = cbGrayed) Then
-        Begin
-            If Control.Enabled Then
-            Begin
-                If (FBressed) Or (FLButtonBressed) Then
+        if (TCheckBox(Control).Checked) or
+            (TCheckBox(Control).State = cbGrayed) then
+        begin
+            if Control.Enabled then
+            begin
+                if (FBressed) or (FLButtonBressed) then
                     C.Pen.color := clWindow
-                Else
-                Begin
-                    If TCheckBox(Control).State = cbGrayed Then
+                else
+                begin
+                    if TCheckBox(Control).State = cbGrayed then
                         C.Pen.color := clGray
-                    Else
+                    else
                         C.Pen.color := clHighlight;
-                End;
-            End
-            Else
+                end;
+            end
+            else
                 C.Pen.color := xpMenu.FFDisabledColor;
 
             DrawCheckMark(C, R.Left, R.Bottom);
-        End;
+        end;
 
-    Finally
+    finally
         C.Free;
-    End;
+    end;
 
 
-End;
+end;
 
-Procedure TControlSubClass.PaintRadio;
-Var
+procedure TControlSubClass.PaintRadio;
+var
     C: TControlCanvas;
     R: TRect;
-    RectHeight: Integer;
+    RectHeight: integer;
     SelectColor, BorderColor: TColor;
-Begin
+begin
 
     C := TControlCanvas.Create;
-    Try
+    try
         C.Control := Control;
 
-        If FMouseInControl Then
-        Begin
+        if FMouseInControl then
+        begin
             SelectColor := XPMenu.FFSelectColor;
             BorderColor := xpMenu.FFSelectBorderColor;
-        End
-        Else
-        Begin
+        end
+        else
+        begin
             SelectColor := clWindow;
             BorderColor := clBtnShadow;
-        End;
-        If (FIsFocused) Then
+        end;
+        if (FIsFocused) then
             SelectColor := XPMenu.FFSelectColor;
 
         R := Control.ClientRect;
-        If (R.Bottom - R.Top) <= 18 Then
+        if (R.Bottom - R.Top) <= 18 then
             R.Bottom := R.Top + GetSystemMetrics(SM_CXHTHUMB)
-        Else
-        Begin
-            RectHeight := (R.Bottom - R.Top - GetSystemMetrics(SM_CXHTHUMB)) Div 2;
+        else
+        begin
+            RectHeight := (R.Bottom - R.Top - GetSystemMetrics(SM_CXHTHUMB)) div 2;
             R.Top := R.Top + RectHeight;
             R.Bottom := R.Bottom - RectHeight;
-            If R.Bottom - R.Top > GetSystemMetrics(SM_CXHTHUMB) Then
+            if R.Bottom - R.Top > GetSystemMetrics(SM_CXHTHUMB) then
                 R.Bottom := R.Bottom - 1;
-        End;
-        If ((Control.BiDiMode = bdRightToLeft) And
-            (TCheckBox(Control).Alignment = taRightJustify)) Or
-            ((Control.BiDiMode = bdLeftToRight) And
+        end;
+        if ((Control.BiDiMode = bdRightToLeft) and
+            (TCheckBox(Control).Alignment = taRightJustify)) or
+            ((Control.BiDiMode = bdLeftToRight) and
             (TCheckBox(Control).Alignment = taLeftJustify))
-        Then
+        then
             R.Left := R.Right - GetSystemMetrics(SM_CXHTHUMB) + 1
-        Else
-        If ((Control.BiDiMode = bdLeftToRight) And
-            (TCheckBox(Control).Alignment = taRightJustify)) Or
-            ((Control.BiDiMode = bdRightToLeft) And
-            (TCheckBox(Control).Alignment = taLeftJustify)) Then
-        Begin
+        else
+        if ((Control.BiDiMode = bdLeftToRight) and
+            (TCheckBox(Control).Alignment = taRightJustify)) or
+            ((Control.BiDiMode = bdRightToLeft) and
+            (TCheckBox(Control).Alignment = taLeftJustify)) then
+        begin
             R.Left := R.Left - 2;
             R.Right := R.Left + GetSystemMetrics(SM_CXHTHUMB);
-        End;
+        end;
 
         InflateRect(R, -2, -2);
         C.Brush.Color := SelectColor;
         C.Pen.Color := BorderColor;
         C.Ellipse(R.Left, R.Top, R.Right, R.Bottom);
 
-        If TRadioButton(Control).Checked Then
-        Begin
+        if TRadioButton(Control).Checked then
+        begin
             InflateRect(R, -3, -3);
 
-            If Control.Enabled Then
+            if Control.Enabled then
                 C.Brush.Color := clHighlight
-            Else
+            else
                 C.Brush.color := xpMenu.FFDisabledColor;
 
             C.Pen.Color := C.Brush.Color;
             C.Ellipse(R.Left, R.Top, R.Right, R.Bottom);
-        End;
-    Finally
+        end;
+    finally
         C.Free;
-    End;
+    end;
 
 
-End;
+end;
 
-Procedure TControlSubClass.PaintButton;
-Var
+procedure TControlSubClass.PaintButton;
+var
     C: TControlCanvas;
     R: TRect;
     SelectColor, BorderColor: TColor;
-    Txt: String;
+    Txt: string;
     TextRect: TRect;
     TxtFont: TFont;
 
-    CWidth, CHeight, TWidth, THeight: Integer;
-    TextFormat: Integer;
+    CWidth, CHeight, TWidth, THeight: integer;
+    TextFormat: integer;
 
-Begin
+begin
 
     C := TControlCanvas.Create;
-    Try
+    try
         C.Control := Control;
 
-        If (FMouseInControl) Then
-        Begin
-            If Control.Tag = 1000 Then // UseParentColor
+        if (FMouseInControl) then
+        begin
+            if Control.Tag = 1000 then // UseParentColor
                 SelectColor := NewColor(C, TControl(Control).Parent.Brush.Color, xpMenu.FDimParentColorSelect)
-            Else
+            else
                 SelectColor := NewColor(C, clBtnFace, xpMenu.FDimParentColorSelect);
 
             BorderColor := NewColor(C, XPMenu.FFSelectBorderColor, 60);
-        End
-        Else
-        Begin
-            If Control.Tag = 1000 Then
+        end
+        else
+        begin
+            if Control.Tag = 1000 then
                 SelectColor := NewColor(C, TControl(Control).Parent.Brush.Color, xpMenu.FDimParentColor)
-            Else
+            else
                 SelectColor := XPMenu.FFIconBackColor;
             BorderColor := clBtnShadow;
-        End;
+        end;
 
 
-        If (Not FmouseinControl) And (FIsFocused) Then
-        Begin
+        if (not FmouseinControl) and (FIsFocused) then
+        begin
             BorderColor := NewColor(C, XPMenu.FFSelectBorderColor, 60);
-        End;
+        end;
 
         TextFormat := DT_CENTER + DT_VCENTER;
         R := Control.ClientRect;
@@ -3889,23 +3889,23 @@ Begin
         C.Pen.Color := NewColor(C, BorderColor, 30);
         C.RoundRect(R.Left, R.Top, R.Right, R.Bottom, 4, 4);
 
-        If TControl(Control).Enabled Then
-            If FBressed Or (FLButtonBressed And FmouseinControl) {or FBressed} Then
-            Begin
+        if TControl(Control).Enabled then
+            if FBressed or (FLButtonBressed and FmouseinControl) {or FBressed} then
+            begin
                 C.Pen.Color := GetShadeColor(C, BorderColor, 50);
                 C.MoveTo(R.Left, R.Bottom - 2);
                 C.LineTo(R.Left, R.Top + 1);
                 C.LineTo(R.Left + 1, R.Top);
                 C.LineTo(R.Right - 1, R.Top);
-            End
-            Else
-            Begin
+            end
+            else
+            begin
                 C.Pen.Color := GetShadeColor(C, BorderColor, 50);
                 C.MoveTo(R.Right - 1, R.Top + 1);
                 C.LineTo(R.Right - 1, R.Bottom - 2);
                 C.LineTo(R.Right - 2, R.Bottom - 1);
                 C.LineTo(R.Left, R.Bottom - 1);
-            End;
+            end;
 
         Txt := TButton(Control).Caption;
 
@@ -3915,69 +3915,69 @@ Begin
         C.Font.Assign(TxtFont);
 
 
-        If TButton(Control).IsRightToLeft Then
+        if TButton(Control).IsRightToLeft then
             TextFormat := TextFormat + DT_RTLREADING;
 
 //--- //"Holger Lembke" <holger@hlembke.de>
 
-        If (Txt <> '') Then
-        Begin
+        if (Txt <> '') then
+        begin
             FillChar(TextRect, SizeOf(TextRect), 0);
             DrawText(C.Handle,
-                Pchar(Txt), Length(Txt),
+                pchar(Txt), Length(Txt),
                 TextRect,
                 DT_CALCRECT + control.DrawTextBiDiModeFlags(0));
             TWidth := TextRect.Right;
             THeight := TextRect.Bottom;
-        End
-        Else
-        Begin
+        end
+        else
+        begin
             TWidth := 0;
             THeight := 0;
-        End;
+        end;
 
 //---
-        TextRect.Left := (CWidth - (TWidth)) Div 2;
+        TextRect.Left := (CWidth - (TWidth)) div 2;
         TextRect.Right := TextRect.Left + TWidth;
-        TextRect.Top := (CHeight - (THeight)) Div 2;
+        TextRect.Top := (CHeight - (THeight)) div 2;
         TextRect.Bottom := TextRect.Top + THeight;
 
 
         XPMenu.DrawTheText(Control,
             Txt, '', C,
-            TextRect, False,
+            TextRect, FALSE,
             TControl(Control).Enabled,
             TButton(Control).Default,
-            False,
+            FALSE,
             TControl(Control).IsRightToLeft,
             TxtFont,
             TextFormat);
 
-    Finally
+    finally
         C.Free;
-    End;
+    end;
 
-End;
+end;
 
-Procedure TControlSubClass.PaintSpeedButton;
-Var
+procedure TControlSubClass.PaintSpeedButton;
+var
     C: TControlCanvas;
     R: TRect;
     SelectColor, BorderColor: TColor;
-    Txt: String;
+    Txt: string;
     TextRect, IconRect: TRect;
     TxtFont: TFont;
     B, BF: TBitmap;
     CWidth, CHeight, BWidth, BHeight, TWidth, THeight, Space,
-    NumGlyphs, Offset: Integer;
-    TextFormat: Integer;
-    FDown, FFlat, FTransparent: Boolean;
+    NumGlyphs, Offset: integer;
+    TextFormat: integer;
+    FDown, FFlat, FTransparent: boolean;
     FLayout: TButtonLayout;
     P: TPoint;
-Begin
+begin
 
     C := TControlCanvas.Create;
-    Try
+    try
         C.Control := Control;
 
         FDown := TSpeedButton(Control).Down;
@@ -3986,63 +3986,63 @@ Begin
         NumGlyphs := TSpeedButton(Control).NumGlyphs;
 
 //----------
-        If FFlat Then
-            If FMouseInControl Then
-            Begin
+        if FFlat then
+            if FMouseInControl then
+            begin
                 p := Mouse.CursorPos;
                 P := Control.ScreenToClient(P);
                 R := Control.ClientRect;
-                FMouseInControl := (p.x >= R.Left) And (p.x <= R.Right) And
-                    (p.y >= R.Top) And (p.y <= R.Bottom);
-            End;
+                FMouseInControl := (p.x >= R.Left) and (p.x <= R.Right) and
+                    (p.y >= R.Top) and (p.y <= R.Bottom);
+            end;
 
 //----------
-        If (FMouseInControl) Then
-        Begin
-            If Control.Tag = 1000 Then // UseParentColor
-            Begin
+        if (FMouseInControl) then
+        begin
+            if Control.Tag = 1000 then // UseParentColor
+            begin
                 SelectColor := NewColor(C, TControl(Control).Parent.Brush.Color, xpMenu.FDimParentColorSelect);
-                If FFlat Then
+                if FFlat then
                     SelectColor := xpMenu.FFSelectColor;
-            End
-            Else
-            Begin
+            end
+            else
+            begin
                 SelectColor := NewColor(C, clBtnFace, xpMenu.FDimParentColorSelect);
-                If FFlat Then
+                if FFlat then
                     SelectColor := xpMenu.FFSelectColor;
-            End;
+            end;
             BorderColor := NewColor(C, XPMenu.FFSelectBorderColor, 60);
-        End
-        Else
-        Begin
-            If Control.Tag = 1000 Then
+        end
+        else
+        begin
+            if Control.Tag = 1000 then
                 SelectColor := NewColor(C, TControl(Control).Parent.Brush.Color, xpMenu.FDimParentColor)
-            Else
+            else
                 SelectColor := XPMenu.FFIconBackColor;
-            If FFlat Then
+            if FFlat then
                 SelectColor := TControl(Control).Parent.Brush.Color;
 
-            If (Control.ClassName = 'TNavButton') And FFlat Then
-            Begin
+            if (Control.ClassName = 'TNavButton') and FFlat then
+            begin
                 SelectColor := TControl(Control).Parent.Brush.Color;
-            End;
+            end;
             BorderColor := clBtnShadow;
-        End;
+        end;
 
 
-        If FDown Then
-        Begin
+        if FDown then
+        begin
             SelectColor := XPMenu.FCheckedAreaColor;
             BorderColor := xpMenu.FFSelectBorderColor;
-        End;
+        end;
 
-        If FDown And FMouseInControl Then
-        Begin
+        if FDown and FMouseInControl then
+        begin
             SelectColor := XPMenu.FCheckedAreaSelectColor;
             BorderColor := xpMenu.FFSelectBorderColor;
-        End;
+        end;
 
-        If Not TControl(Control).Enabled Then
+        if not TControl(Control).Enabled then
             BorderColor := clBtnShadow;
 
 
@@ -4053,27 +4053,27 @@ Begin
         CHeight := (R.Bottom - R.Top);
 
 
-        If (FDown Or FMouseInControl) And FTransparent Then
-        Begin
+        if (FDown or FMouseInControl) and FTransparent then
+        begin
             BF := TBitmap.Create;
-            Try
+            try
                 BF.Width := R.Right - R.Left;
                 BF.Height := R.Bottom - R.Top;
 
-                If FFlat Then
-                Begin
-                    If GetDeviceCaps(C.Handle, BITSPIXEL) > 16 Then
+                if FFlat then
+                begin
+                    if GetDeviceCaps(C.Handle, BITSPIXEL) > 16 then
                         BF.Canvas.Brush.Color := NewColor(C, xpMenu.FFSelectColor, 20)
-                    Else
+                    else
                         BF.Canvas.Brush.Color := SelectColor;
-                End
-                Else
-                Begin
-                    If GetDeviceCaps(C.Handle, BITSPIXEL) > 16 Then
+                end
+                else
+                begin
+                    if GetDeviceCaps(C.Handle, BITSPIXEL) > 16 then
                         BF.Canvas.Brush.Color := NewColor(C, SelectColor, 5)
-                    Else
+                    else
                         BF.Canvas.Brush.Color := SelectColor;
-                End;
+                end;
                 BF.Canvas.FillRect(R);
                 BitBlt(C.handle,
                     R.Left,
@@ -4084,44 +4084,44 @@ Begin
                     0,
                     0,
                     SRCAND);
-            Finally
+            finally
                 BF.Free;
-            End;
-        End;
+            end;
+        end;
 
 
 
 
         C.Brush.Color := SelectColor;
-        If Not FTransparent Then
+        if not FTransparent then
             c.FillRect(R);
 
-        If Control.ClassName = 'TNavButton' Then
-        Begin
+        if Control.ClassName = 'TNavButton' then
+        begin
             c.FillRect(R);
-        End;
+        end;
         C.Pen.Color := NewColor(C, BorderColor, 30);
 
-        If (FFlat) And (Not FTransparent) And (Not FDown) And (Not FMouseInControl) Then
+        if (FFlat) and (not FTransparent) and (not FDown) and (not FMouseInControl) then
             C.Pen.Color := C.Brush.Color;
 
-        If FTransparent Then
+        if FTransparent then
             C.Brush.Style := bsClear;
-        If ((FTransparent) And (FMouseInControl)) Or
-            ((FTransparent) And (FDown)) Or
-            ((Not FTransparent)) Or
-            ((Not FFlat))
-        Then
-        Begin
+        if ((FTransparent) and (FMouseInControl)) or
+            ((FTransparent) and (FDown)) or
+            ((not FTransparent)) or
+            ((not FFlat))
+        then
+        begin
             C.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
-        End;
+        end;
 
-        If TControl(Control).Enabled Then
-        Begin
-            If (FFlat) Then
-            Begin
-                If (FLButtonBressed) Or (FDown) Then
-                Begin
+        if TControl(Control).Enabled then
+        begin
+            if (FFlat) then
+            begin
+                if (FLButtonBressed) or (FDown) then
+                begin
                     C.Pen.Color := BorderColor;
                     C.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
                     C.Pen.Color := GetShadeColor(C, BorderColor, 50);
@@ -4129,31 +4129,31 @@ Begin
                     C.MoveTo(R.Left, R.Bottom - 1);
                     C.LineTo(R.Left, R.Top);
                     C.LineTo(R.Right, R.Top);
-                End
-                Else
-                If (FMouseInControl) Then
-                Begin
+                end
+                else
+                if (FMouseInControl) then
+                begin
                     C.Pen.Color := xpmenu.FFSelectBorderColor;
                     C.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
-                End;
-            End;
+                end;
+            end;
 
-            If (Not FFlat) Then
-                If (FLButtonBressed) Or (FDown) Then
-                Begin
+            if (not FFlat) then
+                if (FLButtonBressed) or (FDown) then
+                begin
                     C.Pen.Color := GetShadeColor(C, BorderColor, 50);
                     C.MoveTo(R.Left, R.Bottom - 1);
                     C.LineTo(R.Left, R.Top);
                     C.LineTo(R.Right, R.Top);
-                End
-                Else
-                Begin
+                end
+                else
+                begin
                     C.Pen.Color := GetShadeColor(C, BorderColor, 50);
                     C.MoveTo(R.Right - 1, R.Top);
                     C.LineTo(R.Right - 1, R.Bottom - 1);
                     C.LineTo(R.Left, R.Bottom - 1);
-                End;
-        End;
+                end;
+        end;
         Txt := TSpeedButton(Control).Caption;
 
         TextRect := R;
@@ -4163,45 +4163,45 @@ Begin
 
         TWidth := C.TextWidth(Txt);
     //THeight := C.TextHeight(Txt);
-        TextRect.Left := (CWidth - TWidth) Div 2;
+        TextRect.Left := (CWidth - TWidth) div 2;
 
 
-        If TControl(Control).IsRightToLeft Then
+        if TControl(Control).IsRightToLeft then
             TextFormat := TextFormat + DT_RTLREADING;
 
 //--- //"Holger Lembke" <holger@hlembke.de>
 
-        If (Txt <> '') Then
-        Begin
+        if (Txt <> '') then
+        begin
             FillChar(TextRect, sizeof(TextRect), 0);
             DrawText(C.Handle,
-                Pchar(Txt), Length(Txt),
+                pchar(Txt), Length(Txt),
                 TextRect,
                 DT_CALCRECT + control.DrawTextBiDiModeFlags(0));
             TWidth := TextRect.Right;
             THeight := TextRect.Bottom;
-        End
-        Else
-        Begin
+        end
+        else
+        begin
             TWidth := 0;
             THeight := 0;
-        End;
+        end;
 
 //---
 
-        If (TSpeedButton(Control).Glyph <> Nil) Then
-        Begin
+        if (TSpeedButton(Control).Glyph <> NIL) then
+        begin
             B := TBitmap.Create;
-            BWidth := TSpeedButton(Control).Glyph.Width Div
+            BWidth := TSpeedButton(Control).Glyph.Width div
                 TSpeedButton(Control).NumGlyphs;
 
             BHeight := TSpeedButton(Control).Glyph.Height;
 
             B.Width := BWidth;
             B.Height := BHeight;
-            If Length(TSpeedButton(Control).Caption) > 0 Then
+            if Length(TSpeedButton(Control).Caption) > 0 then
                 Space := TSpeedButton(Control).Spacing
-            Else
+            else
                 Space := 0;
 
             IconRect := Rect(R.Left, R.Top, R.Left + BWidth, R.Top + BHeight);
@@ -4209,11 +4209,11 @@ Begin
 
       // Suggested by : "Holger Lembke" <holger@hlembke.de>
             Offset := 1;
-            If (Not Control.Enabled) And (NumGlyphs > 1) Then
+            if (not Control.Enabled) and (NumGlyphs > 1) then
                 Offset := 2;
-            If (FLButtonBressed) And (NumGlyphs > 2) Then
+            if (FLButtonBressed) and (NumGlyphs > 2) then
                 Offset := 3;
-            If (FDown) And (NumGlyphs > 3) Then
+            if (FDown) and (NumGlyphs > 3) then
                 Offset := 4;
 
 
@@ -4223,140 +4223,140 @@ Begin
 
 
             FLayout := TSpeedButton(Control).Layout;
-            If Control.IsRightToLeft Then
-            Begin
-                If FLayout = blGlyphLeft Then
+            if Control.IsRightToLeft then
+            begin
+                if FLayout = blGlyphLeft then
                     FLayout := blGlyphRight
-                Else
-                If FLayout = blGlyphRight Then
+                else
+                if FLayout = blGlyphRight then
                     FLayout := blGlyphLeft;
-            End;
-            Case FLayout Of
+            end;
+            case FLayout of
                 blGlyphLeft:
-                Begin
-                    IconRect.Left := (CWidth - (BWidth + Space + TWidth)) Div 2;
+                begin
+                    IconRect.Left := (CWidth - (BWidth + Space + TWidth)) div 2;
                     IconRect.Right := IconRect.Left + BWidth;
-                    IconRect.Top := ((CHeight - (BHeight)) Div 2) - 1;
+                    IconRect.Top := ((CHeight - (BHeight)) div 2) - 1;
                     IconRect.Bottom := IconRect.Top + BHeight;
 
                     TextRect.Left := IconRect.Right + Space;
                     TextRect.Right := TextRect.Left + TWidth;
-                    TextRect.Top := (CHeight - (THeight)) Div 2;
+                    TextRect.Top := (CHeight - (THeight)) div 2;
                     TextRect.Bottom := TextRect.Top + THeight;
 
-                End;
+                end;
                 blGlyphRight:
-                Begin
-                    IconRect.Right := (CWidth + (BWidth + Space + TWidth)) Div 2;
+                begin
+                    IconRect.Right := (CWidth + (BWidth + Space + TWidth)) div 2;
                     IconRect.Left := IconRect.Right - BWidth;
-                    IconRect.Top := (CHeight - (BHeight)) Div 2;
+                    IconRect.Top := (CHeight - (BHeight)) div 2;
                     IconRect.Bottom := IconRect.Top + BHeight;
 
                     TextRect.Right := IconRect.Left - Space;
                     TextRect.Left := TextRect.Right - TWidth;
-                    TextRect.Top := (CHeight - (THeight)) Div 2;
+                    TextRect.Top := (CHeight - (THeight)) div 2;
                     TextRect.Bottom := TextRect.Top + THeight;
 
-                End;
+                end;
                 blGlyphTop:
-                Begin
-                    IconRect.Left := (CWidth - BWidth) Div 2;
+                begin
+                    IconRect.Left := (CWidth - BWidth) div 2;
                     IconRect.Right := IconRect.Left + BWidth;
-                    IconRect.Top := (CHeight - (BHeight + Space + THeight)) Div 2;
+                    IconRect.Top := (CHeight - (BHeight + Space + THeight)) div 2;
                     IconRect.Bottom := IconRect.Top + BHeight;
 
-                    TextRect.Left := (CWidth - (TWidth)) Div 2;
+                    TextRect.Left := (CWidth - (TWidth)) div 2;
                     TextRect.Right := TextRect.Left + TWidth;
                     TextRect.Top := IconRect.Bottom + Space;
                     TextRect.Bottom := TextRect.Top + THeight;
 
-                End;
+                end;
                 blGlyphBottom:
-                Begin
-                    IconRect.Left := (CWidth - BWidth) Div 2;
+                begin
+                    IconRect.Left := (CWidth - BWidth) div 2;
                     IconRect.Right := IconRect.Left + BWidth;
-                    IconRect.Bottom := (CHeight + (BHeight + Space + THeight)) Div 2;
+                    IconRect.Bottom := (CHeight + (BHeight + Space + THeight)) div 2;
                     IconRect.Top := IconRect.Bottom - BHeight;
 
-                    TextRect.Left := (CWidth - (TWidth)) Div 2;
+                    TextRect.Left := (CWidth - (TWidth)) div 2;
                     TextRect.Right := TextRect.Left + TWidth;
                     TextRect.Bottom := IconRect.Top - Space;
                     TextRect.Top := TextRect.Bottom - THeight;
 
-                End;
+                end;
 
-            End;
+            end;
 
             xpMenu.DrawIcon(Control, C, B, IconRect,
                 FMouseinControl,
                 FIsFocused,
                 TControl(Control).Enabled,
-                FDown Or FLButtonBressed,
-                False,
+                FDown or FLButtonBressed,
+                FALSE,
                 TControl(Control).IsRightToLeft);
 
             B.Free;
-        End;
+        end;
 
         XPMenu.DrawTheText(Control,
             Txt, '', C,
-            TextRect, False,
+            TextRect, FALSE,
             TControl(Control).Enabled,
-            False,
-            False,
+            FALSE,
+            FALSE,
             TControl(Control).IsRightToLeft,
             TxtFont,
             TextFormat);
-    Finally
+    finally
         C.Free;
-    End;
+    end;
 
-End;
+end;
 
-Procedure TControlSubClass.PaintBitButn;
-Var
+procedure TControlSubClass.PaintBitButn;
+var
     C: TControlCanvas;
     R: TRect;
     SelectColor, BorderColor: TColor;
-    Txt: String;
+    Txt: string;
     TextRect, IconRect: TRect;
     TxtFont: TFont;
     B: TBitmap;
-    CWidth, CHeight, BWidth, BHeight, TWidth, THeight, Space: Integer;
-    TextFormat: Integer;
-Begin
+    CWidth, CHeight, BWidth, BHeight, TWidth, THeight, Space: integer;
+    TextFormat: integer;
+begin
 
     C := TControlCanvas.Create;
-    Try
+    try
         C.Control := Control;
 
-        If (FMouseInControl Or FBressed) Then
-        Begin
-            If (Control.Tag And 1000) = 1000 Then
+        if (FMouseInControl or FBressed) then
+        begin
+            if (Control.Tag and 1000) = 1000 then
                 SelectColor := NewColor(C,
                     TControl(Control).Parent.Brush.Color, xpMenu.FDimParentColorSelect)
-            Else
+            else
                 SelectColor := NewColor(C, clBtnFace, xpMenu.FDimParentColorSelect);
             BorderColor := NewColor(C, XPMenu.FFSelectBorderColor, 60);
-        End
-        Else
-        Begin
-            If (Control.Tag And 1000) = 1000 Then
+        end
+        else
+        begin
+            if (Control.Tag and 1000) = 1000 then
                 SelectColor := NewColor(C, TControl(Control).Parent.Brush.Color, xpMenu.FDimParentColor)
-            Else
+            else
                 SelectColor := XPMenu.FFIconBackColor;
             BorderColor := clBtnShadow;
-        End;
+        end;
 
-        If (Not FmouseinControl) And (FIsFocused) Then
-        Begin
+        if (not FmouseinControl) and (FIsFocused) then
+        begin
             BorderColor := NewColor(C, XPMenu.FFSelectBorderColor, 60);
-        End;
+        end;
 
-        If (Control.Tag And 1001) = 1001 Then
-        Begin
+        if (Control.Tag and 1001) = 1001 then
+        begin
             BorderColor := SelectColor;
-        End;
+        end;
 
 
         TextFormat := +DT_CENTER + DT_VCENTER;
@@ -4376,26 +4376,26 @@ Begin
         C.Pen.Color := NewColor(C, BorderColor, 30);
         c.RoundRect(R.Left, R.Top, R.Right, R.Bottom, 4, 4);
 
-        If (Control.Tag And 1001) <> 1001 Then
-        Begin
-            If TControl(Control).Enabled Then
-                If (FLButtonBressed And FmouseinControl) Or (FBressed) Then
-                Begin
+        if (Control.Tag and 1001) <> 1001 then
+        begin
+            if TControl(Control).Enabled then
+                if (FLButtonBressed and FmouseinControl) or (FBressed) then
+                begin
                     C.Pen.Color := GetShadeColor(C, BorderColor, 50);
                     C.MoveTo(R.Left, R.Bottom - 2);
                     C.LineTo(R.Left, R.Top + 1);
                     C.LineTo(R.Left + 1, R.Top);
                     C.LineTo(R.Right - 1, R.Top);
-                End
-                Else
-                Begin
+                end
+                else
+                begin
                     C.Pen.Color := GetShadeColor(C, BorderColor, 50);
                     C.MoveTo(R.Right - 1, R.Top + 1);
                     C.LineTo(R.Right - 1, R.Bottom - 2);
                     C.LineTo(R.Right - 2, R.Bottom - 1);
                     C.LineTo(R.Left, R.Bottom - 1);
-                End;
-        End;
+                end;
+        end;
         Txt := TBitBtn(Control).Caption;
 
         TextRect := R;
@@ -4405,36 +4405,36 @@ Begin
 
         TWidth := C.TextWidth(Txt);
 
-        TextRect.Left := (CWidth - TWidth) Div 2;
+        TextRect.Left := (CWidth - TWidth) div 2;
 
 
 //--- //"Holger Lembke" <holger@hlembke.de>
 
-        If (Txt <> '') Then
-        Begin
+        if (Txt <> '') then
+        begin
             FillChar(TextRect, sizeof(TextRect), 0);
             DrawText(C.Handle,
-                Pchar(Txt), Length(Txt),
+                pchar(Txt), Length(Txt),
                 TextRect,
                 DT_CALCRECT + control.DrawTextBiDiModeFlags(0));
             TWidth := TextRect.Right;
             THeight := TextRect.Bottom;
-        End
-        Else
-        Begin
+        end
+        else
+        begin
             TWidth := 0;
             THeight := 0;
-        End;
+        end;
 
 //---
-        If TBitBtn(Control).IsRightToLeft Then
+        if TBitBtn(Control).IsRightToLeft then
             TextFormat := TextFormat + DT_RTLREADING;
 
 
-        If (TBitBtn(Control).Glyph <> Nil) Then
-        Begin
+        if (TBitBtn(Control).Glyph <> NIL) then
+        begin
             B := TBitmap.Create;
-            BWidth := TBitBtn(Control).Glyph.Width Div
+            BWidth := TBitBtn(Control).Glyph.Width div
                 TBitBtn(Control).NumGlyphs;
 
             BHeight := TBitBtn(Control).Glyph.Height;
@@ -4442,7 +4442,7 @@ Begin
             B.Width := BWidth;
             B.Height := BHeight;
             Space := TBitBtn(Control).Spacing;
-            If (Trim(TBitBtn(Control).Caption) = '') Then
+            if (Trim(TBitBtn(Control).Caption) = '') then
                 Space := 0; //"Holger Lembke" <holger@hlembke.de>
             IconRect := Rect(R.Left, R.Top, R.Left + BWidth, R.Top + BHeight);
 
@@ -4450,174 +4450,174 @@ Begin
                 TBitBtn(Control).Glyph.Canvas,
                 Rect(0, 0, BWidth, BHeight));
 
-            Case TBitBtn(Control).Layout Of
+            case TBitBtn(Control).Layout of
                 blGlyphLeft:
-                Begin
-                    IconRect.Left := (CWidth - (BWidth + Space + TWidth)) Div 2;
+                begin
+                    IconRect.Left := (CWidth - (BWidth + Space + TWidth)) div 2;
                     IconRect.Right := IconRect.Left + BWidth;
-                    IconRect.Top := (CHeight - (BHeight)) Div 2;
+                    IconRect.Top := (CHeight - (BHeight)) div 2;
                     IconRect.Bottom := IconRect.Top + BHeight;
 
                     TextRect.Left := IconRect.Right + Space;
                     TextRect.Right := TextRect.Left + TWidth;
 
-                    TextRect.Top := (CHeight - (THeight)) Div 2;
+                    TextRect.Top := (CHeight - (THeight)) div 2;
                     TextRect.Bottom := TextRect.Top + THeight;
-                End;
+                end;
                 blGlyphRight:
-                Begin
-                    IconRect.Right := (CWidth + (BWidth + Space + TWidth)) Div 2;
+                begin
+                    IconRect.Right := (CWidth + (BWidth + Space + TWidth)) div 2;
                     IconRect.Left := IconRect.Right - BWidth;
-                    IconRect.Top := (CHeight - (BHeight)) Div 2;
+                    IconRect.Top := (CHeight - (BHeight)) div 2;
                     IconRect.Bottom := IconRect.Top + BHeight;
 
                     TextRect.Right := IconRect.Left - Space;
                     TextRect.Left := TextRect.Right - TWidth;
-                    TextRect.Top := (CHeight - (THeight)) Div 2;
+                    TextRect.Top := (CHeight - (THeight)) div 2;
                     TextRect.Bottom := TextRect.Top + THeight;
-                End;
+                end;
                 blGlyphTop:
-                Begin
-                    IconRect.Left := (CWidth - BWidth) Div 2;
+                begin
+                    IconRect.Left := (CWidth - BWidth) div 2;
                     IconRect.Right := IconRect.Left + BWidth;
-                    IconRect.Top := (CHeight - (BHeight + Space + THeight)) Div 2;
+                    IconRect.Top := (CHeight - (BHeight + Space + THeight)) div 2;
                     IconRect.Bottom := IconRect.Top + BHeight;
 
-                    TextRect.Left := (CWidth - (TWidth)) Div 2;
+                    TextRect.Left := (CWidth - (TWidth)) div 2;
                     TextRect.Right := TextRect.Left + TWidth;
                     TextRect.Top := IconRect.Bottom + Space;
                     TextRect.Bottom := TextRect.Top + THeight;
 
-                End;
+                end;
                 blGlyphBottom:
-                Begin
-                    IconRect.Left := (CWidth - BWidth) Div 2;
+                begin
+                    IconRect.Left := (CWidth - BWidth) div 2;
                     IconRect.Right := IconRect.Left + BWidth;
-                    IconRect.Bottom := (CHeight + (BHeight + Space + THeight)) Div 2;
+                    IconRect.Bottom := (CHeight + (BHeight + Space + THeight)) div 2;
                     IconRect.Top := IconRect.Bottom - BHeight;
 
-                    TextRect.Left := (CWidth - (TWidth)) Div 2;
+                    TextRect.Left := (CWidth - (TWidth)) div 2;
                     TextRect.Right := TextRect.Left + TWidth;
                     TextRect.Bottom := IconRect.Top - Space;
                     TextRect.Top := TextRect.Bottom - THeight;
 
-                End;
-            End;
+                end;
+            end;
 
             xpMenu.DrawIcon(Control, C, B, IconRect,
                 FMouseinControl,
                 FIsFocused,
                 TControl(Control).Enabled,
-                False,
-                False,
+                FALSE,
+                FALSE,
                 TControl(Control).IsRightToLeft);
 
             B.Free;
-        End;
+        end;
 
-        If (Control.Tag And 1002) = 1002 Then
-        Begin
-            If TBitBtn(Control).IsRightToLeft Then
+        if (Control.Tag and 1002) = 1002 then
+        begin
+            if TBitBtn(Control).IsRightToLeft then
                 TextFormat := +DT_RIGHT + DT_VCENTER
-            Else
+            else
                 TextFormat := +DT_LEFT + DT_VCENTER;
             TextRect := R;
             InflateRect(TextRect, -4, -2);
-        End;
+        end;
 
         XPMenu.DrawTheText(Control,
             Txt, '', C,
-            TextRect, False,
+            TextRect, FALSE,
             TControl(Control).Enabled,
             TBitBtn(Control).Default,
-            False,
+            FALSE,
             TControl(Control).IsRightToLeft,
             TxtFont,
             TextFormat);
 
-    Finally
+    finally
         C.Free;
-    End;
-End;
+    end;
+end;
 
-Procedure TControlSubClass.PaintUpDownButton;
-Var
+procedure TControlSubClass.PaintUpDownButton;
+var
     C: TControlCanvas;
     R: TRect;
     SelectColor, BorderColor, ArrowColor: TColor;
     P: TPoint;
-    H: Integer;
+    H: integer;
 
-    Procedure DrawUpDownButton(ARect: TRect; Arrow: Integer; Active: Boolean);
-    Begin
-        If Control.Enabled Then
-            ArrowColor := clBlack Else ArrowColor := clWhite;
-        If Active Then
-        Begin
-            If FLButtonBressed Then
-            Begin
+    procedure DrawUpDownButton(ARect: TRect; Arrow: integer; Active: boolean);
+    begin
+        if Control.Enabled then
+            ArrowColor := clBlack else ArrowColor := clWhite;
+        if Active then
+        begin
+            if FLButtonBressed then
+            begin
                 BorderColor := XPMenu.FFSelectBorderColor;
                 SelectColor := XPMenu.FCheckedAreaSelectColor;
                 ArrowColor := clWhite;
-            End
-            Else
-            Begin
+            end
+            else
+            begin
                 BorderColor := XPMenu.FFSelectBorderColor;
                 SelectColor := NewColor(C, XPMenu.FFSelectColor, 60);//XPMenu.FFSelectColor;
-            End;
-        End
-        Else
-        Begin
-            If Control.Tag = 1000 Then
+            end;
+        end
+        else
+        begin
+            if Control.Tag = 1000 then
                 SelectColor := NewColor(C, TControl(Control).Parent.Brush.Color, xpMenu.FDimParentColor)
-            Else
+            else
                 SelectColor := NewColor(C, XPMenu.FFSelectColor, xpMenu.FDimParentColor);//clBtnFace;
             BorderColor := NewColor(C, TControl(Control).Parent.Brush.Color, 80);//SelectColor;
-        End;
+        end;
 
         C.Pen.Color := BorderColor;
         C.Brush.Color := SelectColor;
         C.Font.Color := ArrowColor;
 
-        If C.Pixels[ARect.Left, ARect.Top] <> ColorToRGB(BorderColor) Then
-        Begin
+        if C.Pixels[ARect.Left, ARect.Top] <> ColorToRGB(BorderColor) then
+        begin
             C.Rectangle(ARect.Left, ARect.Top, ARect.Right, ARect.Bottom);
             C.Pen.Color := ArrowColor;
-            DrawArrow(C, ARect.Left + ((ARect.Right - ARect.Left) Div 2),
-                ARect.Top + ((ARect.Bottom - ARect.Top) Div 2) - 2, Arrow);
-        End;
-    End;
+            DrawArrow(C, ARect.Left + ((ARect.Right - ARect.Left) div 2),
+                ARect.Top + ((ARect.Bottom - ARect.Top) div 2) - 2, Arrow);
+        end;
+    end;
 
-Begin
+begin
     C := TControlCanvas.Create;
-    Try
+    try
         C.Control := Control;
         R := Control.ClientRect;
 
-        H := (R.Bottom - R.Top) Div 2;
+        H := (R.Bottom - R.Top) div 2;
         P := Control.ScreenToClient(Mouse.CursorPos);
         DrawUpDownButton(Rect(R.Left, R.Top, R.Right, R.Top + H), 0,
-            TControl(Control).Enabled And FMouseInControl And (P.Y < H));
+            TControl(Control).Enabled and FMouseInControl and (P.Y < H));
         DrawUpDownButton(Rect(R.Left, R.Bottom - H, R.Right, R.Bottom), 1,
-            TControl(Control).Enabled And FMouseInControl And Not (P.Y < H));
-    Finally
+            TControl(Control).Enabled and FMouseInControl and not (P.Y < H));
+    finally
         C.Free;
-    End;
-End;
+    end;
+end;
 
-Procedure TControlSubClass.PaintGroupBox;
-Var
+procedure TControlSubClass.PaintGroupBox;
+var
     C: TControlCanvas;
     R, RText: TRect;
     ShadowColor, LightColor: TColor;
-    TextHeight, TextWidth: Integer;
-    Text: String;
-Begin
+    TextHeight, TextWidth: integer;
+    Text: string;
+begin
 
-    If FMsg <> WM_PAINT Then
+    if FMsg <> WM_PAINT then
         exit;
     C := TControlCanvas.Create;
-    Try
+    try
         C.Control := Control;
 
         R := Control.ClientRect;
@@ -4627,7 +4627,7 @@ Begin
 
         TextHeight := C.TextHeight(Text);
         TextWidth := C.TextWidth(Text);
-        If Length(Text) = 0 Then
+        if Length(Text) = 0 then
             TextHeight := C.TextHeight(' ');
         ShadowColor := GetShadeColor(C, TGroupBox(Control).color, 60);
         LightColor := NewColor(C, TGroupBox(Control).color, 60);
@@ -4641,36 +4641,36 @@ Begin
 
     //----Draw the outer Frame
         R := Control.ClientRect;
-        Inc(R.Top, (TextHeight Div 2) - 1);
+        Inc(R.Top, (TextHeight div 2) - 1);
         C.Pen.Color := TGroupBox(Control).Color;
         C.MoveTo(R.Left + 1, R.Top);   // Repeat
         C.LineTo(R.Left + 1, R.Bottom);
-        If TGroupBox(Control).Ctl3D Then
+        if TGroupBox(Control).Ctl3D then
             Frame3D(C, R, LightColor, ShadowColor, 1)
-        Else
+        else
             Frame3D(C, R, ShadowColor, ShadowColor, 1);
 
 
     // Fill Upper part (outside frame)
         R := Control.ClientRect;
-        R.Bottom := R.Top + (TextHeight Div 2) + 1;
+        R.Bottom := R.Top + (TextHeight div 2) + 1;
         C.Brush.Style := bsSolid;
         C.Brush.Color := Control.Parent.Brush.Color;  // Parent Color;
         C.Pen.Color := C.Brush.Color;
         C.FillRect(R);
 
 
-        If Control.IsRightToLeft Then
-        Begin
+        if Control.IsRightToLeft then
+        begin
             C.TextFlags := ETO_RTLREADING;
             RText.Right := R.Right - 9;
             RText.Left := RText.Right - TextWidth;
-        End
-        Else
-        Begin
+        end
+        else
+        begin
             RText.Left := R.Left + 9;
             RText.Right := RText.Left + TextWidth;
-        End;
+        end;
 
         RText.Top := R.Top;
         RText.Bottom := R.Top + TextHeight;
@@ -4678,7 +4678,7 @@ Begin
                      //(inside frame)
         InflateRect(R, -1, 0);
         R.Top := R.Bottom;
-        R.Bottom := R.Top + (TextHeight Div 2) + 1;
+        R.Bottom := R.Top + (TextHeight div 2) + 1;
         C.Brush.Style := bsSolid;
         R.Left := RText.Left;
         R.Right := RText.Right;
@@ -4692,17 +4692,17 @@ Begin
         C.LineTo(R.Right - 2, RText.Bottom);
 
         C.Brush.Style := bsClear;
-        If Control.IsRightToLeft Then
+        if Control.IsRightToLeft then
             C.TextFlags := ETO_RTLREADING;
 
         C.TextRect(RText, RText.Left, RText.Top, Text);
 
     // Draw Upper Line
         R := Control.ClientRect;
-        Inc(R.Top, (TextHeight Div 2) + 1);
-        If TGroupBox(Control).Ctl3D Then
+        Inc(R.Top, (TextHeight div 2) + 1);
+        if TGroupBox(Control).Ctl3D then
             C.Pen.Color := LightColor
-        Else
+        else
             C.Pen.Color := ShadowColor;
         C.MoveTo(R.Left, R.Top);
         C.LineTo(RText.Left, R.Top);
@@ -4710,117 +4710,117 @@ Begin
         C.MoveTo(RText.Right, R.Top);
         C.LineTo(R.Right - 1, R.Top);
 
-    Finally
+    finally
         C.Free;
-    End;
-End;
+    end;
+end;
 
-Procedure TControlSubClass.PaintPanel;
-Var
+procedure TControlSubClass.PaintPanel;
+var
     C: TControlCanvas;
     R: TRect;
     ShadowColor, LightColor: TColor;
-Begin
-    If FMsg <> WM_PAINT Then
+begin
+    if FMsg <> WM_PAINT then
         exit;
     C := TControlCanvas.Create;
-    Try
+    try
         C.Control := Control;
 
         R := Control.ClientRect;
         ShadowColor := GetShadeColor(C, TPanel(Control).color, 60);
         LightColor := NewColor(C, TPanel(Control).color, 60);
-        If TPanel(Control).BevelOuter <> bvNone Then
-        Begin
-            If TPanel(Control).BevelOuter = bvLowered Then
+        if TPanel(Control).BevelOuter <> bvNone then
+        begin
+            if TPanel(Control).BevelOuter = bvLowered then
                 Frame3D(C, R, ShadowColor, LightColor, TPanel(Control).BevelWidth)
-            Else
+            else
                 Frame3D(C, R, LightColor, ShadowColor, TPanel(Control).BevelWidth);
-        End;
+        end;
 
-        If TPanel(Control).BevelInner <> bvNone Then
-        Begin
+        if TPanel(Control).BevelInner <> bvNone then
+        begin
             InflateRect(R, -TPanel(Control).BorderWidth, -TPanel(Control).BorderWidth);
 
-            If TPanel(Control).BevelInner = bvLowered Then
+            if TPanel(Control).BevelInner = bvLowered then
                 Frame3D(C, R, ShadowColor, LightColor, TPanel(Control).BevelWidth)
-            Else
+            else
                 Frame3D(C, R, LightColor, ShadowColor, TPanel(Control).BevelWidth);
-        End;
-    Finally
+        end;
+    finally
         C.Free;
-    End;
+    end;
 
-End;
+end;
 
-Type
-    TCastWinControl = Class(TWinControl);
+type
+    TCastWinControl = class(TWinControl);
 
-Procedure TControlSubClass.PaintNCWinControl;
-Var
+procedure TControlSubClass.PaintNCWinControl;
+var
     DC: HDC;
     C: TControlCanvas;
     R: TRect;
     BorderColor: TColor;
 
-Begin
+begin
     C := TControlCanvas.Create;
     DC := GetWindowDC(TWinControl(Control).Handle);
-    Try
+    try
         C.Control := Control;
         C.Handle := DC;
 
         XPMenu.SetGlobalColor(C);
 
-        If (FMouseInControl) Or (FIsFocused) Then
-        Begin
-            If FBorderStyle = bsSingle Then
+        if (FMouseInControl) or (FIsFocused) then
+        begin
+            if FBorderStyle = bsSingle then
                 BorderColor := NewColor(C, XPMenu.FFSelectBorderColor, 60)
-            Else
+            else
                 BorderColor := NewColor(C, XPMenu.FFSelectBorderColor, 80);
-        End
-        Else
-        Begin
-            If FBorderStyle = bsSingle Then
+        end
+        else
+        begin
+            if FBorderStyle = bsSingle then
                 borderColor := GetShadeColor(C, Control.Parent.Brush.Color, 60)
-            Else
+            else
                 borderColor := Control.Parent.Brush.Color;
-        End;
+        end;
 
-        If TCastWinControl(Control).Ctl3D <> False Then
-        Begin
-            FBuilding := True;
-            TCastWinControl(Control).Ctl3D := False;
-        End;
+        if TCastWinControl(Control).Ctl3D <> FALSE then
+        begin
+            FBuilding := TRUE;
+            TCastWinControl(Control).Ctl3D := FALSE;
+        end;
 
         C.Pen.Color := BorderColor;
         C.Brush.Style := bsClear;
 
         R := Rect(0, 0, Control.Width, Control.Height);
         C.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
-    Finally
+    finally
         C.Free;
         ReleaseDC(TWinControl(Control).Handle, DC);
-    End;
-End;
+    end;
+end;
 
-Procedure TControlSubClass.PaintProgressBar;
-Var
+procedure TControlSubClass.PaintProgressBar;
+var
     DC: HDC;
     C: TControlCanvas;
     R: TRect;
     BorderColor: TColor;
 
-Begin
+begin
     C := TControlCanvas.Create;
     DC := GetWindowDC(TWinControl(Control).Handle);
-    Try
+    try
         C.Control := Control;
         C.Handle := DC;
 
-        If (FMouseInControl) Then
+        if (FMouseInControl) then
             BorderColor := XPMenu.FFSelectBorderColor
-        Else
+        else
             BorderColor := GetShadeColor(C, Control.Parent.Brush.Color, 60);
 
         C.Pen.Color := BorderColor;
@@ -4828,31 +4828,31 @@ Begin
 
         R := Rect(0, 0, Control.Width, Control.Height);
         C.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
-    Finally
+    finally
         C.Free;
         ReleaseDC(TWinControl(Control).Handle, DC);
-    End;
-End;
+    end;
+end;
 
-Procedure TControlSubClass.PaintHotKey;
-Var
+procedure TControlSubClass.PaintHotKey;
+var
     DC: HDC;
     C: TControlCanvas;
     R: TRect;
     BorderColor: TColor;
 
-Begin
+begin
     C := TControlCanvas.Create;
     DC := GetWindowDC(TWinControl(Control).Handle);
-    Try
+    try
         C.Control := Control;
         C.Handle := DC;
 
         XPMenu.SetGlobalColor(C);
 
-        If (FMouseInControl) Or (FIsFocused) Then
+        if (FMouseInControl) or (FIsFocused) then
             BorderColor := NewColor(C, XPMenu.FFSelectBorderColor, 60)
-        Else
+        else
             BorderColor := GetShadeColor(C, Control.Parent.Brush.Color, 60);
 
         C.Pen.Color := BorderColor;
@@ -4864,11 +4864,11 @@ Begin
         C.Pen.Color := clWindow;
         C.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
 
-    Finally
+    finally
         C.Free;
         ReleaseDC(TWinControl(Control).Handle, DC);
-    End;
-End;
+    end;
+end;
 
 // XPMenuManager
 //
@@ -4880,20 +4880,20 @@ End;
 // If this instance is destroyed the manager looks if there is another instance which is
 // allowed to subclass.
 
-Constructor TXPMenuManager.Create;
-Begin
-    Inherited Create;
+constructor TXPMenuManager.Create;
+begin
+    inherited Create;
     FXPMenuList := TList.Create;         // list of XPMenu components in the application
     FFormList := TList.Create;           // list of subclassed forms
     FPendingFormsList := TList.Create;   // list of forms inserted but not subclassed yet
-    FDisableSubclassing := False;        // This disables the XPMenuManager
-    FActiveXPMenu := Nil;                // Currently for subclassing used XPMenu
+    FDisableSubclassing := FALSE;        // This disables the XPMenuManager
+    FActiveXPMenu := NIL;                // Currently for subclassing used XPMenu
                                        //    if this is nil no subclassing is done.
     Application.HookMainWindow(MainWindowHook);
-End;
+end;
 
-Destructor TXPMenuManager.Destroy;
-Begin
+destructor TXPMenuManager.Destroy;
+begin
 {Bret Goldsmith bretg@yahoo.com}
 {alexs <alexs75@hotbox.ru>  }
     Application.UnhookMainWindow(MainWindowHook);
@@ -4901,134 +4901,134 @@ Begin
     FPendingFormsList.Free;
     FXPMenuList.Free;
     FFormList.Free;
-    Inherited;
-End;
+    inherited;
+end;
 
 // A component has been inserted or removed, if it is a form and subclassing is
 // allowed then subclass it, so this form doesn't need a XPMenu component as well
-Procedure TXPMenuManager.Notification(AComponent: TComponent; Operation: TOperation);
-Begin
-    If (FActiveXPMenu = Nil) Or FDisableSubclassing Then
+procedure TXPMenuManager.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+    if (FActiveXPMenu = NIL) or FDisableSubclassing then
         Exit;
-    Case Operation Of
+    case Operation of
         opInsert:
       // At this place we cannot subclass the control because it did not yet get its
       // initial window procedure.
       // So we add it to an intermediate list and subclass it at a later moment.
-            If (AComponent Is TCustomForm) And (FPendingFormsList.IndexOf(AComponent) < 0) Then
+            if (AComponent is TCustomForm) and (FPendingFormsList.IndexOf(AComponent) < 0) then
                 FPendingFormsList.Add(AComponent);
         opRemove:
-            If (AComponent Is TWinControl) Then
-            Begin
-                If AComponent Is TCustomForm Then
-                Begin
+            if (AComponent is TWinControl) then
+            begin
+                if AComponent is TCustomForm then
+                begin
           // Remove the destroyed form from any form list if it is still there.
                     FPendingFormsList.Remove(AComponent);
                     FFormList.Remove(AComponent);
-                End;
-            End;
-    End;
-End;
+                end;
+            end;
+    end;
+end;
 
 // Add some XPMenu to the manager
-Procedure TXPMenuManager.Add(AXPMenu: TXPMenu);
-Begin
+procedure TXPMenuManager.Add(AXPMenu: TXPMenu);
+begin
     FXPMenuList.Add(AXPMenu);
     FFormList.Add(AXPMenu.Form);
-    If (FActiveXPMenu = Nil) And AXPMenu.Active And Not (AXPMenu.DisableSubclassing) And
-        Not (FDisableSubclassing) Then
-    Begin
+    if (FActiveXPMenu = NIL) and AXPMenu.Active and not (AXPMenu.DisableSubclassing) and
+        not (FDisableSubclassing) then
+    begin
         FActiveXPMenu := AXPMenu;
         CollectForms;
-    End;
-End;
+    end;
+end;
 
 // Remove some XPMenu from the manager
-Procedure TXPMenuManager.Delete(AXPMenu: TXPMenu);
-Begin
-    If AXPMenu = FActiveXPMenu Then
+procedure TXPMenuManager.Delete(AXPMenu: TXPMenu);
+begin
+    if AXPMenu = FActiveXPMenu then
         UpdateActiveXPMenu(AXPMenu);
     FXPMenuList.Remove(AXPMenu);
-End;
+end;
 
 // Select a new ActiveXPMenu (except the one given in the parameter)
-Procedure TXPMenuManager.UpdateActiveXPMenu(AXPMenu: TXPMenu);
-Var
-    Cnt: Integer;
+procedure TXPMenuManager.UpdateActiveXPMenu(AXPMenu: TXPMenu);
+var
+    Cnt: integer;
     XPM: TXPMenu;
     Item: TControlSubClass;
-    Comp: TControlSubClass;
+    comp: TControlSubClass;
 
-Begin
+begin
     XPM := FindSubclassingXPMenu(AXPMenu);
-    If XPM = Nil Then
-    Begin
+    if XPM = NIL then
+    begin
         FPendingFormsList.Clear;
-        If Not Assigned(Application.MainForm) Then
+        if not Assigned(Application.MainForm) then
             Exit;
-        For Cnt := 0 To FFormList.Count - 1 Do
-            If (AXPMenu = Nil) Or (FFormList[Cnt] <> AXPMenu.Form) Then
+        for Cnt := 0 to FFormList.Count - 1 do
+            if (AXPMenu = NIL) or (FFormList[Cnt] <> AXPMenu.Form) then
                 RemoveChildSubclassing(TCustomForm(FFormList[Cnt]));
         FFormList.Clear;
         FActiveXPMenu := XPM;
-    End
-    Else
-    Begin
-        If FActiveXPMenu = Nil Then
-        Begin
+    end
+    else
+    begin
+        if FActiveXPMenu = NIL then
+        begin
             FActiveXPMenu := XPM;
             CollectForms;
-        End
-        Else
-        Begin
-            For Cnt := 0 To FActiveXPMenu.ComponentCount - 1 Do
-                If (FActiveXPMenu.Components[Cnt] Is TControlSubClass) Then
-                Begin
-                    Comp := FActiveXPMenu.Components[Cnt] As TControlSubClass;
-                    If (AXPMenu <> Nil) And Not (AXPMenu.Form.ContainsControl(Comp.Control)) Then
-                    Begin
+        end
+        else
+        begin
+            for Cnt := 0 to FActiveXPMenu.ComponentCount - 1 do
+                if (FActiveXPMenu.Components[Cnt] is TControlSubClass) then
+                begin
+                    comp := FActiveXPMenu.Components[Cnt] as TControlSubClass;
+                    if (AXPMenu <> NIL) and not (AXPMenu.Form.ContainsControl(comp.Control)) then
+                    begin
                         Item := TControlSubClass.Create(XPM);
-                        Item.Control := Comp.Control;
-                        Item.orgWindowProc := Comp.orgWindowProc;
+                        Item.Control := comp.Control;
+                        Item.orgWindowProc := comp.orgWindowProc;
                         Item.Control.WindowProc := Item.ControlSubClass;
                         Item.XPMenu := XPM;
-                        Item.FCtl3D := Comp.FCtl3D;
-                        Item.FBorderStyle := Comp.FBorderStyle;
+                        Item.FCtl3D := comp.FCtl3D;
+                        Item.FBorderStyle := comp.FBorderStyle;
       {Item.FOnDrawCell := Comp.FOnDrawCell;}
-                        Item.FDefaultDrawing := Comp.FDefaultDrawing;
-                        Item.FSelCol := Comp.FSelCol;
-                        Item.FSelRow := Comp.FSelRow;
-                    End;
-                End;
+                        Item.FDefaultDrawing := comp.FDefaultDrawing;
+                        Item.FSelCol := comp.FSelCol;
+                        Item.FSelRow := comp.FSelRow;
+                    end;
+                end;
             FActiveXPMenu := XPM;
-        End;
-    End;
-End;
+        end;
+    end;
+end;
 
 // Find an XPMenu which can be used for subclassing
-Function TXPMenuManager.FindSubclassingXPMenu(Exclude: TXPMenu): TXPMenu;
-Var
+function TXPMenuManager.FindSubclassingXPMenu(Exclude: TXPMenu): TXPMenu;
+var
     XPM: TXPMenu;
-    Cnt: Integer;
+    Cnt: integer;
 
-Begin
-    Result := Nil;
-    If (FXPMenuList.Count = 0) Or FDisableSubclassing Then
+begin
+    Result := NIL;
+    if (FXPMenuList.Count = 0) or FDisableSubclassing then
         Exit;
     Cnt := 0;
-    Repeat
+    repeat
         XPM := TXPMenu(FXPMenuList[Cnt]);
-        If XPM.Active And Not (XPM.DisableSubclassing) And (XPM <> Exclude)
-        Then
+        if XPM.Active and not (XPM.DisableSubclassing) and (XPM <> Exclude)
+        then
             Result := XPM;
         inc(Cnt);
-    Until (Result <> Nil) Or (Cnt = FXPMenuList.Count);
-End;
+    until (Result <> NIL) or (Cnt = FXPMenuList.Count);
+end;
 
 // Listens to messages sent to the application and looks if a window is inserted.
-Function TXPMenuManager.MainWindowHook(Var Message: TMessage): Boolean;
-Var
-    i: Integer;
+function TXPMenuManager.MainWindowHook(var Message: TMessage): boolean;
+var
+    i: integer;
     NewForm: TCustomForm;
 
     FMenuItem: TMenuItem; // +jt
@@ -5036,171 +5036,171 @@ Var
     r: TRECT; // +jt
     pt: TPOINT; // +jt
     hWndM: HWND; // +j
-Begin
-    Result := False;
+begin
+    Result := FALSE;
   // +ahuser// ahuser: "Andreas Hausladen" <Andreas.Hausladen@gmx.de>
-    If XPMenuManager = Nil Then  // prevent AVs on termination
+    if XPMenuManager = NIL then  // prevent AVs on termination
         Exit;
   // +ahuser
-    If Message.Msg = WM_DRAWMENUBORDER Then
-    Begin
+    if Message.Msg = WM_DRAWMENUBORDER then
+    begin
         FMenuItem := TMenuItem(Message.LParam);
-        If Assigned(FMenuItem) Then
-        Begin
+        if Assigned(FMenuItem) then
+        begin
             GetMenuItemRect(0, FMenuItem.Parent.Handle, FMenuItem.MenuIndex, r);
             FMenu := FMenuItem.Parent.GetParentMenu;
-            pt.x := r.Left + (r.Right - r.Left) Div 2;
-            pt.y := r.Top + (r.Bottom - r.Top) Div 2;
+            pt.x := r.Left + (r.Right - r.Left) div 2;
+            pt.y := r.Top + (r.Bottom - r.Top) div 2;
             hWndM := WindowFromPoint(pt);
-            If (hWndM <> 0) And Assigned(FActiveXPMenu) Then  //Rappido <rappido@quicknet.nl> 2003 09 13
+            if (hWndM <> 0) and Assigned(FActiveXPMenu) then  //Rappido <rappido@quicknet.nl> 2003 09 13
                 FActiveXPMenu.DrawWindowBorder(hWndM, FMenu.IsRightToLeft);
-        End;
-    End;
+        end;
+    end;
 
-    If Message.Msg = WM_DRAWMENUBORDER2 Then
-    Begin
+    if Message.Msg = WM_DRAWMENUBORDER2 then
+    begin
         hWndM := HWND(Message.LParam);
-        If (hWndM <> 0) And Assigned(FActiveXPMenu) Then //Rappido <rappido@quicknet.nl> 2003 09 13
-            FActiveXPMenu.DrawWindowBorder(hWndM, Boolean(Message.WParam));
-    End;
+        if (hWndM <> 0) and Assigned(FActiveXPMenu) then //Rappido <rappido@quicknet.nl> 2003 09 13
+            FActiveXPMenu.DrawWindowBorder(hWndM, boolean(Message.WParam));
+    end;
 
-    If (Assigned(FPendingFormsList)) And (FPendingFormsList <> Nil) Then
-        Try
-            If (FPendingFormsList.Count > 0) Then
-            Begin
-                For i := 0 To FPendingFormsList.Count - 1 Do
-                Begin
+    if (Assigned(FPendingFormsList)) and (FPendingFormsList <> NIL) then
+        try
+            if (FPendingFormsList.Count > 0) then
+            begin
+                for i := 0 to FPendingFormsList.Count - 1 do
+                begin
                     NewForm := TCustomForm(FPendingFormsList[i]);
-                    If FFormList.IndexOf(NewForm) < 0 Then
-                    Begin
+                    if FFormList.IndexOf(NewForm) < 0 then
+                    begin
                         FFormList.Add(NewForm);
-                        If Not (FDisableSubclassing) Then
-                            FActiveXPMenu.InitItems(NewForm, True, True);
-                    End;
-                End;
+                        if not (FDisableSubclassing) then
+                            FActiveXPMenu.InitItems(NewForm, TRUE, TRUE);
+                    end;
+                end;
                 FPendingFormsList.Clear;
-            End;
-        Except
-        End;
+            end;
+        except
+        end;
 
 
-End;
+end;
 
 // Collect all forms of the application and subclass them
-Procedure TXPMenuManager.CollectForms;
-Var
-    FCnt, CCnt: Integer;
-    HasXPMenu: Boolean;
+procedure TXPMenuManager.CollectForms;
+var
+    FCnt, CCnt: integer;
+    HasXPMenu: boolean;
 
-Begin
-    If Not FDisableSubclassing Then
-        For FCnt := 0 To Screen.FormCount - 1 Do
-            If (FFormList.IndexOf(Screen.Forms[FCnt]) < 0) And (Screen.Forms[FCnt].Tag <> 999) Then
-            Begin
-                HasXPMenu := False;
-                For CCnt := 0 To Screen.Forms[FCnt].ComponentCount - 1 Do
-                    HasXPMenu := HasXPMenu Or (Screen.Forms[FCnt].Components[CCnt] Is TXPMenu);
-                If Not (HasXPMenu) Then
+begin
+    if not FDisableSubclassing then
+        for FCnt := 0 to Screen.FormCount - 1 do
+            if (FFormList.IndexOf(Screen.Forms[FCnt]) < 0) and (Screen.Forms[FCnt].Tag <> 999) then
+            begin
+                HasXPMenu := FALSE;
+                for CCnt := 0 to Screen.Forms[FCnt].ComponentCount - 1 do
+                    HasXPMenu := HasXPMenu or (Screen.Forms[FCnt].Components[CCnt] is TXPMenu);
+                if not (HasXPMenu) then
                     FPendingFormsList.Add(Screen.Forms[FCnt]);
-            End;
-End;
+            end;
+end;
 
 // Remove subclassing from the original components
-Procedure TXPMenuManager.RemoveChildSubclassing(AForm: TCustomForm);
-Var
-    Cnt: Integer;
-    Comp: TComponent;
+procedure TXPMenuManager.RemoveChildSubclassing(AForm: TCustomForm);
+var
+    Cnt: integer;
+    comp: TComponent;
     Control: TControl;
 
-Begin
+begin
 //exit;
-    For Cnt := FActiveXPMenu.ComponentCount - 1 Downto 0 Do
-    Begin
-        Comp := FActiveXPMenu.Components[Cnt];
-        If (Comp Is TControlSubClass) Then
-        Begin
-            Control := TControlSubClass(Comp).Control;
-            If AForm.ContainsControl(Control) Then
-            Begin
-                Try
-                    Control.WindowProc := TControlSubClass(Comp).orgWindowProc;
-                    If Control Is TCustomEdit Then
-                    Begin
-                        TEdit(Control).Ctl3D := TControlSubClass(Comp).FCtl3D;
-                        TEdit(Control).BorderStyle := TControlSubClass(Comp).FBorderStyle;
-                    End;
-                    If Control.ClassName = 'TDBLookupComboBox' Then
-                        TComboBox(Control).Ctl3D := TControlSubClass(Comp).FCtl3D;
-                    If Control Is TCustomListBox Then
-                    Begin
-                        TListBox(Control).Ctl3D := TControlSubClass(Comp).FCtl3D;
-                        TListBox(Control).BorderStyle := TControlSubClass(Comp).FBorderStyle;
-                    End;
-                    If Control Is TCustomListView Then
-                    Begin
-                        TListView(Control).Ctl3D := TControlSubClass(Comp).FCtl3D;
-                        TListView(Control).BorderStyle := TControlSubClass(Comp).FBorderStyle;
-                    End;
-                    If Control Is TCustomTreeView Then
-                    Begin
-                        TTreeView(Control).Ctl3D := TControlSubClass(Comp).FCtl3D;
-                        TTreeView(Control).BorderStyle := TControlSubClass(Comp).FBorderStyle;
-                    End;
-                Except
-                End;
-            End;
-        End;
-    End;
-End;
+    for Cnt := FActiveXPMenu.ComponentCount - 1 downto 0 do
+    begin
+        comp := FActiveXPMenu.Components[Cnt];
+        if (comp is TControlSubClass) then
+        begin
+            Control := TControlSubClass(comp).Control;
+            if AForm.ContainsControl(Control) then
+            begin
+                try
+                    Control.WindowProc := TControlSubClass(comp).orgWindowProc;
+                    if Control is TCustomEdit then
+                    begin
+                        TEdit(Control).Ctl3D := TControlSubClass(comp).FCtl3D;
+                        TEdit(Control).BorderStyle := TControlSubClass(comp).FBorderStyle;
+                    end;
+                    if Control.ClassName = 'TDBLookupComboBox' then
+                        TComboBox(Control).Ctl3D := TControlSubClass(comp).FCtl3D;
+                    if Control is TCustomListBox then
+                    begin
+                        TListBox(Control).Ctl3D := TControlSubClass(comp).FCtl3D;
+                        TListBox(Control).BorderStyle := TControlSubClass(comp).FBorderStyle;
+                    end;
+                    if Control is TCustomListView then
+                    begin
+                        TListView(Control).Ctl3D := TControlSubClass(comp).FCtl3D;
+                        TListView(Control).BorderStyle := TControlSubClass(comp).FBorderStyle;
+                    end;
+                    if Control is TCustomTreeView then
+                    begin
+                        TTreeView(Control).Ctl3D := TControlSubClass(comp).FCtl3D;
+                        TTreeView(Control).BorderStyle := TControlSubClass(comp).FBorderStyle;
+                    end;
+                except
+                end;
+            end;
+        end;
+    end;
+end;
 
 // Add a form manually to the current XPMenu
-Procedure TXPMenuManager.AddForm(AForm: TCustomForm);
-Begin
-    If FPendingFormsList.IndexOf(AForm) < 0 Then
+procedure TXPMenuManager.AddForm(AForm: TCustomForm);
+begin
+    if FPendingFormsList.IndexOf(AForm) < 0 then
         FPendingFormsList.Add(AForm);
-End;
+end;
 
 // Remove a form manually from the current XPMenu
-Procedure TXPMenuManager.RemoveForm(AForm: TCustomForm);
-Begin
-    If FPendingFormsList.IndexOf(AForm) >= 0 Then
+procedure TXPMenuManager.RemoveForm(AForm: TCustomForm);
+begin
+    if FPendingFormsList.IndexOf(AForm) >= 0 then
         FPendingFormsList.Remove(AForm);
-    If FFormList.IndexOf(AForm) >= 0 Then
+    if FFormList.IndexOf(AForm) >= 0 then
         FFormList.Remove(AForm);
-End;
+end;
 
 // Disable/Enable subclassing by the manager
-Procedure TXPMenuManager.SetDisableSubclassing(AValue: Boolean);
-Begin
-    If FDisableSubclassing = AValue Then
+procedure TXPMenuManager.SetDisableSubclassing(AValue: boolean);
+begin
+    if FDisableSubclassing = AValue then
         Exit;
     FDisableSubclassing := AValue;
-    UpdateActiveXPMenu(Nil);
-End;
+    UpdateActiveXPMenu(NIL);
+end;
 
 // Check if a Form is subclassed
-Function TXPMenuManager.IsFormSubclassed(AForm: TCustomForm): Boolean;
-Begin
-    Result := ((FFormList <> Nil) And (FFormList.IndexOf(AForm) >= 0)) Or
-        ((FPendingFormsList <> Nil) And (FPendingFormsList.IndexOf(AForm) >= 0));
-End;
+function TXPMenuManager.IsFormSubclassed(AForm: TCustomForm): boolean;
+begin
+    Result := ((FFormList <> NIL) and (FFormList.IndexOf(AForm) >= 0)) or
+        ((FPendingFormsList <> NIL) and (FPendingFormsList.IndexOf(AForm) >= 0));
+end;
 
 // Check if a Component is subclassed
-Function TXPMenuManager.IsComponentSubclassed(AComponent: TComponent): Boolean;
-Var
-    Cnt: Integer;
+function TXPMenuManager.IsComponentSubclassed(AComponent: TComponent): boolean;
+var
+    Cnt: integer;
 
-Begin
-    Result := False;
-    With FActiveXPMenu Do
-        For Cnt := 0 To ComponentCount - 1 Do
-            If Components[Cnt] Is TControlSubClass Then
-                If TControlSubClass(Components[Cnt]).Control = TControl(AComponent) Then
-                Begin
-                    Result := True;
+begin
+    Result := FALSE;
+    with FActiveXPMenu do
+        for Cnt := 0 to ComponentCount - 1 do
+            if Components[Cnt] is TControlSubClass then
+                if TControlSubClass(Components[Cnt]).Control = TControl(AComponent) then
+                begin
+                    Result := TRUE;
                     Break; // ahuser
-                End;
-End;
+                end;
+end;
 
 
-End.
+end.

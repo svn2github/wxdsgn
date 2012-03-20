@@ -153,20 +153,35 @@ begin
 end;
 
 destructor TCodeCompletion.Destroy;
-//var
-//        i, iCount : integer;
 begin
 
+    // GAR 3/20/2012 I'm still not convinced that we need to
+    //   explicitly free CodeComplForm since it is a TForm.
+    //   Maybe, CodeComplForm.Release would be a better solution??
     if Assigned(CodeComplForm) then
         FreeAndNil(CodeComplForm)
     else
         CodeComplForm := NIL;
 
+    // GAR 3/20/2012
+    // Normally fCompletionStatementList would need to be specifically
+    //   Disposed and Deleted item by item in the TList. However,
+    //   I think because it is assigned to CodeComplForm and that
+    //   buffer is nilled after each use that it isn't necessary.
+    //   In any case, specifically Disposing and Deleting the list
+    //   causes a runtime error.
     if Assigned(fCompletionStatementList) then
         FreeAndNil(fCompletionStatementList)
     else
         fCompletionStatementList := NIL;
 
+    // GAR 3/20/2012
+    // Normally fFullCompletionStatementList would need to be specifically
+    //   Disposed and Deleted item by item in the TList. However,
+    //   I think because it is assigned to CodeComplForm and that
+    //   buffer is nilled after each use that it isn't necessary.
+    //   In any case, specifically Disposing and Deleting the list
+    //   causes a runtime error.
     if Assigned(fFullCompletionStatementList) then
         FreeAndNil(fFullCompletionStatementList)
     else
@@ -195,6 +210,7 @@ function TCodeCompletion.GetClass(Phrase: string): string;
 var
     I: integer;
 begin
+
     I := LastDelimiter('.', Phrase) - 1;
     if I = -1 then
     begin
@@ -242,10 +258,10 @@ begin
             Result := Phrase[I] + Result;
             Dec(I);
         end;
-    // check if it is function; if yes, cut-off the arguments ;)
+        // check if it is function; if yes, cut-off the arguments ;)
         if AnsiPos('(', Result) > 0 then
             Result := Copy(Result, 1, AnsiPos('(', Result) - 1);
-    // check if it is an array; if yes, cut-off the dimensions ;)
+        // check if it is an array; if yes, cut-off the dimensions ;)
         if AnsiPos('[', Result) > 0 then
             Result := Copy(Result, 1, AnsiPos('[', Result) - 1);
     end;
@@ -284,10 +300,10 @@ begin
     if not Result then
         Exit;
 
-  // all members of current class
+    // all members of current class
     Result := Result and ((ClassIDs.IndexOf(CurrentID) <> -1) and (PStatement(fParser.Statements[Index])^._ParentID = CurrentID));
 
-  // all public and published members of var's class
+    // all public and published members of var's class
     Result := Result or
         (
         (ClassIDs.IndexOf(PStatement(fParser.Statements[Index])^._ParentID) <> -1) and
@@ -299,7 +315,7 @@ begin
     else
         cs := [scsPrivate];
 
-  // all inherited class's non-private members
+    // all inherited class's non-private members
     Result := Result or
         (
         (InheritanceIDs.IndexOf(PStatement(fParser.Statements[Index])^._ParentID) <> -1) and
@@ -374,7 +390,7 @@ begin
                 begin
                     if PStatement(fParser.Statements[I1])^._Kind = skClass then
                     begin
-            // added for the case "Class::Member", where "Class" is the actual class
+                        // added for the case "Class::Member", where "Class" is the actual class
                         ClassIDs.Clear;
                         ClassIDs.Add(I1);
                         bOnlyLocal := TRUE;
@@ -410,13 +426,19 @@ procedure TCodeCompletion.FilterList(_Class, _Value: string;
 var
     I: integer;
 begin
+
     CodeComplForm.lbCompletion.Items.BeginUpdate;
+
+    // GAR 3/20/2012
+    // I think this also clears the fFullCompletionStatementList and
+    //  fCompletionStatementList since they are assigned the same pointer.
     CodeComplForm.lbCompletion.Items.Clear;
+
     try
         if _Class <> '' then
         begin //empty
 
-                fCompletionStatementList.Clear;
+            fCompletionStatementList.Clear;
 
             for I := 0 to fFullCompletionStatementList.Count - 1 do
                 if not HasDot then
@@ -429,7 +451,7 @@ begin
                 end
                 else
                 begin //class and method
-        // ignore "this" pointer as a member
+                    // ignore "this" pointer as a member
                     if Assigned(fFullCompletionStatementList[I]) and (I <> fParser.GetThisPointerID) then
                         if AnsiStartsText(_Value, PStatement(fFullCompletionStatementList[I])^._ScopelessCmd) then
                         begin
@@ -440,9 +462,18 @@ begin
         end
         else
         begin
+
+            // GAR 3/20/2012
+            // I think this also clears the fFullCompletionStatementList and
+            //  fCompletionStatementList since they are assigned the same pointer.
             for I := 0 to fFullCompletionStatementList.Count - 1 do
                 CodeComplForm.lbCompletion.Items.Add('');
 
+            // GAR 3/20/2012
+            // The CodeComplForm.lbCompletion.Items.Add('') nils the
+            // fCompletionStatementList since they are assigned the same pointer.
+            // I think this is why we just clear the list without specifically
+            //  Disposing and Deleting its indicies.
             fCompletionStatementList.Clear;
             fCompletionStatementList.Assign(fFullCompletionStatementList);
         end;
@@ -455,6 +486,7 @@ function TCodeCompletion.GetHasDot(Phrase: string): boolean;
 var
     I: integer;
 begin
+
     Result := LastDelimiter('.', Phrase) > 0;
     if not Result then
     begin
@@ -474,6 +506,7 @@ function TCodeCompletion.GetMember(Phrase: string): string;
 var
     I: integer;
 begin
+
     I := LastDelimiter('.', Phrase);
     if I = 0 then
     begin
@@ -501,6 +534,7 @@ function TCodeCompletion.GetTypeID(_Value: string; il: TIntList): integer;
 var
     I: integer;
 begin
+
     Result := -1;
     if (_Value <> '') and (_Value[Length(_Value)] = '>') then // template
         Delete(_Value, Pos('<', _Value), MaxInt);
@@ -547,8 +581,9 @@ end;
 
 function ListSort(Item1, Item2: Pointer): integer;
 begin
-  // first take into account that parsed statements need to be higher
-  // in the list than loaded ones
+
+    // first take into account that parsed statements need to be higher
+    // in the list than loaded ones
     Result := 0;
     if PStatement(Item1)^._Loaded and not PStatement(Item2)^._Loaded then
         Result := 1
@@ -556,7 +591,7 @@ begin
     if not PStatement(Item1)^._Loaded and PStatement(Item2)^._Loaded then
         Result := -1;
 
-  // after that, consider string comparison
+    // after that, consider string comparison
     if (Result = 0) and (Item1 <> NIL) and (Item2 <> NIL) then
         Result := AnsiCompareText(PStatement(Item1)^._ScopelessCmd, PStatement(Item2)^._ScopelessCmd);
 end;
@@ -567,8 +602,9 @@ var
     C: string;
     M: string;
     D: boolean;
-//    I, iCount: integer;
+
 begin
+
     if fEnabled then
     begin
         CodeComplForm.OnKeyPress := ComplKeyPress;
@@ -589,9 +625,9 @@ begin
         CodeComplForm.Constraints.MinWidth := fMinWidth;
         CodeComplForm.Constraints.MinHeight := fMinHeight;
 
-    // 23 may 2004 - peter schraut (peter_)
-    // we set MaxWidth and MaxHeight to 0, to solve this bug:
-    // https://sourceforge.net/tracker/index.php?func=detail&aid=935068&group_id=10639&atid=110639
+        // 23 may 2004 - peter schraut (peter_)
+        // we set MaxWidth and MaxHeight to 0, to solve this bug:
+        // https://sourceforge.net/tracker/index.php?func=detail&aid=935068&group_id=10639&atid=110639
         CodeComplForm.Constraints.MaxWidth := 0;
         CodeComplForm.Constraints.MaxHeight := 0;
 
@@ -605,19 +641,19 @@ begin
             if not D or (D and (C <> '')) then
                 try
                     Screen.Cursor := crHourglass;
-        // only perform new search if just invoked
+                    // only perform new search if just invoked
                     if not CodeComplForm.Showing then
                     begin
 
-                            fCompletionStatementList.Clear;
+                        fCompletionStatementList.Clear;
 
-                            fFullCompletionStatementList.Clear;
-                       
+                        fFullCompletionStatementList.Clear;
+
                         fIncludedFiles.CommaText := fParser.GetFileIncludes(Filename);
                         GetCompletionFor(C, M, D);
                         fFullCompletionStatementList.Assign(fCompletionStatementList);
                     end;
-        // perform filtering in list
+                    // perform filtering in list
                     FilterList(C, M, D);
                 finally
                     Screen.Cursor := crDefault;
@@ -719,7 +755,12 @@ begin
     HintText := '';
 
 
-        fCompletionStatementList.Clear;
+    // GAR 3/20/2012
+    // The CodeComplForm.lbCompletion.Items.Add('') nils the
+    // fCompletionStatementList since they are assigned the same pointer.
+    // I think this is why we just clear the list without specifically
+    //  Disposing and Deleting its indicies.
+    fCompletionStatementList.Clear;
 
     for I := 0 to fParser.Statements.Count - 1 do
         if AnsiCompareStr(PStatement(fParser.Statements[I])^._ScopelessCmd, FuncName) = 0 then

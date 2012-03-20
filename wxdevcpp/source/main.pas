@@ -1583,16 +1583,16 @@ begin
         devData.FileDate := FileAge(Application.ExeName);
         devData.First := FALSE;
         SaveOptions;
-     end
+    end
     else
         Lang.Open(devData.Language);
 
     // Re-display splash screen that was hidden by LangForm
-    If Not devData.NoSplashScreen Then
-    Begin
+    if not devData.NoSplashScreen then
+    begin
         SplashForm.Show;
         SplashForm.Update;
-    End;
+    end;
 
     devData.Version := DEVCPP_VERSION;
     SetSplashStatus('Loading 3rd-party tools');
@@ -1624,18 +1624,18 @@ begin
     begin
 
         if Assigned(CppParser1) then
-        Begin
+        begin
 
             if Assigned(SplashForm) then
-                CppParser1.OnCacheProgress := SplashForm.OnCacheProgress
+                CppParser1.OnCacheProgress := SplashForm.OnCacheProgress;
 
-        End;
+        end;
 
         if (devCodeCompletion.UseCacheFiles) then
         begin
-                SetSplashStatus('Loading code completion cache');
-                InitClassBrowser(devCodeCompletion.UseCacheFiles);
-                SetSplashStatus('Finished loading cache');
+            SetSplashStatus('Loading code completion cache');
+            InitClassBrowser(devCodeCompletion.UseCacheFiles);
+            SetSplashStatus('Finished loading cache');
         end;
 
         if not Assigned(CppParser1) then
@@ -4698,7 +4698,7 @@ begin
         finally
             Free;
         end;
-        Screen.Cursor := crDefault;
+    Screen.Cursor := crDefault;
 
 end;
 
@@ -6495,7 +6495,7 @@ begin
             OnCacheProgress := ProgressEvents[0];
             sl := TStringList.Create;
             try
-               ExtractStrings([';'], [' '], pchar(devDirs.C), sl);
+                ExtractStrings([';'], [' '], pchar(devDirs.C), sl);
                 for I := 0 to sl.Count - 1 do
                     AddIncludePath(sl[I]);
                 ExtractStrings([';'], [' '], pchar(devDirs.Cpp), sl);
@@ -6514,7 +6514,7 @@ begin
                 Load(devDirs.Config + DEV_COMPLETION_CACHE);
 
             if Assigned(fProject) then
-                    ScanActiveProject;
+                ScanActiveProject;
 
         end;
     end;
@@ -9531,7 +9531,7 @@ begin
             fToDoList.Delete(0);
         end;
     fToDoList.Clear;
-    
+
     case cmbTodoFilter.ItemIndex of
         0:
             AddTodoFiles(FALSE, TRUE, TRUE, FALSE);

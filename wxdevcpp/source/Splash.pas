@@ -17,11 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-Unit Splash;
+unit Splash;
 
-Interface
+interface
 
-Uses
+uses
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
     ExtCtrls, ComCtrls, Version;
@@ -31,65 +31,65 @@ Uses
   QExtCtrls, QComCtrls, Version;
 {$ENDIF}
 
-Type
-    TSplashForm = Class(TForm)
+type
+    TSplashForm = class(TForm)
         Panel: TPanel;
         Image: TImage;
         StatusBar: TStatusBar;
         ProgressBar: TProgressBar;
-        Procedure FormCreate(Sender: TObject);
+        procedure FormCreate(Sender: TObject);
 
 
-    Public
-        Procedure OnCacheProgress(Sender: TObject; FileName: String;
-            Total, Current: Integer);
+    public
+        procedure OnCacheProgress(Sender: TObject; FileName: string;
+            Total, Current: integer);
 
-        Procedure CreateParams(Var Params: TCreateParams); Override;
+        procedure CreateParams(var Params: TCreateParams); override;
 
-    End;
+    end;
 
-Var
+var
     SplashForm: TSplashForm;
 
-Implementation
+implementation
 
-Uses
+uses
     devcfg;
 
 {$R *.dfm}
 
-Procedure TSplashForm.CreateParams(Var Params: TCreateParams);
-Begin
-    Inherited CreateParams(Params);
-    Params.ExStyle := Params.ExStyle Or WS_EX_APPWINDOW;
-End;
+procedure TSplashForm.CreateParams(var Params: TCreateParams);
+begin
+    inherited CreateParams(Params);
+    Params.ExStyle := Params.ExStyle or WS_EX_APPWINDOW;
+end;
 
-Procedure TSplashForm.FormCreate(Sender: TObject);
-Begin
-    DesktopFont := True;
-    If (devData.Splash <> '') And FileExists(devData.Splash) Then
-    Begin
+procedure TSplashForm.FormCreate(Sender: TObject);
+begin
+    DesktopFont := TRUE;
+    if (devData.Splash <> '') and FileExists(devData.Splash) then
+    begin
         Image.Picture.LoadFromFile(devData.Splash);
         ClientWidth := Image.Width;
         ClientHeight := Image.Height + StatusBar.Height;
-    End;
+    end;
 
-    ProgressBar.Visible := False;
+    ProgressBar.Visible := FALSE;
     ProgressBar.Left := StatusBar.Width - ProgressBar.Width - 1;
     ProgressBar.Top := StatusBar.Top + 2;
     StatusBar.SimpleText := 'wxDev-C++ ' + DEVCPP_VERSION + '. Loading...';
-End;
+end;
 
-Procedure TSplashForm.OnCacheProgress(Sender: TObject; FileName: String; Total,
-    Current: Integer);
-Begin
+procedure TSplashForm.OnCacheProgress(Sender: TObject; FileName: string; Total,
+    Current: integer);
+begin
     if Assigned(ProgressBar) then
     begin
-        ProgressBar.Visible := True;
+        ProgressBar.Visible := TRUE;
         ProgressBar.Max := Total;
         ProgressBar.Position := Current;
         Application.ProcessMessages;
     end;
-End;
+end;
 
-End.
+end.

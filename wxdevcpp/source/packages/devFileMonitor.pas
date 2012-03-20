@@ -17,11 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-Unit devFileMonitor;
+unit devFileMonitor;
 
-Interface
+interface
 
-Uses
+uses
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Classes, Forms, Controls,
     devMonitorThread, devMonitorTypes;
@@ -31,109 +31,109 @@ Uses
   devMonitorThread, devMonitorTypes;
 {$ENDIF}
 
-Type
-    TdevFileMonitor = Class(TWinControl)
-    Private
+type
+    TdevFileMonitor = class(TWinControl)
+    private
     { Private declarations }
         fFiles: TStrings;
         fMonitor: TdevMonitorThread;
         fNotifyChange: TdevMonitorChange;
-        Function GetActive: Boolean;
-        Procedure SetActive(Const Value: Boolean);
-        Procedure SetFiles(Const Value: TStrings);
-    Public
+        function GetActive: boolean;
+        procedure SetActive(const Value: boolean);
+        procedure SetFiles(const Value: TStrings);
+    public
     { Public declarations }
-        Constructor Create(AOwner: TComponent); Override;
-        Destructor Destroy; Override;
-        Procedure Activate;
-        Procedure Deactivate;
-        Procedure Refresh(ActivateIfNot: Boolean);
-        Procedure SubClassWndProc(Var Message: TMessage);
-    Published
+        constructor Create(AOwner: TComponent); override;
+        destructor Destroy; override;
+        procedure Activate;
+        procedure Deactivate;
+        procedure Refresh(ActivateIfNot: boolean);
+        procedure SubClassWndProc(var Message: TMessage);
+    published
     { Published declarations }
-        Property Active: Boolean Read GetActive Write SetActive;
-        Property Files: TStrings Read fFiles Write SetFiles;
-        Property OnNotifyChange: TdevMonitorChange Read fNotifyChange Write fNotifyChange;
-    End;
+        property Active: boolean read GetActive write SetActive;
+        property Files: TStrings read fFiles write SetFiles;
+        property OnNotifyChange: TdevMonitorChange read fNotifyChange write fNotifyChange;
+    end;
 
-Implementation
+implementation
 
-Procedure TdevFileMonitor.SubClassWndProc(Var Message: TMessage);
-Begin
-    If Message.Msg = APPMSG_NOTIFYFILECHANGED Then
-    Begin
-        If Assigned(fNotifyChange) Then
-        Begin
-            fNotifyChange(Self, TDevMonitorChangeType(Message.WParam), Pchar(Message.LParam));
-            StrDispose(Pchar(Message.LParam));
-        End;
-    End
-    Else
+procedure TdevFileMonitor.SubClassWndProc(var Message: TMessage);
+begin
+    if Message.Msg = APPMSG_NOTIFYFILECHANGED then
+    begin
+        if Assigned(fNotifyChange) then
+        begin
+            fNotifyChange(Self, TDevMonitorChangeType(Message.WParam), pchar(Message.LParam));
+            StrDispose(pchar(Message.LParam));
+        end;
+    end
+    else
         WndProc(Message);
-End;
+end;
 
-Constructor TdevFileMonitor.Create(AOwner: TComponent);
-Begin
-    Inherited;
+constructor TdevFileMonitor.Create(AOwner: TComponent);
+begin
+    inherited;
     fFiles := TStringList.Create;
-    fMonitor := Nil;
+    fMonitor := NIL;
     WindowProc := SubClassWndProc;
-End;
+end;
 
-Destructor TdevFileMonitor.Destroy;
-Begin
+destructor TdevFileMonitor.Destroy;
+begin
     Deactivate;
-    If Assigned(fFiles) Then
+    if Assigned(fFiles) then
         fFiles.Free;
-    Inherited;
-End;
+    inherited;
+end;
 
-Procedure TdevFileMonitor.Activate;
-Begin
-    If Not Active Then
-    Begin
+procedure TdevFileMonitor.Activate;
+begin
+    if not Active then
+    begin
         fMonitor := TdevMonitorThread.Create(Self, fFiles);
         fMonitor.Resume;
-    End;
-End;
+    end;
+end;
 
-Procedure TdevFileMonitor.Deactivate;
-Begin
-    If Active Then
-    Begin
+procedure TdevFileMonitor.Deactivate;
+begin
+    if Active then
+    begin
         fMonitor.TellToQuit;
         fMonitor.WaitFor;
         fMonitor.Free;
-        fMonitor := Nil;
-    End;
-End;
+        fMonitor := NIL;
+    end;
+end;
 
-Function TdevFileMonitor.GetActive: Boolean;
-Begin
+function TdevFileMonitor.GetActive: boolean;
+begin
     Result := Assigned(fMonitor);
-End;
+end;
 
-Procedure TdevFileMonitor.Refresh(ActivateIfNot: Boolean);
-Begin
-    If (Not Active) And ActivateIfNot Then
+procedure TdevFileMonitor.Refresh(ActivateIfNot: boolean);
+begin
+    if (not Active) and ActivateIfNot then
         Activate
-    Else
-    If Active Then
+    else
+    if Active then
         fMonitor.ReloadList(fFiles);
-End;
+end;
 
-Procedure TdevFileMonitor.SetActive(Const Value: Boolean);
-Begin
-    If Value And Not Active Then
+procedure TdevFileMonitor.SetActive(const Value: boolean);
+begin
+    if Value and not Active then
         Activate
-    Else
-    If Not Value And Active Then
+    else
+    if not Value and Active then
         Deactivate;
-End;
+end;
 
-Procedure TdevFileMonitor.SetFiles(Const Value: TStrings);
-Begin
+procedure TdevFileMonitor.SetFiles(const Value: TStrings);
+begin
     fFiles.Assign(Value);
-End;
+end;
 
-End.
+end.

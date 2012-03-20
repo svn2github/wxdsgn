@@ -24,11 +24,11 @@
 //    Pretty much a complete rewrite of this unit :P
 //
 
-Unit GotoLineFrm;
+unit GotoLineFrm;
 
-Interface
+interface
 
-Uses
+uses
 {$IFDEF WIN32}
     Windows, SysUtils, Classes, Graphics, Forms, Controls, StdCtrls,
     Buttons, ExtCtrls, Spin, XPMenu, SynEdit;
@@ -38,30 +38,30 @@ Uses
   QButtons, QExtCtrls, QComCtrls, QSynEdit;
 {$ENDIF}
 
-Type
-    TGotoLineForm = Class(TForm)
+type
+    TGotoLineForm = class(TForm)
         GotoLabel: TLabel;
         Line: TSpinEdit;
         XPMenu: TXPMenu;
         BtnOK: TButton;
         BtnCancel: TButton;
-        Procedure FormCreate(Sender: TObject);
-        Procedure FormKeyUp(Sender: TObject; Var Key: Word;
+        procedure FormCreate(Sender: TObject);
+        procedure FormKeyUp(Sender: TObject; var Key: word;
             Shift: TShiftState);
-        Procedure FormShow(Sender: TObject);
-        Procedure LineKeyDown(Sender: TObject; Var Key: Word;
+        procedure FormShow(Sender: TObject);
+        procedure LineKeyDown(Sender: TObject; var Key: word;
             Shift: TShiftState);
-    Private
+    private
         FEditor: TCustomSynEdit;
-        Procedure SetEditor(AEditor: TCustomSynEdit);
-    Public
-        Procedure LoadText;
-        Property Editor: TCustomSynEdit Read FEditor Write SetEditor;
-    End;
+        procedure SetEditor(AEditor: TCustomSynEdit);
+    public
+        procedure LoadText;
+        property Editor: TCustomSynEdit read FEditor write SetEditor;
+    end;
 
-Implementation
+implementation
 
-Uses
+uses
 {$IFDEF WIN32}
     MultiLangSupport, devcfg;
 {$ENDIF}
@@ -71,58 +71,58 @@ Uses
 
 {$R *.dfm}
 
-Procedure TGotoLineForm.FormCreate(Sender: TObject);
-Begin
+procedure TGotoLineForm.FormCreate(Sender: TObject);
+begin
     LoadText;
-End;
+end;
 
-Procedure TGotoLineForm.FormShow(Sender: TObject);
-Begin
+procedure TGotoLineForm.FormShow(Sender: TObject);
+begin
     Line.Value := 1;
-End;
+end;
 
-Procedure TGotoLineForm.LineKeyDown(Sender: TObject; Var Key: Word;
+procedure TGotoLineForm.LineKeyDown(Sender: TObject; var Key: word;
     Shift: TShiftState);
-Begin
+begin
 {$IFDEF WIN32}
-    If Key = VK_RETURN Then
+    if Key = VK_RETURN then
         BtnOK.Click;
 {$ENDIF}
 {$IFDEF LINUX}
   if Key = XK_RETURN then BtnOK.Click;
 {$ENDIF}
-End;
+end;
 
-Procedure TGotoLineForm.LoadText;
-Begin
-    DesktopFont := True;
+procedure TGotoLineForm.LoadText;
+begin
+    DesktopFont := TRUE;
     XPMenu.Active := devData.XPTheme;
     Caption := Lang[ID_GOTO_CAPTION];
     GotoLabel.Caption := Lang[ID_GOTO_TEXT];
     BtnOk.Caption := Lang[ID_BTN_OK];
     BtnCancel.Caption := Lang[ID_BTN_CANCEL];
-End;
+end;
 
-Procedure TGotoLineForm.FormKeyUp(Sender: TObject; Var Key: Word;
+procedure TGotoLineForm.FormKeyUp(Sender: TObject; var Key: word;
     Shift: TShiftState);
-Begin
+begin
 {$IFDEF WIN32}
-    If Key = VK_ESCAPE Then
+    if Key = VK_ESCAPE then
         Close;
 {$ENDIF}
 {$IFDEF LINUX}
   if Key = XK_ESCAPE then Close;
 {$ENDIF}
-End;
+end;
 
-Procedure TGotoLineForm.SetEditor(AEditor: TCustomSynEdit);
-Begin
+procedure TGotoLineForm.SetEditor(AEditor: TCustomSynEdit);
+begin
     FEditor := AEditor;
-    If Assigned(FEditor) Then
-    Begin
+    if Assigned(FEditor) then
+    begin
         Line.MaxValue := FEditor.Lines.Count;
         Line.Value := FEditor.CaretY;
-    End;
-End;
+    end;
+end;
 
-End.
+end.

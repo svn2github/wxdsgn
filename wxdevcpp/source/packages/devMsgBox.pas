@@ -19,126 +19,126 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-Unit devMsgBox;
+unit devMsgBox;
 
-Interface
-Uses
+interface
+uses
     Windows, Controls, Messages, StdCtrls;
 
-Function devMessageBox(Parent: TWinControl; Prompt, Title, CheckText: String; Style: DWORD): Integer;
+function devMessageBox(Parent: TWinControl; Prompt, Title, CheckText: string; Style: DWORD): integer;
 
-Implementation
-Uses
+implementation
+uses
     Classes, Forms, SysUtils;
 
-Type
-    TdevMessageBox = Class
+type
+    TdevMessageBox = class
         Parent: TWinControl;
-        Prompt: String;
-        Title: String;
+        Prompt: string;
+        Title: string;
         Style: DWORD;
 
-        CheckText: String;
+        CheckText: string;
         CheckBox: HWND;
-        Checked: Boolean;
-    Public
-        Constructor Create(Parent: TWinControl; Prompt, Title, CheckText: String; Style: DWORD);
-        Function Show: Integer;
-    End;
+        Checked: boolean;
+    public
+        constructor Create(Parent: TWinControl; Prompt, Title, CheckText: string; Style: DWORD);
+        function Show: integer;
+    end;
 
-Var
+var
     CurrentBox: TdevMessageBox;
-    OldProc: Function(hWnd: HWND; uMsg: UINT; wParam: wParam; lParam: LPARAM): LRESULT;
+    OldProc: function(hWnd: HWND; uMsg: UINT; wParam: wParam; lParam: LPARAM): LRESULT;
     Hook: HHOOK;
 
-Function HookProc(hWnd: HWND; uMsg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; Stdcall;
-Var
+function HookProc(hWnd: HWND; uMsg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall;
+var
     CheckboxPlacement: WINDOWPLACEMENT;
     Placement: WINDOWPLACEMENT;
     CheckboxSize: TSize;
-Begin
+begin
   //Forward the call to Windows to handle everything (we are only supplementing)
     Result := CallWindowProc(@OldProc, hWnd, uMsg, wParam, lParam);
 
   //If we are creating the new Message Box, initialize it
-    If uMsg = WM_INITDIALOG Then
-    Begin
+    if uMsg = WM_INITDIALOG then
+    begin
     //Get the position of the Message Box
         GetWindowPlacement(hwnd, @Placement);
 
     //Create the Check box
-        CurrentBox.CheckBox := CreateWindow('BUTTON', Pchar(CurrentBox.CheckText),
-            WS_CHILD Or WS_VISIBLE Or BS_AUTOCHECKBOX,
+        CurrentBox.CheckBox := CreateWindow('BUTTON', pchar(CurrentBox.CheckText),
+            WS_CHILD or WS_VISIBLE or BS_AUTOCHECKBOX,
             13, Placement.rcNormalPosition.Bottom - Placement.rcNormalPosition.Top - 40,
-            0, 0, hWnd, 1000, 0, Nil);
+            0, 0, hWnd, 1000, 0, NIL);
         SendMessage(CurrentBox.CheckBox, WM_SETFONT, SendMessage(GetDlgItem(hwnd, 65535), WM_GETFONT, 0, 0), 0);
 
     //Calculate the length of the label
-        GetTextExtentPoint(GetDC(CurrentBox.CheckBox), Pchar(CurrentBox.CheckText), Length(CurrentBox.CheckText), CheckboxSize);
+        GetTextExtentPoint(GetDC(CurrentBox.CheckBox), pchar(CurrentBox.CheckText), Length(CurrentBox.CheckText), CheckboxSize);
         GetWindowPlacement(CurrentBox.CheckBox, @CheckboxPlacement);
         MoveWindow(CurrentBox.CheckBox, CheckboxPlacement.rcNormalPosition.Left,
             CheckboxPlacement.rcNormalPosition.Top, CheckboxSize.cx,
-            CheckboxSize.cy, True);
+            CheckboxSize.cy, TRUE);
 
     //Resize the dialog
         MoveWindow(hWnd, Placement.rcNormalPosition.Left, Placement.rcNormalPosition.Top,
             Placement.rcNormalPosition.Right - Placement.rcNormalPosition.Left,
-            Placement.rcNormalPosition.Bottom - Placement.rcNormalPosition.Top + CheckboxSize.cy, True);
-    End
-    Else
-    If (uMsg = WM_COMMAND) And (wParam = 1000) Then
+            Placement.rcNormalPosition.Bottom - Placement.rcNormalPosition.Top + CheckboxSize.cy, TRUE);
+    end
+    else
+    if (uMsg = WM_COMMAND) and (wParam = 1000) then
         CurrentBox.Checked := SendMessage(CurrentBox.CheckBox, BM_GETCHECK, 0, 0) = BST_CHECKED;
-End;
+end;
 
-Function SetHook(nCode: Integer; wParam: WPARAM; lParam: LPARAM): LRESULT; Stdcall;
-Type
+function SetHook(nCode: integer; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall;
+type
     PCWPSTRUCT = ^CWPSTRUCT;
-Var
+var
     pwp: CWPSTRUCT;
-Begin
-    If nCode = HC_ACTION Then
-    Begin
+begin
+    if nCode = HC_ACTION then
+    begin
         pwp := PCWPSTRUCT(lParam)^;
-        If pwp.message = WM_INITDIALOG Then
-            OldProc := Pointer(SetWindowLong(pwp.hwnd, GWL_WNDPROC, Longint(@HookProc)));
-    End;
+        if pwp.message = WM_INITDIALOG then
+            OldProc := Pointer(SetWindowLong(pwp.hwnd, GWL_WNDPROC, longint(@HookProc)));
+    end;
 
     Result := CallNextHookEx(Hook, nCode, wParam, lParam);
-End;
+end;
 
-Function devMessageBox(Parent: TWinControl; Prompt, Title, CheckText: String; Style: DWORD): Integer;
-Begin
-    With TdevMessageBox.Create(Parent, Prompt, Title, CheckText, Style) Do
-    Begin
+function devMessageBox(Parent: TWinControl; Prompt, Title, CheckText: string; Style: DWORD): integer;
+begin
+    with TdevMessageBox.Create(Parent, Prompt, Title, CheckText, Style) do
+    begin
         Result := Show;
         Free;
-    End;
-End;
+    end;
+end;
 
-Constructor TdevMessageBox.Create(Parent: TWinControl; Prompt, Title, CheckText: String; Style: DWORD);
-Begin
+constructor TdevMessageBox.Create(Parent: TWinControl; Prompt, Title, CheckText: string; Style: DWORD);
+begin
     Self.Parent := Parent;
     Self.Prompt := Prompt;
     Self.Title := Title;
     Self.Style := Style;
     Self.CheckText := CheckText;
-End;
+end;
 
-Function TdevMessageBox.Show: Integer;
-Begin
+function TdevMessageBox.Show: integer;
+begin
   //Install the hook procedure
     CurrentBox := Self;
     Hook := SetWindowsHookEx(WH_CALLWNDPROC, @SetHook, 0, GetCurrentThreadId);
 
   //Show the message box
-    Result := MessageBox(Parent.Handle, Pchar(Prompt), Pchar(Title), Style);
+    Result := MessageBox(Parent.Handle, pchar(Prompt), pchar(Title), Style);
 
   //Uninstall the hook
     UnhookWindowsHookEx(Hook);
-    If Not CurrentBox.Checked Then
+    if not CurrentBox.Checked then
         Result := -Result;
-    CurrentBox := Nil;
-End;
+    CurrentBox := NIL;
+end;
 
-End.
+end.
  

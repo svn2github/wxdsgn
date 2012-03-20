@@ -22,11 +22,11 @@
 {$WARN SYMBOL_PLATFORM OFF}
 {$WARN UNIT_PLATFORM OFF}
 
-Unit ProjectOptionsFrm;
+unit ProjectOptionsFrm;
 
-Interface
+interface
 
-Uses
+uses
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
     ExtDlgs, StdCtrls, ExtCtrls, Buttons, ComCtrls, main, project,
@@ -39,8 +39,8 @@ Uses
   devTabs, prjtypes, QGrids, CompilerOptionsFrame, Types;
 {$ENDIF}
 
-Type
-    TfrmProjectOptions = Class(TForm)
+type
+    TfrmProjectOptions = class(TForm)
         btnOk: TBitBtn;
         btnCancel: TBitBtn;
         btnHelp: TBitBtn;
@@ -156,85 +156,85 @@ Type
         lblImagesoutputdir: TLabel;
         edImagesOutput: TEdit;
         btnImagesOutputDir: TSpeedButton;
-        Procedure ListClick(Sender: TObject);
-        Procedure EditChange(SEnder: TObject);
-        Procedure ButtonClick(Sender: TObject);
-        Procedure UpDownClick(Sender: TObject);
-        Procedure BrowseClick(Sender: TObject);
-        Procedure SubTabsChange(Sender: TObject);
-        Procedure SubTabsChanging(Sender: TObject; NewIndex: Integer;
-            Var AllowChange: Boolean);
-        Procedure FormShow(Sender: TObject);
-        Procedure btnIconLibClick(Sender: TObject);
-        Procedure btnIconBrwseClick(Sender: TObject);
-        Procedure FormCreate(Sender: TObject);
-        Procedure btnRemoveIconClick(Sender: TObject);
-        Procedure BrowseExecutableOutDirClick(Sender: TObject);
-        Procedure BrowseObjDirClick(Sender: TObject);
-        Procedure BrowseImageDirClick(Sender: TObject);
-        Procedure btnMakeBrowseClick(Sender: TObject);
-        Procedure btnMakClick(Sender: TObject);
-        Procedure MakButtonClick(Sender: TObject);
-        Procedure edMakeIncludeChange(Sender: TObject);
-        Procedure MakeIncludesClick(Sender: TObject);
-        Procedure btnHelpClick(Sender: TObject);
-        Procedure chkOverrideOutputClick(Sender: TObject);
-        Procedure FormCloseQuery(Sender: TObject; Var CanClose: Boolean);
-        Procedure chkCompileClick(Sender: TObject);
-        Procedure chkVersionInfoClick(Sender: TObject);
-        Procedure lvFilesChange(Sender: TObject; Node: TTreeNode);
-        Procedure cmbCompilerChange(Sender: TObject);
-        Procedure btnCancelClick(Sender: TObject);
-        Procedure lstTypeClick(Sender: TObject);
-        Procedure btnOkClick(Sender: TObject);
-        Procedure AddLibBtnClick(Sender: TObject);
-        Procedure txtOverrideBuildCmdChange(Sender: TObject);
-        Procedure spnPriorityChange(Sender: TObject);
-        Procedure btnCustomMakeBrowseClick(Sender: TObject);
-        Procedure cbUseCustomMakefileClick(Sender: TObject);
-        Procedure MakeIncludesDrawItem(Control: TWinControl; Index: Integer;
+        procedure ListClick(Sender: TObject);
+        procedure EditChange(SEnder: TObject);
+        procedure ButtonClick(Sender: TObject);
+        procedure UpDownClick(Sender: TObject);
+        procedure BrowseClick(Sender: TObject);
+        procedure SubTabsChange(Sender: TObject);
+        procedure SubTabsChanging(Sender: TObject; NewIndex: integer;
+            var AllowChange: boolean);
+        procedure FormShow(Sender: TObject);
+        procedure btnIconLibClick(Sender: TObject);
+        procedure btnIconBrwseClick(Sender: TObject);
+        procedure FormCreate(Sender: TObject);
+        procedure btnRemoveIconClick(Sender: TObject);
+        procedure BrowseExecutableOutDirClick(Sender: TObject);
+        procedure BrowseObjDirClick(Sender: TObject);
+        procedure BrowseImageDirClick(Sender: TObject);
+        procedure btnMakeBrowseClick(Sender: TObject);
+        procedure btnMakClick(Sender: TObject);
+        procedure MakButtonClick(Sender: TObject);
+        procedure edMakeIncludeChange(Sender: TObject);
+        procedure MakeIncludesClick(Sender: TObject);
+        procedure btnHelpClick(Sender: TObject);
+        procedure chkOverrideOutputClick(Sender: TObject);
+        procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
+        procedure chkCompileClick(Sender: TObject);
+        procedure chkVersionInfoClick(Sender: TObject);
+        procedure lvFilesChange(Sender: TObject; Node: TTreeNode);
+        procedure cmbCompilerChange(Sender: TObject);
+        procedure btnCancelClick(Sender: TObject);
+        procedure lstTypeClick(Sender: TObject);
+        procedure btnOkClick(Sender: TObject);
+        procedure AddLibBtnClick(Sender: TObject);
+        procedure txtOverrideBuildCmdChange(Sender: TObject);
+        procedure spnPriorityChange(Sender: TObject);
+        procedure btnCustomMakeBrowseClick(Sender: TObject);
+        procedure cbUseCustomMakefileClick(Sender: TObject);
+        procedure MakeIncludesDrawItem(Control: TWinControl; Index: integer;
             Rect: TRect; State: TOwnerDrawState);
-        Procedure grpPchClick(Sender: TObject);
-        Procedure cmbProfileSetCompChange(Sender: TObject);
-        Procedure btnAddProfileSetClick(Sender: TObject);
-        Procedure btnDelProfileSetClick(Sender: TObject);
-        Procedure btnRenameProfileSetClick(Sender: TObject);
-        Procedure btnCopyProfileSetClick(Sender: TObject);
-    Private
+        procedure grpPchClick(Sender: TObject);
+        procedure cmbProfileSetCompChange(Sender: TObject);
+        procedure btnAddProfileSetClick(Sender: TObject);
+        procedure btnDelProfileSetClick(Sender: TObject);
+        procedure btnRenameProfileSetClick(Sender: TObject);
+        procedure btnCopyProfileSetClick(Sender: TObject);
+    private
         fProfiles: TProjectProfileList;
-        fIcon: String;
+        fIcon: string;
         fProject: TProject;
-        fOriginalProfileIndex: Integer;
-        fCurrentProfileIndex: Integer;
+        fOriginalProfileIndex: integer;
+        fCurrentProfileIndex: integer;
         dlgCustomMake: TOpenDialogEx;
 	       OpenLibDialog: TOpenDialogEx;
 	       dlgMakeInclude: TOpenDialogEx;
 	       dlgOpen: TOpenDialogEx;
-        Procedure UpdateUIWithCurrentProfile;
-        Procedure UpdateCurrentProfileDataFromUI;
-        Procedure UpdateProfileList(ProfileIndex: Integer);
-        Procedure SetProfiles(Value: TProjectProfileList);
-        Function GetProfiles: TProjectProfileList;
-        Procedure UpdateButtons;
-        Procedure UpdateMakButtons;
-        Procedure LoadText;
-        Procedure InitVersionInfo;
-        Function DefaultBuildCommand(idx: Integer): String;
-        Procedure SaveDirSettings;
-        Function GetCurrentProfile: TProjProfile;
-    Public
-        Property Project: TProject Read fProject Write fProject;
-        Property Profiles: TProjectProfileList Read GetProfiles Write SetProfiles;
-        Property CurrentProfile: TProjProfile Read GetCurrentProfile;
-        Property CurrentProfileIndex: Integer
-            Read fCurrentProfileIndex Write fCurrentProfileIndex;
-    Protected
-        Procedure CreateParams(Var Params: TCreateParams); Override;
-    End;
+        procedure UpdateUIWithCurrentProfile;
+        procedure UpdateCurrentProfileDataFromUI;
+        procedure UpdateProfileList(ProfileIndex: integer);
+        procedure SetProfiles(Value: TProjectProfileList);
+        function GetProfiles: TProjectProfileList;
+        procedure UpdateButtons;
+        procedure UpdateMakButtons;
+        procedure LoadText;
+        procedure InitVersionInfo;
+        function DefaultBuildCommand(idx: integer): string;
+        procedure SaveDirSettings;
+        function GetCurrentProfile: TProjProfile;
+    public
+        property Project: TProject read fProject write fProject;
+        property Profiles: TProjectProfileList read GetProfiles write SetProfiles;
+        property CurrentProfile: TProjProfile read GetCurrentProfile;
+        property CurrentProfileIndex: integer
+            read fCurrentProfileIndex write fCurrentProfileIndex;
+    protected
+        procedure CreateParams(var Params: TCreateParams); override;
+    end;
 
-Implementation
+implementation
 
-Uses
+uses
 {$IFDEF WIN32}
     FileCtrl, devcfg, IconFrm, utils, MultiLangSupport, version, hh;
 {$ENDIF}
@@ -244,263 +244,263 @@ Uses
 
 {$R *.dfm}
 
-Procedure TfrmProjectOptions.UpdateButtons;
-Begin
+procedure TfrmProjectOptions.UpdateButtons;
+begin
     btnAdd.Enabled := edEntry.Text <> '';
-    If lstList.ItemIndex >= 0 Then
-    Begin
-        btnDelete.Enabled := True;
+    if lstList.ItemIndex >= 0 then
+    begin
+        btnDelete.Enabled := TRUE;
         btnReplace.Enabled := btnAdd.Enabled;
         btnUp.Enabled := lstList.ItemIndex > 0;
         btnDown.Enabled := lstList.ItemIndex < (lstList.Items.Count - 1);
-    End
-    Else
-    Begin
-        btnDelete.Enabled := False;
-        btnReplace.Enabled := False;
-        btnUp.Enabled := False;
-        btnDown.Enabled := False;
-    End;
+    end
+    else
+    begin
+        btnDelete.Enabled := FALSE;
+        btnReplace.Enabled := FALSE;
+        btnUp.Enabled := FALSE;
+        btnDown.Enabled := FALSE;
+    end;
     btnDelInval.Enabled := lstList.Items.Count > 0;
-End;
+end;
 
-Procedure TfrmProjectOptions.UpdateMakButtons;
-Begin
+procedure TfrmProjectOptions.UpdateMakButtons;
+begin
     btnMakAdd.Enabled := edMakeInclude.Text <> '';
-    If MakeIncludes.ItemIndex >= 0 Then
-    Begin
-        btnMakDelete.Enabled := True;
+    if MakeIncludes.ItemIndex >= 0 then
+    begin
+        btnMakDelete.Enabled := TRUE;
         btnMakReplace.Enabled := btnMakAdd.Enabled;
         btnMakUp.Enabled := MakeIncludes.ItemIndex > 0;
         btnMakDown.Enabled := MakeIncludes.ItemIndex <
             (MakeIncludes.Items.Count - 1);
-    End
-    Else
-    Begin
-        btnMakDelete.Enabled := False;
-        btnMakReplace.Enabled := False;
-        btnMakUp.Enabled := False;
-        btnMakDown.Enabled := False;
-    End;
+    end
+    else
+    begin
+        btnMakDelete.Enabled := FALSE;
+        btnMakReplace.Enabled := FALSE;
+        btnMakUp.Enabled := FALSE;
+        btnMakDown.Enabled := FALSE;
+    end;
     btnMakDelInval.Enabled := MakeIncludes.Items.Count > 0;
-End;
+end;
 
-Procedure TfrmProjectOptions.BrowseClick(Sender: TObject);
-Var
+procedure TfrmProjectOptions.BrowseClick(Sender: TObject);
+var
 {$IFDEF WIN32}
-    NewItem: String;
+    NewItem: string;
 {$ENDIF}
 {$IFDEF LINUX}
   NewItem: WideString;
 {$ENDIF}
-Begin
-    If (Trim(edEntry.Text) <> '') And DirectoryExists(Trim(edEntry.Text)) Then
+begin
+    if (Trim(edEntry.Text) <> '') and DirectoryExists(Trim(edEntry.Text)) then
         newitem := edEntry.Text
-    Else
+    else
         newitem := devDirs.Default;
-    Case SubTabs.TabIndex Of
+    case SubTabs.TabIndex of
         0: // Lib tab
-        Begin
-            If SelectDirectory('Library Directory', '', newitem) Then
+        begin
+            if SelectDirectory('Library Directory', '', newitem) then
                 edEntry.Text := NewItem;
-        End;
+        end;
         1: // Include tab
-        Begin
-            If SelectDirectory('Include Directory', '', newitem) Then
+        begin
+            if SelectDirectory('Include Directory', '', newitem) then
                 edEntry.Text := NewItem;
-        End;
+        end;
         2: // Resource dir Tab
-        Begin
-            If SelectDirectory('Resource Directory', '', newitem) Then
+        begin
+            if SelectDirectory('Resource Directory', '', newitem) then
                 edEntry.Text := NewItem;
-        End;
-    End;
+        end;
+    end;
     edEntry.SetFocus;
-End;
+end;
 
-Procedure TfrmProjectOptions.ButtonClick(Sender: TObject);
-Var
-    idx: Integer;
-Begin
-    Case (Sender As TComponent).Tag Of
+procedure TfrmProjectOptions.ButtonClick(Sender: TObject);
+var
+    idx: integer;
+begin
+    case (Sender as TComponent).Tag of
         1:
-        Begin
+        begin
             lstList.Items[lstList.ItemIndex] := TrimRight(edEntry.Text);
-            Case SubTabs.TabIndex Of
+            case SubTabs.TabIndex of
                 0:
                     CurrentProfile.Libs[lstList.ItemIndex] := TrimRight(edEntry.Text);
                 1:
                     CurrentProfile.Includes[lstList.ItemIndex] := TrimRight(edEntry.Text);
                 2:
                     CurrentProfile.ResourceIncludes[lstList.ItemIndex] := TrimRight(edEntry.Text);
-            End;
-        End;
+            end;
+        end;
         2:
-        Begin
+        begin
             lstList.Items.Add(TrimRight(edEntry.Text));
-            Case SubTabs.TabIndex Of
+            case SubTabs.TabIndex of
                 0:
                     CurrentProfile.Libs.Add(TrimRight(edEntry.Text));
                 1:
                     CurrentProfile.Includes.Add(TrimRight(edEntry.Text));
                 2:
                     CurrentProfile.ResourceIncludes.Add(TrimRight(edEntry.Text));
-            End;
-        End;
+            end;
+        end;
         3:
-        Begin
-            Case SubTabs.TabIndex Of
+        begin
+            case SubTabs.TabIndex of
                 0:
                     CurrentProfile.Libs.Delete(lstList.ItemIndex);
                 1:
                     CurrentProfile.Includes.Delete(lstList.ItemIndex);
                 2:
                     CurrentProfile.ResourceIncludes.Delete(lstList.ItemIndex);
-            End;
+            end;
             lstList.DeleteSelected;
-        End;
+        end;
         4:
-        Begin
-            If lstList.Items.Count > 0 Then
-                For idx := pred(lstList.Items.Count) Downto 0 Do
-                    Case SubTabs.TabIndex Of
+        begin
+            if lstList.Items.Count > 0 then
+                for idx := pred(lstList.Items.Count) downto 0 do
+                    case SubTabs.TabIndex of
                         0:
-                            If Not DirectoryExists(lstList.Items[idx]) Then
-                            Begin
+                            if not DirectoryExists(lstList.Items[idx]) then
+                            begin
                                 CurrentProfile.Libs.Delete(idx);
                                 lstList.Items.Delete(idx);
-                            End;
+                            end;
                         1:
-                            If Not DirectoryExists(lstList.Items[idx]) Then
-                            Begin
+                            if not DirectoryExists(lstList.Items[idx]) then
+                            begin
                                 CurrentProfile.Includes.Delete(idx);
                                 lstList.Items.Delete(idx);
-                            End;
+                            end;
                         2:
-                            If Not DirectoryExists(lstList.Items[idx]) Then
-                            Begin
+                            if not DirectoryExists(lstList.Items[idx]) then
+                            begin
                                 CurrentProfile.ResourceIncludes.Delete(idx);
                                 lstList.Items.Delete(idx);
-                            End;
-                    End;
-        End;
-    End;
+                            end;
+                    end;
+        end;
+    end;
     edEntry.Clear;
     UpdateButtons;
-End;
+end;
 
-Procedure TfrmProjectOptions.EditChange(SEnder: TObject);
-Begin
+procedure TfrmProjectOptions.EditChange(SEnder: TObject);
+begin
     UpdateButtons;
-End;
+end;
 
-Procedure TfrmProjectOptions.ListClick(Sender: TObject);
-Begin
+procedure TfrmProjectOptions.ListClick(Sender: TObject);
+begin
     UpdateButtons;
 
-    If lstList.Itemindex <> -1 Then
+    if lstList.Itemindex <> -1 then
         edEntry.Text := lstList.Items[lstList.Itemindex];
-End;
+end;
 
-Procedure TfrmProjectOptions.UpDownClick(Sender: TObject);
-Var
-    idx: Integer;
-Begin
+procedure TfrmProjectOptions.UpDownClick(Sender: TObject);
+var
+    idx: integer;
+begin
     idx := lstList.ItemIndex;
-    If Sender = btnUp Then
-    Begin
+    if Sender = btnUp then
+    begin
         lstList.Items.Exchange(lstList.ItemIndex, lstList.ItemIndex - 1);
         lstList.ItemIndex := idx - 1;
-    End
-    Else
-    If Sender = btnDown Then
-    Begin
+    end
+    else
+    if Sender = btnDown then
+    begin
         lstList.Items.Exchange(lstList.ItemIndex, lstList.ItemIndex + 1);
         lstList.ItemIndex := idx + 1;
-    End;
+    end;
     UpdateButtons;
-End;
+end;
 
-Function TfrmProjectOptions.GetCurrentProfile: TProjProfile;
-Begin
-    If (fCurrentProfileIndex < 0) Or (fCurrentProfileIndex >
-        fProfiles.Count - 1) Then
-    Begin
-        Result := Nil;
+function TfrmProjectOptions.GetCurrentProfile: TProjProfile;
+begin
+    if (fCurrentProfileIndex < 0) or (fCurrentProfileIndex >
+        fProfiles.Count - 1) then
+    begin
+        Result := NIL;
         exit;
-    End;
+    end;
     Result := fProfiles[fCurrentProfileIndex];
-End;
+end;
 
-Function TfrmProjectOptions.GetProfiles: TProjectProfileList;
-Begin
+function TfrmProjectOptions.GetProfiles: TProjectProfileList;
+begin
     //UpdateCurrentProfileDataFromUI;
     result := fProfiles;
-End;
+end;
 
-Procedure TfrmProjectOptions.SetProfiles(Value: TProjectProfileList);
-Begin
+procedure TfrmProjectOptions.SetProfiles(Value: TProjectProfileList);
+begin
     fProfiles.CopyDataFrom(Value);
     //Load the profiles First
     cmbProfileSetComp.Clear;
 
-    If fProfiles.Count = 0 Then
+    if fProfiles.Count = 0 then
         exit;
 
     UpdateProfileList(-1);
-    If Assigned(fProject) = False Then
-    Begin
+    if Assigned(fProject) = FALSE then
+    begin
         ShowMessage('Project Not Intialised');
         exit;
-    End;
+    end;
 
-    If (fProject.DefaultProfileIndex > fProfiles.count - 1) Or
-        (fProject.DefaultProfileIndex < 0) Then
-    Begin
+    if (fProject.DefaultProfileIndex > fProfiles.count - 1) or
+        (fProject.DefaultProfileIndex < 0) then
+    begin
         fProject.DefaultProfileIndex := 0;
-    End;
+    end;
     CurrentProfileIndex := fProject.CurrentProfileIndex;
     cmbProfileSetComp.ItemIndex := CurrentProfileIndex;
-    cmbProfileSetCompChange(Nil);
-End;
+    cmbProfileSetCompChange(NIL);
+end;
 
-Procedure TfrmProjectOptions.UpdateProfileList(ProfileIndex: Integer);
-Var
-    i: Integer;
-Begin
+procedure TfrmProjectOptions.UpdateProfileList(ProfileIndex: integer);
+var
+    i: integer;
+begin
     cmbProfileSetComp.Clear;
-    For i := 0 To fProfiles.count - 1 Do
-    Begin
-        If trim(fProfiles.Items[i].ProfileName) <> '' Then
+    for i := 0 to fProfiles.count - 1 do
+    begin
+        if trim(fProfiles.Items[i].ProfileName) <> '' then
             cmbProfileSetComp.Items.Add(fProfiles.Items[i].ProfileName)
-        Else
+        else
             cmbProfileSetComp.Items.Add('Profile ' + IntToStr(i + 1));
-    End;
+    end;
 
-    If (ProfileIndex <> -1) Then
-    Begin
+    if (ProfileIndex <> -1) then
+    begin
         fOriginalProfileIndex := ProfileIndex;
         cmbProfileSetComp.ItemIndex := ProfileIndex;
-    End;
-End;
+    end;
+end;
 
-Procedure TfrmProjectOptions.UpdateCurrentProfileDataFromUI;
-Var
-    I: Integer;
-    strCppOption, strCOption, strLinkerOption, strPreprocDefines: String;
+procedure TfrmProjectOptions.UpdateCurrentProfileDataFromUI;
+var
+    I: integer;
+    strCppOption, strCOption, strLinkerOption, strPreprocDefines: string;
 {$IFDEF PLUGIN_BUILD}
-    j: Integer;
+    j: integer;
     pluginSettings: TSettings;
-    tempName: String;
+    tempName: string;
 {$ENDIF PLUGIN_BUILD}
-Begin
+begin
 
-        pluginSettings := nil;
-        
-    If CurrentProfile = Nil Then
+    pluginSettings := NIL;
+
+    if CurrentProfile = NIL then
         exit;
-    With CurrentProfile Do
-    Begin
+    with CurrentProfile do
+    begin
         Icon := fIcon;
     { I had to remove the delimiter text thing, since it causes the edit box to add
       unwanted quotes around the string. We could remove them but that could conflict with user's own quotes,
@@ -522,16 +522,16 @@ Begin
 
         strLinkerOption := edLinker.Lines.Text;
         strCOption := '';
-        For I := 0 To edCompiler.Lines.Count - 1 Do
+        for I := 0 to edCompiler.Lines.Count - 1 do
             strCOption := strCOption + edCompiler.Lines[I] + '_@@_';
         strCppOption := '';
-        For I := 0 To edCppCompiler.Lines.Count - 1 Do
+        for I := 0 to edCppCompiler.Lines.Count - 1 do
             strCppOption := strCppOption + edCppCompiler.Lines[I] + '_@@_';
         strLinkerOption := '';
-        For I := 0 To edLinker.Lines.Count - 1 Do
+        for I := 0 to edLinker.Lines.Count - 1 do
             strLinkerOption := strLinkerOption + edLinker.Lines[I] + '_@@_';
         strPreprocDefines := '';
-        For I := 0 To edDefines.Lines.Count - 1 Do
+        for I := 0 to edDefines.Lines.Count - 1 do
             strPreprocDefines := strPreprocDefines + edDefines.Lines[I] + '_@@_';
 
         CurrentProfile.CppCompiler := strCppOption;
@@ -548,10 +548,10 @@ Begin
         ImagesOutput := edImagesOutput.Text;
         OverrideOutput := chkOverrideOutput.Checked;
         OverridenOutput := edOverridenOutput.Text;
-        If cbUseCustomMakefile.Checked And FileExists(edCustomMakefile.Text) Then
-            CurrentProfile.UseCustomMakefile := True
-        Else
-            CurrentProfile.UseCustomMakefile := False;
+        if cbUseCustomMakefile.Checked and FileExists(edCustomMakefile.Text) then
+            CurrentProfile.UseCustomMakefile := TRUE
+        else
+            CurrentProfile.UseCustomMakefile := FALSE;
 
         CurrentProfile.CustomMakefile := edCustomMakefile.Text;
         MakeIncludes.Clear;
@@ -581,63 +581,63 @@ Begin
         Project.VersionInfo.LegalCopyright := vleVersion.Cells[1, 7];
         Project.VersionInfo.LegalTrademarks := vleVersion.Cells[1, 8];
 
-        If cmbLangID.ItemIndex > -1 Then
-        Begin
-            For I := 0 To Languages.Count - 1 Do
-            Begin
-                If SameText(Languages.Name[I], cmbLangID.Text) Then
-                Begin
+        if cmbLangID.ItemIndex > -1 then
+        begin
+            for I := 0 to Languages.Count - 1 do
+            begin
+                if SameText(Languages.Name[I], cmbLangID.Text) then
+                begin
                     Project.VersionInfo.LanguageID := Languages.LocaleID[I];
                     Project.VersionInfo.CharsetID := $04E4;
                     Break;
-                End;
-            End;
-            If SameText('Language Neutral', cmbLangID.Text) Then
+                end;
+            end;
+            if SameText('Language Neutral', cmbLangID.Text) then
                 // EAB Attempt to add Language Neutral option. Requires feedback.
-            Begin
+            begin
                 Project.VersionInfo.LanguageID := 0;
                 Project.VersionInfo.CharsetID := 1200;
-            End;
-        End;
-    End;
+            end;
+        end;
+    end;
 
     {$IFDEF PLUGIN_BUILD}
-    For i := 0 To MainForm.pluginsCount - 1 Do
-    Begin
+    for i := 0 to MainForm.pluginsCount - 1 do
+    begin
 
         pluginSettings := MainForm.plugins[i].GetCompilerOptions;
 
-        For j := 0 To Length(pluginSettings) - 1 Do
-        Begin
+        for j := 0 to Length(pluginSettings) - 1 do
+        begin
 
             // This line loads it from the .ini file.
             tempName := devData.LoadSetting(devCompilerSet.optComKey,
                 pluginSettings[j].name);
             // Value comes back as a string. Plugin converts
             //  string value to correct type using LoadCompilerSettings
-            If tempName <> '' Then
+            if tempName <> '' then
                 MainForm.plugins[i].LoadCompilerSettings(
                     pluginSettings[j].name, tempName);
-        End;
+        end;
         MainForm.plugins[i].LoadCompilerOptions;
 
-    End;
+    end;
 
     {$ENDIF PLUGIN_BUILD}
 
-End;
+end;
 
-Procedure TfrmProjectOptions.UpdateUIWithCurrentProfile;
-Var
-    idx, cntSrc, cntHdr, cntRes: Integer;
-Begin
+procedure TfrmProjectOptions.UpdateUIWithCurrentProfile;
+var
+    idx, cntSrc, cntHdr, cntRes: integer;
+begin
     fIcon := GetRealPath(CurrentProfile.Icon, fProject.Directory);
-    If (fIcon <> '') And (FileExists(fIcon)) Then
-        Try
+    if (fIcon <> '') and (FileExists(fIcon)) then
+        try
             Icon.Picture.LoadFromFile(fIcon);
-        Except
+        except
             fIcon := '';
-        End;
+        end;
 
     // General Tab
     lstType.ItemIndex := CurrentProfile.typ;
@@ -657,114 +657,114 @@ Begin
     cntSrc := 0;
     cntHdr := 0;
     cntRes := 0;
-    For idx := 0 To fProject.Units.Count - 1 Do
-        Case GetFileTyp(fProject.Units[idx].FileName) Of
+    for idx := 0 to fProject.Units.Count - 1 do
+        case GetFileTyp(fProject.Units[idx].FileName) of
             utSrc:
                 Inc(cntSrc);
             utHead:
                 Inc(cntHdr);
             utRes:
                 Inc(cntRes);
-        End;
+        end;
     lblPrjUnits.Caption := Format(Lang[ID_POPT_UNITSFORMAT],
         [fProject.Units.Count, cntSrc, cntHdr, cntRes]);
     chkSupportXP.Checked := CurrentProfile.SupportXPThemes;
 
     // Files tab
-    If CurrentProfile.CompilerSet < devCompilerSet.Sets.Count Then
-    Begin
+    if CurrentProfile.CompilerSet < devCompilerSet.Sets.Count then
+    begin
         cmbCompiler.Items.Assign(devCompilerSet.Sets);
         cmbCompiler.ItemIndex := CurrentProfile.CompilerSet;
         cmbCompiler.OnChange(cmbCompiler);
-    End
-    Else
-    Begin
+    end
+    else
+    begin
         Application.MessageBox(
             'The compiler specified in the project file does not exist on the local computer.'#10#13#10#13 +
             'Please select a compiler, the default one selected may not be what you want.',
             'wxDev-C++',
-            MB_OK Or MB_ICONEXCLAMATION);
+            MB_OK or MB_ICONEXCLAMATION);
         PageControl.ActivePage := tabCompiler;
-    End;
+    end;
 
     // Output tab
     edExeOutput.Text := CurrentProfile.ExeOutput;
     edObjOutput.Text := CurrentProfile.ObjectOutput;
     edImagesOutput.Text := CurrentProfile.ImagesOutput;
     chkOverrideOutput.Checked := CurrentProfile.OverrideOutput;
-    If CurrentProfile.OverridenOutput <> '' Then
+    if CurrentProfile.OverridenOutput <> '' then
         edOverridenOutput.Text := ExtractFilename(CurrentProfile.OverridenOutput)
-    Else
+    else
         edOverridenOutput.Text := ExtractFilename(fProject.Executable);
     edOverridenOutput.Enabled := CurrentProfile.OverrideOutput;
 
     // Makefile tab
     cbUseCustomMakefile.Checked := CurrentProfile.UseCustomMakefile;
     edCustomMakefile.Text := CurrentProfile.CustomMakefile;
-    cbUseCustomMakefileClick(Nil);
+    cbUseCustomMakefileClick(NIL);
     MakeIncludes.Clear;
     MakeIncludes.Items.AddStrings(CurrentProfile.MakeIncludes);
 
     // Version tab
     InitVersionInfo;
 
-End;
+end;
 
-Procedure TfrmProjectOptions.SaveDirSettings;
-Var
+procedure TfrmProjectOptions.SaveDirSettings;
+var
     sl: TStrings;
-Begin
-    sl := Nil;
-    Case SubTabs.TabIndex Of
+begin
+    sl := NIL;
+    case SubTabs.TabIndex of
         0:
             sl := CurrentProfile.Libs;
         1:
             sl := CurrentProfile.Includes;
         2:
             sl := CurrentProfile.ResourceIncludes;
-    End;
-    If assigned(sl) Then
-    Begin
+    end;
+    if assigned(sl) then
+    begin
         sl.Clear;
         sl.AddStrings(lstList.Items);
-    End;
-End;
+    end;
+end;
 
-Procedure TfrmProjectOptions.SubTabsChanging(Sender: TObject;
-    NewIndex: Integer; Var AllowChange: Boolean);
-Begin
+procedure TfrmProjectOptions.SubTabsChanging(Sender: TObject;
+    NewIndex: integer; var AllowChange: boolean);
+begin
     SaveDirSettings;
-End;
+end;
 
-Procedure TfrmProjectOptions.SubTabsChange(Sender: TObject);
-Begin
-    If fProfiles = Nil Then
+procedure TfrmProjectOptions.SubTabsChange(Sender: TObject);
+begin
+    if fProfiles = NIL then
         exit;
-    Case SubTabs.TabIndex Of
+    case SubTabs.TabIndex of
         0:
             lstList.Items := CurrentProfile.Libs;
         1:
             lstList.Items := CurrentProfile.Includes;
         2:
             lstList.Items := CurrentProfile.ResourceIncludes;
-    End;
+    end;
     UpdateButtons;
-End;
+end;
 
-Procedure TfrmProjectOptions.FormShow(Sender: TObject);
-Begin
+procedure TfrmProjectOptions.FormShow(Sender: TObject);
+begin
     PageControl.ActivePageIndex := 0;
     SubTabs.TabIndex := 0;
     lvFiles.Images := MainForm.ProjectView.Images;
     lvFiles.Items.Assign(MainForm.ProjectView.Items);
-    lvFiles.Items[0].Expand(False);
-    chkCompile.Enabled := False;
-    chkLink.Enabled := False;
-    lblPriority.Enabled := False;
-    spnPriority.Enabled := False;
-    chkCompileCpp.Enabled := False;
-    chkOverrideBuildCmd.Enabled := False;
-    txtOverrideBuildCmd.Enabled := False;
+    lvFiles.Items[0].Expand(FALSE);
+    chkCompile.Enabled := FALSE;
+    chkLink.Enabled := FALSE;
+    lblPriority.Enabled := FALSE;
+    spnPriority.Enabled := FALSE;
+    chkCompileCpp.Enabled := FALSE;
+    chkOverrideBuildCmd.Enabled := FALSE;
+    txtOverrideBuildCmd.Enabled := FALSE;
     txtOverrideBuildCmd.Text := '';
     chkSupportXP.Enabled := CurrentProfile.typ = dptGUI;
     devCompilerSet.LoadSet(cmbCompiler.ItemIndex);
@@ -775,50 +775,50 @@ Begin
     CompOptionsFrame1.FillOptions(fProject);
 
     //PCH radiobox
-    grpPch.Enabled := False;
-    grpPch.OnClick := Nil;
-    If (fProject.PchHead = -1) And (fProject.PchSource = -1) Then
+    grpPch.Enabled := FALSE;
+    grpPch.OnClick := NIL;
+    if (fProject.PchHead = -1) and (fProject.PchSource = -1) then
         grpPch.ItemIndex := 0
-    Else
+    else
         grpPch.ItemIndex := 2;
     grpPch.OnClick := grpPchClick;
-End;
+end;
 
-Procedure TfrmProjectOptions.btnIconLibClick(Sender: TObject);
-Begin
-    With TIconForm.Create(Self) Do
-        Try
-            If ShowModal = mrOk Then
-                If Selected <> '' Then
+procedure TfrmProjectOptions.btnIconLibClick(Sender: TObject);
+begin
+    with TIconForm.Create(Self) do
+        try
+            if ShowModal = mrOk then
+                if Selected <> '' then
                     fIcon := Selected;
-        Finally
+        finally
             Free;
-        End;
-    If fIcon <> '' Then
-    Begin
+        end;
+    if fIcon <> '' then
+    begin
         Icon.Picture.LoadFromFile(fIcon);
         btnRemoveIcon.Enabled := Length(fIcon) > 0;
-    End;
-End;
+    end;
+end;
 
-Procedure TfrmProjectOptions.btnIconBrwseClick(Sender: TObject);
-Begin
-    If dlgPic.Execute Then
-    Begin
-        If FileExists(dlgPic.FileName) Then
-        Begin
+procedure TfrmProjectOptions.btnIconBrwseClick(Sender: TObject);
+begin
+    if dlgPic.Execute then
+    begin
+        if FileExists(dlgPic.FileName) then
+        begin
             fIcon := dlgPic.FileName;
             Icon.Picture.LoadFromFile(fIcon);
             btnRemoveIcon.Enabled := Length(fIcon) > 0;
-        End
-        Else
+        end
+        else
             MessageDlg(format(Lang[ID_MSG_COULDNOTOPENFILE], [dlgPic.FileName]),
                 mtError, [mbOK], 0);
-    End;
-End;
+    end;
+end;
 
-Procedure TfrmProjectOptions.FormCreate(Sender: TObject);
-Begin
+procedure TfrmProjectOptions.FormCreate(Sender: TObject);
+begin
     dlgCustomMake := TOpenDialogEx.Create(MainForm);
     OpenLibDialog := TOpenDialogEx.Create(MainForm);
     dlgMakeInclude := TOpenDialogEx.Create(MainForm);
@@ -844,14 +844,14 @@ Begin
 
     LoadText;
     lblCompileInfo.Font.Color := clMaroon;
-    cmbLangID.Sorted := True;
+    cmbLangID.Sorted := TRUE;
     fProfiles := TProjectProfileList.Create;
     fCurrentProfileIndex := 0;
-End;
+end;
 
-Procedure TfrmProjectOptions.LoadText;
-Begin
-    DesktopFont := True;
+procedure TfrmProjectOptions.LoadText;
+begin
+    DesktopFont := TRUE;
     XPMenu.Active := devData.XPTheme;
     Caption := Lang[ID_POPT];
 
@@ -965,286 +965,286 @@ Begin
     radAutoIncBuildOnCompile.Caption := Lang[ID_POPT_VAUTOINCBUILDNR_COMPILE];
     radAutoIncBuildOnRebuild.Caption := Lang[ID_POPT_VAUTOINCBUILDNR_REBUILD];
     radNoAutoIncBuild.Caption := Lang[ID_POPT_VAUTOINCBUILDNR_NONE];
-End;
+end;
 
-Procedure TfrmProjectOptions.btnRemoveIconClick(Sender: TObject);
-Begin
-    btnRemoveIcon.Enabled := False;
+procedure TfrmProjectOptions.btnRemoveIconClick(Sender: TObject);
+begin
+    btnRemoveIcon.Enabled := FALSE;
     fIcon := '';
-    Icon.Picture.Graphic := Nil;
-End;
+    Icon.Picture.Graphic := NIL;
+end;
 
-Procedure TfrmProjectOptions.BrowseExecutableOutDirClick(Sender: TObject);
-Var
+procedure TfrmProjectOptions.BrowseExecutableOutDirClick(Sender: TObject);
+var
 {$IFDEF WIN32}
-    Dir: String;
+    Dir: string;
 {$ENDIF}
 {$IFDEF LINUX}
   Dir: WideString;
 {$ENDIF}
-    TempDir: String;
-Begin
-    If fProject.CurrentProfile.ExeOutput <> '' Then
+    TempDir: string;
+begin
+    if fProject.CurrentProfile.ExeOutput <> '' then
         Dir := ExpandFileto(fProject.CurrentProfile.ExeOutput, fProject.Directory)
-    Else
+    else
         Dir := fProject.Directory;
-    If Not SelectDirectory('Select Directory', '', Dir) Then
+    if not SelectDirectory('Select Directory', '', Dir) then
 	       Exit;
 
     //TODO: lowjoel: What do we actually want to achieve here?
     TempDir := ExtractRelativePath(fProject.Directory, Dir);
-    If DirectoryExists(TempDir) Then
+    if DirectoryExists(TempDir) then
         TempDir := GetShortName(TempDir)
-    Else
+    else
         TempDir := TempDir;
     edExeOutput.Text := TempDir;
-End;
+end;
 
-Procedure TfrmProjectOptions.BrowseObjDirClick(Sender: TObject);
-Var
+procedure TfrmProjectOptions.BrowseObjDirClick(Sender: TObject);
+var
 {$IFDEF WIN32}
-    Dir: String;
+    Dir: string;
 {$ENDIF}
 {$IFDEF LINUX}
   Dir: WideString;
 {$ENDIF}
-    TempDir: String;
-Begin
-    If fProject.CurrentProfile.ObjectOutput <> '' Then
+    TempDir: string;
+begin
+    if fProject.CurrentProfile.ObjectOutput <> '' then
         Dir := ExpandFileto(fProject.CurrentProfile.ObjectOutput, fProject.Directory)
-    Else
+    else
         Dir := fProject.Directory;
-    If SelectDirectory('Select Directory', '', Dir) = False Then
+    if SelectDirectory('Select Directory', '', Dir) = FALSE then
         exit;
     TempDir := ExtractRelativePath(fProject.Directory, Dir);
-    If DirectoryExists(TempDir) Then
+    if DirectoryExists(TempDir) then
         TempDir := GetShortName(TempDir)
-    Else
+    else
         TempDir := TempDir;
     edObjOutput.Text := TempDir;
-End;
+end;
 
-Procedure TfrmProjectOptions.BrowseImageDirClick(Sender: TObject);
-Var
+procedure TfrmProjectOptions.BrowseImageDirClick(Sender: TObject);
+var
 {$IFDEF WIN32}
-    Dir: String;
+    Dir: string;
 {$ENDIF}
 {$IFDEF LINUX}
   Dir: WideString;
 {$ENDIF}
-    TempDir: String;
-Begin
-    If fProject.CurrentProfile.ImagesOutput <> '' Then
+    TempDir: string;
+begin
+    if fProject.CurrentProfile.ImagesOutput <> '' then
         Dir := ExpandFileto(fProject.CurrentProfile.ImagesOutput, fProject.Directory)
-    Else
+    else
         Dir := fProject.Directory;
-    If SelectDirectory('Select Directory', '', Dir) = False Then
+    if SelectDirectory('Select Directory', '', Dir) = FALSE then
         exit;
     TempDir := ExtractRelativePath(fProject.Directory, Dir);
-    If DirectoryExists(TempDir) Then
+    if DirectoryExists(TempDir) then
         TempDir := GetShortName(TempDir)
-    Else
+    else
         TempDir := TempDir;
     edImagesOutput.Text := TempDir;
-End;
+end;
 
-Procedure TfrmProjectOptions.btnMakeBrowseClick(Sender: TObject);
-Begin
-    If dlgMakeInclude.Execute Then
+procedure TfrmProjectOptions.btnMakeBrowseClick(Sender: TObject);
+begin
+    if dlgMakeInclude.Execute then
         edMakeInclude.Text := ExtractRelativePath(fProject.FileName,
             dlgMakeInclude.FileName);
     edMakeInclude.SetFocus;
-End;
+end;
 
-Procedure TfrmProjectOptions.btnMakClick(Sender: TObject);
-Var
-    i: Integer;
-Begin
+procedure TfrmProjectOptions.btnMakClick(Sender: TObject);
+var
+    i: integer;
+begin
     i := MakeIncludes.ItemIndex;
-    If i < 0 Then
+    if i < 0 then
         exit;
-    If Sender = btnMakUp Then
-    Begin
+    if Sender = btnMakUp then
+    begin
         MakeIncludes.Items.Exchange(MakeIncludes.ItemIndex,
             MakeIncludes.ItemIndex - 1);
         MakeIncludes.ItemIndex := i - 1;
-    End
-    Else
-    If Sender = btnMakDown Then
-    Begin
+    end
+    else
+    if Sender = btnMakDown then
+    begin
         MakeIncludes.Items.Exchange(MakeIncludes.ItemIndex,
             MakeIncludes.ItemIndex + 1);
         MakeIncludes.ItemIndex := i + 1;
-    End;
+    end;
 
     UpdateMakButtons;
-End;
+end;
 
-Procedure TfrmProjectOptions.MakButtonClick(Sender: TObject);
-Var
-    i: Integer;
-Begin
-    Case (Sender As TComponent).Tag Of
+procedure TfrmProjectOptions.MakButtonClick(Sender: TObject);
+var
+    i: integer;
+begin
+    case (Sender as TComponent).Tag of
         1:
-        Begin
+        begin
             MakeIncludes.Items[MakeIncludes.ItemIndex] := (edMakeInclude.Text);
-        End;
+        end;
         2:
-        Begin
+        begin
             MakeIncludes.Items.Add(edMakeInclude.Text);
-        End;
+        end;
         3:
-        Begin
+        begin
             MakeIncludes.DeleteSelected;
-        End;
+        end;
         4:
-        Begin
+        begin
             i := 0;
-            While i < MakeIncludes.Items.Count Do
-            Begin
-                If Not FileExists(MakeIncludes.Items[i]) Then
-                Begin
+            while i < MakeIncludes.Items.Count do
+            begin
+                if not FileExists(MakeIncludes.Items[i]) then
+                begin
                     MakeIncludes.Items.Delete(i);
                     i := -1;
-                End;
+                end;
                 i := i + 1;
-            End;
-        End;
-    End;
+            end;
+        end;
+    end;
     edMakeInclude.Clear;
     UpdateMakButtons;
-End;
+end;
 
-Procedure TfrmProjectOptions.edMakeIncludeChange(Sender: TObject);
-Begin
+procedure TfrmProjectOptions.edMakeIncludeChange(Sender: TObject);
+begin
     UpdateMakButtons;
-End;
+end;
 
-Procedure TfrmProjectOptions.MakeIncludesClick(Sender: TObject);
-Begin
+procedure TfrmProjectOptions.MakeIncludesClick(Sender: TObject);
+begin
     UpdateMakButtons;
 
-    If MakeIncludes.Itemindex <> -1 Then
+    if MakeIncludes.Itemindex <> -1 then
         edMakeInclude.Text := MakeIncludes.Items[MakeIncludes.Itemindex];
-End;
+end;
 
-Procedure TfrmProjectOptions.btnHelpClick(Sender: TObject);
-Begin
+procedure TfrmProjectOptions.btnHelpClick(Sender: TObject);
+begin
     Application.HelpFile := IncludeTrailingPathDelimiter(devDirs.Help) +
         DEV_MAINHELP_FILE;
-    HtmlHelp(self.handle, Pchar(Application.HelpFile), HH_DISPLAY_TOPIC,
-        DWORD(Pchar('html\managing_project_options.html')));
+    HtmlHelp(self.handle, pchar(Application.HelpFile), HH_DISPLAY_TOPIC,
+        DWORD(pchar('html\managing_project_options.html')));
     //Application.HelpJump('ID_MANAGEPROJECT');
-End;
+end;
 
-Procedure TfrmProjectOptions.chkOverrideOutputClick(Sender: TObject);
-Begin
+procedure TfrmProjectOptions.chkOverrideOutputClick(Sender: TObject);
+begin
     edOverridenOutput.Enabled := chkOverrideOutput.Checked;
-End;
+end;
 
-Procedure TfrmProjectOptions.FormCloseQuery(Sender: TObject;
-    Var CanClose: Boolean);
-Begin
+procedure TfrmProjectOptions.FormCloseQuery(Sender: TObject;
+    var CanClose: boolean);
+begin
     // check for disallowed characters in filename
-    If (Pos('/', edOverridenOutput.Text) > 0) Or
-        (Pos('\', edOverridenOutput.Text) > 0) Or
-        (Pos(':', edOverridenOutput.Text) > 0) Or
-        (Pos('*', edOverridenOutput.Text) > 0) Or
-        (Pos('?', edOverridenOutput.Text) > 0) Or
-        (Pos('"', edOverridenOutput.Text) > 0) Or
-        (Pos('<', edOverridenOutput.Text) > 0) Or
-        (Pos('>', edOverridenOutput.Text) > 0) Or
-        (Pos('|', edOverridenOutput.Text) > 0) Then
-    Begin
+    if (Pos('/', edOverridenOutput.Text) > 0) or
+        (Pos('\', edOverridenOutput.Text) > 0) or
+        (Pos(':', edOverridenOutput.Text) > 0) or
+        (Pos('*', edOverridenOutput.Text) > 0) or
+        (Pos('?', edOverridenOutput.Text) > 0) or
+        (Pos('"', edOverridenOutput.Text) > 0) or
+        (Pos('<', edOverridenOutput.Text) > 0) or
+        (Pos('>', edOverridenOutput.Text) > 0) or
+        (Pos('|', edOverridenOutput.Text) > 0) then
+    begin
         MessageDlg('The output filename you have defined, contains at least one ' +
             'of the following illegal characters:'#10#10 +
             '\ / : * ? " > < |'#10#10 +
             'Please correct this...', mtError, [mbOk], 0);
-        CanClose := False;
-    End;
-    If CanClose Then
-    Begin
+        CanClose := FALSE;
+    end;
+    if CanClose then
+    begin
         devCompiler.CompilerSet := CurrentProfile.CompilerSet;
         devCompilerSet.LoadSet(devCompiler.CompilerSet);
         devCompilerSet.AssignToCompiler;
-    End;
-End;
+    end;
+end;
 
-Procedure TfrmProjectOptions.lvFilesChange(Sender: TObject;
+procedure TfrmProjectOptions.lvFilesChange(Sender: TObject;
     Node: TTreeNode);
-Var
-    idx: Integer;
-Begin
-    If Not Assigned(Node) Then
-    Begin
-        chkCompile.Enabled := False;
-        chkCompileCpp.Enabled := False;
-        chkLink.Enabled := False;
-        chkOverrideBuildCmd.Enabled := False;
-        txtOverrideBuildCmd.Enabled := False;
-        lblPriority.Enabled := False;
-        spnPriority.Enabled := False;
+var
+    idx: integer;
+begin
+    if not Assigned(Node) then
+    begin
+        chkCompile.Enabled := FALSE;
+        chkCompileCpp.Enabled := FALSE;
+        chkLink.Enabled := FALSE;
+        chkOverrideBuildCmd.Enabled := FALSE;
+        txtOverrideBuildCmd.Enabled := FALSE;
+        lblPriority.Enabled := FALSE;
+        spnPriority.Enabled := FALSE;
         Exit;
-    End;
+    end;
 
     // disable events
-    chkCompile.OnClick := Nil;
-    chkCompileCpp.OnClick := Nil;
-    chkLink.OnClick := Nil;
-    chkOverrideBuildCmd.OnClick := Nil;
-    txtOverrideBuildCmd.OnChange := Nil;
-    spnPriority.OnChange := Nil;
-    grpPch.OnClick := Nil;
+    chkCompile.OnClick := NIL;
+    chkCompileCpp.OnClick := NIL;
+    chkLink.OnClick := NIL;
+    chkOverrideBuildCmd.OnClick := NIL;
+    txtOverrideBuildCmd.OnChange := NIL;
+    spnPriority.OnChange := NIL;
+    grpPch.OnClick := NIL;
 
-    idx := Integer(Node.Data);
-    If (Node.Level > 0) And (idx <> -1) Then
-    Begin // unit
-        If fProject.Units[idx].OverrideBuildCmd Then
+    idx := integer(Node.Data);
+    if (Node.Level > 0) and (idx <> -1) then
+    begin // unit
+        if fProject.Units[idx].OverrideBuildCmd then
             txtOverrideBuildCmd.Text :=
                 StringReplace(fProject.Units[idx].BuildCmd, '<CRTAB>', #13#10, [rfReplaceAll])
-        Else
+        else
             txtOverrideBuildCmd.Text := DefaultBuildCommand(idx);
         chkOverrideBuildCmd.Checked := fProject.Units[idx].OverrideBuildCmd;
 
         chkCompile.Enabled := GetFileTyp(fProject.Units[idx].FileName) <> utHead;
         chkCompile.Checked := fProject.Units[idx].Compile;
-        chkCompileCpp.Enabled := chkCompile.Checked And
-            (GetFileTyp(fProject.Units[idx].FileName) In [utSrc]);
+        chkCompileCpp.Enabled := chkCompile.Checked and
+            (GetFileTyp(fProject.Units[idx].FileName) in [utSrc]);
         chkCompileCpp.Checked := fProject.Units[idx].CompileCpp;
-        chkLink.Enabled := chkCompile.Enabled And
+        chkLink.Enabled := chkCompile.Enabled and
             (GetFileTyp(fProject.Units[idx].FileName) <> utRes);
         chkLink.Checked := fProject.Units[idx].Link;
-        lblPriority.Enabled := chkCompile.Checked And chkCompile.Enabled;
-        spnPriority.Enabled := chkCompile.Checked And chkCompile.Enabled;
+        lblPriority.Enabled := chkCompile.Checked and chkCompile.Enabled;
+        spnPriority.Enabled := chkCompile.Checked and chkCompile.Enabled;
         spnPriority.Value := fProject.Units[idx].Priority;
-        chkOverrideBuildCmd.Enabled := chkCompile.Checked And
-            (lvFiles.SelectionCount = 1) And Not
-            (GetFileTyp(fProject.Units[idx].FileName) In [utHead, utRes]);
-        txtOverrideBuildCmd.Enabled := chkOverrideBuildCmd.Enabled And
+        chkOverrideBuildCmd.Enabled := chkCompile.Checked and
+            (lvFiles.SelectionCount = 1) and not
+            (GetFileTyp(fProject.Units[idx].FileName) in [utHead, utRes]);
+        txtOverrideBuildCmd.Enabled := chkOverrideBuildCmd.Enabled and
             chkOverrideBuildCmd.Checked;
 
         //Handle the PCH
-        grpPch.Enabled := GetFileTyp(fProject.Units[idx].FileName) In
+        grpPch.Enabled := GetFileTyp(fProject.Units[idx].FileName) in
             [utSrc, utHead];
-        If (fProject.PchHead = -1) And (fProject.PchSource = -1) Then
+        if (fProject.PchHead = -1) and (fProject.PchSource = -1) then
             grpPch.ItemIndex := 0
-        Else
-        If (fProject.PchHead = idx) Or (fProject.PchSource = idx) Then
+        else
+        if (fProject.PchHead = idx) or (fProject.PchSource = idx) then
             grpPch.ItemIndex := 1
-        Else
+        else
             grpPch.ItemIndex := 2;
-    End
-    Else
-    Begin
-        grpPch.Enabled := False;
-        chkCompile.Enabled := False;
-        chkCompileCpp.Enabled := False;
-        chkLink.Enabled := False;
-        chkOverrideBuildCmd.Enabled := False;
-        txtOverrideBuildCmd.Enabled := False;
-        lblPriority.Enabled := False;
-        spnPriority.Enabled := False;
-    End;
+    end
+    else
+    begin
+        grpPch.Enabled := FALSE;
+        chkCompile.Enabled := FALSE;
+        chkCompileCpp.Enabled := FALSE;
+        chkLink.Enabled := FALSE;
+        chkOverrideBuildCmd.Enabled := FALSE;
+        txtOverrideBuildCmd.Enabled := FALSE;
+        lblPriority.Enabled := FALSE;
+        spnPriority.Enabled := FALSE;
+    end;
 
     // enable events
     chkCompile.OnClick := chkCompileClick;
@@ -1254,101 +1254,101 @@ Begin
     txtOverrideBuildCmd.OnChange := txtOverrideBuildCmdChange;
     spnPriority.OnChange := spnPriorityChange;
     grpPch.OnClick := grpPchClick;
-End;
+end;
 
-Procedure TfrmProjectOptions.chkCompileClick(Sender: TObject);
-    Procedure DoNode(Node: TTreeNode);
-    Var
-        I: Integer;
-        idx: Integer;
-    Begin
-        For I := 0 To Node.Count - 1 Do
-        Begin
-            idx := Integer(Node[I].Data);
-            If idx <> -1 Then
-            Begin // unit
+procedure TfrmProjectOptions.chkCompileClick(Sender: TObject);
+    procedure DoNode(Node: TTreeNode);
+    var
+        I: integer;
+        idx: integer;
+    begin
+        for I := 0 to Node.Count - 1 do
+        begin
+            idx := integer(Node[I].Data);
+            if idx <> -1 then
+            begin // unit
                 fProject.Units[idx].Compile := chkCompile.Checked;
                 fProject.Units[idx].CompileCpp := chkCompileCpp.Checked;
-            End
-            Else
-            If Node[I].HasChildren Then
+            end
+            else
+            if Node[I].HasChildren then
                 DoNode(Node[I]);
-        End;
-    End;
-Var
-    I: Integer;
-    idx: Integer;
-Begin
-    For I := 0 To lvFiles.SelectionCount - 1 Do
-    Begin
-        idx := Integer(lvFiles.Selections[I].Data);
-        If idx <> -1 Then
-        Begin // unit
+        end;
+    end;
+var
+    I: integer;
+    idx: integer;
+begin
+    for I := 0 to lvFiles.SelectionCount - 1 do
+    begin
+        idx := integer(lvFiles.Selections[I].Data);
+        if idx <> -1 then
+        begin // unit
             fProject.Units[idx].Compile := chkCompile.Checked;
             fProject.Units[idx].CompileCpp := chkCompileCpp.Checked;
             fProject.Units[idx].Link := chkLink.Checked;
-            If lvFiles.SelectionCount = 1 Then
-            Begin
+            if lvFiles.SelectionCount = 1 then
+            begin
                 fProject.Units[idx].OverrideBuildCmd := chkOverrideBuildCmd.Checked;
 
-                txtOverrideBuildCmd.OnChange := Nil;
+                txtOverrideBuildCmd.OnChange := NIL;
                 txtOverrideBuildCmd.Text :=
                     StringReplace(txtOverrideBuildCmd.Text, '<CRTAB>', #13#10, [rfReplaceAll]);
 
                 lblPriority.Enabled := chkCompile.Checked;
                 spnPriority.Enabled := chkCompile.Checked;
-                chkOverrideBuildCmd.Enabled := chkCompile.Checked And
+                chkOverrideBuildCmd.Enabled := chkCompile.Checked and
                     (GetFileTyp(fProject.Units[idx].FileName) <> utRes);
-                If chkCompile.Checked And
-                    (GetFileTyp(fProject.Units[idx].FileName) = utOther) Then
-                Begin
+                if chkCompile.Checked and
+                    (GetFileTyp(fProject.Units[idx].FileName) = utOther) then
+                begin
                     // non-standard source files, *must* override the build command
-                    chkCompileCpp.Enabled := False;
-                    txtOverrideBuildCmd.Enabled := True;
-                    chkOverrideBuildCmd.Checked := True;
-                    If txtOverrideBuildCmd.Text = '' Then
+                    chkCompileCpp.Enabled := FALSE;
+                    txtOverrideBuildCmd.Enabled := TRUE;
+                    chkOverrideBuildCmd.Checked := TRUE;
+                    if txtOverrideBuildCmd.Text = '' then
                         txtOverrideBuildCmd.Text := '<override this command>';
-                End
-                Else
-                Begin
-                    chkCompileCpp.Enabled := chkCompile.Checked And
+                end
+                else
+                begin
+                    chkCompileCpp.Enabled := chkCompile.Checked and
                         (GetFileTyp(fProject.Units[idx].FileName) <> utRes);
-                    If chkCompileCpp.Checked Then
-                    Begin
+                    if chkCompileCpp.Checked then
+                    begin
                         txtOverrideBuildCmd.Text :=
                             StringReplace(txtOverrideBuildCmd.Text, '$(CC)', '$(CPP)', [rfReplaceAll]);
                         txtOverrideBuildCmd.Text :=
                             StringReplace(txtOverrideBuildCmd.Text, '$(CFLAGS)', '$(CXXFLAGS)',
                             [rfReplaceAll]);
-                    End
-                    Else
-                    Begin
+                    end
+                    else
+                    begin
                         txtOverrideBuildCmd.Text :=
                             StringReplace(txtOverrideBuildCmd.Text, '$(CPP)', '$(CC)', [rfReplaceAll]);
                         txtOverrideBuildCmd.Text :=
                             StringReplace(txtOverrideBuildCmd.Text, '$(CXXFLAGS)', '$(CFLAGS)',
                             [rfReplaceAll]);
-                    End;
+                    end;
                     txtOverrideBuildCmd.Enabled :=
-                        chkOverrideBuildCmd.Enabled And chkOverrideBuildCmd.Checked;
-                End;
+                        chkOverrideBuildCmd.Enabled and chkOverrideBuildCmd.Checked;
+                end;
                 fProject.Units[idx].BuildCmd := txtOverrideBuildCmd.Text;
                 txtOverrideBuildCmd.OnChange := txtOverrideBuildCmdChange;
-            End;
-        End
-        Else
-        If lvFiles.Selections[I].HasChildren Then
+            end;
+        end
+        else
+        if lvFiles.Selections[I].HasChildren then
             DoNode(lvFiles.Selections[I]);
-    End;
-End;
+    end;
+end;
 
-Procedure TfrmProjectOptions.InitVersionInfo;
-Var
-    I: Integer;
-    S: String;
-Begin
+procedure TfrmProjectOptions.InitVersionInfo;
+var
+    I: integer;
+    S: string;
+begin
     chkVersionInfo.Checked := CurrentProfile.IncludeVersionInfo;
-    chkVersionInfoClick(Nil);
+    chkVersionInfoClick(NIL);
 
     spnMajor.Value := Project.VersionInfo.Major;
     spnMinor.Value := Project.VersionInfo.Minor;
@@ -1361,40 +1361,40 @@ Begin
 
     vleVersion.Strings.Clear;
     vleVersion.InsertRow('File Description',
-        Project.VersionInfo.FileDescription, True);
+        Project.VersionInfo.FileDescription, TRUE);
     vleVersion.InsertRow('File Version', Project.VersionInfo.FileVersion,
-        True);
+        TRUE);
     vleVersion.InsertRow('Product Name', Project.VersionInfo.ProductName,
-        True);
+        TRUE);
     vleVersion.InsertRow('Product Version',
-        Project.VersionInfo.ProductVersion, True);
+        Project.VersionInfo.ProductVersion, TRUE);
     vleVersion.InsertRow('Original Filename',
-        Project.VersionInfo.OriginalFilename, True);
+        Project.VersionInfo.OriginalFilename, TRUE);
     vleVersion.InsertRow('Internal Name', Project.VersionInfo.InternalName,
-        True);
+        TRUE);
     vleVersion.InsertRow('Company Name', Project.VersionInfo.CompanyName,
-        True);
+        TRUE);
     vleVersion.InsertRow('Legal Copyright',
-        Project.VersionInfo.LegalCopyright, True);
+        Project.VersionInfo.LegalCopyright, TRUE);
     vleVersion.InsertRow('Legal Trademarks',
-        Project.VersionInfo.LegalTrademarks, True);
+        Project.VersionInfo.LegalTrademarks, TRUE);
 
     cmbLangID.Items.Clear;
     cmbLangID.Items.Add('Language Neutral');
-    For I := 0 To Languages.Count - 1 Do
+    for I := 0 to Languages.Count - 1 do
         cmbLangID.Items.Add(Languages.Name[I]);
 
     S := Languages.NameFromLocaleID[Project.VersionInfo.LanguageID];
-    If Project.VersionInfo.LanguageID = 0 Then
+    if Project.VersionInfo.LanguageID = 0 then
         cmbLangID.ItemIndex := cmbLangID.Items.IndexOf('Language Neutral')
-    Else
-    If S <> '' Then
+    else
+    if S <> '' then
         cmbLangID.ItemIndex := cmbLangID.Items.IndexOf(S);
 
-End;
+end;
 
-Procedure TfrmProjectOptions.chkVersionInfoClick(Sender: TObject);
-Begin
+procedure TfrmProjectOptions.chkVersionInfoClick(Sender: TObject);
+begin
     spnMajor.Enabled := chkVersionInfo.Checked;
     spnMinor.Enabled := chkVersionInfo.Checked;
     spnRelease.Enabled := chkVersionInfo.Checked;
@@ -1404,149 +1404,149 @@ Begin
     radNoAutoIncBuild.Enabled := chkVersionInfo.Checked;
     radAutoIncBuildOnCompile.Enabled := chkVersionInfo.Checked;
     radAutoIncBuildOnRebuild.Enabled := chkVersionInfo.Checked;
-End;
+end;
 
-Procedure TfrmProjectOptions.cmbCompilerChange(Sender: TObject);
-Var currOpts: String;
-Begin
+procedure TfrmProjectOptions.cmbCompilerChange(Sender: TObject);
+var currOpts: string;
+begin
     currOpts := CurrentProfile.CompilerOptions;
-    If (devCompilerSet.Sets.Count > cmbCompiler.ItemIndex) And
-        (cmbCompiler.ItemIndex <> -1) Then
-    Begin
+    if (devCompilerSet.Sets.Count > cmbCompiler.ItemIndex) and
+        (cmbCompiler.ItemIndex <> -1) then
+    begin
         devCompiler.CompilerSet := cmbCompiler.ItemIndex;
         devCompilerSet.LoadSet(cmbCompiler.ItemIndex);
         devCompilerSet.AssignToCompiler;
-    End;
+    end;
 
     devCompiler.OptionStr := currOpts;
     CompOptionsFrame1.FillOptions(fProject);
-End;
+end;
 
-Procedure TfrmProjectOptions.btnCancelClick(Sender: TObject);
-Begin
+procedure TfrmProjectOptions.btnCancelClick(Sender: TObject);
+begin
     cmbProfileSetComp.ItemIndex := fOriginalProfileIndex;
     cmbProfileSetComp.OnChange(Sender);
     // EAB Comment: Why call this here? AFAIK, nothing bad happens, but seems counter intuitive
-End;
+end;
 
-Procedure TfrmProjectOptions.lstTypeClick(Sender: TObject);
-Begin
+procedure TfrmProjectOptions.lstTypeClick(Sender: TObject);
+begin
     chkSupportXP.Enabled := lstType.ItemIndex = 0;
-End;
+end;
 
-Procedure TfrmProjectOptions.btnOkClick(Sender: TObject);
-Begin
+procedure TfrmProjectOptions.btnOkClick(Sender: TObject);
+begin
     Screen.Cursor := crHourGlass;
-    btnOk.Enabled := False;
+    btnOk.Enabled := FALSE;
 
     SaveDirSettings;
     UpdateCurrentProfileDataFromUI;
 
     Screen.Cursor := crDefault;
-    btnOk.Enabled := True;
+    btnOk.Enabled := TRUE;
 
-End;
+end;
 
-Procedure TfrmProjectOptions.AddLibBtnClick(Sender: TObject);
-Var
-    s: String;
-    i: Integer;
-Begin
-    If OpenLibDialog.Execute Then
-    Begin
-        For i := 0 To OpenLibDialog.Files.Count - 1 Do
-        Begin
+procedure TfrmProjectOptions.AddLibBtnClick(Sender: TObject);
+var
+    s: string;
+    i: integer;
+begin
+    if OpenLibDialog.Execute then
+    begin
+        for i := 0 to OpenLibDialog.Files.Count - 1 do
+        begin
             S := ExtractRelativePath(fProject.Directory, OpenLibDialog.Files[i]);
             S := GenMakePath(S);
             edLinker.Lines.Add(S);
-        End;
-    End;
-End;
+        end;
+    end;
+end;
 
-Function TfrmProjectOptions.DefaultBuildCommand(idx: Integer): String;
-Var
-    tfile, ofile: String;
-Begin
+function TfrmProjectOptions.DefaultBuildCommand(idx: integer): string;
+var
+    tfile, ofile: string;
+begin
     Result := '';
-    If GetFileTyp(fProject.Units[idx].FileName) <> utSrc Then
+    if GetFileTyp(fProject.Units[idx].FileName) <> utSrc then
         Exit;
 
     tfile := ExtractFileName(fProject.Units[idx].FileName);
-    If fProject.Profiles[CurrentProfileIndex].ObjectOutput <> '' Then
-    Begin
+    if fProject.Profiles[CurrentProfileIndex].ObjectOutput <> '' then
+    begin
         ofile := IncludeTrailingPathDelimiter(
             fProject.Profiles[CurrentProfileIndex].ObjectOutput) + ExtractFileName(tfile);
         ofile := GenMakePath(ExtractRelativePath(fProject.FileName,
             ChangeFileExt(ofile, OBJ_EXT)));
-    End
-    Else
+    end
+    else
         ofile := GenMakePath(ChangeFileExt(tfile, OBJ_EXT));
 
-    If fProject.Units[idx].CompileCpp Then
+    if fProject.Units[idx].CompileCpp then
         Result := #9 + '$(CPP) ' + format(devCompiler.OutputFormat,
             [GenMakePath(tfile), ofile]) + ' $(CXXFLAGS)'
-    Else
+    else
         Result := #9 + '$(CC) ' + format(devCompiler.OutputFormat,
             [GenMakePath(tfile), ofile]) + ' $(CFLAGS)';
-End;
+end;
 
-Procedure TfrmProjectOptions.txtOverrideBuildCmdChange(Sender: TObject);
-Var
-    idx: Integer;
-Begin
-    If Not Assigned(lvFiles.Selected) Or Not txtOverrideBuildCmd.Enabled Then
+procedure TfrmProjectOptions.txtOverrideBuildCmdChange(Sender: TObject);
+var
+    idx: integer;
+begin
+    if not Assigned(lvFiles.Selected) or not txtOverrideBuildCmd.Enabled then
         Exit;
-    idx := Integer(lvFiles.Selected.Data);
-    If (lvFiles.Selected.Level > 0) And (idx <> -1) Then // unit
+    idx := integer(lvFiles.Selected.Data);
+    if (lvFiles.Selected.Level > 0) and (idx <> -1) then // unit
         fProject.Units[idx].BuildCmd :=
             StringReplace(txtOverrideBuildCmd.Text, #13#10, '<CRTAB>', [rfReplaceAll]);
-End;
+end;
 
-Procedure TfrmProjectOptions.spnPriorityChange(Sender: TObject);
-Var
-    I, idx: Integer;
-Begin
-    If Not Assigned(lvFiles.Selected) Or Not spnPriority.Enabled Then
+procedure TfrmProjectOptions.spnPriorityChange(Sender: TObject);
+var
+    I, idx: integer;
+begin
+    if not Assigned(lvFiles.Selected) or not spnPriority.Enabled then
         Exit;
-    For I := 0 To lvFiles.SelectionCount - 1 Do
-    Begin
-        idx := Integer(lvFiles.Selections[I].Data);
-        If (lvFiles.Selections[I].Level > 0) And (idx <> -1) Then // unit
+    for I := 0 to lvFiles.SelectionCount - 1 do
+    begin
+        idx := integer(lvFiles.Selections[I].Data);
+        if (lvFiles.Selections[I].Level > 0) and (idx <> -1) then // unit
             fProject.Units[idx].Priority := spnPriority.Value;
-    End;
-End;
+    end;
+end;
 
-Procedure TfrmProjectOptions.btnCustomMakeBrowseClick(Sender: TObject);
-Begin
-    If dlgCustomMake.Execute Then
+procedure TfrmProjectOptions.btnCustomMakeBrowseClick(Sender: TObject);
+begin
+    if dlgCustomMake.Execute then
         // EAB: this created problems with paths:
         edCustomMakefile.Text := dlgCustomMake.FileName;
     // ExtractRelativePath(fProject.FileName, dlgCustomMake.FileName);
     edCustomMakefile.SetFocus;
-End;
+end;
 
-Procedure TfrmProjectOptions.cbUseCustomMakefileClick(Sender: TObject);
-    Procedure ColorDisabled(W: TWinControl);
-    Begin
-        If Not W.Enabled Then
+procedure TfrmProjectOptions.cbUseCustomMakefileClick(Sender: TObject);
+    procedure ColorDisabled(W: TWinControl);
+    begin
+        if not W.Enabled then
             W.Brush.Color := clBtnFace
-        Else
+        else
             W.Brush.Color := clWindow;
         W.Repaint;
-    End;
-Begin
+    end;
+begin
     edCustomMakefile.Enabled := cbUseCustomMakefile.Checked;
     btnCustomMakeBrowse.Enabled := cbUseCustomMakefile.Checked;
-    lblMakefileCustomize.Enabled := Not cbUseCustomMakefile.Checked;
-    MakeIncludes.Enabled := Not cbUseCustomMakefile.Checked;
-    edMakeInclude.Enabled := Not cbUseCustomMakefile.Checked;
-    btnMakUp.Enabled := Not cbUseCustomMakefile.Checked;
-    btnMakDown.Enabled := Not cbUseCustomMakefile.Checked;
-    btnMakeBrowse.Enabled := Not cbUseCustomMakefile.Checked;
-    btnMakReplace.Enabled := Not cbUseCustomMakefile.Checked;
-    btnMakAdd.Enabled := Not cbUseCustomMakefile.Checked;
-    btnMakDelete.Enabled := Not cbUseCustomMakefile.Checked;
-    btnMakDelInval.Enabled := Not cbUseCustomMakefile.Checked;
+    lblMakefileCustomize.Enabled := not cbUseCustomMakefile.Checked;
+    MakeIncludes.Enabled := not cbUseCustomMakefile.Checked;
+    edMakeInclude.Enabled := not cbUseCustomMakefile.Checked;
+    btnMakUp.Enabled := not cbUseCustomMakefile.Checked;
+    btnMakDown.Enabled := not cbUseCustomMakefile.Checked;
+    btnMakeBrowse.Enabled := not cbUseCustomMakefile.Checked;
+    btnMakReplace.Enabled := not cbUseCustomMakefile.Checked;
+    btnMakAdd.Enabled := not cbUseCustomMakefile.Checked;
+    btnMakDelete.Enabled := not cbUseCustomMakefile.Checked;
+    btnMakDelInval.Enabled := not cbUseCustomMakefile.Checked;
 
     // I want the disabled controls to be *shown* as disabled...
     ColorDisabled(edCustomMakefile);
@@ -1554,86 +1554,86 @@ Begin
     ColorDisabled(MakeIncludes);
 
     UpdateMakButtons();
-End;
+end;
 
-Procedure TfrmProjectOptions.MakeIncludesDrawItem(Control: TWinControl;
-    Index: Integer; Rect: TRect; State: TOwnerDrawState);
-Begin
+procedure TfrmProjectOptions.MakeIncludesDrawItem(Control: TWinControl;
+    Index: integer; Rect: TRect; State: TOwnerDrawState);
+begin
     btnMakUp.Enabled := MakeIncludes.Items.Count > 0;
     btnMakDown.Enabled := MakeIncludes.Items.Count > 0;
-End;
+end;
 
-Procedure TfrmProjectOptions.grpPchClick(Sender: TObject);
-Var
-    idx, i: Integer;
-    SrcProcessed, HProcessed: Boolean;
+procedure TfrmProjectOptions.grpPchClick(Sender: TObject);
+var
+    idx, i: integer;
+    SrcProcessed, HProcessed: boolean;
 
-    Procedure ApplyToNode(Index: Integer; Header: Boolean; Selection: Integer);
-    Begin
-        Case Selection Of
+    procedure ApplyToNode(Index: integer; Header: boolean; Selection: integer);
+    begin
+        case Selection of
             1:
-                If Header Then
+                if Header then
                     fProject.PchHead := Index
-                Else
+                else
                     fProject.PchSource := Index;
             2:
-                If Header And (Index = fProject.PchHead) Then
+                if Header and (Index = fProject.PchHead) then
                     fProject.PchHead := -1
-                Else
-                If (Not Header) And (Index = fProject.PchSource) Then
+                else
+                if (not Header) and (Index = fProject.PchSource) then
                     fProject.PchSource := -1;
-        End;
-    End;
-Begin
-    If grpPch.ItemIndex = 0 Then
-    Begin
+        end;
+    end;
+begin
+    if grpPch.ItemIndex = 0 then
+    begin
         fProject.PchHead := -1;
         fProject.PchSource := -1;
-    End
-    Else
-    Begin
-        HProcessed := False;
-        SrcProcessed := False;
+    end
+    else
+    begin
+        HProcessed := FALSE;
+        SrcProcessed := FALSE;
 
-        For I := 0 To lvFiles.SelectionCount - 1 Do
-        Begin
-            idx := Integer(lvFiles.Selections[I].Data);
-            If idx <> -1 Then
-                If (GetFileTyp(fProject.Units[idx].FileName) = utHead) And
-                    (Not HProcessed) Then
-                Begin
-                    HProcessed := True;
-                    ApplyToNode(idx, True, grpPch.ItemIndex);
-                End
-                Else
-                If (GetFileTyp(fProject.Units[idx].FileName) = utSrc) And
-                    (Not SrcProcessed) Then
-                Begin
-                    SrcProcessed := True;
-                    ApplyToNode(idx, False, grpPch.ItemIndex);
-                End;
-        End;
-    End;
-End;
+        for I := 0 to lvFiles.SelectionCount - 1 do
+        begin
+            idx := integer(lvFiles.Selections[I].Data);
+            if idx <> -1 then
+                if (GetFileTyp(fProject.Units[idx].FileName) = utHead) and
+                    (not HProcessed) then
+                begin
+                    HProcessed := TRUE;
+                    ApplyToNode(idx, TRUE, grpPch.ItemIndex);
+                end
+                else
+                if (GetFileTyp(fProject.Units[idx].FileName) = utSrc) and
+                    (not SrcProcessed) then
+                begin
+                    SrcProcessed := TRUE;
+                    ApplyToNode(idx, FALSE, grpPch.ItemIndex);
+                end;
+        end;
+    end;
+end;
 
-Procedure TfrmProjectOptions.cmbProfileSetCompChange(Sender: TObject);
-Begin
-    If cmbProfileSetComp.ItemIndex = -1 Then
+procedure TfrmProjectOptions.cmbProfileSetCompChange(Sender: TObject);
+begin
+    if cmbProfileSetComp.ItemIndex = -1 then
         Exit;
     //Save the values
-    If Sender <> Nil Then
+    if Sender <> NIL then
         UpdateCurrentProfileDataFromUI;
     CurrentProfileIndex := cmbProfileSetComp.ItemIndex;
     UpdateUIWithCurrentProfile;
-End;
+end;
 
-Procedure TfrmProjectOptions.btnAddProfileSetClick(Sender: TObject);
-Var
-    S: String;
+procedure TfrmProjectOptions.btnAddProfileSetClick(Sender: TObject);
+var
+    S: string;
     NewProfile: TProjProfile;
-Begin
+begin
     S := 'New Profile';
-    If Not InputQuery('New Profile', 'Enter a new Profile', S) Or (S = '') Then
+    if not InputQuery('New Profile', 'Enter a new Profile', S) or (S = '') then
         Exit;
 
     NewProfile := TProjProfile.Create;
@@ -1642,18 +1642,18 @@ Begin
     NewProfile.ExeOutput := CreateValidFileName(S);
     fProfiles.Add(NewProfile);
     UpdateProfileList(cmbProfileSetComp.ItemIndex);
-End;
+end;
 
-Procedure TfrmProjectOptions.btnDelProfileSetClick(Sender: TObject);
-Begin
-    If cmbProfileSetComp.Items.Count = 1 Then
-    Begin
+procedure TfrmProjectOptions.btnDelProfileSetClick(Sender: TObject);
+begin
+    if cmbProfileSetComp.Items.Count = 1 then
+    begin
         MessageDlg(Lang[ID_COPT_CANTDELETECOMPSET], mtError, [mbOk], 0);
         Exit;
-    End;
+    end;
 
-    If MessageDlg(Lang[ID_COPT_DELETECOMPSET], mtConfirmation,
-        [mbYes, mbNo], 0) = mrNo Then
+    if MessageDlg(Lang[ID_COPT_DELETECOMPSET], mtConfirmation,
+        [mbYes, mbNo], 0) = mrNo then
         Exit;
 
     // Remove the current profile
@@ -1664,30 +1664,30 @@ Begin
     CurrentProfileIndex := 0;
     UpdateProfileList(0);
 
-    cmbProfileSetCompChange(nil);
-End;
+    cmbProfileSetCompChange(NIL);
+end;
 
-Procedure TfrmProjectOptions.btnRenameProfileSetClick(Sender: TObject);
-Var
-    S: String;
-Begin
+procedure TfrmProjectOptions.btnRenameProfileSetClick(Sender: TObject);
+var
+    S: string;
+begin
     S := cmbProfileSetComp.Text;
-    If Not InputQuery(Lang[ID_COPT_RENAMECOMPSET],
-        Lang[ID_COPT_PROMPTRENAMECOMPSET], S) Or (S = '') Or
-        (S = cmbProfileSetComp.Text) Then
+    if not InputQuery(Lang[ID_COPT_RENAMECOMPSET],
+        Lang[ID_COPT_PROMPTRENAMECOMPSET], S) or (S = '') or
+        (S = cmbProfileSetComp.Text) then
         Exit;
 
     CurrentProfile.ProfileName := S;
     UpdateProfileList(cmbProfileSetComp.ItemIndex);
-End;
+end;
 
-Procedure TfrmProjectOptions.btnCopyProfileSetClick(Sender: TObject);
-Var
-    S: String;
+procedure TfrmProjectOptions.btnCopyProfileSetClick(Sender: TObject);
+var
+    S: string;
     NewProfile: TProjProfile;
-Begin
+begin
     S := 'New Profile';
-    If Not InputQuery('Copy Profile', 'Enter a new Profile', S) Or (S = '') Then
+    if not InputQuery('Copy Profile', 'Enter a new Profile', S) or (S = '') then
         Exit;
 
     //TODO: Guru: Fix the Output Directory to have only valid characters
@@ -1701,20 +1701,20 @@ Begin
     cmbProfileSetComp.ItemIndex := cmbProfileSetComp.Items.Count - 1;
     cmbProfileSetComp.OnChange(cmbProfileSetComp);
 
-End;
+end;
 
-Procedure TfrmProjectOptions.CreateParams(Var Params: TCreateParams);
-Begin
-    Inherited;
-    If (Parent <> Nil) Or (ParentWindow <> 0) Then
+procedure TfrmProjectOptions.CreateParams(var Params: TCreateParams);
+begin
+    inherited;
+    if (Parent <> NIL) or (ParentWindow <> 0) then
         Exit;  // must not mess with wndparent if form is embedded
 
-    If Assigned(Owner) And (Owner Is TWincontrol) Then
+    if Assigned(Owner) and (Owner is TWincontrol) then
         Params.WndParent := TWinControl(Owner).handle
-    Else
-    If Assigned(Screen.Activeform) Then
+    else
+    if Assigned(Screen.Activeform) then
         Params.WndParent := Screen.Activeform.Handle;
-End;
+end;
 
 
-End.
+end.

@@ -19,19 +19,19 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-Unit version;
+unit version;
 
-Interface
+interface
 
-Uses xprocs, SysUtils, Registry, Windows, Classes, utils, Dialogs;
+uses xprocs, SysUtils, Registry, Windows, Classes, utils, Dialogs;
 
-Var
-    LIB_EXT: String;
-    OBJ_EXT: String;
-    PCH_EXT: String;
-    COMMON_CPP_INCLUDE_DIR: String;
+var
+    LIB_EXT: string;
+    OBJ_EXT: string;
+    PCH_EXT: string;
+    COMMON_CPP_INCLUDE_DIR: string;
 
-Const
+const
     //path delimiter
 {$IFDEF WIN32}
     pd = '\';
@@ -40,7 +40,7 @@ Const
   pd                   = '/';
 {$ENDIF}
 
-Resourcestring
+resourcestring
     // misc strings
     DEVCPP = 'wxDev-C++';
     DEVCPP_WEBPAGE = 'http://wxdsgn.sourceforge.net/';
@@ -322,7 +322,7 @@ Resourcestring
     PREPROC_INI_LABEL = 'PreprocDefines';
 
 
-Const
+const
     //  source file extensions
     C_EXT = '.c';
     CPP_EXT = '.cpp';
@@ -339,130 +339,130 @@ Const
     CONFIG_PARAM = '-c';
 
     // file type arrays used in getfileex in utils
-    cTypes: Array[0..0] Of String[4] = (C_EXT);
-    cppTypes: Array[0..4] Of String[4] =
+    cTypes: array[0..0] of string[4] = (C_EXT);
+    cppTypes: array[0..4] of string[4] =
         (CPP_EXT, CC_EXT, CXX_EXT, CP2_EXT, CP_EXT);
-    headTypes: Array[0..2] Of String[4] = (H_EXT, HPP_EXT, RH_EXT);
-    resTypes: Array[0..2] Of String[4] = (RES_EXT, RC_EXT, RH_EXT);
+    headTypes: array[0..2] of string[4] = (H_EXT, HPP_EXT, RH_EXT);
+    resTypes: array[0..2] of string[4] = (RES_EXT, RC_EXT, RH_EXT);
 
     // GPROF commands and displays
     GPROF_CHECKFILE = 'gmon.out';
     GPROF_CMD_GENFLAT = '-p';
     GPROF_CMD_GENMAP = '-q';
 
-Function DEVCPP_VERSION: String;
-Function MAKE_PROGRAM(CompilerID: Integer): String;
-Function CP_PROGRAM(CompilerID: Integer): String;
-Function CPP_PROGRAM(CompilerID: Integer): String;
-Function DBG_PROGRAM(CompilerID: Integer): String;
-Function RES_PROGRAM(CompilerID: Integer): String;
-Function DLL_PROGRAM(CompilerID: Integer): String;
-Function PROF_PROGRAM(CompilerID: Integer): String;
-Function DEFCOMPILERSET(CompilerID: Integer): String;
-Function COMPILER_CMD_LINE(CompilerID: Integer): String;
-Function LINKER_CMD_LINE(CompilerID: Integer): String;
-Function MAKE_CMD_LINE(CompilerID: Integer): String;
+function DEVCPP_VERSION: string;
+function MAKE_PROGRAM(CompilerID: integer): string;
+function CP_PROGRAM(CompilerID: integer): string;
+function CPP_PROGRAM(CompilerID: integer): string;
+function DBG_PROGRAM(CompilerID: integer): string;
+function RES_PROGRAM(CompilerID: integer): string;
+function DLL_PROGRAM(CompilerID: integer): string;
+function PROF_PROGRAM(CompilerID: integer): string;
+function DEFCOMPILERSET(CompilerID: integer): string;
+function COMPILER_CMD_LINE(CompilerID: integer): string;
+function LINKER_CMD_LINE(CompilerID: integer): string;
+function MAKE_CMD_LINE(CompilerID: integer): string;
 // default directories
-Function BIN_DIR(CompilerID: Integer): String;
-Function LIB_DIR(CompilerID: Integer): String;
-Function C_INCLUDE_DIR(CompilerID: Integer): String;
-Function CPP_INCLUDE_DIR(CompilerID: Integer): String;
-Function RC_INCLUDE_DIR(CompilerID: Integer): String;
+function BIN_DIR(CompilerID: integer): string;
+function LIB_DIR(CompilerID: integer): string;
+function C_INCLUDE_DIR(CompilerID: integer): string;
+function CPP_INCLUDE_DIR(CompilerID: integer): string;
+function RC_INCLUDE_DIR(CompilerID: integer): string;
 
-Function GetRefinedPathList(StrPathValue, strVSInstallPath,
-    strVCPPInstallPath, strFSDKInstallDir, strWinSDKPath: String): String;
-Function GetVC200XPath(versionString: String; PathType: Integer): String;
-Function GetVC6Path(PathType: Integer): String;
-Function GetVC2010Include: String;
-Function GetVC2008Include: String;
+function GetRefinedPathList(StrPathValue, strVSInstallPath,
+    strVCPPInstallPath, strFSDKInstallDir, strWinSDKPath: string): string;
+function GetVC200XPath(versionString: string; PathType: integer): string;
+function GetVC6Path(PathType: integer): string;
+function GetVC2010Include: string;
+function GetVC2008Include: string;
 // EAB Comment: Is that OK to keep adding functions for each new compiler? Wouldn't it be better to have something more flexible like config files?
-Function GetVC2005Include: String;
-Function GetVC2003Include: String;
-Function GetVC6Include: String;
-Function GetVC2010Bin: String;
-Function GetVC2008Bin: String;
-Function GetVC2005Bin: String;
-Function GetVC2003Bin: String;
-Function GetVC6Bin: String;
-Function GetVC2010Lib: String;
-Function GetVC2008Lib: String;
-Function GetVC2005Lib: String;
-Function GetVC2003Lib: String;
-Function GetVC6Lib: String;
-Function GetTDMGCCDir: String;
+function GetVC2005Include: string;
+function GetVC2003Include: string;
+function GetVC6Include: string;
+function GetVC2010Bin: string;
+function GetVC2008Bin: string;
+function GetVC2005Bin: string;
+function GetVC2003Bin: string;
+function GetVC6Bin: string;
+function GetVC2010Lib: string;
+function GetVC2008Lib: string;
+function GetVC2005Lib: string;
+function GetVC2003Lib: string;
+function GetVC6Lib: string;
+function GetTDMGCCDir: string;
 
-Var
-    DevCppDir: String;
+var
+    DevCppDir: string;
 
-Implementation
-Uses devcfg;
+implementation
+uses devcfg;
 
-Function DEVCPP_VERSION: String;
-Var
+function DEVCPP_VERSION: string;
+var
     verblock: PVSFIXEDFILEINFO;
-    versionMS, versionLS: Cardinal;
-    verlen: Cardinal;
+    versionMS, versionLS: cardinal;
+    verlen: cardinal;
     rs: TResourceStream;
     m: TMemoryStream;
     p: pointer;
-    s: Cardinal;
-    AppVersionString: String;
-Begin
+    s: cardinal;
+    AppVersionString: string;
+begin
     m := TMemoryStream.Create;
-    Try
+    try
         rs := TResourceStream.CreateFromID(HInstance, 1, RT_VERSION);
-        Try
+        try
             m.CopyFrom(rs, rs.Size);
-        Finally
+        finally
             rs.Free;
-        End;
+        end;
         m.Position := 0;
-        If VerQueryValue(m.Memory, '\', pointer(verblock), verlen) Then
-        Begin
+        if VerQueryValue(m.Memory, '\', pointer(verblock), verlen) then
+        begin
             VersionMS := verblock.dwFileVersionMS;
             VersionLS := verblock.dwFileVersionLS;
             AppVersionString :=
-                IntToStr(versionMS Shr 16) + '.' +
-                IntToStr(versionMS And $FFFF) + '.' +
-                IntToStr(VersionLS Shr 16) + '.' +
-                IntToStr(VersionLS And $FFFF);
-        End;
-        If VerQueryValue(m.Memory, Pchar('\\StringFileInfo\\' +
+                IntToStr(versionMS shr 16) + '.' +
+                IntToStr(versionMS and $FFFF) + '.' +
+                IntToStr(VersionLS shr 16) + '.' +
+                IntToStr(VersionLS and $FFFF);
+        end;
+        if VerQueryValue(m.Memory, pchar('\\StringFileInfo\\' +
             IntToHex(GetThreadLocale, 4) + IntToHex(GetACP, 4) +
-            '\\FileDescription'), p, s) Or
+            '\\FileDescription'), p, s) or
             VerQueryValue(m.Memory, '\\StringFileInfo\\040904E4\\FileDescription',
-            p, s) Then //en-us
-            AppVersionString := Pchar(p) + ' ' + AppVersionString;
-    Finally
+            p, s) then //en-us
+            AppVersionString := pchar(p) + ' ' + AppVersionString;
+    finally
         m.Free;
-    End;
+    end;
     Result := AppVersionString;
-End;
+end;
 
-Function GetProgramFilesDir: String;
-Var
-    TempString: String;
+function GetProgramFilesDir: string;
+var
+    TempString: string;
     reg: TRegistry;
-Begin
+begin
     reg := TRegistry.Create;
     reg.RootKey := HKEY_LOCAL_MACHINE;
-    Try
+    try
         TempString := '\Software\Microsoft\Windows\CurrentVersion';
-        If (reg.OpenKey(TempString, False) = False) Then
+        if (reg.OpenKey(TempString, FALSE) = FALSE) then
             Result := 'C:\Program Files'
-        Else
-        Begin
+        else
+        begin
             Result := reg.ReadString('ProgramFilesDir');
             reg.CloseKey;
-        End;
-    Finally
+        end;
+    finally
         reg.Free;
-    End;
-End;
+    end;
+end;
 
-Function MAKE_PROGRAM(CompilerID: Integer): String;
-Begin
-    Case CompilerID Of
+function MAKE_PROGRAM(CompilerID: integer): string;
+begin
+    case CompilerID of
         ID_COMPILER_MINGW:
             Result := GCC_MAKE_PROGRAM;
 
@@ -485,13 +485,13 @@ Begin
         ID_COMPILER_LINUX:
             Result := LINUX_MAKE_PROGRAM;
 
-    End;
+    end;
 
-End;
+end;
 
-Function CP_PROGRAM(CompilerID: Integer): String;
-Begin
-    Case CompilerID Of
+function CP_PROGRAM(CompilerID: integer): string;
+begin
+    case CompilerID of
         ID_COMPILER_MINGW:
             Result := GCC_CP_PROGRAM;
 
@@ -517,12 +517,12 @@ Begin
         ID_COMPILER_LINUX:
             Result := LINUX_CP_PROGRAM;
 
-    End;
-End;
+    end;
+end;
 
-Function CPP_PROGRAM(CompilerID: Integer): String;
-Begin
-    Case CompilerID Of
+function CPP_PROGRAM(CompilerID: integer): string;
+begin
+    case CompilerID of
         ID_COMPILER_MINGW:
             Result := GCC_CPP_PROGRAM;
 
@@ -548,23 +548,23 @@ Begin
         ID_COMPILER_LINUX:
             Result := LINUX_CPP_PROGRAM;
 
-    End;
-End;
+    end;
+end;
 
 
-Function DBG_PROGRAM(CompilerID: Integer): String;
-Begin
-    Case CompilerID Of
+function DBG_PROGRAM(CompilerID: integer): string;
+begin
+    case CompilerID of
         ID_COMPILER_MINGW:
             Result := GCC_DBG_PROGRAM;
 
         ID_COMPILER_VC2010,
         ID_COMPILER_VC2008:
-            If DirectoryExists(GetProgramFilesDir +
-                '\Debugging Tools for Windows (x86)') Then
+            if DirectoryExists(GetProgramFilesDir +
+                '\Debugging Tools for Windows (x86)') then
                 Result := GetProgramFilesDir +
                     '\Debugging Tools for Windows (x86)\' + VC_DBG_PROGRAM
-            Else
+            else
                 Result := GetProgramFilesDir + '\Debugging Tools for Windows\' +
                     VC_DBG_PROGRAM;
 
@@ -585,12 +585,12 @@ Begin
         ID_COMPILER_LINUX:
             Result := LINUX_DBG_PROGRAM;
 
-    End;
-End;
+    end;
+end;
 
-Function RES_PROGRAM(CompilerID: Integer): String;
-Begin
-    Case CompilerID Of
+function RES_PROGRAM(CompilerID: integer): string;
+begin
+    case CompilerID of
         ID_COMPILER_MINGW:
             Result := GCC_RES_PROGRAM;
 
@@ -612,12 +612,12 @@ Begin
 
         ID_COMPILER_LINUX:
             Result := LINUX_RES_PROGRAM;
-    End;
-End;
+    end;
+end;
 
-Function DLL_PROGRAM(CompilerID: Integer): String;
-Begin
-    Case CompilerID Of
+function DLL_PROGRAM(CompilerID: integer): string;
+begin
+    case CompilerID of
         ID_COMPILER_MINGW:
             Result := GCC_DLL_PROGRAM;
 
@@ -639,12 +639,12 @@ Begin
 
         ID_COMPILER_LINUX:
             Result := LINUX_DLL_PROGRAM;
-    End;
-End;
+    end;
+end;
 
-Function DEFCOMPILERSET(CompilerID: Integer): String;
-Begin
-    Case CompilerID Of
+function DEFCOMPILERSET(CompilerID: integer): string;
+begin
+    case CompilerID of
         ID_COMPILER_MINGW:
             Result := GCC_DEFCOMPILERSET;
 
@@ -674,12 +674,12 @@ Begin
 
         ID_COMPILER_LINUX:
             Result := LINUX_DEFCOMPILERSET;
-    End;
-End;
+    end;
+end;
 
-Function COMPILER_CMD_LINE(CompilerID: Integer): String;
-Begin
-    Case CompilerID Of
+function COMPILER_CMD_LINE(CompilerID: integer): string;
+begin
+    case CompilerID of
         ID_COMPILER_MINGW:
             Result := GCC_COMPILER_CMD_LINE;
 
@@ -701,12 +701,12 @@ Begin
 
         ID_COMPILER_LINUX:
             Result := LINUX_COMPILER_CMD_LINE;
-    End;
-End;
+    end;
+end;
 
-Function LINKER_CMD_LINE(CompilerID: Integer): String;
-Begin
-    Case CompilerID Of
+function LINKER_CMD_LINE(CompilerID: integer): string;
+begin
+    case CompilerID of
         ID_COMPILER_MINGW:
             Result := GCC_LINKER_CMD_LINE;
 
@@ -728,12 +728,12 @@ Begin
 
         ID_COMPILER_LINUX:
             Result := LINUX_LINKER_CMD_LINE;
-    End;
-End;
+    end;
+end;
 
-Function MAKE_CMD_LINE(CompilerID: Integer): String;
-Begin
-    Case CompilerID Of
+function MAKE_CMD_LINE(CompilerID: integer): string;
+begin
+    case CompilerID of
         ID_COMPILER_MINGW:
             Result := GCC_MAKE_CMD_LINE;
 
@@ -755,12 +755,12 @@ Begin
 
         ID_COMPILER_LINUX:
             Result := LINUX_MAKE_CMD_LINE;
-    End;
-End;
+    end;
+end;
 
-Function PROF_PROGRAM(CompilerID: Integer): String;
-Begin
-    Case CompilerID Of
+function PROF_PROGRAM(CompilerID: integer): string;
+begin
+    case CompilerID of
         ID_COMPILER_MINGW:
             Result := GCC_PROF_PROGRAM;
 
@@ -782,22 +782,22 @@ Begin
 
         ID_COMPILER_LINUX:
             Result := LINUX_PROF_PROGRAM;
-    End;
-End;
+    end;
+end;
 
-Function BIN_DIR(CompilerID: Integer): String;
-Begin
-    Case CompilerID Of
+function BIN_DIR(CompilerID: integer): string;
+begin
+    case CompilerID of
         ID_COMPILER_MINGW:
 
-        Begin
+        begin
             Result := GetTDMGCCDir;
-            If (Result = '') Then
+            if (Result = '') then
                 Result := GCC_BIN_DIR
-            Else
+            else
                 Result := Result + pd + 'bin';
 
-        End;
+        end;
 
         ID_COMPILER_VC2010:
             Result := VC2010_BIN_DIR + GetVC2010Bin;
@@ -825,21 +825,21 @@ Begin
 
         ID_COMPILER_LINUX:
             Result := LINUX_BIN_DIR;
-    End;
-End;
+    end;
+end;
 
-Function LIB_DIR(CompilerID: Integer): String;
-Begin
-    Case CompilerID Of
+function LIB_DIR(CompilerID: integer): string;
+begin
+    case CompilerID of
         ID_COMPILER_MINGW:
 
-        Begin
+        begin
             Result := GetTDMGCCDir;
-            If (Result = '') Then
+            if (Result = '') then
                 Result := GCC_LIB_DIR
-            Else
+            else
                 Result := Result + pd + 'lib;' + GCC_LIB_DIR;
-        End;
+        end;
 
         ID_COMPILER_VC2010:
             Result := VC2010_LIB_DIR + GetVC2010Lib;
@@ -867,22 +867,22 @@ Begin
 
         ID_COMPILER_LINUX:
             Result := LINUX_LIB_DIR;
-    End;
-End;
+    end;
+end;
 
-Function C_INCLUDE_DIR(CompilerID: Integer): String;
-Begin
-    Case CompilerID Of
+function C_INCLUDE_DIR(CompilerID: integer): string;
+begin
+    case CompilerID of
         ID_COMPILER_MINGW:
 
-        Begin
+        begin
             Result := GetTDMGCCDir;
-            If (Result = '') Then
+            if (Result = '') then
                 Result := GCC_C_INCLUDE_DIR
-            Else
+            else
                 Result := Result + pd + 'include';
 
-        End;
+        end;
 
         ID_COMPILER_VC2010:
             Result := COMMON_CPP_INCLUDE_DIR + VC2010_C_INCLUDE_DIR +
@@ -914,22 +914,22 @@ Begin
 
         ID_COMPILER_LINUX:
             Result := LINUX_C_INCLUDE_DIR;
-    End;
-End;
+    end;
+end;
 
-Function CPP_INCLUDE_DIR(CompilerID: Integer): String;
-Begin
-    Case CompilerID Of
+function CPP_INCLUDE_DIR(CompilerID: integer): string;
+begin
+    case CompilerID of
         ID_COMPILER_MINGW:
 
-        Begin
+        begin
             Result := GetTDMGCCDir;
-            If (Result = '') Then
+            if (Result = '') then
                 Result := COMMON_CPP_INCLUDE_DIR + GCC_CPP_INCLUDE_DIR
-            Else
+            else
                 Result := Result + pd + 'include';
 
-        End;
+        end;
 
         ID_COMPILER_VC2010:
 
@@ -964,12 +964,12 @@ Begin
 
         ID_COMPILER_LINUX:
             Result := LINUX_CPP_INCLUDE_DIR;
-    End;
-End;
+    end;
+end;
 
-Function RC_INCLUDE_DIR(CompilerID: Integer): String;
-Begin
-    Case CompilerID Of
+function RC_INCLUDE_DIR(CompilerID: integer): string;
+begin
+    case CompilerID of
         ID_COMPILER_MINGW:
             Result := GCC_RC_INCLUDE_DIR;
 
@@ -999,58 +999,58 @@ Begin
 
         ID_COMPILER_LINUX:
             Result := LINUX_RC_INCLUDE_DIR;
-    End;
-End;
+    end;
+end;
 
 
-Function GetVC6Path(PathType: Integer): String;
-Var
-    strInclude, strBin, strLib, TempString: String;
+function GetVC6Path(PathType: integer): string;
+var
+    strInclude, strBin, strLib, TempString: string;
     reverseList: TStringList;
-    i: Integer;
-Begin
+    i: integer;
+begin
     TempString := 'Software\Microsoft\DevStudio\6.0\Build System\Components\Platforms\Win32 (x86)\Directories\';
 
-    Case PathType Of
+    case PathType of
         0:
-        Begin
+        begin
             TempString := TempString + 'Include Dirs';
             strInclude := regReadValue(HKEY_CURRENT_USER, TempString, dtString);
             Result := ';' + strInclude + ';';
-        End;
+        end;
         1:
-        Begin
+        begin
             TempString := TempString + 'Path Dirs';
             strBin := regReadValue(HKEY_CURRENT_USER, TempString, dtString);
             Result := ';' + strBin + ';';
-        End;
+        end;
         2:
-        Begin
+        begin
 
             TempString := TempString + 'Library Dirs';
             strLib := regReadValue(HKEY_CURRENT_USER, TempString, dtString);
             Result := ';' + strLib + ';';
-        End;
-    End;
+        end;
+    end;
     reverseList := TStringList.Create;
     StrToArrays(Result, ';', reverseList);
     Result := '';
-    For i := reverseList.Count - 1 Downto 0 Do
-    Begin
+    for i := reverseList.Count - 1 downto 0 do
+    begin
         Result := Result + ';' + reverseList[i];
-    End;
+    end;
 
     //reverseList.destroy;
     Result := Result + ';';
 
-End;
+end;
 
-Function GetRefinedPathList(StrPathValue, strVSInstallPath,
-    strVCPPInstallPath, strFSDKInstallDir, strWinSDKPath: String): String;
-Var
+function GetRefinedPathList(StrPathValue, strVSInstallPath,
+    strVCPPInstallPath, strFSDKInstallDir, strWinSDKPath: string): string;
+var
     strLst: TStringList;
-    i: Integer;
-Begin
+    i: integer;
+begin
     strLst := TStringList.Create;
     strVCPPInstallPath := IncludeTrailingPathDelimiter(strVCPPInstallPath);
     strVSInstallPath := IncludeTrailingPathDelimiter(strVSInstallPath);
@@ -1065,20 +1065,20 @@ Begin
     Result := StrPathValue;
     StrToArrays(Result, ';', strLst);
     Result := '';
-    For i := strLst.Count - 1 Downto 0 Do
+    for i := strLst.Count - 1 downto 0 do
         Result := Result + ';' + strLst[i];
     Result := Result + ';';
     strLst.Free;
-End;
+end;
 
-Function GetWinSDKDir: String;
-Var
-    strFSDKInstallDir: String;
-    TempString: String;
+function GetWinSDKDir: string;
+var
+    strFSDKInstallDir: string;
+    TempString: string;
     reg, reg2: TRegistry;
     strLst: TStringList;
-    i: Integer;
-Begin
+    i: integer;
+begin
     reg := TRegistry.Create;
     reg2 := TRegistry.Create;
     reg.RootKey := HKEY_LOCAL_MACHINE;
@@ -1086,24 +1086,24 @@ Begin
 
     TempString := 'SOFTWARE\Microsoft\MicrosoftSDK\InstalledSDKs';
     strLst := TStringList.Create;
-    If (reg.OpenKey(TempString, False)) Then
-    Begin
+    if (reg.OpenKey(TempString, FALSE)) then
+    begin
         reg.GetKeyNames(strLst);
-        For i := 0 To strLst.Count - 1 Do
-        Begin
+        for i := 0 to strLst.Count - 1 do
+        begin
             TempString := 'SOFTWARE\Microsoft\MicrosoftSDK\InstalledSDKs\' + strLst[i];
-            If (reg2.OpenKey(TempString, False)) Then
-            Begin
+            if (reg2.OpenKey(TempString, FALSE)) then
+            begin
                 strFSDKInstallDir := reg2.ReadString('Install Dir');
-                If (strFSDKInstallDir <> '') Then
+                if (strFSDKInstallDir <> '') then
                     break;
-            End;
-        End;
-    End;
+            end;
+        end;
+    end;
 
-    If trim(strFSDKInstallDir) = '' Then
+    if trim(strFSDKInstallDir) = '' then
         Result := 'Invalid_SDK_DIR'
-    Else
+    else
         Result := strFSDKInstallDir;
 
     strLst.Free;
@@ -1112,309 +1112,309 @@ Begin
 
     reg.Free;
     reg2.Free;
-End;
+end;
 
-Function GetVC200XPath(versionString: String; PathType: Integer): String;
-Var
+function GetVC200XPath(versionString: string; PathType: integer): string;
+var
     strVSInstallDir,
     strVCPPInstallDir,
     strInclude,
     strBin,
     strLib,
-    strFSDKInstallDir, strWinSDKDir: String;
-    TempString: String;
+    strFSDKInstallDir, strWinSDKDir: string;
+    TempString: string;
     reg: TRegistry;
     reg2: TRegistry;
-Begin
+begin
     reg := TRegistry.Create;
     reg2 := TRegistry.Create;
     reg.RootKey := HKEY_LOCAL_MACHINE;
     reg2.RootKey := HKEY_LOCAL_MACHINE;
-    Try
+    try
         TempString := Format('SOFTWARE\Microsoft\VisualStudio\%s\Setup\VC\',
             [VersionString]);
-        If (reg.OpenKey(TempString, False) = False) Then
+        if (reg.OpenKey(TempString, FALSE) = FALSE) then
             strVCPPInstallDir := ''
-        Else
-        Begin
+        else
+        begin
             strVCPPInstallDir := reg.ReadString('ProductDir');
             reg.CloseKey;
-        End;
+        end;
 
-        If strVCPPInstallDir = '' Then
-        Begin
+        if strVCPPInstallDir = '' then
+        begin
             TempString := 'SOFTWARE\Microsoft\VisualStudio\SxS\VC7\';
-            If reg2.OpenKey(TempString, False) = False Then
-            Begin
+            if reg2.OpenKey(TempString, FALSE) = FALSE then
+            begin
                 reg.Free;
                 reg2.Free;
                 exit;
-            End;
+            end;
             strVCPPInstallDir := reg2.ReadString(versionString);
             reg2.CloseKey;
-        End;
+        end;
 
         TempString := Format('SOFTWARE\Microsoft\VisualStudio\%s\Setup\VS\',
             [VersionString]);
-        If (reg.OpenKey(TempString, False) = False) Then
+        if (reg.OpenKey(TempString, FALSE) = FALSE) then
             strVSInstallDir := ''
-        Else
-        Begin
+        else
+        begin
             strVSInstallDir := reg.ReadString('ProductDir');
             reg.CloseKey;
-        End;
+        end;
 
-        If strVSInstallDir = '' Then
-        Begin
+        if strVSInstallDir = '' then
+        begin
             TempString := 'SOFTWARE\Microsoft\VisualStudio\SxS\VS7\';
-            If reg2.OpenKey(TempString, False) = False Then
-            Begin
+            if reg2.OpenKey(TempString, FALSE) = FALSE then
+            begin
                 reg.Free;
                 reg2.Free;
                 exit;
-            End;
+            end;
             strVSInstallDir := reg2.ReadString(versionString);
             reg2.CloseKey;
-        End;
+        end;
 
-        If (strVCPPInstallDir = '') Then
-        Begin
-            If versionString = '7.1' Then
+        if (strVCPPInstallDir = '') then
+        begin
+            if versionString = '7.1' then
                 strVCPPInstallDir :=
                     GetProgramFilesDir + '\Microsoft Visual Studio .NET 2003\Vc7\';
-            If versionString = '8.0' Then
+            if versionString = '8.0' then
                 strVCPPInstallDir :=
                     GetProgramFilesDir + '\Microsoft Visual Studio\Vc8\';
-            If versionString = '9.0' Then
+            if versionString = '9.0' then
                 strVCPPInstallDir :=
                     GetProgramFilesDir + '\Microsoft Visual Studio 9.0\VC\';
-            If versionString = '10.0' Then
+            if versionString = '10.0' then
                 strVCPPInstallDir :=
                     GetProgramFilesDir + '\Microsoft Visual Studio 10.0\VC\';
-        End;
+        end;
 
         TempString := 'SOFTWARE\Microsoft\VisualStudio\SxS\FRAMEWORKSDK\';
-        If (reg.OpenKey(TempString, False)) Then
-        Begin
+        if (reg.OpenKey(TempString, FALSE)) then
+        begin
             strFSDKInstallDir := reg.ReadString(VersionString);
-            If trim(strFSDKInstallDir) = '' Then
-            Begin
+            if trim(strFSDKInstallDir) = '' then
+            begin
                 strFSDKInstallDir := reg.ReadString('10.0');
-                If trim(strFSDKInstallDir) = '' Then
+                if trim(strFSDKInstallDir) = '' then
                     strFSDKInstallDir := reg.ReadString('9.0');
-                If trim(strFSDKInstallDir) = '' Then
+                if trim(strFSDKInstallDir) = '' then
                     strFSDKInstallDir := reg.ReadString('8.0');
-                If trim(strFSDKInstallDir) = '' Then
+                if trim(strFSDKInstallDir) = '' then
                     strFSDKInstallDir := reg.ReadString('7.1');
-            End;
-        End;
+            end;
+        end;
         reg.CloseKey;
 
         // On Windows 7, they moved to their own registry item
-        If trim(strFSDKInstallDir) = '' Then
-        Begin
+        if trim(strFSDKInstallDir) = '' then
+        begin
 
             TempString := 'SOFTWARE\Microsoft\Microsoft SDKs\Windows\v7.0A';
-            If (reg.OpenKey(TempString, False)) Then
-            Begin
+            if (reg.OpenKey(TempString, FALSE)) then
+            begin
                 strFSDKInstallDir := reg.ReadString('InstallationFolder');
-            End;
+            end;
             reg.CloseKey;
 
-        End;
+        end;
 
         //Guru : Make sure we set some invalid names to the dir,
         //otherwise with the empty string it will set \include and
         //this will be mapped to mingW's Include path
-        If (strVSInstallDir = '') Then
+        if (strVSInstallDir = '') then
             strVSInstallDir := 'VSInstall_INVALID_FOLDER';
 
         strWinSDKDir := GetWinSDKDir;
-        If (strWinSDKDir = '') Then
-        Begin
-            If versionString = '10.0' Then
+        if (strWinSDKDir = '') then
+        begin
+            if versionString = '10.0' then
                 strWinSDKDir := GetProgramFilesDir + '\Microsoft SDKs\'
-            Else
-            If versionString = '9.0' Then
+            else
+            if versionString = '9.0' then
                 strWinSDKDir := GetProgramFilesDir + '\Microsoft SDKs\'
-            Else
+            else
                 strWinSDKDir := 'WinSDK_INVALID_FOLDER';
-        End;
+        end;
 
         TempString := Format(
             'SOFTWARE\Microsoft\VisualStudio\%s\VC\VC_OBJECTS_PLATFORM_INFO\Win32\Directories\',
             [VersionString]);
-        If (reg.OpenKey(TempString, False)) Then
-        Begin
+        if (reg.OpenKey(TempString, FALSE)) then
+        begin
             strInclude := reg.ReadString('Include Dirs');
             strBin := reg.ReadString('Path Dirs');
             strLib := reg.ReadString('Library Dirs');
             reg.CloseKey;
-        End
-        Else
-        Begin
+        end
+        else
+        begin
             strInclude := '';
             strBin := '';
             strLib := '';
-        End;
-        Case PathType Of
+        end;
+        case PathType of
             0:
-            Begin
+            begin
 
-                If Trim(strInclude) = '' Then
+                if Trim(strInclude) = '' then
                     strInclude :=
                         '$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(VCInstallDir)PlatformSDK\include\prerelease;$(VCInstallDir)PlatformSDK\include;$(FrameworkSDKDir)include;';
-                If (versionString = '9.0') Then
+                if (versionString = '9.0') then
                     strInclude :=
                         strInclude + ';' + StringReplace(GetProgramFilesDir, ' (x86)', '', []) +
                         '\Microsoft SDKs\Windows\v6.0A\Include;'
-                Else
-                If (strtofloat(versionString) >= 10.0) Then
+                else
+                if (strtofloat(versionString) >= 10.0) then
                     strInclude := strInclude + ';' + IncludeTrailingPathDelimiter(strFSDKInstallDir) + 'include';
 
                 strInclude := strInclude + ';$(WinSDKDir)include;';
                 Result := GetRefinedPathList(
                     strInclude, strVSInstallDir, strVCPPInstallDir, strFSDKInstallDir, strWinSDKDir);
-            End;
+            end;
             1:
-            Begin
+            begin
 
-                If Trim(strBin) = '' Then
+                if Trim(strBin) = '' then
                     strBin :=
                         '$(VCInstallDir)bin;$(VSInstallDir)Common7\Tools\bin\prerelease;$(VSInstallDir)Common7\Tools\bin;$(VSInstallDir)Common7\tools;$(VSInstallDir)Common7\ide;' + GetProgramFilesDir + '\HTML Help Workshop\;$(FrameworkSDKDir)bin;$(FrameworkDir)$(FrameworkVersion);';
-                If (versionString = '9.0') Then
+                if (versionString = '9.0') then
                     strBin := strBin + ';' +
                         StringReplace(GetProgramFilesDir, ' (x86)', '', []) +
                         '\Microsoft SDKs\Windows\v6.0A\Bin;'
-                Else
-                If (strtofloat(versionString) >= 10.0) Then
+                else
+                if (strtofloat(versionString) >= 10.0) then
                     strBin := strBin + ';' + IncludeTrailingPathDelimiter(strFSDKInstallDir) + 'bin';
 
                 strBin := strBin + ';$(WinSDKDir)bin;';
                 Result := GetRefinedPathList(strBin, strVSInstallDir,
                     strVCPPInstallDir, strFSDKInstallDir, strWinSDKDir);
-            End;
+            end;
             2:
-            Begin
-                If Trim(strLib) = '' Then
+            begin
+                if Trim(strLib) = '' then
                     strLib :=
                         '$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(VCInstallDir)PlatformSDK\lib\prerelease;$(VCInstallDir)PlatformSDK\lib;$(FrameworkSDKDir)lib';
-                If (versionString = '9.0') Then
+                if (versionString = '9.0') then
                     strLib := strLib + ';' +
                         StringReplace(GetProgramFilesDir, ' (x86)', '', []) +
                         '\Microsoft SDKs\Windows\v6.0A\Lib;'
-                Else
-                If (strtofloat(versionString) >= 10.0) Then
+                else
+                if (strtofloat(versionString) >= 10.0) then
                     strLib := strLib + ';' + IncludeTrailingPathDelimiter(strFSDKInstallDir) + 'lib';
 
                 strLib := strLib + ';$(WinSDKDir)lib;';
                 Result := GetRefinedPathList(strLib, strVSInstallDir,
                     strVCPPInstallDir, strFSDKInstallDir, strWinSDKDir);
-            End;
-        End;
-    Finally
-    End;
+            end;
+        end;
+    finally
+    end;
 
     reg.Free;
     reg2.Free;
 
-End;
+end;
 
-Function GetVC2010Include: String;
-Begin
+function GetVC2010Include: string;
+begin
     Result := GetVC200XPath('10.0', 0);
-End;
+end;
 
-Function GetVC2008Include: String;
-Begin
+function GetVC2008Include: string;
+begin
     Result := GetVC200XPath('9.0', 0);
-End;
+end;
 
-Function GetVC2005Include: String;
-Begin
+function GetVC2005Include: string;
+begin
     Result := GetVC200XPath('8.0', 0);
-End;
+end;
 
-Function GetVC2003Include: String;
-Begin
+function GetVC2003Include: string;
+begin
     Result := GetVC200XPath('7.1', 0);
-End;
+end;
 
-Function GetVC6Include: String;
-Begin
+function GetVC6Include: string;
+begin
     Result := GetVC6Path(0);
-End;
+end;
 
-Function GetVC2010Bin: String;
-Begin
+function GetVC2010Bin: string;
+begin
     Result := GetVC200XPath('10.0', 1);
-End;
+end;
 
-Function GetVC2008Bin: String;
-Begin
+function GetVC2008Bin: string;
+begin
     Result := GetVC200XPath('9.0', 1);
-End;
+end;
 
-Function GetVC2005Bin: String;
-Begin
+function GetVC2005Bin: string;
+begin
     Result := GetVC200XPath('8.0', 1);
-End;
+end;
 
-Function GetVC2003Bin: String;
-Begin
+function GetVC2003Bin: string;
+begin
     Result := GetVC200XPath('7.1', 1);
-End;
+end;
 
-Function GetVC6Bin: String;
-Begin
+function GetVC6Bin: string;
+begin
     Result := GetVC6Path(1);
-End;
+end;
 
-Function GetVC2010Lib: String;
-Begin
+function GetVC2010Lib: string;
+begin
     Result := GetVC200XPath('10.0', 2);
-End;
+end;
 
-Function GetVC2008Lib: String;
-Begin
+function GetVC2008Lib: string;
+begin
     Result := GetVC200XPath('9.0', 2);
-End;
+end;
 
-Function GetVC2005Lib: String;
-Begin
+function GetVC2005Lib: string;
+begin
     Result := GetVC200XPath('8.0', 2);
-End;
+end;
 
-Function GetVC2003Lib: String;
-Begin
+function GetVC2003Lib: string;
+begin
     Result := GetVC200XPath('7.1', 2);
-End;
+end;
 
-Function GetVC6Lib: String;
-Begin
+function GetVC6Lib: string;
+begin
     Result := GetVC6Path(2);
-End;
+end;
 
-Function GetTDMGCCDir: String;
-Var
+function GetTDMGCCDir: string;
+var
     Reg: TRegistry;
-Begin
+begin
 
     Reg := TRegistry.Create;
-    Try
+    try
         Reg.RootKey := HKEY_LOCAL_MACHINE;
-        If Reg.OpenKey('\Software\Microsoft\Windows\CurrentVersion\Uninstall\TDM-GCC', False) Then
-        Begin
+        if Reg.OpenKey('\Software\Microsoft\Windows\CurrentVersion\Uninstall\TDM-GCC', FALSE) then
+        begin
             Result := Reg.ReadString('InstallLocation');
-        End
-        Else
+        end
+        else
             Result := '';
 
         Reg.CloseKey;
-    Finally
+    finally
         Reg.Free;
-    End;
+    end;
 
-End;
+end;
 
-End.
+end.

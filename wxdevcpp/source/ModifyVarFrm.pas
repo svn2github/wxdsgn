@@ -17,11 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-Unit ModifyVarFrm;
+unit ModifyVarFrm;
 
-Interface
+interface
 
-Uses
+uses
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
     Dialogs, StdCtrls, Buttons, XPMenu, devcfg;
@@ -31,8 +31,8 @@ Uses
   QDialogs, QStdCtrls, QButtons;
 {$ENDIF}
 
-Type
-    TModifyVarForm = Class(TForm)
+type
+    TModifyVarForm = class(TForm)
         OkBtn: TBitBtn;
         CancelBtn: TBitBtn;
         NameLabel: TLabel;
@@ -42,31 +42,31 @@ Type
         XPMenu: TXPMenu;
         chkStopOnRead: TCheckBox;
         chkStopOnWrite: TCheckBox;
-        Procedure FormCreate(Sender: TObject);
-        Procedure NameEditKeyPress(Sender: TObject; Var Key: Char);
-        Procedure FormShow(Sender: TObject);
-    Private
+        procedure FormCreate(Sender: TObject);
+        procedure NameEditKeyPress(Sender: TObject; var Key: char);
+        procedure FormShow(Sender: TObject);
+    private
         { Private declarations }
         fActiveWindow: TWinControl;
-        Procedure LoadText;
-    Public
+        procedure LoadText;
+    public
         { Public declarations }
-        Property ActiveWindow: TWinControl Write fActiveWindow;
-    End;
+        property ActiveWindow: TWinControl write fActiveWindow;
+    end;
 
-Var
+var
     ModifyVarForm: TModifyVarForm;
 
-Implementation
+implementation
 
-Uses
+uses
     MultiLangSupport;
 
 {$R *.dfm}
 
-Procedure TModifyVarForm.LoadText;
-Begin
-    DesktopFont := True;
+procedure TModifyVarForm.LoadText;
+begin
+    DesktopFont := TRUE;
     XPMenu.Active := devData.XPTheme;
 
     Caption := Lang.Strings[ID_NV_MODIFYVALUE];
@@ -74,27 +74,27 @@ Begin
     ValueLabel.Caption := Lang.Strings[ID_NV_VARVALUE];
     OkBtn.Caption := Lang.Strings[ID_BTN_OK];
     CancelBtn.Caption := Lang.Strings[ID_BTN_CANCEL];
-End;
+end;
 
-Procedure TModifyVarForm.FormCreate(Sender: TObject);
-Begin
+procedure TModifyVarForm.FormCreate(Sender: TObject);
+begin
     ActiveWindow := NameEdit;
     LoadText;
-End;
+end;
 
-Procedure TModifyVarForm.NameEditKeyPress(Sender: TObject; Var Key: Char);
-Begin
-    If Key = #13 Then
-    Begin
+procedure TModifyVarForm.NameEditKeyPress(Sender: TObject; var Key: char);
+begin
+    if Key = #13 then
+    begin
         ModalResult := mrOK;
         Close;
-    End;
-End;
+    end;
+end;
 
-Procedure TModifyVarForm.FormShow(Sender: TObject);
-Begin
+procedure TModifyVarForm.FormShow(Sender: TObject);
+begin
     SetFocus;
     fActiveWindow.SetFocus;
-End;
+end;
 
-End.
+end.

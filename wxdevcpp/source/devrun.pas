@@ -17,11 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-Unit devrun;
+unit devrun;
 
-Interface
+interface
 
-Uses
+uses
 {$IFDEF WIN32}
     Classes, Windows, Dialogs, utils, SysUtils;
 {$ENDIF}
@@ -29,88 +29,88 @@ Uses
   Classes, QDialogs, utils, SysUtils;
 {$ENDIF}
 
-Type
-    TLineOutputEvent = Procedure(Sender: TObject; Const Line: String) Of Object;
+type
+    TLineOutputEvent = procedure(Sender: TObject; const Line: string) of object;
 
-    TDevRun = Class(TThread)
-    Private
+    TDevRun = class(TThread)
+    private
         hProcess: THandle;
-        TheMsg: String;
-        CurrentLine: String;
-        fExitCode: Cardinal;
+        TheMsg: string;
+        CurrentLine: string;
+        fExitCode: cardinal;
         FLineOutput: TLineOutputEvent;
         fCheckAbort: TCheckAbortFunc;
-    Protected
-        Procedure CallLineOutputEvent;
-        Procedure Execute; Override;
-        Procedure LineOutput(Line: String);
-        Procedure ShowError(Msg: String);
-        Procedure ShowMsg;
-    Public
-        Command: String;
-        Directory: String;
-        Output: String;
-        Procedure Terminate;
-        Property OnLineOutput: TLineOutputEvent Read FLineOutput Write FLineOutput;
-        Property OnCheckAbort: TCheckAbortFunc Read FCheckAbort Write FCheckAbort;
-        Property ExitCode: Cardinal Read fExitCode;
-    End;
+    protected
+        procedure CallLineOutputEvent;
+        procedure Execute; override;
+        procedure LineOutput(Line: string);
+        procedure ShowError(Msg: string);
+        procedure ShowMsg;
+    public
+        Command: string;
+        Directory: string;
+        Output: string;
+        procedure Terminate;
+        property OnLineOutput: TLineOutputEvent read FLineOutput write FLineOutput;
+        property OnCheckAbort: TCheckAbortFunc read FCheckAbort write FCheckAbort;
+        property ExitCode: cardinal read fExitCode;
+    end;
 
-Implementation
+implementation
 
-Procedure TDevRun.ShowMsg;
-Begin
+procedure TDevRun.ShowMsg;
+begin
     utils.ShowError(TheMsg);
-End;
+end;
 
-Procedure TDevRun.ShowError(Msg: String);
-Begin
+procedure TDevRun.ShowError(Msg: string);
+begin
     TheMsg := Msg;
     Synchronize(ShowMsg);
-End;
+end;
 
-Procedure TDevRun.Terminate;
-Begin
+procedure TDevRun.Terminate;
+begin
     TerminateProcess(hProcess, 1);
-    Inherited;
-End;
+    inherited;
+end;
 
-Procedure TDevRun.CallLineOutputEvent;
-Begin
+procedure TDevRun.CallLineOutputEvent;
+begin
     FLineOutput(Self, CurrentLine);
-End;
+end;
 
-Procedure TDevRun.LineOutput(Line: String);
-Begin
+procedure TDevRun.LineOutput(Line: string);
+begin
     CurrentLine := Line;
-    If Assigned(FLineOutput) Then
+    if Assigned(FLineOutput) then
         Synchronize(CallLineOutputEvent);
-End;
+end;
 
-Procedure TDevRun.Execute;
-Var
+procedure TDevRun.Execute;
+var
     tsi: TStartupInfo;
     tpi: TProcessInformation;
     nRead: DWORD;
-    aBuf: Array[0..101] Of Char;
+    aBuf: array[0..101] of char;
     sa: TSecurityAttributes;
     hOutputReadTmp, hOutputRead, hOutputWrite, hInputWriteTmp, hInputRead,
     hInputWrite, hErrorWrite: THandle;
-    FOutput: String;
-    CurrentLine: String;
-    bAbort: Boolean;
-Begin
+    FOutput: string;
+    CurrentLine: string;
+    bAbort: boolean;
+begin
     fExitCode := 0;
     hProcess := 0;
     FOutput := '';
     CurrentLine := '';
     sa.nLength := SizeOf(TSecurityAttributes);
-    sa.lpSecurityDescriptor := Nil;
-    sa.bInheritHandle := True;
+    sa.lpSecurityDescriptor := NIL;
+    sa.bInheritHandle := TRUE;
 
     CreatePipe(hOutputReadTmp, hOutputWrite, @sa, 0);
     DuplicateHandle(GetCurrentProcess(), hOutputWrite, GetCurrentProcess(),
-        @hErrorWrite, 0, True, DUPLICATE_SAME_ACCESS);
+        @hErrorWrite, 0, TRUE, DUPLICATE_SAME_ACCESS);
     CreatePipe(hInputRead, hInputWriteTmp, @sa, 0);
 
     // Create new output read handle and the input write handle. Set
@@ -118,27 +118,27 @@ Begin
     // the these handles; resulting in non-closeable handles to the pipes
     // being created.
     DuplicateHandle(GetCurrentProcess(), hOutputReadTmp, GetCurrentProcess(),
-        @hOutputRead, 0, False, DUPLICATE_SAME_ACCESS);
+        @hOutputRead, 0, FALSE, DUPLICATE_SAME_ACCESS);
     DuplicateHandle(GetCurrentProcess(), hInputWriteTmp, GetCurrentProcess(),
-        @hInputWrite, 0, False, DUPLICATE_SAME_ACCESS);
+        @hInputWrite, 0, FALSE, DUPLICATE_SAME_ACCESS);
     CloseHandle(hOutputReadTmp);
     CloseHandle(hInputWriteTmp);
 
     FillChar(tsi, SizeOf(TStartupInfo), 0);
     tsi.cb := SizeOf(TStartupInfo);
-    tsi.dwFlags := STARTF_USESTDHANDLES Or STARTF_USESHOWWINDOW;
+    tsi.dwFlags := STARTF_USESTDHANDLES or STARTF_USESHOWWINDOW;
     tsi.hStdInput := hInputRead;
     tsi.hStdOutput := hOutputWrite;
     tsi.hStdError := hErrorWrite;
 
-    If Not CreateProcess(Nil, Pchar(Command), @sa, @sa, True, 0,
-        Nil, Pchar(Directory),
-        tsi, tpi) Then
-    Begin
+    if not CreateProcess(NIL, pchar(Command), @sa, @sa, TRUE, 0,
+        NIL, pchar(Directory),
+        tsi, tpi) then
+    begin
         Output := 'Unable to run "' + Command + '": ' +
             SysErrorMessage(GetLastError);
         Exit;
-    End;
+    end;
 
     hProcess := tpi.hProcess;
 
@@ -149,46 +149,46 @@ Begin
     CloseHandle(hInputRead);
     CloseHandle(hErrorWrite);
 
-    bAbort := False;
-    Repeat
-        If Assigned(FCheckAbort) Then
+    bAbort := FALSE;
+    repeat
+        if Assigned(FCheckAbort) then
             FCheckAbort(bAbort);
-        If bAbort Then
-        Begin
+        if bAbort then
+        begin
             TerminateProcess(hProcess, 1);
             Break;
-        End;
+        end;
 
-        If (Not ReadFile(hOutputRead, aBuf, 16, nRead, Nil)) Or (nRead = 0) Then
-        Begin
-            If GetLastError = ERROR_BROKEN_PIPE Then
-            Begin
-                bAbort := True;
+        if (not ReadFile(hOutputRead, aBuf, 16, nRead, NIL)) or (nRead = 0) then
+        begin
+            if GetLastError = ERROR_BROKEN_PIPE then
+            begin
+                bAbort := TRUE;
                 Break;
-            End
-            Else
+            end
+            else
                 ShowError('Pipe read error, could not execute file');
-        End;
+        end;
         aBuf[nRead] := #0;
         Output := Output + aBuf;
 
         CurrentLine := CurrentLine + aBuf;
-        If (CurrentLine[Length(CurrentLine)] = #10) Then
-        Begin
+        if (CurrentLine[Length(CurrentLine)] = #10) then
+        begin
             Delete(CurrentLine, Length(CurrentLine), 1);
             LineOutput(CurrentLine);
             CurrentLine := '';
-        End;
-    Until bAbort;
+        end;
+    until bAbort;
 
     // GAR 14 Nov 2009 Testing Linux
-    If Not GetExitCodeProcess(tpi.hProcess, fExitCode) Then
+    if not GetExitCodeProcess(tpi.hProcess, fExitCode) then
         fExitCode := $FFFFFFFF;
 
     CloseHandle(hOutputRead);
     CloseHandle(hInputWrite);
     CloseHandle(tpi.hProcess);
     CloseHandle(tpi.hThread);
-End;
+end;
 
-End.
+end.

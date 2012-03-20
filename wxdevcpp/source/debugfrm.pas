@@ -17,11 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-Unit debugfrm;
+unit debugfrm;
 
-Interface
+interface
 
-Uses
+uses
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
     Dialogs, StdCtrls, ComCtrls, XPMenu;
@@ -31,44 +31,44 @@ Uses
   QDialogs, QStdCtrls, QComCtrls;
 {$ENDIF}
 
-Type
-    TDebugForm = Class(TForm)
+type
+    TDebugForm = class(TForm)
         lvItems: TListView;
         btnClose: TButton;
         XPMenu: TXPMenu;
-        Procedure FormShow(Sender: TObject);
-        Procedure btnCloseClick(Sender: TObject);
-        Procedure AddItem(Const Text, Value: String);
-    Private
+        procedure FormShow(Sender: TObject);
+        procedure btnCloseClick(Sender: TObject);
+        procedure AddItem(const Text, Value: string);
+    private
 
-    Public
+    public
         { Public declarations }
-    End;
+    end;
 
-Var
+var
     DebugForm: TDebugForm;
 
-Implementation
+implementation
 
-Uses
+uses
     utils, devcfg, main;
 
 {$R *.dfm}
 
-Procedure TDebugForm.AddItem(Const Text, Value: String);
-Var
+procedure TDebugForm.AddItem(const Text, Value: string);
+var
     Item: TListItem;
-Begin
+begin
     Item := lvItems.Items.Add;
     Item.Caption := Text;
     Item.SubItems.Add(Value);
-End;
+end;
 
-Procedure TDebugForm.FormShow(Sender: TObject);
-Begin
+procedure TDebugForm.FormShow(Sender: TObject);
+begin
     AddItem('Current Path', GetCurrentDir);
-    With devDirs Do
-    Begin
+    with devDirs do
+    begin
         AddItem('devDirs.Exec', Exec);
         AddItem('devDirs.Icons', Icons);
         AddItem('devDirs.Help', ExpandFileto(Help, Exec));
@@ -81,16 +81,16 @@ Begin
         AddItem('devDirs.Lib', Lib);
         AddItem('devDirs.OriginalPath', OriginalPath);
 
-        If devData.XPTheme Then
-            XPMenu.Active := True
-        Else
-            XPMenu.Active := False;
-    End;
-End;
+        if devData.XPTheme then
+            XPMenu.Active := TRUE
+        else
+            XPMenu.Active := FALSE;
+    end;
+end;
 
-Procedure TDebugForm.btnCloseClick(Sender: TObject);
-Begin
+procedure TDebugForm.btnCloseClick(Sender: TObject);
+begin
     close;
-End;
+end;
 
-End.
+end.

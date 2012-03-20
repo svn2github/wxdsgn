@@ -17,11 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-Unit helpfrm;
+unit helpfrm;
 
-Interface
+interface
 
-Uses
+uses
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
     Dialogs, ComCtrls, Buttons, StdCtrls, Grids, ValEdit, IniFiles, ExtCtrls,
@@ -33,8 +33,8 @@ Uses
   ;
 {$ENDIF}
 
-Type
-    TfrmHelpEdit = Class(TForm)
+type
+    TfrmHelpEdit = class(TForm)
         btnOk: TBitBtn;
         btnCancel: TBitBtn;
         btnHelp: TBitBtn;
@@ -51,148 +51,148 @@ Type
         btnBrowse: TSpeedButton;
         btnRename: TSpeedButton;
         lvFiles: TListView;
-        Procedure cboIconSelect(Sender: TObject);
-        Procedure grpMenuClick(Sender: TObject);
-        Procedure cbPopClick(Sender: TObject);
-        Procedure lvFilesSelectItem(Sender: TObject; Item: TListItem;
-            Selected: Boolean);
-        Procedure Browse;
-        Procedure lvFilesEditing(Sender: TObject; Item: TListItem;
-            Var AllowEdit: Boolean);
-        Procedure lvFilesEdited(Sender: TObject; Item: TListItem;
-            Var S: String);
-        Procedure FormCreate(Sender: TObject);
-        Procedure lvFilesChange(Sender: TObject; Item: TListItem;
+        procedure cboIconSelect(Sender: TObject);
+        procedure grpMenuClick(Sender: TObject);
+        procedure cbPopClick(Sender: TObject);
+        procedure lvFilesSelectItem(Sender: TObject; Item: TListItem;
+            Selected: boolean);
+        procedure Browse;
+        procedure lvFilesEditing(Sender: TObject; Item: TListItem;
+            var AllowEdit: boolean);
+        procedure lvFilesEdited(Sender: TObject; Item: TListItem;
+            var S: string);
+        procedure FormCreate(Sender: TObject);
+        procedure lvFilesChange(Sender: TObject; Item: TListItem;
             Change: TItemChange);
-        Procedure btnNewClick(Sender: TObject);
-        Procedure btnRenameClick(Sender: TObject);
-        Procedure btnBrowseClick(Sender: TObject);
-        Procedure btnDeleteClick(Sender: TObject);
-        Procedure FormClose(Sender: TObject; Var Action: TCloseAction);
-        Procedure cbSearchWordClick(Sender: TObject);
-        Procedure cbAffectF1Click(Sender: TObject);
-    Private
+        procedure btnNewClick(Sender: TObject);
+        procedure btnRenameClick(Sender: TObject);
+        procedure btnBrowseClick(Sender: TObject);
+        procedure btnDeleteClick(Sender: TObject);
+        procedure FormClose(Sender: TObject; var Action: TCloseAction);
+        procedure cbSearchWordClick(Sender: TObject);
+        procedure cbAffectF1Click(Sender: TObject);
+    private
         fINI: TINIFile;
-        fEditing: Boolean;
-        Procedure ReadHelpINI;
-        Procedure WriteHelpINI;
-        Procedure LoadText;
-    Public
-        Function Execute: Boolean;
-    End;
+        fEditing: boolean;
+        procedure ReadHelpINI;
+        procedure WriteHelpINI;
+        procedure LoadText;
+    public
+        function Execute: boolean;
+    end;
 
-Implementation
+implementation
 
-Uses datamod, devcfg, utils, version, MultiLangSupport, DevThemes, ImageTheme;
+uses datamod, devcfg, utils, version, MultiLangSupport, DevThemes, ImageTheme;
 
 {$R *.dfm}
 
-Type
-    TEntry = Class
-        Menu: Byte;
-        Icon: Smallint;
-        searchword: Boolean;
-        affectF1: Boolean;
-        pop: Boolean;
-    End;
+type
+    TEntry = class
+        Menu: byte;
+        Icon: smallint;
+        searchword: boolean;
+        affectF1: boolean;
+        pop: boolean;
+    end;
 
 { TfrmHelpEdit }
 
-Function TfrmHelpEdit.Execute: Boolean;
-Begin
+function TfrmHelpEdit.Execute: boolean;
+begin
     ReadHelpINI;
     cboIcon.Images := devImageThemes.CurrentTheme.HelpImages; //devTheme.Help;
-    If lvFiles.Items.Count > 0 Then
+    if lvFiles.Items.Count > 0 then
         lvFiles.Selected := lvFiles.Items[0];
-    lvFilesChange(Self, Nil, ctState);
+    lvFilesChange(Self, NIL, ctState);
     result := ShowModal = mrOk;
-    If result Then
+    if result then
         WriteHelpINI;
-End;
+end;
 
-Procedure TfrmHelpEdit.ReadHelpINI;
-Var
-    hfile: String;
+procedure TfrmHelpEdit.ReadHelpINI;
+var
+    hfile: string;
     hfiles: TStringList;
-    idx: Integer;
+    idx: integer;
     Item: TListItem;
     Entry: TEntry;
-Begin
-    hFile := ValidateFile(DEV_HELP_INI, devDirs.Config, True);
-    If hFile = '' Then
+begin
+    hFile := ValidateFile(DEV_HELP_INI, devDirs.Config, TRUE);
+    if hFile = '' then
         exit;
     fini := TINIFile.Create(hFile);
-    With fini Do
-    Begin
+    with fini do
+    begin
         hFiles := TStringList.Create;
-        Try
+        try
             ReadSections(hFiles);
-            For idx := 0 To pred(hFiles.Count) Do
-            Begin
+            for idx := 0 to pred(hFiles.Count) do
+            begin
                 hFile := ReadString(hFiles[idx], 'Path', '');
-                If hFile = '' Then
+                if hFile = '' then
                     continue;
-                If AnsiPos(HTTP, hFile) = 0 Then
+                if AnsiPos(HTTP, hFile) = 0 then
                     hFile := ValidateFile(hFile, devDirs.Help);
 
-                If (hFile <> '') Then
-                Begin
+                if (hFile <> '') then
+                begin
                     Item := lvFiles.Items.Add;
                     Item.Caption := hFiles[idx];
                     Item.SubItems.Add(hFile);
                     Entry := TEntry.Create;
                     Entry.Menu := ReadInteger(hFiles[idx], 'Menu', 0);
                     Entry.Icon := ReadInteger(hFiles[idx], 'Icon', 0);
-                    Entry.Pop := ReadBool(hFiles[idx], 'Pop', False);
-                    Entry.SearchWord := ReadBool(hFiles[idx], 'SearchWord', False);
-                    Entry.AffectF1 := ReadBool(hFiles[idx], 'AffectF1', False);
+                    Entry.Pop := ReadBool(hFiles[idx], 'Pop', FALSE);
+                    Entry.SearchWord := ReadBool(hFiles[idx], 'SearchWord', FALSE);
+                    Entry.AffectF1 := ReadBool(hFiles[idx], 'AffectF1', FALSE);
                     Item.Data := Entry;
-                End;
-            End;
-        Finally
+                end;
+            end;
+        finally
             hFiles.Free;
-        End;
-    End;
-End;
+        end;
+    end;
+end;
 
-Procedure TfrmHelpEdit.WriteHelpINI;
-Var
+procedure TfrmHelpEdit.WriteHelpINI;
+var
     section,
-    hFile: String;
+    hFile: string;
     tmp: TStringList;
-    idx: Integer;
+    idx: integer;
     Entry: TEntry;
-Begin
+begin
     //if not DirectoryExists(devDirs.Help) then
     //  CreateDir(devDirs.Help);
     //hFile := ValidateFile(DEV_HELP_INI, devDirs.Help, TRUE);
-    hFile := ValidateFile(DEV_HELP_INI, devDirs.Config, True);
-    If Not assigned(fINI) Then
-        If hFile <> '' Then
+    hFile := ValidateFile(DEV_HELP_INI, devDirs.Config, TRUE);
+    if not assigned(fINI) then
+        if hFile <> '' then
             fINI := TINIFile.Create(hFile)
-        Else
+        else
             fINI := TINIFile.Create(devDirs.Config + DEV_HELP_INI)
-    Else
+    else
         fINI := TINIFile.Create(devDirs.Config + DEV_HELP_INI);
 
-    If (Not assigned(fIni)) Then
-    Begin
+    if (not assigned(fIni)) then
+    begin
         MessageDlg('Coulnd''t create configuration file', mtError, [mbOk], 0);
         exit;
-    End;
+    end;
 
     tmp := TStringList.Create;
-    Try
+    try
         fINI.ReadSections(tmp);
-        For idx := 0 To tmp.Count - 1 Do
+        for idx := 0 to tmp.Count - 1 do
             fINI.EraseSection(tmp[idx]);
-    Finally
+    finally
         tmp.Free;
-    End;
+    end;
 
-    With fini Do
-        For idx := 0 To lvFiles.Items.Count - 1 Do
-        Begin
+    with fini do
+        for idx := 0 to lvFiles.Items.Count - 1 do
+        begin
             section := lvfiles.Items[idx].Caption;
             //WriteString(section, 'Path', ExtractRelativePath(devDirs.Help, lvFiles.Items[idx].SubItems[0]));
             WriteString(section, 'Path', ExtractRelativePath(devDirs.Config,
@@ -203,102 +203,102 @@ Begin
             WriteBool(section, 'SearchWord', Entry.SearchWord);
             WriteBool(section, 'AffectF1', Entry.AffectF1);
             WriteBool(section, 'Pop', Entry.Pop);
-        End;
-End;
+        end;
+end;
 
-Procedure TfrmHelpEdit.cboIconSelect(Sender: TObject);
-Begin
-    If assigned(lvFiles.Selected) Then
+procedure TfrmHelpEdit.cboIconSelect(Sender: TObject);
+begin
+    if assigned(lvFiles.Selected) then
         TEntry(lvFiles.Selected.Data).Icon := cboIcon.ItemIndex - 1;
-End;
+end;
 
-Procedure TfrmHelpEdit.grpMenuClick(Sender: TObject);
-Begin
-    If assigned(lvFiles.Selected) Then
+procedure TfrmHelpEdit.grpMenuClick(Sender: TObject);
+begin
+    if assigned(lvFiles.Selected) then
         TEntry(lvFiles.Selected.Data).Menu := grpMenu.ItemIndex + 1;
-End;
+end;
 
-Procedure TfrmHelpEdit.cbPopClick(Sender: TObject);
-Begin
-    If assigned(lvFiles.Selected) Then
+procedure TfrmHelpEdit.cbPopClick(Sender: TObject);
+begin
+    if assigned(lvFiles.Selected) then
         TEntry(lvFiles.Selected.Data).pop := cbPop.Checked;
-End;
+end;
 
-Procedure TfrmHelpEdit.lvFilesSelectItem(Sender: TObject; Item: TListItem;
-    Selected: Boolean);
-Begin
-    If assigned(Item) Then
-        With Item Do
-        Begin
+procedure TfrmHelpEdit.lvFilesSelectItem(Sender: TObject; Item: TListItem;
+    Selected: boolean);
+begin
+    if assigned(Item) then
+        with Item do
+        begin
             cboIcon.ItemIndex := TEntry(Data).Icon + 1;
             grpMenu.ItemIndex := TEntry(Data).Menu - 1;
             cbPop.Checked := TEntry(Data).pop;
             cbSearchWord.Checked := TEntry(Data).searchword;
             cbAffectF1.Checked := TEntry(Data).affectF1;
-        End;
-End;
+        end;
+end;
 
-Procedure TfrmHelpEdit.Browse;
-Var
+procedure TfrmHelpEdit.Browse;
+var
     Item: TListItem;
-    value: String;
+    value: string;
     data: TEntry;
-Begin
-    With dmMain.OpenDialog Do
-    Begin
+begin
+    with dmMain.OpenDialog do
+    begin
         Title := Lang[ID_NV_HELPFILE];
         Filter := flt_HELPS;
         InitialDir := ExtractFilePath(GetRealPath(value, devDirs.Help));
-        If Execute Then
-        Begin
-            If assigned(lvFiles.Selected) Then
+        if Execute then
+        begin
+            if assigned(lvFiles.Selected) then
                 Item := lvFiles.Selected
-            Else
-            Begin
+            else
+            begin
                 Item := lvFiles.Items.Add;
                 Item.SubItems.Add('');
                 Data := TEntry.Create;
                 Data.Menu := 0;
                 Data.Icon := 0;
-                Data.pop := False;
-                Data.searchword := False;
-                Data.affectF1 := False;
+                Data.pop := FALSE;
+                Data.searchword := FALSE;
+                Data.affectF1 := FALSE;
                 Item.Data := Data;
-                Item.Selected := True;
-            End;
+                Item.Selected := TRUE;
+            end;
 
-            If Item.SubItems.Count <> 0 Then
+            if Item.SubItems.Count <> 0 then
                 Item.SubItems.Add('');
 
             value := FileName;
             value := ExtractRelativePath(devDirs.Help, value);
-            If Item.Caption = '' Then
+            if Item.Caption = '' then
                 Item.Caption := ExtractFilename(value);
             Item.SubItems[0] := value;
-        End;
-    End;
-End;
+        end;
+    end;
+end;
 
-Procedure TfrmHelpEdit.lvFilesEditing(Sender: TObject; Item: TListItem;
-    Var AllowEdit: Boolean);
-Begin
-    fEditing := True;
-End;
+procedure TfrmHelpEdit.lvFilesEditing(Sender: TObject; Item: TListItem;
+    var AllowEdit: boolean);
+begin
+    fEditing := TRUE;
+end;
 
-Procedure TfrmHelpEdit.lvFilesEdited(Sender: TObject; Item: TListItem;
-    Var S: String);
-Begin
-    fEditing := False;
-End;
+procedure TfrmHelpEdit.lvFilesEdited(Sender: TObject; Item: TListItem;
+    var S: string);
+begin
+    fEditing := FALSE;
+end;
 
-Procedure TfrmHelpEdit.FormCreate(Sender: TObject);
-Begin
+procedure TfrmHelpEdit.FormCreate(Sender: TObject);
+begin
     LoadText;
-End;
+end;
 
-Procedure TfrmHelpEdit.LoadText;
-Begin
-    DesktopFont := True;
+procedure TfrmHelpEdit.LoadText;
+begin
+    DesktopFont := TRUE;
     XPMenu.Active := devData.XPTheme;
     Caption := Lang[ID_HE];
     lvFiles.Columns[0].Caption := Lang[ID_HE_COL1];
@@ -318,59 +318,59 @@ Begin
     btnOk.Caption := Lang[ID_BTN_OK];
     btnCancel.Caption := Lang[ID_BTN_CANCEL];
     btnHelp.Caption := Lang[ID_BTN_HELP];
-End;
+end;
 
-Procedure TfrmHelpEdit.lvFilesChange(Sender: TObject; Item: TListItem;
+procedure TfrmHelpEdit.lvFilesChange(Sender: TObject; Item: TListItem;
     Change: TItemChange);
-Begin
+begin
     btnRename.Enabled := Assigned(lvFiles.Selected);
     btnBrowse.Enabled := Assigned(lvFiles.Selected);
     btnDelete.Enabled := Assigned(lvFiles.Selected);
-End;
+end;
 
-Procedure TfrmHelpEdit.btnNewClick(Sender: TObject);
-Begin
-    lvFiles.Selected := Nil;
+procedure TfrmHelpEdit.btnNewClick(Sender: TObject);
+begin
+    lvFiles.Selected := NIL;
     Browse;
-End;
+end;
 
-Procedure TfrmHelpEdit.btnRenameClick(Sender: TObject);
-Begin
-    If assigned(lvFiles.Selected) Then
+procedure TfrmHelpEdit.btnRenameClick(Sender: TObject);
+begin
+    if assigned(lvFiles.Selected) then
         lvFiles.Selected.EditCaption;
-End;
+end;
 
-Procedure TfrmHelpEdit.btnBrowseClick(Sender: TObject);
-Begin
+procedure TfrmHelpEdit.btnBrowseClick(Sender: TObject);
+begin
     Browse;
-End;
+end;
 
-Procedure TfrmHelpEdit.btnDeleteClick(Sender: TObject);
-Begin
-    If (assigned(lvFiles.Selected)) Then
+procedure TfrmHelpEdit.btnDeleteClick(Sender: TObject);
+begin
+    if (assigned(lvFiles.Selected)) then
         lvFiles.Selected.Delete;
-End;
+end;
 
-Procedure TfrmHelpEdit.FormClose(Sender: TObject;
-    Var Action: TCloseAction);
-Begin
-    If lvFiles.IsEditing Then
-    Begin
+procedure TfrmHelpEdit.FormClose(Sender: TObject;
+    var Action: TCloseAction);
+begin
+    if lvFiles.IsEditing then
+    begin
         lvFiles.Selected.CancelEdit;
         Action := caNone;
-    End;
-End;
+    end;
+end;
 
-Procedure TfrmHelpEdit.cbSearchWordClick(Sender: TObject);
-Begin
-    If assigned(lvFiles.Selected) Then
+procedure TfrmHelpEdit.cbSearchWordClick(Sender: TObject);
+begin
+    if assigned(lvFiles.Selected) then
         TEntry(lvFiles.Selected.Data).SearchWord := cbSearchWord.Checked;
-End;
+end;
 
-Procedure TfrmHelpEdit.cbAffectF1Click(Sender: TObject);
-Begin
-    If assigned(lvFiles.Selected) Then
+procedure TfrmHelpEdit.cbAffectF1Click(Sender: TObject);
+begin
+    if assigned(lvFiles.Selected) then
         TEntry(lvFiles.Selected.Data).AffectF1 := cbAffectF1.Checked;
-End;
+end;
 
-End.
+end.

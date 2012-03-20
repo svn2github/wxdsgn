@@ -17,11 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-Unit CFGReg;
+unit CFGReg;
 
-Interface
+interface
 
-Uses
+uses
 {$IFDEF WIN32}
     Classes, Registry, Types, TypInfo, cfgTypes;
 {$ENDIF}
@@ -29,40 +29,40 @@ Uses
   Classes, Types, TypInfo, cfgTypes;
 {$ENDIF}
 
-Type
-    TCFGReg = Class(TObject)
-    Private
+type
+    TCFGReg = class(TObject)
+    private
         fOwner: TComponent; // assumes a TConfigData
         fReg: TRegistry;
-        Procedure ReadFromRegistry(Obj: TPersistent);
-        Procedure ReadObject(Const Name: String; Obj: TPersistent);
-        Function ReadSet(Const Name: String; TypeInfo: PTypeInfo): Integer;
-        Procedure ReadStrings(Const Name: String; value: TStrings);
-        Procedure WriteObject(Const Name: String; Obj: TPersistent);
-        Procedure WriteSet(Const Name: String; value: Integer;
+        procedure ReadFromRegistry(Obj: TPersistent);
+        procedure ReadObject(const Name: string; Obj: TPersistent);
+        function ReadSet(const Name: string; TypeInfo: PTypeInfo): integer;
+        procedure ReadStrings(const Name: string; value: TStrings);
+        procedure WriteObject(const Name: string; Obj: TPersistent);
+        procedure WriteSet(const Name: string; value: integer;
             TypeInfo: PTypeInfo);
-        Procedure WriteStrings(Const Name: String; value: TStrings);
-        Procedure WritetoRegistry(Obj: TPersistent); // Registry access object;
-    Public
-        Constructor Create(aOwner: TComponent);
-        Destructor Destroy; Override;
-        Procedure ReadConfig;
-        Procedure SaveConfig;
+        procedure WriteStrings(const Name: string; value: TStrings);
+        procedure WritetoRegistry(Obj: TPersistent); // Registry access object;
+    public
+        constructor Create(aOwner: TComponent);
+        destructor Destroy; override;
+        procedure ReadConfig;
+        procedure SaveConfig;
 
-        Procedure LoadObject(Var Obj: TCFGOptions);
-        Procedure SaveObject(Var Obj: TCFGOptions);
+        procedure LoadObject(var Obj: TCFGOptions);
+        procedure SaveObject(var Obj: TCFGOptions);
 
-        Function LoadSetting(Const key: String; Const Entry: String): String;
-            Overload;
-        Function LoadSetting(val: Boolean; Const key, Entry: String): String;
-            Overload;
-        Procedure SaveSetting(Const key: String; Const entry: String;
-            Const value: String);
-    End;
+        function LoadSetting(const key: string; const Entry: string): string;
+            overload;
+        function LoadSetting(val: boolean; const key, Entry: string): string;
+            overload;
+        procedure SaveSetting(const key: string; const entry: string;
+            const value: string);
+    end;
 
-Implementation
+implementation
 
-Uses
+uses
 {$IFDEF WIN32}
     CFGData, Graphics, SysUtils;
 {$ENDIF}
@@ -72,86 +72,86 @@ Uses
 
 { TCFGReg }
 
-Constructor TCFGReg.Create(aOwner: TComponent);
-Begin
+constructor TCFGReg.Create(aOwner: TComponent);
+begin
     fOwner := aOwner;
     fReg := TRegistry.Create;
-End;
+end;
 
-Destructor TCFGReg.Destroy;
-Begin
-    If Assigned(fReg) Then
+destructor TCFGReg.Destroy;
+begin
+    if Assigned(fReg) then
         fReg.Free;
-    Inherited;
-End;
+    inherited;
+end;
 
-Procedure TCFGReg.ReadConfig;
-Var
-    RegKey: String;
-Begin
+procedure TCFGReg.ReadConfig;
+var
+    RegKey: string;
+begin
     RegKey := TConfigData(fOwner).BaseRegKey;
-    If RegKey = '' Then
-        Raise EConfigDataError.Create('ConfigData: Registry Key not set.');
-    With fReg Do
-        Try
+    if RegKey = '' then
+        raise EConfigDataError.Create('ConfigData: Registry Key not set.');
+    with fReg do
+        try
             RootKey := TConfigData(fOwner).Root;
-            If OpenKey(RegKey, False) Then
+            if OpenKey(RegKey, FALSE) then
                 ReadFromRegistry(fOwner);
-        Finally
+        finally
             CloseKey;
-        End;
-End;
+        end;
+end;
 
-Procedure TCFGReg.SaveConfig;
-Var
-    RegKey: String;
-Begin
+procedure TCFGReg.SaveConfig;
+var
+    RegKey: string;
+begin
     RegKey := TConfigData(fOwner).BaseRegKey;
-    If RegKey = '' Then
-        Raise EConfigDataError.Create('ConfigData: Registry Key not set.');
-    With fReg Do
-        Try
+    if RegKey = '' then
+        raise EConfigDataError.Create('ConfigData: Registry Key not set.');
+    with fReg do
+        try
             RootKey := TConfigData(fOwner).Root;
-            If OpenKey(RegKey, False) Then
+            if OpenKey(RegKey, FALSE) then
                 WritetoRegistry(fOwner);
-        Finally
+        finally
             CloseKey;
-        End;
-End;
+        end;
+end;
 
 // Reading methods
 
-Procedure TCFGReg.ReadFromRegistry(Obj: TPersistent);
-Var
+procedure TCFGReg.ReadFromRegistry(Obj: TPersistent);
+var
     idx,
     idx2,
-    Count: Integer;
-    PropName: String;
+    Count: integer;
+    PropName: string;
     CD: TConfigData;
-Begin
+begin
     Count := GetPropCount(Obj);
     CD := TConfigData(fOwner);
-    For idx := 0 To pred(Count) Do
-    Begin
+    for idx := 0 to pred(Count) do
+    begin
         PropName := GetPropName(Obj, idx);
-        If Obj Is TFont Then
-        Begin
+        if Obj is TFont then
+        begin
             idx2 := CD.IgnoreProperties.Indexof('Name');
-            If idx2 <> -1 Then
+            if idx2 <> -1 then
                 CD.IgnoreProperties[idx2] := 'Height';
-        End
-        Else
-        Begin
+        end
+        else
+        begin
             idx2 := CD.IgnoreProperties.Indexof('Height');
-            If idx2 <> -1 Then
+            if idx2 <> -1 then
                 CD.IgnoreProperties[idx2] := 'Name';
-        End;
+        end;
 
-        If (CD.IgnoreProperties.Indexof(PropName) > -1)
-            Or (Not fReg.ValueExists(PropName)) Then
+        if (CD.IgnoreProperties.Indexof(PropName) > -1)
+            or (not fReg.ValueExists(PropName)) then
             continue;
 
-        Case PropType(Obj, PropName) Of
+        case PropType(Obj, PropName) of
             tkString,
             tkLString,
             tkWString:
@@ -173,104 +173,104 @@ Begin
                     GetPropInfo(Obj, PropName, [tkSet])^.PropType^));
 
             tkClass:
-            Begin
-                If TPersistent(GetOrdProp(Obj, PropName)) Is TStrings Then
+            begin
+                if TPersistent(GetOrdProp(Obj, PropName)) is TStrings then
                     ReadStrings(PropName, TStrings(GetOrdProp(Obj, PropName)))
-                Else
+                else
                     ReadObject(PropName, TPersistent(GetOrdProp(Obj, PropName)));
-            End;
-        End;
-    End;
-End;
+            end;
+        end;
+    end;
+end;
 
-Function TCFGReg.ReadSet(Const Name: String; TypeInfo: PTypeInfo): Integer;
-Var
-    OldKey: String;
-    idx: Integer;
-    value: Integer;
-Begin
+function TCFGReg.ReadSet(const Name: string; TypeInfo: PTypeInfo): integer;
+var
+    OldKey: string;
+    idx: integer;
+    value: integer;
+begin
     TypeInfo := GetTypeData(TypeInfo).CompType^;
     OldKey := '\' + fReg.CurrentPath;
     value := 0;
-    Try
-        If Not freg.OpenKey(Name, False) Then
-            Raise ERegistryException.Createfmt(
+    try
+        if not freg.OpenKey(Name, FALSE) then
+            raise ERegistryException.Createfmt(
                 'ConfigData(RegReadSet): Cannot read subkey %s', [Name]);
 
-        With GetTypeData(TypeInfo)^ Do
-            For idx := MinValue To MaxValue Do
-                If ReadBoolString(fReg.ReadString(GetENumName(TypeInfo, idx))) Then
+        with GetTypeData(TypeInfo)^ do
+            for idx := MinValue to MaxValue do
+                if ReadBoolString(fReg.ReadString(GetENumName(TypeInfo, idx))) then
                     include(TIntegerSet(value), idx);
-    Finally
+    finally
         result := value;
-        fReg.OpenKey(OldKey, False);
-    End;
-End;
+        fReg.OpenKey(OldKey, FALSE);
+    end;
+end;
 
-Procedure TCFGREg.ReadStrings(Const Name: String; value: TStrings);
-Var
-    OldKey: String;
-Begin
+procedure TCFGREg.ReadStrings(const Name: string; value: TStrings);
+var
+    OldKey: string;
+begin
     value.BeginUpdate;
     OldKey := '\' + fReg.CurrentPath;
-    Try
+    try
         value.Clear;
-        If Not fReg.OpenKey(Name, False) Then
-            Raise ERegistryException.Createfmt(
+        if not fReg.OpenKey(Name, FALSE) then
+            raise ERegistryException.Createfmt(
                 'ConfigData(RegReadStrings): Cannot open subkey %s', [Name]);
 
         fReg.GetValueNames(value);
-    Finally
+    finally
         value.EndUpdate;
-        fReg.OpenKey(OldKey, False);
-    End;
-End;
+        fReg.OpenKey(OldKey, FALSE);
+    end;
+end;
 
-Procedure TCFGReg.ReadObject(Const Name: String; Obj: TPersistent);
-Var
-    OldKey: String;
-Begin
+procedure TCFGReg.ReadObject(const Name: string; Obj: TPersistent);
+var
+    OldKey: string;
+begin
     OldKey := '\' + fReg.CurrentPath;
-    Try
-        If fReg.OpenKey(Name, False) Then
+    try
+        if fReg.OpenKey(Name, FALSE) then
             ReadFromRegistry(Obj);
-    Finally
-        fReg.OpenKey(Oldkey, False);
-    End;
-End;
+    finally
+        fReg.OpenKey(Oldkey, FALSE);
+    end;
+end;
 
 // Writing Methods
 
-Procedure TCFGReg.WritetoRegistry(Obj: TPersistent);
-Var
+procedure TCFGReg.WritetoRegistry(Obj: TPersistent);
+var
     idx,
     idx2,
-    Count: Integer;
-    PropName: String;
+    Count: integer;
+    PropName: string;
     CD: TConfigData;
-Begin
+begin
     Count := GetPropCount(Obj);
     CD := TConfigData(fOwner);
 
-    For idx := 0 To pred(Count) Do
-    Begin
+    for idx := 0 to pred(Count) do
+    begin
         PropName := GetPropName(Obj, idx);
-        If Obj Is TFont Then
-        Begin
+        if Obj is TFont then
+        begin
             idx2 := CD.IgnoreProperties.Indexof('Name');
-            If idx2 <> -1 Then
+            if idx2 <> -1 then
                 CD.IgnoreProperties[idx2] := 'Height';
-        End
-        Else
-        Begin
+        end
+        else
+        begin
             idx2 := CD.IgnoreProperties.Indexof('Height');
-            If idx2 <> -1 Then
+            if idx2 <> -1 then
                 CD.IgnoreProperties[idx2] := 'Name';
-        End;
+        end;
 
-        If (CD.IgnoreProperties.Indexof(PropName) > -1) Then
+        if (CD.IgnoreProperties.Indexof(PropName) > -1) then
             continue;
-        Case PropType(Obj, PropName) Of
+        case PropType(Obj, PropName) of
             tkString,
             tkLString,
             tkWString:
@@ -292,170 +292,170 @@ Begin
                     GetPropInfo(Obj, PropName, [tkSet])^.PropType^);
 
             tkClass:
-            Begin
-                If TPersistent(GetOrdProp(Obj, PropName)) Is TStrings Then
+            begin
+                if TPersistent(GetOrdProp(Obj, PropName)) is TStrings then
                     WriteStrings(PropName, TStrings(GetOrdProp(Obj, PropName)))
-                Else
+                else
                     WriteObject(PropName, TPersistent(GetOrdProp(Obj, PropName)));
-            End;
-        End;
-    End;
-End;
+            end;
+        end;
+    end;
+end;
 
-Procedure TCFGReg.WriteSet(Const Name: String; value: Integer;
+procedure TCFGReg.WriteSet(const Name: string; value: integer;
     TypeInfo: PTypeInfo);
-Var
-    OldKey: String;
-    idx: Integer;
-Begin
+var
+    OldKey: string;
+    idx: integer;
+begin
     TypeInfo := GetTypeData(TypeInfo)^.CompType^;
     OldKey := '\' + fReg.CurrentPath;
-    Try
-        If Not fReg.OpenKey(Name, True) Then
-            Raise ERegistryException.Createfmt(
+    try
+        if not fReg.OpenKey(Name, TRUE) then
+            raise ERegistryException.Createfmt(
                 'ConfigData(RegSaveSet): Cannot create subkey %s', [name]);
 
-        With GetTypeData(TypeInfo)^ Do
-            For idx := MinValue To MaxValue Do
+        with GetTypeData(TypeInfo)^ do
+            for idx := MinValue to MaxValue do
                 fReg.WriteString(GetENumName(TypeInfo, idx),
-                    boolStr[idx In TIntegerSet(value)]);
-    Finally
-        fReg.OpenKey(OldKey, False);
-    End;
-End;
+                    boolStr[idx in TIntegerSet(value)]);
+    finally
+        fReg.OpenKey(OldKey, FALSE);
+    end;
+end;
 
-Procedure TCFGReg.WriteStrings(Const Name: String; value: TStrings);
-Var
-    OldKey: String;
-    idx: Integer;
-Begin
-    If value.Count <= 0 Then
+procedure TCFGReg.WriteStrings(const Name: string; value: TStrings);
+var
+    OldKey: string;
+    idx: integer;
+begin
+    if value.Count <= 0 then
         exit;
     OldKey := '\' + fReg.CurrentPath;
-    Try
-        If Not fReg.OpenKey(Name, True) Then
-            Raise ERegistryException.Createfmt(
+    try
+        if not fReg.OpenKey(Name, TRUE) then
+            raise ERegistryException.Createfmt(
                 'ConfigData(RegSaveStrings): Cannot create %s', [name]);
 
-        For idx := 0 To pred(value.Count) Do
+        for idx := 0 to pred(value.Count) do
             fReg.WriteString(value[idx], '');
-    Finally
-        fReg.OpenKey(OldKey, False);
-    End;
-End;
+    finally
+        fReg.OpenKey(OldKey, FALSE);
+    end;
+end;
 
-Procedure TCFGReg.WriteObject(Const Name: String; Obj: TPersistent);
+procedure TCFGReg.WriteObject(const Name: string; Obj: TPersistent);
 
-    Function WritetheObject(Obj: TPersistent): Boolean;
-    Var
-        idx, c, Count: Integer;
-    Begin
-        result := False;
-        If Not assigned(Obj) Then
+    function WritetheObject(Obj: TPersistent): boolean;
+    var
+        idx, c, Count: integer;
+    begin
+        result := FALSE;
+        if not assigned(Obj) then
             exit;
         Count := GetPropCount(Obj);
-        If Count <= 0 Then
+        if Count <= 0 then
             exit;
         c := Count;
-        For idx := 0 To pred(Count) Do
-            If TConfigData(fOwner).IgnoreProperties.Indexof(
-                GetPropName(Obj, idx)) > -1 Then
+        for idx := 0 to pred(Count) do
+            if TConfigData(fOwner).IgnoreProperties.Indexof(
+                GetPropName(Obj, idx)) > -1 then
                 dec(c);
 
         result := c > 0;
-    End;
+    end;
 
-Var
-    OldKey: String;
-Begin
-    If Not WritetheObject(Obj) Then
+var
+    OldKey: string;
+begin
+    if not WritetheObject(Obj) then
         exit;
     OldKey := '\' + fReg.CurrentPath;
-    Try
-        If Not fReg.OpenKey(Name, True) Then
-            Raise  ERegistryException.Createfmt(
+    try
+        if not fReg.OpenKey(Name, TRUE) then
+            raise  ERegistryException.Createfmt(
                 '(ConfigData(RegSaveObj): Cannot create %s', [name]);
 
         WritetoRegistry(Obj);
-    Finally
-        fReg.OpenKey(OldKey, False);
-    End;
-End;
+    finally
+        fReg.OpenKey(OldKey, FALSE);
+    end;
+end;
 
 // Public access methods
 
-Function TCFGReg.LoadSetting(Const key, Entry: String): String;
-Var
-    OldKey: String;
-Begin
+function TCFGReg.LoadSetting(const key, Entry: string): string;
+var
+    OldKey: string;
+begin
     OldKey := '\' + fReg.CurrentPath;
-    Try
-        If fReg.OpenKey(Key, False) Then
+    try
+        if fReg.OpenKey(Key, FALSE) then
             result := fReg.ReadString(Entry)
-        Else
+        else
             result := '';
-    Finally
-        fReg.OpenKey(Oldkey, False);
-    End;
-End;
+    finally
+        fReg.OpenKey(Oldkey, FALSE);
+    end;
+end;
 
-Function TCFGReg.LoadSetting(val: Boolean; Const key, Entry: String): String;
-Var
-    OldKey: String;
-Begin
+function TCFGReg.LoadSetting(val: boolean; const key, Entry: string): string;
+var
+    OldKey: string;
+begin
     OldKey := '\' + fReg.CurrentPath;
-    Try
-        If fReg.OpenKey(Key, False) Then
+    try
+        if fReg.OpenKey(Key, FALSE) then
             result := fReg.ReadString(Entry)
-        Else
-        Begin
-            If val Then
+        else
+        begin
+            if val then
                 result := '1'
-            Else
+            else
                 result := '';
-        End
-    Finally
-        fReg.OpenKey(Oldkey, False);
-    End;
-End;
+        end
+    finally
+        fReg.OpenKey(Oldkey, FALSE);
+    end;
+end;
 
-Procedure TCFGReg.LoadObject(Var Obj: TCFGOptions);
-Var
-    OldKey: String;
-Begin
+procedure TCFGReg.LoadObject(var Obj: TCFGOptions);
+var
+    OldKey: string;
+begin
     Oldkey := '\' + fReg.CurrentPath;
-    Try
+    try
         ReadObject(Obj.Name, Obj);
-    Finally
-        fReg.OpenKey(Oldkey, False);
-    End;
-End;
+    finally
+        fReg.OpenKey(Oldkey, FALSE);
+    end;
+end;
 
-Procedure TCFGReg.SaveObject(Var Obj: TCFGOptions);
-Var
-    OldKey: String;
-Begin
-    If Not assigned(Obj) Then
+procedure TCFGReg.SaveObject(var Obj: TCFGOptions);
+var
+    OldKey: string;
+begin
+    if not assigned(Obj) then
         exit;
     Oldkey := '\' + fReg.CurrentPath;
-    Try
+    try
         WriteObject(Obj.Name, Obj);
-    Finally
-        fReg.OpenKey(Oldkey, False);
-    End;
-End;
+    finally
+        fReg.OpenKey(Oldkey, FALSE);
+    end;
+end;
 
-Procedure TCFGReg.SaveSetting(Const key, entry, value: String);
-Var
-    Oldkey: String;
-Begin
+procedure TCFGReg.SaveSetting(const key, entry, value: string);
+var
+    Oldkey: string;
+begin
     OldKey := '\' + fReg.CurrentPath;
-    Try
-        If fReg.OpenKey(Key, True) Then
+    try
+        if fReg.OpenKey(Key, TRUE) then
             fReg.WriteString(Entry, Value);
-    Finally
-        fReg.OpenKey(OldKey, False);
-    End;
-End;
+    finally
+        fReg.OpenKey(OldKey, FALSE);
+    end;
+end;
 
-End.
+end.

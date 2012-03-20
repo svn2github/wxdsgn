@@ -41,11 +41,11 @@
 
 ========================================================
 }
-Unit hh_funcs;
+unit hh_funcs;
 
-Interface
+interface
 
-Uses Windows,   //This line will not compile under Delphi 1 -- D1 is not supported
+uses Windows,   //This line will not compile under Delphi 1 -- D1 is not supported
     SysUtils,
     Classes,
     Forms,
@@ -106,123 +106,123 @@ Uses Windows,   //This line will not compile under Delphi 1 -- D1 is not support
 
 
 { Host Type }
-Type THostType = (htHHAPI, htKeyHHexe, htHHexe);
+type THostType = (htHHAPI, htKeyHHexe, htHHexe);
 
 { HH comand line prefix}
-Type TPrefixType = (ptNone, ptIE3, ptIE4);
+type TPrefixType = (ptNone, ptIE3, ptIE4);
 
 {Exports}
-Procedure HHCloseAll;
+procedure HHCloseAll;
 
-Function HHDisplayTopic(aChmFile, aTopic, aWinDef: String;
-    aHostType: THostType): Integer;
-Function HHHelpContext(aChmFile: String; aContextID: DWord;
-    aWinDef: String; aHostType: THostType): Integer;
+function HHDisplayTopic(aChmFile, aTopic, aWinDef: string;
+    aHostType: THostType): integer;
+function HHHelpContext(aChmFile: string; aContextID: DWord;
+    aWinDef: string; aHostType: THostType): integer;
 
-Function HHTopic(aCHMPath: String; aHostType: THostType): Integer;
-Function HHContext(aChmPath: String; aContextId: Integer;
-    aHostType: THostType): Integer;
+function HHTopic(aCHMPath: string; aHostType: THostType): integer;
+function HHContext(aChmPath: string; aContextId: integer;
+    aHostType: THostType): integer;
 
-Function HHFormat(aChmFile, aTopic, aWinDef: String;
-    aPrefixType: TPrefixType): String;
-Procedure HHSlitCmdStr(s: String; Var aChmFile, aTopic, aWinDef: String);
+function HHFormat(aChmFile, aTopic, aWinDef: string;
+    aPrefixType: TPrefixType): string;
+procedure HHSlitCmdStr(s: string; var aChmFile, aTopic, aWinDef: string);
 //typo kept for backward compatibility
-Procedure HHSplitCmdStr(s: String; Var aChmFile, aTopic, aWinDef: String);
+procedure HHSplitCmdStr(s: string; var aChmFile, aTopic, aWinDef: string);
 
-Procedure HHShowError(err: Integer);
+procedure HHShowError(err: integer);
 
 
 {Callbacks available for THookHelpSystem}
-Type
-    THelpProcCallback1 = Procedure(Data: Longint);
-    THelpProcCallback2 = Procedure(Data: Longint; X, Y: Integer);
+type
+    THelpProcCallback1 = procedure(Data: longint);
+    THelpProcCallback2 = procedure(Data: longint; X, Y: integer);
 
 
 {THookHelpSystem}
-Type
-    THookHelpSystem = Class(TObject)
-    Private
+type
+    THookHelpSystem = class(TObject)
+    private
         FOldHelpEvent: THelpEvent;
-        FChmFile: String;
-        FWinDef: String;
+        FChmFile: string;
+        FWinDef: string;
         FHostType: THostType;
         FPopupXY: TPoint;
-        Function HelpHook(Command: Word; Data: Longint;
-            Var CallHelp: Boolean): Boolean;
-    Public
+        function HelpHook(Command: word; Data: longint;
+            var CallHelp: boolean): boolean;
+    public
         {Optional callback funcs called when Help events come in}
         HelpCallback1: THelpProcCallback1;
         HelpCallback2: THelpProcCallback2;
-        FOKToCallOldHelpEvent: Boolean;
+        FOKToCallOldHelpEvent: boolean;
 
-        Constructor Create(aDefChmFile, aDefWinDef: String; aHostType: THostType);
-        Destructor Destroy; Override;
+        constructor Create(aDefChmFile, aDefWinDef: string; aHostType: THostType);
+        destructor Destroy; override;
 
-        Function HelpContext(aContextId: DWord): Integer;
-        Function HelpTopic(aTopic: String): Integer;
-        Function HelpTopic2(aChmFile, aTopic, aWinDef: String): Integer;
-        Function HelpTopic3(aChmPath: String): Integer;
+        function HelpContext(aContextId: DWord): integer;
+        function HelpTopic(aTopic: string): integer;
+        function HelpTopic2(aChmFile, aTopic, aWinDef: string): integer;
+        function HelpTopic3(aChmPath: string): integer;
 
-        Property ChmFile: String Read FChmFile Write FChmFile;
-        Property WinDef: String Read FWinDef Write FWinDef;
-        Property HostType: THostType Read FHostType Write FHostType;
-    End;
+        property ChmFile: string read FChmFile write FChmFile;
+        property WinDef: string read FWinDef write FWinDef;
+        property HostType: THostType read FHostType write FHostType;
+    end;
 
     {General purpose Log File}
-    TDLogFile = Class
-    Private
-        FFilename: String;
-        FDebugMode: Boolean;
-        FTimeStamp: Boolean;
-        FHeaderDump: Boolean;
-        FAppendMode: Boolean;
-    Public
-        Constructor Create(aFilename: String; aDebugMode: Boolean;
-            aTimeStamp: Boolean; aHeaderDump, aAppendMode: Boolean);
-        Destructor Destroy; Override;
-        Procedure CopyLogTo(aNewFilename: String);
-        Procedure DebugOut(msgStr: String; Const Args: Array Of Const);
-        Procedure DebugOut2(msgStr: String; Const Args: Array Of Const);
-        Procedure ReportError(errStr: String; Const Args: Array Of Const);
-        Procedure Show;
-        Procedure Reset;
-        Function GetLogDir: String;
+    TDLogFile = class
+    private
+        FFilename: string;
+        FDebugMode: boolean;
+        FTimeStamp: boolean;
+        FHeaderDump: boolean;
+        FAppendMode: boolean;
+    public
+        constructor Create(aFilename: string; aDebugMode: boolean;
+            aTimeStamp: boolean; aHeaderDump, aAppendMode: boolean);
+        destructor Destroy; override;
+        procedure CopyLogTo(aNewFilename: string);
+        procedure DebugOut(msgStr: string; const Args: array of const);
+        procedure DebugOut2(msgStr: string; const Args: array of const);
+        procedure ReportError(errStr: string; const Args: array of const);
+        procedure Show;
+        procedure Reset;
+        function GetLogDir: string;
 
-        Property Filename: String Read FFilename Write FFilename;
-        Property DebugMode: Boolean Read FDebugMode Write FDebugMode;
+        property Filename: string read FFilename write FFilename;
+        property DebugMode: boolean read FDebugMode write FDebugMode;
         //Only log if this is true
-        Property HeaderDump: Boolean Read FHeaderDump Write FHeaderDump;
+        property HeaderDump: boolean read FHeaderDump write FHeaderDump;
         //Used by Reset
-        Property AppendMode: Boolean Read FAppendMode Write FAppendMode;
+        property AppendMode: boolean read FAppendMode write FAppendMode;
         //Used by Reset
-    End;
+    end;
 
 
 { See Module initialization }
-Var
+var
     { 'hhctrl.ocx' version info }
-    _hhInstalled: Boolean = False;          //Is Html Help 'hhctrl.ocx' installed
-    _hhVerStr: String = '';
+    _hhInstalled: boolean = FALSE;          //Is Html Help 'hhctrl.ocx' installed
+    _hhVerStr: string = '';
     //eg. '4.73.8252.1' or '' if not found
-    _hhMajVer: Word = 0;                    //eg. 4
-    _hhMinVer: Word = 0;                    //eg. 73
-    _hhBuildNo: Word = 0;                   //eg. 8252
-    _hhSubBuildNo: Word = 0;                //eg. 1
-    _hhFriendlyVerStr: String = '';         //eg. '1.2'
+    _hhMajVer: word = 0;                    //eg. 4
+    _hhMinVer: word = 0;                    //eg. 73
+    _hhBuildNo: word = 0;                   //eg. 8252
+    _hhSubBuildNo: word = 0;                //eg. 1
+    _hhFriendlyVerStr: string = '';         //eg. '1.2'
 
     { 'Shdocvw.dll' version info }
-    _ieInstalled: Boolean = False;          //Is Internet Explorer Installed
-    _ieVerStr: String = '';                 //eg. '5.00.0910.1309'
-    _ieFriendlyVerStr: String = '';         //eg. 'Internet Explorer 5'
+    _ieInstalled: boolean = FALSE;          //Is Internet Explorer Installed
+    _ieVerStr: string = '';                 //eg. '5.00.0910.1309'
+    _ieFriendlyVerStr: string = '';         //eg. 'Internet Explorer 5'
 
     { General }
-    _RunDir: String = '';
+    _RunDir: string = '';
     //applications run directory. Or Host EXE directory if part of DLL.
-    _ModulePath: String;
+    _ModulePath: string;
     //If part of DLL this is the full path to the DLL
-    _ModuleDir: String;
+    _ModuleDir: string;
     //If part of DLL this is the DLL Dir and different from _RunDir
-    _ModuleName: String;
+    _ModuleName: string;
 //If part of DLL this is the DLL name otherwise it is host exe name
 
 { Debug Log file
@@ -236,16 +236,16 @@ Var
     _HHDbgObj.AppendMode := false;     //Delete old file on reset
     _HHDbgObj.Reset;                   //Resets the Log file
 }
-Var
-    _HHDbgObj: TDLogFile = Nil;
+var
+    _HHDbgObj: TDLogFile = NIL;
 
 { Host Apps - Live in the Windows Dir }
-Const
+const
     HOST_HHEXE = 'HH.EXE';
     HOST_KEYHHEXE = 'KeyHH.EXE';
 
 { HH comand line prefix}
-Const
+const
     HH_PREFIX_IE4 = 'ms-its:';
     //IE4 and above compatible command line prefix
     HH_PREFIX_IE3 = 'mk:@MSITStore:';
@@ -253,7 +253,7 @@ Const
 
 
 { HH Errors }
-Const
+const
     HH_ERR_AllOK = 0;
     HH_ERR_HHNotInstalled = 1;     //Html Help is not installed on this PC
     HH_ERR_KeyHHexeNotFound = 2;
@@ -264,59 +264,59 @@ Const
 
 { exports - General functions }
 
-Procedure DosToUnix(Var filename: String);
-Procedure UnixToDos(Var filename: String);
-Function StrPosC(Const s: String; Const find: String): Integer;
-Function StrPosI(Const s: String; Const find: String): Integer;
-Function StrRepC(Var s: String; Const find, repl: String): Integer;
-Function StrRepI(Var s: String; Const find, repl: String): Integer;
-Function StrRepCA(Var s: String; Const find, repl: String): Integer;
-Function StrRepIA(Var s: String; Const find, repl: String): Integer;
-Procedure StripL(Var s: String; c: Char);
-Procedure StripR(Var s: String; c: Char);
-Procedure StripLR(Var s: String; c: Char);
-Function MkStr(c: Char; count: Integer): String;
-Function BoolToYN(b: Boolean): String;
+procedure DosToUnix(var filename: string);
+procedure UnixToDos(var filename: string);
+function StrPosC(const s: string; const find: string): integer;
+function StrPosI(const s: string; const find: string): integer;
+function StrRepC(var s: string; const find, repl: string): integer;
+function StrRepI(var s: string; const find, repl: string): integer;
+function StrRepCA(var s: string; const find, repl: string): integer;
+function StrRepIA(var s: string; const find, repl: string): integer;
+procedure StripL(var s: string; c: char);
+procedure StripR(var s: string; c: char);
+procedure StripLR(var s: string; c: char);
+function MkStr(c: char; count: integer): string;
+function BoolToYN(b: boolean): string;
 
-Function GetWinDir: String;
-Function GetWinSysDir: String;
-Function GetWinTempDir: String;
+function GetWinDir: string;
+function GetWinSysDir: string;
+function GetWinTempDir: string;
 
-Function VerCompare(va1, va2, va3, va4, vb1, vb2, vb3, vb4: Word): Integer;
-Function GetFileVer(aFilename: String; Var aV1, aV2, aV3, aV4: Word): String;
-Function GetFileVerStr(aFilename: String): String;
-Function GetIEVer(Var V1, V2, V3, V4: Word): String;
-Function Check_HH_Version(x1, x2, x3, x4: Integer): Integer;
-Function Check_IE_Version(x1, x2, x3, x4: Integer): Integer;
-Function GetHHFriendlyVer: String;
-Function GetIEFriendlyVer: String;
+function VerCompare(va1, va2, va3, va4, vb1, vb2, vb3, vb4: word): integer;
+function GetFileVer(aFilename: string; var aV1, aV2, aV3, aV4: word): string;
+function GetFileVerStr(aFilename: string): string;
+function GetIEVer(var V1, V2, V3, V4: word): string;
+function Check_HH_Version(x1, x2, x3, x4: integer): integer;
+function Check_IE_Version(x1, x2, x3, x4: integer): integer;
+function GetHHFriendlyVer: string;
+function GetIEFriendlyVer: string;
 
-Function Check_WMP_Version(x1, x2, x3, x4: Integer): Integer;
+function Check_WMP_Version(x1, x2, x3, x4: integer): integer;
 
-Function ShellExec(aFilename: String; aParams: String): Boolean;
-Function GetLastErrorStr: String;
-Function GetRegStr(rootkey: HKEY; Const key, dataName: String): String;
-Procedure PutRegStr(rootkey: HKEY; Const key, name, value: String);
-Function RegKeyNameExists(rootkey: HKEY; Const key, dataName: String): Boolean;
+function ShellExec(aFilename: string; aParams: string): boolean;
+function GetLastErrorStr: string;
+function GetRegStr(rootkey: HKEY; const key, dataName: string): string;
+procedure PutRegStr(rootkey: HKEY; const key, name, value: string);
+function RegKeyNameExists(rootkey: HKEY; const key, dataName: string): boolean;
 
-Procedure DebugOut(msgStr: String; Const Args: Array Of Const);
-Procedure DebugOut2(msgStr: String; Const Args: Array Of Const);
-Procedure ShowDebugFile;
-Procedure ResetDebugFile;
-Function IsDirWritable(aDir: String): Boolean;
-Function DirExists(dirName: String): Boolean;
+procedure DebugOut(msgStr: string; const Args: array of const);
+procedure DebugOut2(msgStr: string; const Args: array of const);
+procedure ShowDebugFile;
+procedure ResetDebugFile;
+function IsDirWritable(aDir: string): boolean;
+function DirExists(dirName: string): boolean;
 
-Procedure ShowMessage2(aMsg: String);
-Function MessageBox2(aMsg: String; Uflags: UInt): Integer;
-Function YNBox2(aMsg: String): Boolean;
+procedure ShowMessage2(aMsg: string);
+function MessageBox2(aMsg: string; Uflags: UInt): integer;
+function YNBox2(aMsg: string): boolean;
 
-Procedure ReportError(errStr: String; Const Args: Array Of Const);
+procedure ReportError(errStr: string; const Args: array of const);
 
 
 {$IFDEF D3PLUS} // -- Delphi >=3
 resourcestring
 {$ELSE}// -- Delphi 2
-Const
+const
 {$ENDIF}
 
     //Error Strings
@@ -343,44 +343,44 @@ Const
     st_GLE_GeneralFailure = 'General Failure';
 
 { Debug File Options }
-Var
-    _DebugMode: Boolean = False;
+var
+    _DebugMode: boolean = FALSE;
 
 
-Implementation
+implementation
 
-Uses
+uses
     hh;  //HH API
 
-Var
+var
     { Debug File Options}
-    DBG_TIMESTAMP: Boolean = True;
-    DBG_HEADERDUMP: Boolean = True;
-    DBG_APPENDMODE: Boolean = False;
-    DBG_FILENAME: String = '\HHDebug.txt';
-    DBG_DIR: String = '';   //set to app dir in module init
+    DBG_TIMESTAMP: boolean = TRUE;
+    DBG_HEADERDUMP: boolean = TRUE;
+    DBG_APPENDMODE: boolean = FALSE;
+    DBG_FILENAME: string = '\HHDebug.txt';
+    DBG_DIR: string = '';   //set to app dir in module init
 
 
 {Use this popuop means we don't have to use Borland Dialogs Unit
  See MessageBox help for more
  Set Uflags = 0 for OK
 }
-Function MessageBox2(aMsg: String; Uflags: UInt): Integer;
-Begin
-    Result := windows.MessageBox(0, Pchar(aMsg),
-        Pchar(application.Title), Uflags);
-End;
+function MessageBox2(aMsg: string; Uflags: UInt): integer;
+begin
+    Result := windows.MessageBox(0, pchar(aMsg),
+        pchar(application.Title), Uflags);
+end;
 
-Procedure ShowMessage2(aMsg: String);
-Begin
+procedure ShowMessage2(aMsg: string);
+begin
     MessageBox2(aMsg, 0);
-End;
+end;
 
-Function YNBox2(aMsg: String): Boolean;
-Begin
-    Result := windows.MessageBox(0, Pchar(aMsg), Pchar(application.Title),
-        MB_YESNO Or MB_ICONQUESTION) = IDYES;
-End;
+function YNBox2(aMsg: string): boolean;
+begin
+    Result := windows.MessageBox(0, pchar(aMsg), pchar(application.Title),
+        MB_YESNO or MB_ICONQUESTION) = IDYES;
+end;
 
 
 
@@ -419,10 +419,10 @@ End;
 
 [---------------------------------------------------------------------}
 
-Constructor THookHelpSystem.Create(aDefChmFile, aDefWinDef: String;
+constructor THookHelpSystem.Create(aDefChmFile, aDefWinDef: string;
     aHostType: THostType);
-Begin
-    Inherited Create;
+begin
+    inherited Create;
     FChmFile := aDefChmFile;
     FWinDef := aDefWinDef;
     FHostType := aHostType;
@@ -431,29 +431,29 @@ Begin
     FOldHelpEvent := Application.OnHelp;
     Application.OnHelp := HelpHook;
 
-    FOKToCallOldHelpEvent := False;
+    FOKToCallOldHelpEvent := FALSE;
 
     {Debug}
     DebugOut2('THookHelpSystem.Create("%s","%s", %d)',
         [aDefChmFile, aDefWinDef, ord(aHostType)]);
-End; { THookHelpSystem.Create }
+end; { THookHelpSystem.Create }
 
-Destructor THookHelpSystem.Destroy;
-Begin
+destructor THookHelpSystem.Destroy;
+begin
     {Must call this or get access violation}
-    If FHostType = htHHAPI Then
+    if FHostType = htHHAPI then
         hh_funcs.HHCloseAll;
 
     {Unhook our help}
     Application.OnHelp := FOldHelpEvent;
-    Inherited destroy;
+    inherited destroy;
     DebugOut2('THookHelpSystem.Destroy', ['']);
-End; { THookHelpSystem.Destroy }
+end; { THookHelpSystem.Destroy }
 
 { Debug aid - Commands to pass to WinHelp() }
-Function WinHelpCmdToStr(cmd: Integer): String;
-Begin
-    Case cmd Of
+function WinHelpCmdToStr(cmd: integer): string;
+begin
+    case cmd of
         HELP_CONTEXT:
             result := 'HELP_CONTEXT';       { Display topic in ulTopic  }
         HELP_QUIT:
@@ -487,88 +487,88 @@ Begin
             result := 'HELP_WM_HELP';
         HELP_SETPOPUP_POS:
             result := 'HELP_SETPOPUP_POS';
-    Else
+    else
         result := '??';
-    End;
+    end;
     result := inttostr(cmd) + ' (' + result + ')';
-End;
+end;
 
 
 { All application help calls to help come here }
-Function THookHelpSystem.HelpHook(Command: Word; Data: Longint;
-    Var CallHelp: Boolean): Boolean;
-Begin
-    result := True;
+function THookHelpSystem.HelpHook(Command: word; Data: longint;
+    var CallHelp: boolean): boolean;
+begin
+    result := TRUE;
     DebugOut2('THookHelpSystem.HelpHook(%s, %d)',
         [WinHelpCmdToStr(Command), Data]);
 
     //new: 19/4/2003 - Call old help event
-    If FOKToCallOldHelpEvent And Assigned(FOldHelpEvent) Then
+    if FOKToCallOldHelpEvent and Assigned(FOldHelpEvent) then
         result := FOldHelpEvent(Command, Data, CallHelp);
 
-    CallHelp := False;
-    Case Command Of
+    CallHelp := FALSE;
+    case Command of
         Help_Context:      //help button
-        Begin
-            If Assigned(HelpCallback1)
-            Then
+        begin
+            if Assigned(HelpCallback1)
+            then
                 HelpCallback1(Data)           //Call back
-            Else Self.HelpContext(Data);     //Call help
-        End;
+            else Self.HelpContext(Data);     //Call help
+        end;
         HELP_SETPOPUP_POS: //call #1 of F1 Popup (Whats This) help
             FPopupXY := SmallPointToPoint(TSmallPoint(Data));
         //data = x,y pos for popup
         Help_ContextPopup: //call #2 of F1 Popup (Whats This) help
-        Begin
-            If Assigned(HelpCallback2)
-            Then
+        begin
+            if Assigned(HelpCallback2)
+            then
                 HelpCallback2(Data, FPopupXY.X, FPopupXY.Y)   //Call back
-            Else Self.HelpContext(Data);                       //Call help
-        End
-    Else
-        CallHelp := True; //Default handling - WinHelp
-    End;
-End; { THookHelpSystem.HelpHook }
+            else Self.HelpContext(Data);                       //Call help
+        end
+    else
+        CallHelp := TRUE; //Default handling - WinHelp
+    end;
+end; { THookHelpSystem.HelpHook }
 
 
 { No need to call this directly. Instead call Application.HelpContext(xx) and it will call this
   function because of the hook we have installed.
   Uses ChmFile, WinDef & Hosttype specified by create}
-Function THookHelpSystem.HelpContext(aContextId: DWord): Integer;
-Begin
+function THookHelpSystem.HelpContext(aContextId: DWord): integer;
+begin
     result := HHHelpContext(FChmFile, aContextId, FWinDef, FHostType);
     HHShowError(result);
-End;
+end;
 
 {Show a help topic - 1
  Uses ChmFile, Topic, WinDef & HostType specified by create}
-Function THookHelpSystem.HelpTopic(aTopic: String): Integer;
-Begin
+function THookHelpSystem.HelpTopic(aTopic: string): integer;
+begin
     result := HHDisplayTopic(FChmFile, aTopic, FWinDef, FHostType);
     HHShowError(result);
-End;
+end;
 
 {Show a help topic - 2
  overrides default Chm and WinDef - still uses initially specified Host Type}
-Function THookHelpSystem.HelpTopic2(aChmFile, aTopic, aWinDef:
-    String): Integer;
-Begin
+function THookHelpSystem.HelpTopic2(aChmFile, aTopic, aWinDef:
+    string): integer;
+begin
     result := HHDisplayTopic(aChmFile, aTopic, aWinDef, FHostType);
-End;
+end;
 
 {Show a help topic - 3
  overrides default Chm and WinDef - Specify a full path EG. c:\help\help.chm::/htm/topic.htm}
-Function THookHelpSystem.HelpTopic3(aChmPath: String): Integer;
-Begin
+function THookHelpSystem.HelpTopic3(aChmPath: string): integer;
+begin
     Result := HHTopic(aCHMPath, FHostType);
-End;
+end;
 
 
 { Show Error }
-Procedure HHShowError(err: Integer);
-Var s: String;
-Begin
-    Case err Of
+procedure HHShowError(err: integer);
+var s: string;
+begin
+    case err of
         HH_ERR_AllOK:
             s := '';
         HH_ERR_HHNotInstalled:
@@ -577,15 +577,15 @@ Begin
             s := st_HH_ERR_KeyHHexeNotFound;
         HH_ERR_HHexeNotFound:
             s := st_HH_ERR_HHexeNotFound;
-    Else
+    else
         s := st_HH_ERR_Unknown;
-    End;
-    If s <> '' Then
-    Begin
-        MessageBox2(s, MB_OK Or MB_ICONWARNING);
+    end;
+    if s <> '' then
+    begin
+        MessageBox2(s, MB_OK or MB_ICONWARNING);
         DebugOut2('HHShowError(%d), "%s"', [err, s]);
-    End;
-End;
+    end;
+end;
 
 
 {---------------------------------------------------------------------]
@@ -601,15 +601,15 @@ End;
  Warning: Call this from the mainform OnCloseQuery NOT the OnDestroy.
    This gives more time for the HH API Close thread to return before closing the link to the DLL library.
 }
-Procedure HHCloseAll;
-Begin
-    If HH.HHCtrlHandle <> 0 Then
+procedure HHCloseAll;
+begin
+    if HH.HHCtrlHandle <> 0 then
         //20-Jan-2001, Don't call HH API if no API available
-    Begin
-        HH.HtmlHelp(0, Nil, HH_CLOSE_ALL, 0);
+    begin
+        HH.HtmlHelp(0, NIL, HH_CLOSE_ALL, 0);
         Sleep(0);   //17-Dec-2001 fix timing problem - bug where HH going off on a thread
-    End;
-End;
+    end;
+end;
 
 { HHDisplayTopic()
   Display a Topic from the CHM file using a Window Definition
@@ -640,21 +640,21 @@ End;
   Example:
       HHDisplayTopic('windows.chm','about_magnify.htm','windefault', htHHAPI);
 }
-Function HHDisplayTopic(aChmFile, aTopic, aWinDef: String;
-    aHostType: THostType): Integer;
-Var target: String;
-Begin
+function HHDisplayTopic(aChmFile, aTopic, aWinDef: string;
+    aHostType: THostType): integer;
+var target: string;
+begin
     //Showmessage(format('%s, %s, %s, %d',[aChmFile, aTopic, aWinDef, ord(aHostType)]));
     DebugOut2('HHHelpContext("%s", %s, "%s", %d)',
         [aChmFile, aTopic, aWinDef, Ord(aHostType)]);
 
-    If aHostType = htHHexe Then
+    if aHostType = htHHexe then
         //Prefix required by early versions - use IE3 prefix
         target := HHFormat(aChmFile, aTopic, aWinDef, ptIE3)
-    Else                         //No prefix needed
+    else                         //No prefix needed
         target := HHFormat(aChmFile, aTopic, aWinDef, ptNone);
     result := HHTopic(target, aHostType);
-End;
+end;
 
 {
    HHTopic()
@@ -662,57 +662,57 @@ End;
    chmfile, Topic, WinDef in the form chmfile::/Topic>WinDef
    Note: HH.EXE normally requires a path prefix.
 }
-Function HHTopic(aCHMPath: String; aHostType: THostType): Integer;
-Var appPath: String; h: HWND;
-Begin
+function HHTopic(aCHMPath: string; aHostType: THostType): integer;
+var appPath: string; h: HWND;
+begin
     DebugOut2('ShowTopic("%s", %d)', [aChmPath, Ord(aHostType)]);
     result := HH_ERR_AllOK;  {0}
 
     { Check HH Installed on this PC }
-    If Not _hhInstalled Then
+    if not _hhInstalled then
         result := HH_ERR_HHNotInstalled
-    Else
-        Case aHostType Of
+    else
+        case aHostType of
 
             //Host Type = This app using HH API
             htHHAPI:
-            Begin
-                h := HH.HtmlHelp(GetDesktopWindow, Pchar(aCHMPath),
+            begin
+                h := HH.HtmlHelp(GetDesktopWindow, pchar(aCHMPath),
                     HH_DISPLAY_TOPIC, 0);
-                If h > 0 Then
+                if h > 0 then
                     SetForegroundWindow(h);
-            End;
+            end;
 
             //Host Type = KeyHH.EXE (must be installed)
             htKeyHHexe:
-            Begin
+            begin
                 appPath := GetWinDir + '\' + HOST_KEYHHEXE;
-                If Not FileExists(appPath) Then
+                if not FileExists(appPath) then
                     result := HH_ERR_KeyHHexeNotFound
-                Else
-                Begin
+                else
+                begin
           { Pass the parameters to KeyHH.exe using "-win" for single window.
             hh path prefix is not required by KeyHH.EXE
           }
                     ShellExec(appPath, '-win ' + aCHMPath);
-                End;
-            End;
+                end;
+            end;
 
             //Host Type = HH.EXE (part of Html Help)
             htHHexe:
-            Begin
+            begin
                 appPath := GetWinDir + '\' + HOST_HHEXE;
-                If Not FileExists(appPath) Then
+                if not FileExists(appPath) then
                     result := HH_ERR_HHexeNotFound
-                Else
-                Begin
+                else
+                begin
                     { HH.EXE requires a prefix. }
                     ShellExec(appPath, aCHMPath);
-                End;
-            End;
-        End; {case}
+                end;
+            end;
+        end; {case}
     DebugOut2('  returned - %d', [result]);
-End;
+end;
 
 
 
@@ -730,18 +730,18 @@ End;
   Example:
      HHHelpContext('windows.chm',200,'windefault', htHHAPI);
 }
-Function HHHelpContext(aChmFile: String; aContextID: DWord;
-    aWinDef: String; aHostType: THostType): Integer;
-Var target: String;
-Begin
+function HHHelpContext(aChmFile: string; aContextID: DWord;
+    aWinDef: string; aHostType: THostType): integer;
+var target: string;
+begin
     DebugOut2('HHHelpContext("%s", %d, "%s", %d)',
         [aChmFile, aContextID, aWinDef, Ord(aHostType)]);
-    If aHostType = htHHexe //Prefix required by early versions - use IE3 prefix
-    Then
+    if aHostType = htHHexe //Prefix required by early versions - use IE3 prefix
+    then
         target := HHFormat(aChmFile, '', aWinDef, ptIE3)
-    Else target := HHFormat(aChmFile, '', aWinDef, ptNone);  //No prefix needed
+    else target := HHFormat(aChmFile, '', aWinDef, ptNone);  //No prefix needed
     result := HHContext(target, aContextID, aHostType);
-End;
+end;
 
 
 {
@@ -750,59 +750,59 @@ End;
    chmfile & WinDef in the form chmfile>WinDef
    Note: HH.EXE does not support context mapped help - use KeyHH.exe instead
 }
-Function HHContext(aChmPath: String; aContextId: Integer;
-    aHostType: THostType): Integer;
-Var appPath: String; h: HWND;
-Begin
+function HHContext(aChmPath: string; aContextId: integer;
+    aHostType: THostType): integer;
+var appPath: string; h: HWND;
+begin
     DebugOut2('ShowContext("%s", %d)', [aChmPath, Ord(aHostType)]);
     result := HH_ERR_AllOK;  {0}
 
     { Check HH Installed on this PC }
-    If Not _hhInstalled Then
+    if not _hhInstalled then
         result := HH_ERR_HHNotInstalled
-    Else
-        Case aHostType Of
+    else
+        case aHostType of
 
             //Host Type = This app using HH API
             htHHAPI:
-            Begin
-                h := HH.HtmlHelp(GetDesktopWindow, Pchar(aChmPath),
+            begin
+                h := HH.HtmlHelp(GetDesktopWindow, pchar(aChmPath),
                     HH_HELP_CONTEXT, aContextID);
-                If h > 0 Then
+                if h > 0 then
                     SetForegroundWindow(h);
-            End;
+            end;
 
             //Host Type = KeyHH.EXE (must be installed)
             htKeyHHexe:
-            Begin
+            begin
                 appPath := GetWinDir + '\' + HOST_KEYHHEXE;
-                If Not FileExists(appPath) Then
+                if not FileExists(appPath) then
                     result := HH_ERR_KeyHHexeNotFound
-                Else
-                Begin
+                else
+                begin
           { Pass the parameters to KeyHH.exe
             using "-win" for single window and "-#mapid xx " for the context
             hh path prefix is not required by KeyHH.EXE
           }
                     ShellExec(appPath, '-win -#mapid ' + IntToStr(aContextID) +
                         ' ' + aChmPath);
-                End;
-            End;
+                end;
+            end;
 
             //Host Type = HH.EXE (part of Html Help)
             htHHexe:
-            Begin
+            begin
                 appPath := GetWinDir + '\' + HOST_HHEXE;
-                If Not FileExists(appPath) Then
+                if not FileExists(appPath) then
                     result := HH_ERR_HHexeNotFound
-                Else
+                else
                     ShellExec(appPath, '-mapid ' + IntToStr(aContextID) +
                         ' ' + aChmPath);
-            End;
+            end;
 
-        End; {case}
+        end; {case}
     DebugOut2('  returned - %d', [result]);
-End;
+end;
 
 
 
@@ -831,9 +831,9 @@ End;
     mk:@MSITStore:Helpfile.chm::/Topic.htm>WinDef
 
 }
-Function HHFormat(aChmFile, aTopic, aWinDef: String;
-    aPrefixType: TPrefixType): String;
-Begin
+function HHFormat(aChmFile, aTopic, aWinDef: string;
+    aPrefixType: TPrefixType): string;
+begin
     //  Rename all %20 to space
     StrRepCA(aChmFile, '%20', ' ');
     StrRepCA(aTopic, '%20', ' ');
@@ -843,32 +843,32 @@ Begin
     StripLR(aWinDef, ' ');  //no lead trail spaces
 
     {make chm and topic}
-    If aTopic = '' Then
+    if aTopic = '' then
         result := aChmFile
-    Else
-    Begin
+    else
+    begin
         DosToUnix(aTopic);
         //Topics should always contain '/' unix slashes
-        If aTopic[1] <> '/' Then              //we want a leading slash
+        if aTopic[1] <> '/' then              //we want a leading slash
             aTopic := '/' + aTopic;
         result := aTopic;
-        If aChmFile <> '' Then
+        if aChmFile <> '' then
             //Allow no chmfile so we can format the topic
             result := aChmFile + '::' + result;
-    End;
+    end;
 
     {add win definition}
-    If aWinDef <> '' Then
+    if aWinDef <> '' then
         result := result + '>' + aWinDef;
 
     {add prefix}
-    Case aPrefixType Of
+    case aPrefixType of
         ptIE3:
             result := HH_PREFIX_IE3 + result;
         ptIE4:
             result := HH_PREFIX_IE4 + result;
-    End;
-End;
+    end;
+end;
 
 
 {
@@ -884,52 +884,52 @@ End;
     aChmFile, aTopic, aWinDef
 }
 //Backward compatible Fix - Typo - Should be Split not Slit
-Procedure HHSlitCmdStr(s: String; Var aChmFile, aTopic, aWinDef: String);
-Begin
+procedure HHSlitCmdStr(s: string; var aChmFile, aTopic, aWinDef: string);
+begin
     HHSplitCmdStr(s, aChmFile, aTopic, aWinDef);
-End;
+end;
 
-Procedure HHSplitCmdStr(s: String; Var aChmFile, aTopic, aWinDef: String);
-Var i: Integer;
-Begin
+procedure HHSplitCmdStr(s: string; var aChmFile, aTopic, aWinDef: string);
+var i: integer;
+begin
     //  Replace all %20 to space
     StrRepCA(s, '%20', ' ');
 
     {Get WinDef}
     i := StrPosC(s, '>');
-    If i > 0 Then
-    Begin
+    if i > 0 then
+    begin
         aWinDef := Copy(s, i + 1, Maxint);
         SetLength(s, i - 1);
-    End;
+    end;
 
     {Get Topic}
     i := StrPosC(s, '::');
-    If i > 0 Then
-    Begin
+    if i > 0 then
+    begin
         aTopic := Copy(s, i + 2, Maxint);
         SetLength(s, i - 1);
         DosToUnix(aTopic);
         //Topics should always contain '/' unix slashes
-    End;
+    end;
 
     {Get chmFile}
     i := StrPosI(s, 'its:'); //'ms-its:'
-    If i > 0 Then
+    if i > 0 then
         aChmFile := Copy(s, i + length('its:'), Maxint)
-    Else
-    Begin
+    else
+    begin
         i := StrPosI(s, 'store:');  //'mk:@MSITStore:'
-        If i > 0 Then
+        if i > 0 then
             aChmFile := Copy(s, i + length('store:'), Maxint)
-        Else
+        else
             aChmFile := s;
-    End;
+    end;
 
     StripLR(aChmFile, ' ');
     StripLR(aTopic, ' ');
     StripLR(aWinDef, ' ');
-End;
+end;
 
 
 
@@ -939,35 +939,35 @@ End;
 
 
 { Sometimes safest to work in Unix / slashes }
-Procedure DosToUnix(Var filename: String);
-Begin
-    Repeat Until StrRepC(filename, '\', '/') = 0;
-End;
+procedure DosToUnix(var filename: string);
+begin
+    repeat until StrRepC(filename, '\', '/') = 0;
+end;
 
-Procedure UnixToDos(Var filename: String);
-Begin
-    Repeat Until StrRepC(filename, '/', '\') = 0;
-End;
+procedure UnixToDos(var filename: string);
+begin
+    repeat until StrRepC(filename, '/', '\') = 0;
+end;
 
 {Find pos of sub string in string. Case Sensitive - returns 0 not found or 1..n}
-Function StrPosC(Const s: String; Const find: String): Integer;
-Var p: Pchar;
-Begin
+function StrPosC(const s: string; const find: string): integer;
+var p: pchar;
+begin
 {$IFDEF D3PLUS} // -- Delphi >=3
   p := AnsiStrPos( PChar(s) , PChar(find) );   //double byte safe
 {$ELSE}// -- Delphi 2
-    p := StrPos(Pchar(s), Pchar(find));   //double byte safe
+    p := StrPos(pchar(s), pchar(find));   //double byte safe
 {$ENDIF}
-    If p = Nil Then
+    if p = NIL then
         result := 0
-    Else
-        result := p - Pchar(s) + 1;
-End;
+    else
+        result := p - pchar(s) + 1;
+end;
 
 {Same as Above only ignores case}
-Function StrPosI(Const s: String; Const find: String): Integer;
-Var s2, find2: String;
-Begin
+function StrPosI(const s: string; const find: string): integer;
+var s2, find2: string;
+begin
 {$IFDEF D3PLUS} // -- Delphi >=3
   s2 := AnsiUpperCase(s);
   find2 := AnsiUpperCase(find);
@@ -977,67 +977,67 @@ Begin
 {$ENDIF}
 
     result := StrPosC(s2, find2);
-End;
+end;
 
 
 {returns pos where subString replacements was done - 0 = none done - Case Sensitive}
-Function StrRepC(Var s: String; Const find, repl: String): Integer;
-Begin
+function StrRepC(var s: string; const find, repl: string): integer;
+begin
     result := StrPosC(s, find);
-    If result > 0 Then     {found - replace}
-    Begin
+    if result > 0 then     {found - replace}
+    begin
         Delete(s, result, Length(find));
         Insert(repl, s, result);
-    End;
-End;
+    end;
+end;
 
 {returns pos where subString replacements was done - 0 = none done - Ignore Sensitive}
-Function StrRepI(Var s: String; Const find, repl: String): Integer;
-Begin
+function StrRepI(var s: string; const find, repl: string): integer;
+begin
     result := StrPosI(s, find);
-    If result > 0 Then     {found - replace}
-    Begin
+    if result > 0 then     {found - replace}
+    begin
         Delete(s, result, Length(find));
         Insert(repl, s, result);
-    End;
-End;
+    end;
+end;
 
 
 {Replace all ocurrences (Ignore Case) - returns replacements done}
-Function StrRepIA(Var s: String; Const find, repl: String): Integer;
-Begin
+function StrRepIA(var s: string; const find, repl: string): integer;
+begin
     result := 0;
-    Repeat
-        If StrRepI(s, find, repl) > 0 Then
+    repeat
+        if StrRepI(s, find, repl) > 0 then
             inc(result)
-        Else
+        else
             break;
-    Until False;
-End;
+    until FALSE;
+end;
 
 {Replace all ocurrences (Case Sensitive) - returns replacements done}
-Function StrRepCA(Var s: String; Const find, repl: String): Integer;
-Begin
+function StrRepCA(var s: string; const find, repl: string): integer;
+begin
     result := 0;
-    Repeat
-        If StrRepC(s, find, repl) > 0 Then
+    repeat
+        if StrRepC(s, find, repl) > 0 then
             inc(result)
-        Else
+        else
             break;
-    Until False;
-End;
+    until FALSE;
+end;
 
 {Strip leading chars}
-Procedure StripL(Var s: String; c: Char);
-Begin
-    While (s <> '') And (s[1] = c) Do
+procedure StripL(var s: string; c: char);
+begin
+    while (s <> '') and (s[1] = c) do
         Delete(s, 1, 1);
-End;
+end;
 
 {Strip trailing chars}
-Procedure StripR(Var s: String; c: Char);
-Var p: Pchar;
-Begin
+procedure StripR(var s: string; c: char);
+var p: pchar;
+begin
 {$IFDEF D3PLUS} // -- Delphi >=3
   repeat
     p := AnsiLastChar(S);    //nil if S = empty
@@ -1047,71 +1047,71 @@ Begin
       break;
   until p = nil;
 {$ELSE}// -- Delphi 2
-    Repeat
-        If (s <> '') And (s[length(s)] = c) Then
+    repeat
+        if (s <> '') and (s[length(s)] = c) then
             SetLength(s, Length(s) - 1)
-        Else
+        else
             break;
-    Until False;
+    until FALSE;
 {$ENDIF}
-End;
+end;
 
 
 {Strip leading and trailing chars}
-Procedure StripLR(Var s: String; c: Char);
-Begin
+procedure StripLR(var s: string; c: char);
+begin
     StripL(s, c);
     StripR(s, c);
-End;
+end;
 
 {Make string of chars}
-Function MkStr(c: Char; count: Integer): String;
-Var i: Integer;
-Begin
+function MkStr(c: char; count: integer): string;
+var i: integer;
+begin
     result := '';
-    For i := 1 To count Do
+    for i := 1 to count do
         result := result + c;
-End;
+end;
 
 { Boolean to Yes / No }
-Function BoolToYN(b: Boolean): String;
-Begin
-    If b Then
-        result := 'YES' Else result := 'NO';
-End;
+function BoolToYN(b: boolean): string;
+begin
+    if b then
+        result := 'YES' else result := 'NO';
+end;
 
 
 {Return Windows Dir}
-Function GetWinDir: String;
-Var path: Array[0..260] Of Char;
-Begin
+function GetWinDir: string;
+var path: array[0..260] of char;
+begin
     GetWindowsDirectory(path, SizeOf(path));
     result := path;
     StripR(result, '\');  //no trailing slash
-End;
+end;
 
 {Return Windows System Dir}
-Function GetWinSysDir: String;
-Var path: Array[0..260] Of Char;
-Begin
+function GetWinSysDir: string;
+var path: array[0..260] of char;
+begin
     GetSystemDirectory(path, SizeOf(path));
     result := path;
     StripR(result, '\');  //no trailing slash
-End;
+end;
 
 {Get Windows Temp Dir - with no trailing slash}
-Function GetWinTempDir: String;
-Var dwLen: DWORD;
-Begin
+function GetWinTempDir: string;
+var dwLen: DWORD;
+begin
     SetLength(result, 300);
     dwLen := GetTempPath(300, @result[1]);
     SetLength(result, dwLen);
 
     //problems
-    If DirectoryExists(result) = False Then
+    if DirectoryExists(result) = FALSE then
         result := 'c:';
     StripR(result, '\');  //no trailing slash
-End;
+end;
 
 
 
@@ -1121,29 +1121,29 @@ End;
   eg. Returns '7.47.3456.0', aV1=7, aV2=47, aV3=3456 aV4=0
   ie. major.minor.release.build
 }
-Function GetFileVer(aFilename: String; Var aV1, aV2, aV3, aV4: Word): String;
-Var  InfoSize: DWORD; Wnd: DWORD; VerBuf: Pointer; VerSize: DWORD;
+function GetFileVer(aFilename: string; var aV1, aV2, aV3, aV4: word): string;
+var  InfoSize: DWORD; Wnd: DWORD; VerBuf: Pointer; VerSize: DWORD;
     FI: PVSFixedFileInfo;
-Begin
+begin
     result := '';
     aV1 := 0;  aV2 := 0;  aV3 := 0;  aV4 := 0;
 
-    If (aFilename = '') Or (Not FileExists(aFilename)) Then
+    if (aFilename = '') or (not FileExists(aFilename)) then
         exit;  //don't continue if file not found
 
-    InfoSize := GetFileVersionInfoSize(Pchar(aFilename), Wnd);
+    InfoSize := GetFileVersionInfoSize(pchar(aFilename), Wnd);
 
     //Note: we strip out the resource info for our dll to keep it small
     //Result := SysErrorMessage(GetLastError);
 
-    If InfoSize <> 0 Then
-    Begin
+    if InfoSize <> 0 then
+    begin
         GetMem(VerBuf, InfoSize);
-        Try
-            If GetFileVersionInfo(Pchar(aFilename), Wnd, InfoSize, VerBuf) Then
-            Begin
-                If VerQueryValue(VerBuf, '\', Pointer(FI), VerSize) Then
-                Begin
+        try
+            if GetFileVersionInfo(pchar(aFilename), Wnd, InfoSize, VerBuf) then
+            begin
+                if VerQueryValue(VerBuf, '\', Pointer(FI), VerSize) then
+                begin
                     aV1 := HiWord(FI^.dwFileVersionMS);
                     aV2 := LoWord(FI^.dwFileVersionMS);
                     aV3 := HiWord(FI^.dwFileVersionLS);
@@ -1152,52 +1152,52 @@ Begin
                         IntToStr(LoWord(FI^.dwFileVersionMS)) + '.' +
                         IntToStr(HiWord(FI^.dwFileVersionLS)) + '.' +
                         IntToStr(LoWord(FI^.dwFileVersionLS));
-                End;
-            End
-        Finally
+                end;
+            end
+        finally
             FreeMem(VerBuf);
-        End;
-    End;
-End; //GetFileVer
+        end;
+    end;
+end; //GetFileVer
 
 
 { Same as above but only returns version string }
-Function GetFileVerStr(aFilename: String): String;
-Var aV1, aV2, aV3, aV4: Word;
-Begin
+function GetFileVerStr(aFilename: string): string;
+var aV1, aV2, aV3, aV4: word;
+begin
     result := GetFileVer(aFilename, aV1, aV2, aV3, aV4);
-End;
+end;
 
 
-Function GetIEVer(Var V1, V2, V3, V4: Word): String;
-Begin
+function GetIEVer(var V1, V2, V3, V4: word): string;
+begin
     result := GetFileVer(GetWinSysDir + '\Shdocvw.dll', V1, V2, V3, V4);
     //trick -- Early versions of IE had only 3 numbers
-    If (v1 = 4) And (v2 <= 70) And (v3 = 0) Then
-    Begin
+    if (v1 = 4) and (v2 <= 70) and (v3 = 0) then
+    begin
         v3 := v4;  v4 := 0;
         result := format('%d.%d.%d.%d', [v1, v2, v3, v4]);
-    End;
-End;
+    end;
+end;
 
 {
   Version Compare : returns -1 if Va < Vb, 0 if Va = Vb, 1 if Va > Vb
   eg. VerCompar(1,0,0,1, 1,0,0,2) will return -1
   eg. VerCompar(2,0,0,1, 1,0,6,90) will return 1 because 2.0.0.1 is > 1.0.6.90
 }
-Function VerCompare(va1, va2, va3, va4, vb1, vb2, vb3, vb4: Word): Integer;
-Begin
-    If (va1 = vb1) And (va2 = vb2) And (va3 = vb3) And (va4 = vb4) Then
+function VerCompare(va1, va2, va3, va4, vb1, vb2, vb3, vb4: word): integer;
+begin
+    if (va1 = vb1) and (va2 = vb2) and (va3 = vb3) and (va4 = vb4) then
         result := 0
-    Else
-    If (va1 > vb1)
-        Or ((va1 = vb1) And (va2 > vb2))
-        Or ((va1 = vb1) And (va2 = vb2) And (va3 > vb3))
-        Or ((va1 = vb1) And (va2 = vb2) And (va3 = vb3) And (va4 > vb4)) Then
+    else
+    if (va1 > vb1)
+        or ((va1 = vb1) and (va2 > vb2))
+        or ((va1 = vb1) and (va2 = vb2) and (va3 > vb3))
+        or ((va1 = vb1) and (va2 = vb2) and (va3 = vb3) and (va4 > vb4)) then
         result := 1
-    Else
+    else
         result := -1;
-End;
+end;
 
 
 { Get Friendly version numbers for HTML Help 'hhctrl.ocx'
@@ -1220,61 +1220,61 @@ End;
 
   Get up to date version info from http://helpware.net/htmlhelp/hh_info.htm
 }
-Function GetHHFriendlyVer: String;
-Var  v1, v2, v3, v4: Word; fn, s: String;
-Begin
+function GetHHFriendlyVer: string;
+var  v1, v2, v3, v4: word; fn, s: string;
+begin
     fn := hh.GetPathToHHCtrlOCX;
     s := GetFileVer(fn, v1, v2, v3, v4);
-    If s = '' Then
+    if s = '' then
         result := ''
-    Else
-    If VerCompare(v1, v2, v3, v4, 5, 2, 3669, 0) > 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 5, 2, 3669, 0) > 0 then
         result := '> 1.4a'
-    Else
-    If VerCompare(v1, v2, v3, v4, 5, 2, 3669, 0) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 5, 2, 3669, 0) >= 0 then
         result := '1.4a'
-    Else
-    If VerCompare(v1, v2, v3, v4, 5, 2, 3626, 0) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 5, 2, 3626, 0) >= 0 then
         result := '1.4'
-    Else
-    If VerCompare(v1, v2, v3, v4, 4, 74, 9273, 0) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 4, 74, 9273, 0) >= 0 then
         result := '1.33'
-    Else
-    If VerCompare(v1, v2, v3, v4, 4, 74, 8857, 0) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 4, 74, 8857, 0) >= 0 then
         result := '1.32'
-    Else
-    If VerCompare(v1, v2, v3, v4, 4, 74, 8793, 0) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 4, 74, 8793, 0) >= 0 then
         result := '1.31'
-    Else
-    If VerCompare(v1, v2, v3, v4, 4, 74, 8702, 0) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 4, 74, 8702, 0) >= 0 then
         result := '1.3'
-    Else
-    If VerCompare(v1, v2, v3, v4, 4, 73, 8561, 0) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 4, 73, 8561, 0) >= 0 then
         result := '1.22'
-    Else
-    If VerCompare(v1, v2, v3, v4, 4, 73, 8474, 0) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 4, 73, 8474, 0) >= 0 then
         result := '1.21a'
-    Else
-    If VerCompare(v1, v2, v3, v4, 4, 73, 8412, 0) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 4, 73, 8412, 0) >= 0 then
         result := '1.21'
-    Else
-    If VerCompare(v1, v2, v3, v4, 4, 73, 8252, 0) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 4, 73, 8252, 0) >= 0 then
         result := '1.2'
-    Else
-    If VerCompare(v1, v2, v3, v4, 4, 72, 8164, 0) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 4, 72, 8164, 0) >= 0 then
         result := '1.1b'
-    Else
-    If VerCompare(v1, v2, v3, v4, 4, 72, 7325, 0) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 4, 72, 7325, 0) >= 0 then
         result := '1.1a'
-    Else
-    If VerCompare(v1, v2, v3, v4, 4, 72, 7323, 0) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 4, 72, 7323, 0) >= 0 then
         result := '1.1'
-    Else
-    If VerCompare(v1, v2, v3, v4, 4, 72, 7290, 0) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 4, 72, 7290, 0) >= 0 then
         result := '1.0'
-    Else
+    else
         result := '< 1.0';
-End;
+end;
 
 
 {
@@ -1288,23 +1288,23 @@ End;
     if Check_IE_Version(4,70,1300,0) < 0 then
       ShowMessage('HtmlHelp requires that you installed IE3.02 or better.');
 }
-Function Check_IE_Version(x1, x2, x3, x4: Integer): Integer;
-Var  v1, v2, v3, v4: Word; fn: String;
-Begin
+function Check_IE_Version(x1, x2, x3, x4: integer): integer;
+var  v1, v2, v3, v4: word; fn: string;
+begin
     result := -1;
     fn := GetWinSysDir + '\Shdocvw.dll';
-    If GetFileVer(fn, v1, v2, v3, v4) <> '' Then
-    Begin
+    if GetFileVer(fn, v1, v2, v3, v4) <> '' then
+    begin
         //trick -- Early versions of IE had only 3 numbers
-        If (v1 = 4) And (v2 <= 70) And (v3 = 0) Then
-        Begin
+        if (v1 = 4) and (v2 <= 70) and (v3 = 0) then
+        begin
             v3 := v4;  v4 := 0;
-        End;
+        end;
 
         result := VerCompare(v1, v2, v3, v4, x1, x2, x3, x4);
         //Compare installed version with x.x.x.x 
-    End;
-End;
+    end;
+end;
 
 {
 . MediaPlayer 6.4 = 22D6F312-B0F6-11D0-94AB-0080C74C7E95   //MediaPlayer.MediaPlayer.1
@@ -1312,23 +1312,23 @@ End;
 . MediaPlayer 7.0 = 6BF52A52-394A-11d3-B153-00C04F79FAA6   //WMPlayer.OCX.7
    InProc  C:\WINNT\System32\wmp.ocx (7.1.0.3055)
 }
-Function Check_WMP_Version(x1, x2, x3, x4: Integer): Integer;
-Var  v1, v2, v3, v4: Word; fn: String;
-Begin
+function Check_WMP_Version(x1, x2, x3, x4: integer): integer;
+var  v1, v2, v3, v4: word; fn: string;
+begin
     result := -1;
 
-    If x1 = 6 Then
+    if x1 = 6 then
         fn := GetWinSysDir + '\msdxm.ocx'           //6.4 player
-    Else
-    If x1 >= 7 Then
+    else
+    if x1 >= 7 then
         fn := GetWinSysDir + '\wmp.ocx'             //7.x player
-    Else
+    else
         Exit;
 
-    If GetFileVer(fn, v1, v2, v3, v4) <> '' Then
+    if GetFileVer(fn, v1, v2, v3, v4) <> '' then
         result := VerCompare(v1, v2, v3, v4, x1, x2, x3, x4);
     //Compare installed version with x.x.x.x
-End;
+end;
 
 
 
@@ -1391,148 +1391,148 @@ Shdocvw.dll -------------- May be different from the about box
    7.00.6000.16386  Internet Explorer 7 for Windows Vista
 
 }
-Function GetIEFriendlyVer: String;
-Var  v1, v2, v3, v4: Word; fn, s: String;
-Begin
+function GetIEFriendlyVer: string;
+var  v1, v2, v3, v4: word; fn, s: string;
+begin
     fn := GetWinSysDir + '\Shdocvw.dll';
     s := GetFileVer(fn, v1, v2, v3, v4);
     //trick -- Early versions of IE had only 3 numbers
-    If (v1 = 4) And (v2 <= 70) And (v3 = 0) Then
-    Begin
+    if (v1 = 4) and (v2 <= 70) and (v3 = 0) then
+    begin
         v3 := v4;  v4 := 0;
         s := format('%d.%d.%d.%d', [v1, v2, v3, v4]);
-    End;
+    end;
 
-    If s = '' Then
+    if s = '' then
         result := ''
-    Else
+    else
 
-    If v1 >= 7 Then
+    if v1 >= 7 then
         result := '>= Internet Explorer ' + s
 
-    Else
-    If VerCompare(v1, v2, v3, v4, 6, 00, 3790, 0000) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 6, 00, 3790, 0000) >= 0 then
         result := 'Internet Explorer 6 (Windows Server 2003)'
-    Else
-    If VerCompare(v1, v2, v3, v4, 6, 00, 3718, 0000) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 6, 00, 3718, 0000) >= 0 then
         result := 'Internet Explorer 6 (Windows Server 2003 RC2)'
-    Else
-    If VerCompare(v1, v2, v3, v4, 6, 00, 3663, 0000) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 6, 00, 3663, 0000) >= 0 then
         result := 'Internet Explorer 6 (Windows Server 2003 RC1)'
-    Else
-    If VerCompare(v1, v2, v3, v4, 6, 00, 2900, 2180) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 6, 00, 2900, 2180) >= 0 then
         result := 'Internet Explorer 6 (Windows XP SP2)'
-    Else
-    If VerCompare(v1, v2, v3, v4, 6, 00, 2800, 1106) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 6, 00, 2800, 1106) >= 0 then
         result := 'Internet Explorer 6 SP1'
-    Else
-    If VerCompare(v1, v2, v3, v4, 6, 00, 2712, 300) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 6, 00, 2712, 300) >= 0 then
         result := 'Internet Explorer 6 (Windows XP + minor update)'
-    Else
-    If VerCompare(v1, v2, v3, v4, 6, 00, 2600, 0000) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 6, 00, 2600, 0000) >= 0 then
         result := 'Internet Explorer 6 (Windows XP)'
-    Else
-    If VerCompare(v1, v2, v3, v4, 6, 00, 2479, 0006) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 6, 00, 2479, 0006) >= 0 then
         result := 'Internet Explorer 6 Public Preview (Beta) Refresh'
-    Else
-    If VerCompare(v1, v2, v3, v4, 6, 00, 2462, 0000) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 6, 00, 2462, 0000) >= 0 then
         result := 'Internet Explorer 6 Public Preview (Beta)'
-    Else
-    If VerCompare(v1, v2, v3, v4, 5, 50, 4807, 2300) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 5, 50, 4807, 2300) >= 0 then
         result := 'Internet Explorer 5.5 Service Pack 2'
-    Else
-    If VerCompare(v1, v2, v3, v4, 5, 50, 4522, 1800) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 5, 50, 4522, 1800) >= 0 then
         result := 'Internet Explorer 5.5 Service Pack 1'
-    Else
-    If VerCompare(v1, v2, v3, v4, 5, 50, 4522, 1800) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 5, 50, 4522, 1800) >= 0 then
         result := 'Internet Explorer 5.5 Service Pack 1'
-    Else
-    If VerCompare(v1, v2, v3, v4, 5, 50, 4308, 2900) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 5, 50, 4308, 2900) >= 0 then
         result := 'Internet Explorer 5.5 Advanced Security Privacy Beta'
-    Else
-    If VerCompare(v1, v2, v3, v4, 5, 50, 4134, 0600) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 5, 50, 4134, 0600) >= 0 then
         result := 'Internet Explorer 5.5'
-    Else
-    If VerCompare(v1, v2, v3, v4, 5, 50, 4134, 0100) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 5, 50, 4134, 0100) >= 0 then
         result := 'Internet Explorer 5.5 for Windows Me (4.90.3000)'
-    Else
-    If VerCompare(v1, v2, v3, v4, 5, 50, 4030, 2400) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 5, 50, 4030, 2400) >= 0 then
         result := 'Internet Explorer 5.5 & Internet Tools Beta'
-    Else
-    If VerCompare(v1, v2, v3, v4, 5, 50, 3825, 1300) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 5, 50, 3825, 1300) >= 0 then
         result := 'Internet Explorer 5.5 Developer Preview'
-    Else
-    If VerCompare(v1, v2, v3, v4, 5, 00, 2919, 6400) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 5, 00, 2919, 6400) >= 0 then
         result := 'Internet Explorer 5.01'
-    Else
-    If VerCompare(v1, v2, v3, v4, 5, 00, 2919, 6307) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 5, 00, 2919, 6307) >= 0 then
         result := 'Internet Explorer 5.01'
-    Else
-    If VerCompare(v1, v2, v3, v4, 5, 00, 2919, 3800) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 5, 00, 2919, 3800) >= 0 then
         result := 'Internet Explorer 5.01 (Windows 2000 RC2, build 5.00.2128)'
-    Else
-    If VerCompare(v1, v2, v3, v4, 5, 00, 2919, 800) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 5, 00, 2919, 800) >= 0 then
         result := 'Internet Explorer 5.01 (Windows 2000 RC1, build 5.00.2072)'
-    Else
-    If VerCompare(v1, v2, v3, v4, 5, 00, 2723, 2900) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 5, 00, 2723, 2900) >= 0 then
         result := 'Internet Explorer 5.0 updated'
-    Else
-    If VerCompare(v1, v2, v3, v4, 5, 00, 2721, 1400) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 5, 00, 2721, 1400) >= 0 then
         result := 'Internet Explorer 5.0 updated'
-    Else
-    If VerCompare(v1, v2, v3, v4, 5, 00, 2614, 0) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 5, 00, 2614, 0) >= 0 then
         result := 'Internet Explorer 5.0b'
-    Else
-    If VerCompare(v1, v2, v3, v4, 5, 00, 2314, 0) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 5, 00, 2314, 0) >= 0 then
         result := 'Internet Explorer 5.0a'
-    Else
-    If VerCompare(v1, v2, v3, v4, 5, 00, 2014, 0) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 5, 00, 2014, 0) >= 0 then
         result := 'Internet Explorer 5.0'
-    Else
-    If VerCompare(v1, v2, v3, v4, 5, 00, 0910, 0) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 5, 00, 0910, 0) >= 0 then
         result := 'Internet Explorer 5 Beta (Beta 2)'
-    Else
-    If VerCompare(v1, v2, v3, v4, 5, 00, 0518, 0) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 5, 00, 0518, 0) >= 0 then
         result := 'Internet Explorer 5 Developer Preview (Beta 1)'
-    Else
-    If VerCompare(v1, v2, v3, v4, 4, 72, 3612, 0) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 4, 72, 3612, 0) >= 0 then
         result := 'Internet Explorer 4.01 Service Pack 2 (SP2)'
-    Else
-    If VerCompare(v1, v2, v3, v4, 4, 72, 3110, 0) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 4, 72, 3110, 0) >= 0 then
         result := 'Internet Explorer 4.01 Service Pack 1 (SP1)'
-    Else
-    If VerCompare(v1, v2, v3, v4, 4, 72, 2106, 0) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 4, 72, 2106, 0) >= 0 then
         result := 'Internet Explorer 4.01'
-    Else
-    If VerCompare(v1, v2, v3, v4, 4, 71, 1712, 0) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 4, 71, 1712, 0) >= 0 then
         result := 'Internet Explorer 4.0'
-    Else
-    If VerCompare(v1, v2, v3, v4, 4, 71, 1008, 0) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 4, 71, 1008, 0) >= 0 then
         result := 'Internet Explorer 4.0 Platform Preview 2.0 (PP2)'
-    Else
-    If VerCompare(v1, v2, v3, v4, 4, 71, 544, 0) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 4, 71, 544, 0) >= 0 then
         result := 'Internet Explorer 4.0 Platform Preview 1.0 (PP1)'
-    Else
-    If VerCompare(v1, v2, v3, v4, 4, 70, 1300, 0) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 4, 70, 1300, 0) >= 0 then
         result := 'Internet Explorer 3.02'
-    Else
-    If VerCompare(v1, v2, v3, v4, 4, 70, 1215, 0) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 4, 70, 1215, 0) >= 0 then
         result := 'Internet Explorer 3.01'
-    Else
-    If VerCompare(v1, v2, v3, v4, 4, 70, 1158, 0) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 4, 70, 1158, 0) >= 0 then
         result := 'Internet Explorer 3.0 (OSR2)'
-    Else
-    If VerCompare(v1, v2, v3, v4, 4, 70, 1155, 0) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 4, 70, 1155, 0) >= 0 then
         result := 'Internet Explorer 3.0'
-    Else
-    If VerCompare(v1, v2, v3, v4, 4, 40, 520, 0) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 4, 40, 520, 0) >= 0 then
         result := 'Internet Explorer 2.0'
-    Else
-    If VerCompare(v1, v2, v3, v4, 4, 40, 308, 0) >= 0 Then
+    else
+    if VerCompare(v1, v2, v3, v4, 4, 40, 308, 0) >= 0 then
         result := 'Internet Explorer 1.0 (Plus!)'
-    Else
+    else
         result := '< Internet Explorer 1.0 (Plus!)';
-End;
+end;
 
 
 {
@@ -1546,14 +1546,14 @@ End;
     if Check_HH_Version(4,73,8252,0) < 0 then
       ShowMessage('HtmlHelp 1.2 or greater is required. Please download a new version.');
 }
-Function Check_HH_Version(x1, x2, x3, x4: Integer): Integer;
-Var  v1, v2, v3, v4: Word; fn: String;
-Begin
+function Check_HH_Version(x1, x2, x3, x4: integer): integer;
+var  v1, v2, v3, v4: word; fn: string;
+begin
     result := -1;
     fn := hh.GetPathToHHCtrlOCX;
-    If GetFileVer(fn, v1, v2, v3, v4) <> '' Then
+    if GetFileVer(fn, v1, v2, v3, v4) <> '' then
         result := VerCompare(v1, v2, v3, v4, x1, x2, x3, x4);
-End;
+end;
 
 
 {
@@ -1563,38 +1563,38 @@ End;
   eg. Shellexec('mailto:robert.chandler@osi.varian.com', '');
   Returns TRUE if windows reports no errors
 }
-Function ShellExec(aFilename: String; aParams: String): Boolean;
-Var h: THandle; handle: hWnd;
-Begin
+function ShellExec(aFilename: string; aParams: string): boolean;
+var h: THandle; handle: hWnd;
+begin
   {
     Get Handle of parent window
   }
-    If (Screen <> Nil) And (Screen.ActiveForm <> Nil) And
-        (Screen.ActiveForm.handle <> 0) Then
+    if (Screen <> NIL) and (Screen.ActiveForm <> NIL) and
+        (Screen.ActiveForm.handle <> 0) then
         handle := Screen.ActiveForm.handle
-    Else
-    If Assigned(Application) And Assigned(Application.Mainform) Then
+    else
+    if Assigned(Application) and Assigned(Application.Mainform) then
         handle := Application.Mainform.handle
-    Else
+    else
         handle := 0;
 
-    h := ShellExecute(handle, 'open', Pchar(aFilename), Pchar(aParams),
-        Nil, SW_SHOWDEFAULT);
+    h := ShellExecute(handle, 'open', pchar(aFilename), pchar(aParams),
+        NIL, SW_SHOWDEFAULT);
     result := (h > 32);  //success?
-    If Not result Then
+    if not result then
         ReportError('Function ShellExecute(%s)' + #13
             + 'Returned: %s', [aFilename + ', ' + aParams, GetLastErrorStr]);
-End;
+end;
 
 
 {
   Return error description of last error
 }
-Function GetLastErrorStr: String;
-Var ErrCode: Integer;
-Begin
+function GetLastErrorStr: string;
+var ErrCode: integer;
+begin
     ErrCode := GetlastError;
-    Case ErrCode Of
+    case ErrCode of
         ERROR_FILE_NOT_FOUND:
             result := st_GLE_FileNotFound;
         ERROR_PATH_NOT_FOUND:
@@ -1625,11 +1625,11 @@ Begin
         ERROR_BADDB,
         ERROR_INTERNAL_DB_CORRUPTION:
             result := st_GLE_CorruptRegistry;
-    Else
+    else
         result := st_GLE_GeneralFailure;
-    End; {case}
+    end; {case}
     result := '[Error:' + IntToStr(ErrCode) + '] ' + result;
-End;
+end;
 
 
 {
@@ -1637,9 +1637,9 @@ End;
   dataName = '' for default value.
   Returns '' if not found
 }
-Function GetRegStr(rootkey: HKEY; Const key, dataName: String): String;
-Var rg: TRegistry;
-Begin
+function GetRegStr(rootkey: HKEY; const key, dataName: string): string;
+var rg: TRegistry;
+begin
     result := '';  //default return
     rg := TRegistry.Create;
     rg.RootKey := rootkey;
@@ -1647,78 +1647,78 @@ Begin
 {$IFDEF D4PLUS} // -- Delphi >=4
   if rg.OpenKeyReadOnly(key) AND rg.ValueExists(dataName) then //safer call under NT
 {$ELSE}// -- Delphi 2, 3
-    If rg.OpenKey(key, False) And rg.ValueExists(dataName) Then
+    if rg.OpenKey(key, FALSE) and rg.ValueExists(dataName) then
 {$ENDIF}
-    Begin
+    begin
         result := rg.ReadString(dataName);
         rg.CloseKey;
-    End;
+    end;
     rg.Free;
-End;
+end;
 
 
-Function RegKeyNameExists(rootkey: HKEY; Const key, dataName: String): Boolean;
-Var rg: TRegistry;
-Begin
+function RegKeyNameExists(rootkey: HKEY; const key, dataName: string): boolean;
+var rg: TRegistry;
+begin
     rg := TRegistry.Create;
     rg.RootKey := rootkey;
 {$IFDEF D4PLUS} // -- Delphi >=4
   Result := rg.OpenKeyReadOnly(key) AND rg.ValueExists(dataName); //safer call under NT
 {$ELSE}// -- Delphi 2, 3
-    Result := rg.OpenKey(key, False) And rg.ValueExists(dataName);
+    Result := rg.OpenKey(key, FALSE) and rg.ValueExists(dataName);
 {$ENDIF}
-    If Result Then
+    if Result then
         rg.CloseKey;
     rg.Free;
-End;
+end;
 
 
 {
   Creates a Key and addes a Value
   An absolute key begins with a backslash (\) and is a subkey of the root key.
 }
-Procedure PutRegStr(rootkey: HKEY; Const key, name, value: String);
-Var rg: TRegistry;
-Begin
+procedure PutRegStr(rootkey: HKEY; const key, name, value: string);
+var rg: TRegistry;
+begin
     rg := TRegistry.Create;
     rg.RootKey := rootkey;
-    If rg.OpenKey(key, True {create if not found}) Then
-    Begin
+    if rg.OpenKey(key, TRUE {create if not found}) then
+    begin
         rg.WriteString(name, value);
         rg.CloseKey;
-    End;
+    end;
     rg.Free;
-End;
+end;
 
 
 {
   Sometimes the only way we can test if a drive is writable is to write a test file.
   aDir is some Dir on a valid disk drive
 }
-Function IsDirWritable(aDir: String): Boolean;
-Var F: File; fn: String;
-Begin
+function IsDirWritable(aDir: string): boolean;
+var F: file; fn: string;
+begin
     StripR(aDir, '\');  //no trailing slash
     fn := aDir + '\$_Temp_$.$$$';   //Any abnormal filename will do
     FileMode := 2;  //read/write
     AssignFile(F, fn);
   {$I-} Rewrite(F, 1);
     result := (IOResult = 0);
-    If result Then
-    Begin
+    if result then
+    begin
         CloseFile(F);
         DeleteFile(fn);
-    End;
-End;
+    end;
+end;
 
 {Check if a directory name is vaid}
-Function DirExists(dirName: String): Boolean;
-Var SearchRec: TSearchRec;
-Begin
+function DirExists(dirName: string): boolean;
+var SearchRec: TSearchRec;
+begin
     Result := (SysUtils.FindFirst(dirName, faDirectory, SearchRec) = 0)
-        And ((SearchRec.Attr And faDirectory) <> 0);
+        and ((SearchRec.Attr and faDirectory) <> 0);
     SysUtils.FindClose(SearchRec);
-End;
+end;
 
 {----------------------- Debug Log File -------------------------------}
 
@@ -1732,17 +1732,17 @@ End;
   ...
   dbg.Free;
 }
-Constructor TDLogFile.Create(aFilename: String; aDebugMode: Boolean;
-    aTimeStamp: Boolean; aHeaderDump, aAppendMode: Boolean);
-Var Dir: String;
-Begin
-    If aFilename = '' Then
+constructor TDLogFile.Create(aFilename: string; aDebugMode: boolean;
+    aTimeStamp: boolean; aHeaderDump, aAppendMode: boolean);
+var Dir: string;
+begin
+    if aFilename = '' then
         aFilename := DBG_DIR + DBG_FILENAME;
 
     //Valid Directory? If not default to Windows Temp Dir
     Dir := SysUtils.ExtractFilePath(aFilename);
     StripR(Dir, '\');
-    If Not (DirectoryExists(Dir) And IsDirWritable(Dir)) Then
+    if not (DirectoryExists(Dir) and IsDirWritable(Dir)) then
         aFilename := GetWinTempDir + '\' + SysUtils.ExtractFileName(aFilename);
 
     Self.FFilename := aFilename;
@@ -1752,104 +1752,104 @@ Begin
     Self.FAppendMode := aAppendMode;
 
     //Clear any file attributes
-    If FileExists(aFilename) Then
+    if FileExists(aFilename) then
         FileSetAttr(aFilename, 0);
 
     Self.Reset;
-End;
+end;
 
-Destructor TDLogFile.Destroy;
-Begin
-End;
+destructor TDLogFile.Destroy;
+begin
+end;
 
 //Save the current log to another location
-Procedure TDLogFile.CopyLogTo(aNewFilename: String);
-Var SL: TStringList;
-Begin
+procedure TDLogFile.CopyLogTo(aNewFilename: string);
+var SL: TStringList;
+begin
     SL := TStringList.Create;
-    If FileExists(FFilename) Then
+    if FileExists(FFilename) then
         SL.LoadFromFile(FFilename);
-    Try
+    try
         SL.SaveToFile(aNewFilename);
-    Except
-    End;
+    except
+    end;
     SL.Free;
-End;
+end;
 
-Procedure TDLogFile.DebugOut(msgStr: String; Const Args: Array Of Const);
-Var f: TextFile; s, timedate: String;
-Begin
+procedure TDLogFile.DebugOut(msgStr: string; const Args: array of const);
+var f: TextFile; s, timedate: string;
+begin
   {$I-}
     AssignFile(f, FFilename);
-    If (Not FileExists(FFilename))
-    Then
+    if (not FileExists(FFilename))
+    then
         Rewrite(f)  //create
-    Else Append(f);
+    else Append(f);
 
-    If FTimeStamp
-    Then
+    if FTimeStamp
+    then
         timedate := TimeToStr(now) + '   '
-    Else timedate := '';
+    else timedate := '';
 
-    If ioresult = 0 Then
-    Begin
-        Try
-            If (Length(Args) = 0)
-            Then
+    if ioresult = 0 then
+    begin
+        try
+            if (Length(Args) = 0)
+            then
                 s := msgStr
-            Else s := format(msgStr, Args);
-            If s = '-' Then   //separator
+            else s := format(msgStr, Args);
+            if s = '-' then   //separator
                 s := MkStr('-', 80);
-            If s = '=' Then   //separator
+            if s = '=' then   //separator
                 s := MkStr('=', 80);
-            If (s <> '') And (s[1] In ['-', '=', '!'])
-            Then
+            if (s <> '') and (s[1] in ['-', '=', '!'])
+            then
                 s := Copy(S, 2, maxint)
-            Else s := timedate + s;
+            else s := timedate + s;
             Writeln(f, s);
             Flush(f);
-        Finally
+        finally
             CloseFile(f);
-        End;
-    End;
-End;
+        end;
+    end;
+end;
 
 {Same as above but checks the debug flag before wrieting output}
-Procedure TDLogFile.DebugOut2(msgStr: String; Const Args: Array Of Const);
-Begin
-    If FDebugMode Then
+procedure TDLogFile.DebugOut2(msgStr: string; const Args: array of const);
+begin
+    if FDebugMode then
         DebugOut(msgStr, Args);
-End;
+end;
 
 {All Errors reported here. Uses same format as the Delphi Format() function }
-Procedure TDLogFile.ReportError(errStr: String; Const Args: Array Of Const);
-Var s: String;
-Begin
+procedure TDLogFile.ReportError(errStr: string; const Args: array of const);
+var s: string;
+begin
     s := format(errStr, Args);
-    MessageBox2(s, MB_OK Or MB_ICONWARNING);
-    If FDebugMode Then
+    MessageBox2(s, MB_OK or MB_ICONWARNING);
+    if FDebugMode then
         DebugOut(s, ['']);
-End;
+end;
 
 {Display Log file in default viewer}
-Procedure TDLogFile.Show;
-Begin
-    If FileExists(FFilename)
-    Then
+procedure TDLogFile.Show;
+begin
+    if FileExists(FFilename)
+    then
         ShellExec(FFilename, '')
-    Else ShowMessage2('File not found'#13 + FFilename + #13 +
-            'Debug Enabled = ' + IntToStr(Integer(FDebugMode)));
-End;
+    else ShowMessage2('File not found'#13 + FFilename + #13 +
+            'Debug Enabled = ' + IntToStr(integer(FDebugMode)));
+end;
 
 
 { Returns a suitable Folder for the log file - No Trailing \
   With the current dir where this EXE or DLL lives (if writable)
   or the window temp dir
 }
-Function TDLogFile.GetLogDir: String;
-Begin
+function TDLogFile.GetLogDir: string;
+begin
     Result := DBG_DIR;
-End;
+end;
 
 
 
@@ -1857,14 +1857,14 @@ End;
   FHeaderDump - Dump block of system info (usefull for debugging latter)
   FAppendMode - If false always delete any previous log file. If true prev log file will be appended to.
 }
-Procedure TDLogFile.Reset;
-Var i: Integer; s, os, spack: String;
-Begin
-    If FileExists(FFilename) And (Not FAppendMode) Then
+procedure TDLogFile.Reset;
+var i: integer; s, os, spack: string;
+begin
+    if FileExists(FFilename) and (not FAppendMode) then
         DeleteFile(FFilename);
 
-    If FDebugMode And FHeaderDump Then
-    Begin
+    if FDebugMode and FHeaderDump then
+    begin
         DebugOut('=', ['']);
         DebugOut('!Log File:             %s', [#9 + FFilename]);
         DebugOut('!Date:                 %s', [#9 + DateTimeToStr(now)]);
@@ -1898,12 +1898,12 @@ Begin
         DebugOut('!EXE Version =       %s', [#9 + GetFileVerStr(ParamStr(0))]);
 
         s := '';
-        For i := 1 To ParamCount Do
-        Begin
-            If s <> '' Then
+        for i := 1 to ParamCount do
+        begin
+            if s <> '' then
                 s := s + ' | ';
             s := s + ParamStr(i);
-        End;
+        end;
         DebugOut('!Cmdline Param(s) =  %s', [#9 + s]);
         DebugOut('!Actual CmdLine =  %s', [#9 + CmdLine]);
         DebugOut('!_RunDir =           %s', [#9 + _RunDir]);
@@ -1921,44 +1921,44 @@ Begin
         DebugOut('!_ieVerStr =         %s', [#9 + _ieVerStr]);
         DebugOut('!_ieFriendlyVerStr = %s', [#9 + _ieFriendlyVerStr]);
         DebugOut('=', ['']);
-    End;
-End;
+    end;
+end;
 
 
 
-Procedure DebugOut(msgStr: String; Const Args: Array Of Const);
-Begin
+procedure DebugOut(msgStr: string; const Args: array of const);
+begin
     _HHDbgObj.DebugOut(msgStr, Args);
-End;
+end;
 
-Procedure DebugOut2(msgStr: String; Const Args: Array Of Const);
-Begin
+procedure DebugOut2(msgStr: string; const Args: array of const);
+begin
     _HHDbgObj.DebugOut2(msgStr, Args);  //Only add to log if debug is enabled
-End;
+end;
 
-Procedure ShowDebugFile;
-Begin
+procedure ShowDebugFile;
+begin
     _HHDbgObj.Show;           //Display Debug Log file
-End;
+end;
 
-Procedure ResetDebugFile;
-Begin
+procedure ResetDebugFile;
+begin
     _HHDbgObj.Reset;
-End;
+end;
 
-Procedure ReportError(errStr: String; Const Args: Array Of Const);
-Begin
+procedure ReportError(errStr: string; const Args: array of const);
+begin
     _HHDbgObj.ReportError(errStr, Args);
     //Popup Warning and if debug enabled log it
-End;
+end;
 
 
 { Module initialization }
-Procedure ModuleInit;
-Var
-    v1, v2, v3, v4, i: Word;
-    FileName: Array[0..300] Of Char;
-Begin
+procedure ModuleInit;
+var
+    v1, v2, v3, v4, i: word;
+    FileName: array[0..300] of char;
+begin
     //Get run dir & Progname - or DLL or EXE
     GetModuleFileName(HInstance, FileName, SizeOf(FileName));
     _ModulePath := Filename;
@@ -1971,21 +1971,21 @@ Begin
     StripR(_RunDir, '\');
 
     { Debug Dir is current dir, Or root of Windows dir if readonly. CD? }
-    If IsDirWritable(_ModuleDir) Then
+    if IsDirWritable(_ModuleDir) then
         DBG_DIR := _ModuleDir        //Where EXE or DLL lives
-    Else
+    else
         DBG_DIR := GetWinTempDir;    //Window Temp folder
 
     {debug mode enabled is file debug.debug found in the Modules dir OR a /debug or -debug cmdline switch}
     _DebugMode := FileExists(_ModuleDir + '\debug.debug');
-    If Not _DebugMode Then
-        For i := 1 To ParamCount Do
-            If (CompareText(paramstr(i), '/debug') = 0) Or
-                (CompareText(paramstr(i), '-debug') = 0) Then
-            Begin
-                _DebugMode := True;
+    if not _DebugMode then
+        for i := 1 to ParamCount do
+            if (CompareText(paramstr(i), '/debug') = 0) or
+                (CompareText(paramstr(i), '-debug') = 0) then
+            begin
+                _DebugMode := TRUE;
                 break;
-            End;
+            end;
 
     {get version info of 'hhctrl.ocx' - returns '' and 0s if not found}
     _hhVerStr := GetFileVer(hh.GetPathToHHCtrlOCX, _hhMajVer,
@@ -2002,11 +2002,11 @@ Begin
     //Create Debug file - _DebugMode, TimeStamp:Yes, HeaderDump:Yes, AppendMode:No
     _HHDbgObj := TDLogFile.Create(DBG_DIR + DBG_FILENAME, _DebugMode,
         DBG_TIMESTAMP, DBG_HEADERDUMP, DBG_APPENDMODE);
-End;
+end;
 
 
-Initialization
+initialization
     ModuleInit;
-Finalization
+finalization
     _HHDbgObj.Free;
-End.
+end.

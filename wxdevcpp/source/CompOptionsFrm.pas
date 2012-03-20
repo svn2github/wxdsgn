@@ -20,11 +20,11 @@
 }
 
 {$WARN UNIT_PLATFORM OFF}
-Unit CompOptionsFrm;
+unit CompOptionsFrm;
 
-Interface
+interface
 
-Uses
+uses
 {$IFDEF PLUGIN_BUILD}
     iplugin_bpl, iplugin,
 {$ENDIF}
@@ -39,8 +39,8 @@ Uses
   CompilerOptionsFrame;
 {$ENDIF}
 
-Type
-    TCompForm = Class(TForm)
+type
+    TCompForm = class(TForm)
         btnOk: TBitBtn;
         btnCancel: TBitBtn;
         btnDefault: TBitBtn;
@@ -104,55 +104,55 @@ Type
         Label1: TLabel;
         btnRefreshCompilerSettings: TSpeedButton;
 
-        Procedure btnCancelClick(Sender: TObject);
-        Procedure btnOkClick(Sender: TObject);
-        Procedure FormActivate(Sender: TObject);
-        Procedure btnDefaultClick(Sender: TObject);
-        Procedure btnHelpClick(Sender: TObject);
-        Procedure DirTabsChange(Sender: TObject);
-        Procedure DirTabsChanging(Sender: TObject; NewIndex: Integer;
-            Var AllowChange: Boolean);
-        Procedure lstDirsClick(Sender: TObject);
-        Procedure lstDirsDblClick(Sender: TObject);
-        Procedure edEntryChange(Sender: TObject);
-        Procedure btnBrowseClick(Sender: TObject);
-        Procedure ButtonClick(Sender: TObject);
-        Procedure UpDownClick(Sender: TObject);
-        Procedure FormKeyDown(Sender: TObject; Var Key: Word;
+        procedure btnCancelClick(Sender: TObject);
+        procedure btnOkClick(Sender: TObject);
+        procedure FormActivate(Sender: TObject);
+        procedure btnDefaultClick(Sender: TObject);
+        procedure btnHelpClick(Sender: TObject);
+        procedure DirTabsChange(Sender: TObject);
+        procedure DirTabsChanging(Sender: TObject; NewIndex: integer;
+            var AllowChange: boolean);
+        procedure lstDirsClick(Sender: TObject);
+        procedure lstDirsDblClick(Sender: TObject);
+        procedure edEntryChange(Sender: TObject);
+        procedure btnBrowseClick(Sender: TObject);
+        procedure ButtonClick(Sender: TObject);
+        procedure UpDownClick(Sender: TObject);
+        procedure FormKeyDown(Sender: TObject; var Key: word;
             Shift: TShiftState);
-        Procedure edEntryKeyUp(Sender: TObject; Var Key: Word;
+        procedure edEntryKeyUp(Sender: TObject; var Key: word;
             Shift: TShiftState);
-        Procedure FormCreate(Sender: TObject);
-        Procedure btnBrws1Click(Sender: TObject);
-        Procedure cmbCompilerSetCompChange(Sender: TObject);
-        Procedure btnAddCompilerSetClick(Sender: TObject);
-        Procedure btnDelCompilerSetClick(Sender: TObject);
-        Procedure btnRenameCompilerSetClick(Sender: TObject);
-        Procedure CompilerTypesClick(Sender: TObject);
-        Procedure LoadOptions;
-        Procedure SaveSettings;
-        Procedure btnRefreshCompilerSettingsClick(Sender: TObject);
-        Procedure FormClose(Sender: TObject; Var Action: TCloseAction);
+        procedure FormCreate(Sender: TObject);
+        procedure btnBrws1Click(Sender: TObject);
+        procedure cmbCompilerSetCompChange(Sender: TObject);
+        procedure btnAddCompilerSetClick(Sender: TObject);
+        procedure btnDelCompilerSetClick(Sender: TObject);
+        procedure btnRenameCompilerSetClick(Sender: TObject);
+        procedure CompilerTypesClick(Sender: TObject);
+        procedure LoadOptions;
+        procedure SaveSettings;
+        procedure btnRefreshCompilerSettingsClick(Sender: TObject);
+        procedure FormClose(Sender: TObject; var Action: TCloseAction);
 
-    Private
-        fBins: String;
-        fLibs: String;
-        fC: String;
-        fCpp: String;
-        fRC: String;
-        Procedure SetOptions;
-        Procedure UpdateButtons;
-        Procedure LoadText;
-    End;
+    private
+        fBins: string;
+        fLibs: string;
+        fC: string;
+        fCpp: string;
+        fRC: string;
+        procedure SetOptions;
+        procedure UpdateButtons;
+        procedure LoadText;
+    end;
 
-Var
-    NumOpt: Integer;
-    currentSet: Integer;
-    previousSet: Integer;
+var
+    NumOpt: integer;
+    currentSet: integer;
+    previousSet: integer;
 
-Implementation
+implementation
 
-Uses
+uses
 {$IFDEF WIN32}
     Main, FileCtrl, version, devcfg, utils, MultiLangSupport, datamod, hh;
 {$ENDIF}
@@ -162,52 +162,52 @@ Uses
 
 {$R *.dfm}
 
-Const
-    Help_Topics: Array[0..4] Of String = (
+const
+    Help_Topics: array[0..4] of string = (
         'html\compiler_compiler.html',
         'html\compiler_settings.html',
         'html\compiler_dirs.html',
         'html\compiler_programs.html',
         'html\compiler_wxwidgets.html');
 
-Procedure TCompForm.btnCancelClick(Sender: TObject);
-Begin
+procedure TCompForm.btnCancelClick(Sender: TObject);
+begin
     devCompiler.CompilerSet := previousSet;  // Return to initial compiler set
     Close;
-End;
+end;
 
-Procedure TCompForm.btnOkClick(Sender: TObject);
-Begin
-    If (fBins = '') Then
-    Begin
+procedure TCompForm.btnOkClick(Sender: TObject);
+begin
+    if (fBins = '') then
+    begin
         MessageDlg('You have not indicated the location of your binaries (compiler).'#13#10 +
             'Please do so now.', mtError, [mbOK], Handle);
         ModalResult := mrNone;
         Exit;
-    End;
+    end;
 
     Screen.Cursor := crHourGlass;
-    btnOk.Enabled := False;
+    btnOk.Enabled := FALSE;
 
     self.SaveSettings;
     devCompilerSet.AssignToCompiler;
-    With devCompiler Do
-    Begin
+    with devCompiler do
+    begin
         Delay := seCompDelay.Value;
         FastDep := cbFastDep.Checked;
         CompilerSet := cmbCompilerSetComp.ItemIndex;
         devCompilerSet.Sets.Assign(cmbCompilerSetComp.Items);
-    End;
+    end;
 
-    With devDirs Do
-    Begin
+    with devDirs do
+    begin
         C := fC;
         Cpp := fCpp;
         Lib := fLibs;
         RC := fRC;
         Bins := fBins;
         SetPath(Bins);
-    End;
+    end;
 
     devDirs.SaveSettings;
     devCompiler.SaveSettings;
@@ -216,26 +216,26 @@ Begin
     // current project. That should only be possible from Project->Project Settings.
     // So at the very end, let's just go back to the original compiler index
     // (which is what the project was set to)
-    If Assigned(MainForm.fProject) Then
+    if Assigned(MainForm.fProject) then
         devCompiler.CompilerSet := previousSet;
 
-    btnOk.Enabled := True;
+    btnOk.Enabled := TRUE;
     Cursor := crDefault;
 
-End;
+end;
 
-Procedure TCompForm.FormActivate(Sender: TObject);
-Begin
+procedure TCompForm.FormActivate(Sender: TObject);
+begin
     SetOptions;
     DirTabsChange(Self);
     currentSet := devCompiler.CompilerSet;
     previousSet := currentSet;  // Remember the initial compiler index
-End;
+end;
 
-Procedure TCompForm.SetOptions;
-Begin
-    With devCompiler Do
-    Begin
+procedure TCompForm.SetOptions;
+begin
+    with devCompiler do
+    begin
         seCompDelay.Value := Delay;
         cbFastDep.Checked := FastDep;
         Commands.Lines.Text := CmdOpts;
@@ -245,45 +245,45 @@ Begin
         cmbCompilerSetComp.Items.Clear;
         cmbCompilerSetComp.Items.Assign(devCompilerSet.Sets);
 
-        If CompilerSet < cmbCompilerSetComp.Items.Count Then
+        if CompilerSet < cmbCompilerSetComp.Items.Count then
             cmbCompilerSetComp.ItemIndex := CompilerSet
-        Else
-        If cmbCompilerSetComp.Items.Count > 0 Then
+        else
+        if cmbCompilerSetComp.Items.Count > 0 then
             cmbCompilerSetComp.ItemIndex := 0;
 
         currentSet := cmbCompilerSetComp.ItemIndex;
         devCompilerSet.LoadSet(CompilerSet);
         LoadOptions;
-    End;
-End;
+    end;
+end;
 
-Procedure TCompForm.btnDefaultClick(Sender: TObject);
-Var
-    i: Integer;
-Begin
+procedure TCompForm.btnDefaultClick(Sender: TObject);
+var
+    i: integer;
+begin
     devCompiler.SettoDefaults;
     SetOptions;
 
 {$IFDEF PLUGIN_BUILD}//EAB TODO: Make this more general (not easy to do :P )
 
-    For i := 0 To MainForm.pluginsCount - 1 Do
-    Begin
+    for i := 0 to MainForm.pluginsCount - 1 do
+    begin
         MainForm.plugins[i].SetCompilerOptionstoDefaults;
-    End;
+    end;
 {$ENDIF}
 
-End;
+end;
 
-Procedure TCompForm.btnHelpClick(Sender: TObject);
-Begin
+procedure TCompForm.btnHelpClick(Sender: TObject);
+begin
     HelpFile := devDirs.Help + DEV_MAINHELP_FILE;
-    HtmlHelp(MainForm.handle, Pchar(HelpFile), HH_DISPLAY_TOPIC,
-        DWORD(Pchar('html\compiler_options.html')));
-End;
+    HtmlHelp(MainForm.handle, pchar(HelpFile), HH_DISPLAY_TOPIC,
+        DWORD(pchar('html\compiler_options.html')));
+end;
 
-Procedure TCompForm.DirTabsChange(Sender: TObject);
-Begin
-    Case DirTabs.TabIndex Of
+procedure TCompForm.DirTabsChange(Sender: TObject);
+begin
+    case DirTabs.TabIndex of
         0:
             StrtoList(fBins, TStrings(lstDirs.Items));
         1:
@@ -294,91 +294,91 @@ Begin
             StrtoList(fCpp, TStrings(lstDirs.Items));
         4:
             StrtoList(fRC, TStrings(lstDirs.Items));
-    End;
+    end;
     edEntry.Clear;
     UpdateButtons;
-End;
+end;
 
-Procedure TCompForm.DirTabsChanging(Sender: TObject; NewIndex: Integer;
-    Var AllowChange: Boolean);
-Begin
+procedure TCompForm.DirTabsChanging(Sender: TObject; NewIndex: integer;
+    var AllowChange: boolean);
+begin
     UpdateButtons;
-End;
+end;
 
-Procedure TCompForm.lstDirsClick(Sender: TObject);
-Begin
+procedure TCompForm.lstDirsClick(Sender: TObject);
+begin
     UpdateButtons;
-End;
+end;
 
-Procedure TCompForm.lstDirsDblClick(Sender: TObject);
-Begin
-    If lstDirs.ItemIndex <> -1 Then
+procedure TCompForm.lstDirsDblClick(Sender: TObject);
+begin
+    if lstDirs.ItemIndex <> -1 then
         edEntry.Text := lstDirs.Items[lstDirs.ItemIndex];
-End;
+end;
 
-Procedure TCompForm.edEntryChange(Sender: TObject);
-Begin
+procedure TCompForm.edEntryChange(Sender: TObject);
+begin
     UpdateButtons;
-End;
+end;
 
-Procedure TCompForm.btnBrowseClick(Sender: TObject);
-Var
+procedure TCompForm.btnBrowseClick(Sender: TObject);
+var
 {$IFDEF WIN32}
-    NewItem: String;
+    NewItem: string;
 {$ENDIF}
 {$IFDEF LINUX}
   NewItem: WideString;
 {$ENDIF}
-Begin
-    If (Trim(edEntry.Text) <> '') And DirectoryExists(Trim(edEntry.Text)) Then
+begin
+    if (Trim(edEntry.Text) <> '') and DirectoryExists(Trim(edEntry.Text)) then
         newitem := edEntry.Text
-    Else
+    else
         newitem := devDirs.Default;
-    If SelectDirectory('', '', NewItem) Then
+    if SelectDirectory('', '', NewItem) then
         edEntry.Text := NewItem;
-End;
+end;
 
-Procedure TCompForm.ButtonClick(Sender: TObject);
-Var
-    idx: Integer;
+procedure TCompForm.ButtonClick(Sender: TObject);
+var
+    idx: integer;
 
-    Function VerifyPath: Boolean;
-    Begin
-        If CompilerTypes.ItemIndex = ID_COMPILER_DMARS Then
-        Begin
+    function VerifyPath: boolean;
+    begin
+        if CompilerTypes.ItemIndex = ID_COMPILER_DMARS then
+        begin
             Result := Pos('+', edEntry.Text) = 0;
-            If Not Result Then
+            if not Result then
                 MessageDlg('The Digital Mars Compiler does not support having ''+'' in its path.'#13#10#13#10 +
                     'Please place your binaries in a directory that does not contain plus-signs in its path.',
                     mtError, [mbOK], Handle);
-        End
-        Else
-            Result := True;
-    End;
-Begin
-    Case (Sender As TComponent).Tag Of
+        end
+        else
+            Result := TRUE;
+    end;
+begin
+    case (Sender as TComponent).Tag of
         1:
-            If VerifyPath Then
-            Begin
+            if VerifyPath then
+            begin
                 lstDirs.Items[lstDirs.ItemIndex] :=
                     ExcludeTrailingPathDelimiter(TrimRight(edEntry.Text));
                 edEntry.Clear;
-            End;
+            end;
         2:
-            If VerifyPath Then
-            Begin
+            if VerifyPath then
+            begin
                 lstDirs.Items.Add(ExcludeTrailingPathDelimiter(TrimRight(edEntry.Text)));
                 edEntry.Clear;
-            End;
+            end;
         3:
             lstDirs.DeleteSelected;
         4:
-            For idx := pred(lstDirs.Items.Count) Downto 0 Do
-                If Not DirectoryExists(lstDirs.Items[idx]) Then
+            for idx := pred(lstDirs.Items.Count) downto 0 do
+                if not DirectoryExists(lstDirs.Items[idx]) then
                     lstDirs.Items.Delete(idx);
-    End; { case }
+    end; { case }
 
-    Case DirTabs.TabIndex Of
+    case DirTabs.TabIndex of
         0:
             fBins := ListtoStr(lstDirs.Items);
         1:
@@ -389,30 +389,30 @@ Begin
             fCpp := ListtoStr(lstDirs.Items);
         4:
             fRC := ListtoStr(lstDirs.Items);
-    End;
+    end;
     edEntry.SetFocus;
-End;
+end;
 
-Procedure TCompForm.UpDownClick(Sender: TObject);
-Var
-    idx: Integer;
-Begin
+procedure TCompForm.UpDownClick(Sender: TObject);
+var
+    idx: integer;
+begin
     idx := lstDirs.ItemIndex;
-    If Sender = btnUp Then
-    Begin
+    if Sender = btnUp then
+    begin
         lstDirs.Items.Exchange(lstDirs.ItemIndex, lstDirs.ItemIndex - 1);
         lstDirs.ItemIndex := idx - 1;
-    End
-    Else
-    Begin
-        If Sender = btnDown Then
-        Begin
+    end
+    else
+    begin
+        if Sender = btnDown then
+        begin
             lstDirs.Items.Exchange(lstDirs.ItemIndex, lstDirs.ItemIndex + 1);
             lstDirs.ItemIndex := idx + 1;
-        End;
-    End;
+        end;
+    end;
 
-    Case DirTabs.TabIndex Of
+    case DirTabs.TabIndex of
         0:
             fBins := ListtoStr(lstDirs.Items);
         1:
@@ -423,70 +423,70 @@ Begin
             fCpp := ListtoStr(lstDirs.Items);
         4:
             fRC := ListtoStr(lstDirs.Items);
-    End;
+    end;
     UpdateButtons;
-End;
+end;
 
-Procedure TCompForm.UpdateButtons;
-Begin
+procedure TCompForm.UpdateButtons;
+begin
     btnAdd.Enabled := edEntry.Text <> '';
-    If lstDirs.ItemIndex >= 0 Then
-    Begin
-        btnDelete.Enabled := True;
+    if lstDirs.ItemIndex >= 0 then
+    begin
+        btnDelete.Enabled := TRUE;
         btnReplace.Enabled := btnAdd.Enabled;
         btnUp.Enabled := lstDirs.ItemIndex > 0;
         btnDown.Enabled := lstDirs.ItemIndex < (lstDirs.Items.Count - 1);
-    End
-    Else
-    Begin
-        btnDelete.Enabled := False;
-        btnReplace.Enabled := False;
-        btnUp.Enabled := False;
-        btnDown.Enabled := False;
-    End;
+    end
+    else
+    begin
+        btnDelete.Enabled := FALSE;
+        btnReplace.Enabled := FALSE;
+        btnUp.Enabled := FALSE;
+        btnDown.Enabled := FALSE;
+    end;
     btnDelInval.Enabled := lstDirs.Items.Count > 0;
-End;
+end;
 
-Procedure TCompForm.FormKeyDown(Sender: TObject; Var Key: Word;
+procedure TCompForm.FormKeyDown(Sender: TObject; var Key: word;
     Shift: TShiftState);
-Begin
+begin
 {$IFDEF WIN32}
-    If key = vk_F1 Then
+    if key = vk_F1 then
 {$ENDIF}
 {$IFDEF LINUX}
   if key = XK_F1 then
 {$ENDIF}
-    Begin
+    begin
         HelpFile := devDirs.Help + DEV_MAINHELP_FILE;
         //HelpKeyword := Help_Topics[MainPages.ActivePageIndex];
-        HtmlHelp(MainForm.handle, Pchar(HelpFile), HH_DISPLAY_TOPIC,
-            DWORD(Pchar(Help_Topics[MainPages.ActivePageIndex])));
-    End;
-End;
+        HtmlHelp(MainForm.handle, pchar(HelpFile), HH_DISPLAY_TOPIC,
+            DWORD(pchar(Help_Topics[MainPages.ActivePageIndex])));
+    end;
+end;
 
-Procedure TCompForm.edEntryKeyUp(Sender: TObject; Var Key: Word;
+procedure TCompForm.edEntryKeyUp(Sender: TObject; var Key: word;
     Shift: TShiftState);
-Begin
+begin
 {$IFDEF WIN32}
-    If key = vk_return Then
+    if key = vk_return then
         ButtonClick(btnAdd);
 {$ENDIF}
 {$IFDEF LINUX}
   if key = XK_RETURN then ButtonClick(btnAdd);
 {$ENDIF}
-End;
+end;
 
-Procedure TCompForm.FormCreate(Sender: TObject);
-Begin
+procedure TCompForm.FormCreate(Sender: TObject);
+begin
     LoadText;
-    CompOptionsFrame1.FillOptions(Nil);
+    CompOptionsFrame1.FillOptions(NIL);
     MainPages.ActivePageIndex := 0;
     DirTabs.TabIndex := 0;
-End;
+end;
 
-Procedure TCompForm.LoadText;
-Begin
-    DesktopFont := True;
+procedure TCompForm.LoadText;
+begin
+    DesktopFont := TRUE;
     XPMenu.Active := devData.XPTheme;
     Caption := Lang[ID_COPT];
     //tabs
@@ -524,31 +524,31 @@ Begin
     lblProgramsText.Caption := Lang[ID_COPT_PROGRAMS];
 
     grpCompSet.Caption := Lang[ID_COPT_COMPSETS];
-End;
+end;
 
-Procedure TCompForm.cmbCompilerSetCompChange(Sender: TObject);
+procedure TCompForm.cmbCompilerSetCompChange(Sender: TObject);
 {$IFDEF PLUGIN_BUILD}
-Var
-    i, j: Integer;
+var
+    i, j: integer;
     pluginSettings: TSettings;
-    tempName: String;
+    tempName: string;
 {$ENDIF}
-Begin
+begin
 
-    pluginSettings := nil;
+    pluginSettings := NIL;
 
     //SaveSettings;    EAB
     devCompilerSet.LoadSet(cmbCompilerSetComp.ItemIndex);
 
     {$IFDEF PLUGIN_BUILD}
-    For i := 0 To MainForm.pluginsCount - 1 Do
-    Begin
+    for i := 0 to MainForm.pluginsCount - 1 do
+    begin
 
       // Get plugin-specific compiler options
         pluginSettings := MainForm.plugins[i].GetCompilerOptions;
 
-        For j := 0 To Length(pluginSettings) - 1 Do
-        Begin
+        for j := 0 to Length(pluginSettings) - 1 do
+        begin
 
             // This line loads it from the .ini file.
             tempName := devData.LoadSetting(devCompilerSet.optComKey,
@@ -556,33 +556,33 @@ Begin
 
             // Value comes back as a string. Plugin converts
             //  string value to correct type using LoadCompilerSettings
-            If tempName <> '' Then
+            if tempName <> '' then
                 MainForm.plugins[i].LoadCompilerSettings(
                     pluginSettings[j].name, tempName);
-        End;
+        end;
         MainForm.plugins[i].LoadCompilerOptions;
 
-    End;
+    end;
 {$ENDIF}
 
     currentSet := cmbCompilerSetComp.ItemIndex;
     LoadOptions;
 
-End;
+end;
 
-Procedure TCompForm.LoadOptions;
+procedure TCompForm.LoadOptions;
 {$IFDEF PLUGIN_BUILD}
-Var
-    i, j: Integer;
+var
+    i, j: integer;
     pluginSettings: TSettings;
-    tempName: String;
+    tempName: string;
 {$ENDIF PLUGIN_BUILD}
-Begin
+begin
 
-    pluginSettings := nil;
+    pluginSettings := NIL;
 
-    With devCompilerSet Do
-    Begin
+    with devCompilerSet do
+    begin
         fBins := BinDir;
         fC := CDir;
         fCpp := CppDir;
@@ -607,40 +607,40 @@ Begin
         devCompiler.OptionStr := OptionsStr;
 
     {$IFDEF PLUGIN_BUILD}
-        For i := 0 To MainForm.pluginsCount - 1 Do
-        Begin
+        for i := 0 to MainForm.pluginsCount - 1 do
+        begin
 
             pluginSettings := MainForm.plugins[i].GetCompilerOptions;
 
-            For j := 0 To Length(pluginSettings) - 1 Do
-            Begin
+            for j := 0 to Length(pluginSettings) - 1 do
+            begin
 
             // This line loads it from the .ini file.
                 tempName := devData.LoadSetting(optComKey,
                     pluginSettings[j].name);
             // Value comes back as a string. Plugin converts
             //  string value to correct type using LoadCompilerSettings
-                If tempName <> '' Then
+                if tempName <> '' then
                     MainForm.plugins[i].LoadCompilerSettings(
                         pluginSettings[j].name, tempName);
-            End;
+            end;
             MainForm.plugins[i].LoadCompilerOptions;
 
-        End;
+        end;
 
     {$ENDIF PLUGIN_BUILD}
 
-        CompOptionsFrame1.FillOptions(Nil);
-        CompilerTypesClick(Nil);
-    End;
-End;
+        CompOptionsFrame1.FillOptions(NIL);
+        CompilerTypesClick(NIL);
+    end;
+end;
 
-Procedure TCompForm.SaveSettings;
+procedure TCompForm.SaveSettings;
 {$IFDEF PLUGIN_BUILD}
-Var
-    i: Integer;
+var
+    i: integer;
 {$ENDIF PLUGIN_BUILD}
-Begin
+begin
     devCompilerSet.CompilerType := CompilerTypes.ItemIndex;
     devCompilerSet.gccName := GccEdit.Text;
     devCompilerSet.gppName := GppEdit.Text;
@@ -662,22 +662,22 @@ Begin
     devCompilerSet.OptionsStr := devCompiler.OptionStr;
 
   {$IFDEF PLUGIN_BUILD}
-    For i := 0 To MainForm.pluginsCount - 1 Do
+    for i := 0 to MainForm.pluginsCount - 1 do
         MainForm.plugins[i].SaveCompilerOptions;
   {$ENDIF PLUGIN_BUILD}
 
     devCompilerSet.SaveSet(currentSet);
     devCompilerSet.SaveSettings;
 
-End;
+end;
 
-Procedure TCompForm.btnBrws1Click(Sender: TObject);
-Var
+procedure TCompForm.btnBrws1Click(Sender: TObject);
+var
     sl: TStringList;
     Obj: TEdit;
-Begin
-    Obj := Nil;
-    Case TSpeedButton(Sender).Tag Of
+begin
+    Obj := NIL;
+    case TSpeedButton(Sender).Tag of
         2:
             Obj := GccEdit; //gcc
         3:
@@ -692,174 +692,174 @@ Begin
             Obj := DllwrapEdit; //dllwrap
         8:
             Obj := GprofEdit; //gprof
-    End;
+    end;
 
-    If Not Assigned(Obj) Then
+    if not Assigned(Obj) then
         Exit;
 
     dmMain.OpenDialog.Filter := FLT_ALLFILES;
     sl := TStringList.Create;
-    Try
+    try
         sl.Delimiter := ';';
         sl.DelimitedText := devCompilerSet.BinDir;
-        If sl.Count > 0 Then
+        if sl.Count > 0 then
             dmMain.OpenDialog.InitialDir := sl[0];
-    Finally
+    finally
         sl.Free;
-    End;
+    end;
 
     dmMain.OpenDialog.FileName :=
         IncludeTrailingPathDelimiter(dmMain.OpenDialog.InitialDir) + Obj.Text;
-    If dmMain.OpenDialog.Execute Then
-    Begin
+    if dmMain.OpenDialog.Execute then
+    begin
         Obj.Text := ExtractFileName(dmMain.OpenDialog.FileName);
-    End;
-End;
+    end;
+end;
 
-Procedure TCompForm.btnAddCompilerSetClick(Sender: TObject);
-Var
-    S: String;
-Begin
+procedure TCompForm.btnAddCompilerSetClick(Sender: TObject);
+var
+    S: string;
+begin
     S := 'New compiler';
-    If Not InputQuery(Lang[ID_COPT_NEWCOMPSET], Lang[ID_COPT_PROMPTNEWCOMPSET],
-        S) Or (S = '') Then
+    if not InputQuery(Lang[ID_COPT_NEWCOMPSET], Lang[ID_COPT_PROMPTNEWCOMPSET],
+        S) or (S = '') then
         Exit;
 
     devCompilerSet.Sets.Add(S);
     cmbCompilerSetComp.ItemIndex := cmbCompilerSetComp.Items.Add(S);
-    cmbCompilerSetCompChange(Nil);
-End;
+    cmbCompilerSetCompChange(NIL);
+end;
 
-Procedure TCompForm.btnDelCompilerSetClick(Sender: TObject);
-Begin
-    If cmbCompilerSetComp.Items.Count = 1 Then
-    Begin
+procedure TCompForm.btnDelCompilerSetClick(Sender: TObject);
+begin
+    if cmbCompilerSetComp.Items.Count = 1 then
+    begin
         MessageDlg(Lang[ID_COPT_CANTDELETECOMPSET], mtError, [mbOk], 0);
         Exit;
-    End;
+    end;
 
-    If MessageDlg(Lang[ID_COPT_DELETECOMPSET], mtConfirmation,
-        [mbYes, mbNo], 0) = mrNo Then
+    if MessageDlg(Lang[ID_COPT_DELETECOMPSET], mtConfirmation,
+        [mbYes, mbNo], 0) = mrNo then
         Exit;
 
     devCompilerSet.Sets.Delete(cmbCompilerSetComp.ItemIndex);
     cmbCompilerSetComp.Items.Delete(cmbCompilerSetComp.ItemIndex);
     cmbCompilerSetComp.ItemIndex := 0;
-    cmbCompilerSetCompChange(Nil);
-End;
+    cmbCompilerSetCompChange(NIL);
+end;
 
-Procedure TCompForm.btnRenameCompilerSetClick(Sender: TObject);
-Var
-    S: String;
-Begin
+procedure TCompForm.btnRenameCompilerSetClick(Sender: TObject);
+var
+    S: string;
+begin
     S := cmbCompilerSetComp.Text;
-    If Not InputQuery(Lang[ID_COPT_RENAMECOMPSET],
-        Lang[ID_COPT_PROMPTRENAMECOMPSET], S) Or (S = '') Or
-        (S = cmbCompilerSetComp.Text) Then
+    if not InputQuery(Lang[ID_COPT_RENAMECOMPSET],
+        Lang[ID_COPT_PROMPTRENAMECOMPSET], S) or (S = '') or
+        (S = cmbCompilerSetComp.Text) then
         Exit;
 
     cmbCompilerSetComp.Items[cmbCompilerSetComp.ItemIndex] := S;
     cmbCompilerSetComp.ItemIndex := cmbCompilerSetComp.Items.IndexOf(S);
-End;
+end;
 
-Procedure TCompForm.CompilerTypesClick(Sender: TObject);
-Begin
+procedure TCompForm.CompilerTypesClick(Sender: TObject);
+begin
     devCompilerSet.CompilerType := CompilerTypes.ItemIndex;
-    If (Sender <> Nil) Then
-    Begin
+    if (Sender <> NIL) then
+    begin
         devDirs.CompilerType := CompilerTypes.ItemIndex;
         devDirs.SettoDefaults;
-    End;
+    end;
     devCompilerSet.SettoDefaults;
     devCompiler.AddDefaultOptions;
     devCompiler.OptionStr := devCompilerSet.OptionsStr;
-    CompOptionsFrame1.FillOptions(Nil);
+    CompOptionsFrame1.FillOptions(NIL);
 
     //In order to remove the recursive call from loadOptions
     //we just check if the paramter sent by the calling function is
     //nil.
-    If (Sender <> Nil) Then
+    if (Sender <> NIL) then
         LoadOptions;
 
     //Set the labels
-    Case CompilerTypes.ItemIndex Of
+    case CompilerTypes.ItemIndex of
         ID_COMPILER_MINGW:
-        Begin
+        begin
             lblgprof.Caption := 'Code Profiler:';
-            lblgprof.Enabled := True;
-            gprofEdit.Enabled := True;
-            btnbrowse8.Enabled := True;
+            lblgprof.Enabled := TRUE;
+            gprofEdit.Enabled := TRUE;
+            btnbrowse8.Enabled := TRUE;
 
-            lbldllwrap.Enabled := False;
-            DllwrapEdit.Enabled := False;
-            btnbrowse7.Enabled := False;
-        End;
+            lbldllwrap.Enabled := FALSE;
+            DllwrapEdit.Enabled := FALSE;
+            btnbrowse7.Enabled := FALSE;
+        end;
         ID_COMPILER_LINUX:
-        Begin
+        begin
             lblgprof.Caption := 'Code Profiler:';
-            lblgprof.Enabled := True;
-            gprofEdit.Enabled := True;
-            btnbrowse8.Enabled := True;
+            lblgprof.Enabled := TRUE;
+            gprofEdit.Enabled := TRUE;
+            btnbrowse8.Enabled := TRUE;
 
-            lbldllwrap.Enabled := False;
-            DllwrapEdit.Enabled := False;
-            btnbrowse7.Enabled := False;
-        End;
+            lbldllwrap.Enabled := FALSE;
+            DllwrapEdit.Enabled := FALSE;
+            btnbrowse7.Enabled := FALSE;
+        end;
         ID_COMPILER_VC6,
         ID_COMPILER_VC2003:
-        Begin
+        begin
             lblgprof.Caption := 'Manifest Tool:';
-            lblgprof.Enabled := False;
-            gprofEdit.Enabled := False;
-            btnbrowse8.Enabled := False;
+            lblgprof.Enabled := FALSE;
+            gprofEdit.Enabled := FALSE;
+            btnbrowse8.Enabled := FALSE;
 
-            lbldllwrap.Enabled := True;
-            DllwrapEdit.Enabled := True;
-            btnbrowse7.Enabled := True;
-        End;
+            lbldllwrap.Enabled := TRUE;
+            DllwrapEdit.Enabled := TRUE;
+            btnbrowse7.Enabled := TRUE;
+        end;
         ID_COMPILER_VC2010,
         ID_COMPILER_VC2008,
         ID_COMPILER_VC2005:
-        Begin
+        begin
             lblgprof.Caption := 'Manifest Tool:';
-            lblgprof.Enabled := True;
-            gprofEdit.Enabled := True;
-            btnbrowse8.Enabled := True;
+            lblgprof.Enabled := TRUE;
+            gprofEdit.Enabled := TRUE;
+            btnbrowse8.Enabled := TRUE;
 
-            lbldllwrap.Enabled := True;
-            DllwrapEdit.Enabled := True;
-            btnbrowse7.Enabled := True;
-        End;
-    End;
-End;
+            lbldllwrap.Enabled := TRUE;
+            DllwrapEdit.Enabled := TRUE;
+            btnbrowse7.Enabled := TRUE;
+        end;
+    end;
+end;
 
-Procedure TCompForm.btnRefreshCompilerSettingsClick(Sender: TObject);
-Begin
-    If MessageDlg('Are you sure you wish to reset all the compiler settings to their defaults?'#10#13#10#13 +
+procedure TCompForm.btnRefreshCompilerSettingsClick(Sender: TObject);
+begin
+    if MessageDlg('Are you sure you wish to reset all the compiler settings to their defaults?'#10#13#10#13 +
         'To redetect the necessary compiler, include and library paths, or if you have '#10#13 +
         'installed the selected compiler after installing wxDev-C++, select Yes.',
         mtConfirmation,
-        [mbYes, mbNo], Self.Handle) = mrYes Then
+        [mbYes, mbNo], Self.Handle) = mrYes then
         CompilerTypesClick(CompilerTypes);
-End;
+end;
 
-Procedure TCompForm.FormClose(Sender: TObject; Var Action: TCloseAction);
+procedure TCompForm.FormClose(Sender: TObject; var Action: TCloseAction);
 {$IFDEF PLUGIN_BUILD}
-Var
-    i: Integer;
+var
+    i: integer;
     tabs: TTabSheet;
 {$ENDIF PLUGIN_BUILD}
-Begin
+begin
 {$IFDEF PLUGIN_BUILD}
-    For i := 0 To MainForm.packagesCount - 1 Do
-    Begin
-        tabs := (MainForm.plugins[MainForm.delphi_plugins[i]] As
+    for i := 0 to MainForm.packagesCount - 1 do
+    begin
+        tabs := (MainForm.plugins[MainForm.delphi_plugins[i]] as
             IPlug_In_BPL).Retrieve_CompilerOptionsPane;
-        If tabs <> Nil Then
-            tabs.PageControl := Nil;
-    End;
+        if tabs <> NIL then
+            tabs.PageControl := NIL;
+    end;
     MainPages.ActivePageIndex := 0;
 {$ENDIF PLUGIN_BUILD}
-End;
+end;
 
-End.
+end.

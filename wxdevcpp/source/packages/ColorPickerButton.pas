@@ -1,4 +1,4 @@
-Unit ColorPickerButton;
+unit ColorPickerButton;
 
 // This unit contains a special speed button which can be used to let the user select
 // a specific color. The control does not use the standard Windows color dialog, but
@@ -31,9 +31,9 @@ Unit ColorPickerButton;
 //               (changed to version 1.1)
 // 16-JUN-99 ml: initial release
 
-Interface
+interface
 
-Uses
+uses
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Classes, Controls, Forms, Graphics, StdCtrls,
     ExtCtrls, CommCtrl;
@@ -43,12 +43,12 @@ Uses
   QCommCtrl;
 {$ENDIF}
 
-Const // constants used in OnHint and internally to indicate a specific cell
+const // constants used in OnHint and internally to indicate a specific cell
     DefaultCell = -3;
     CustomCell = -2;
     NoCell = -1;
 
-Type
+type
     TButtonLayout = (blGlyphLeft, blGlyphRight, blGlyphTop, blGlyphBottom);
     TButtonState = (bsUp, bsDisabled, bsDown, bsExclusive);
     TButtonStyle = (bsAutoDetect, bsWin31, bsNew);
@@ -56,28 +56,28 @@ Type
 
     TIndicatorBorder = (ibNone, ibFlat, ibSunken, ibRaised);
 
-    THintEvent = Procedure(Sender: TObject; Cell: Integer; Var Hint: String) Of Object;
-    TDropChangingEvent = Procedure(Sender: TObject; Var Allowed: Boolean) Of Object;
+    THintEvent = procedure(Sender: TObject; Cell: integer; var Hint: string) of object;
+    TDropChangingEvent = procedure(Sender: TObject; var Allowed: boolean) of object;
 
-    TColorPickerButton = Class(TGraphicControl)
-    Private
-        FGroupIndex: Integer;
+    TColorPickerButton = class(TGraphicControl)
+    private
+        FGroupIndex: integer;
         FGlyph: Pointer;
-        FDown: Boolean;
-        FDragging: Boolean;
-        FAllowAllUp: Boolean;
+        FDown: boolean;
+        FDragging: boolean;
+        FAllowAllUp: boolean;
         FLayout: TButtonLayout;
-        FSpacing: Integer;
-        FMargin: Integer;
-        FFlat: Boolean;
-        FMouseInControl: Boolean;
-        FTransparent: Boolean;
+        FSpacing: integer;
+        FMargin: integer;
+        FFlat: boolean;
+        FMouseInControl: boolean;
+        FTransparent: boolean;
         FIndicatorBorder: TIndicatorBorder;
 
         FDropDownArrowColor: TColor;
-        FDropDownWidth: Integer;
-        FDropDownZone: Boolean;
-        FDroppedDown: Boolean;
+        FDropDownWidth: integer;
+        FDropDownZone: boolean;
+        FDroppedDown: boolean;
         FSelectionColor: TColor;
         FState: TButtonState;
         FColorPopup: TWinControl;
@@ -88,112 +88,112 @@ Type
         FOnDropChanged: TNotifyEvent;
         FOnDropChanging: TDropChangingEvent;
         FOnHint: THintEvent;
-        Procedure GlyphChanged(Sender: TObject);
-        Procedure UpdateExclusive;
-        Function GetGlyph: TBitmap;
-        Procedure SetDropDownArrowColor(Value: TColor);
-        Procedure SetDropDownWidth(Value: Integer);
-        Procedure SetGlyph(Value: TBitmap);
-        Function GetNumGlyphs: TNumGlyphs;
-        Procedure SetNumGlyphs(Value: TNumGlyphs);
-        Procedure SetDown(Value: Boolean);
-        Procedure SetFlat(Value: Boolean);
-        Procedure SetAllowAllUp(Value: Boolean);
-        Procedure SetGroupIndex(Value: Integer);
-        Procedure SetLayout(Value: TButtonLayout);
-        Procedure SetSpacing(Value: Integer);
-        Procedure SetMargin(Value: Integer);
-        Procedure UpdateTracking;
-        Procedure CMEnabledChanged(Var Message: TMessage); Message CM_ENABLEDCHANGED;
-        Procedure CMButtonPressed(Var Message: TMessage); Message CM_BUTTONPRESSED;
-        Procedure CMDialogChar(Var Message: TCMDialogChar); Message CM_DIALOGCHAR;
-        Procedure CMFontChanged(Var Message: TMessage); Message CM_FONTCHANGED;
-        Procedure CMTextChanged(Var Message: TMessage); Message CM_TEXTCHANGED;
-        Procedure CMSysColorChange(Var Message: TMessage); Message CM_SYSCOLORCHANGE;
-        Procedure CMMouseEnter(Var Message: TMessage); Message CM_MOUSEENTER;
-        Procedure CMMouseLeave(Var Message: TMessage); Message CM_MOUSELEAVE;
-        Procedure WMLButtonDblClk(Var Message: TWMLButtonDown); Message WM_LBUTTONDBLCLK;
+        procedure GlyphChanged(Sender: TObject);
+        procedure UpdateExclusive;
+        function GetGlyph: TBitmap;
+        procedure SetDropDownArrowColor(Value: TColor);
+        procedure SetDropDownWidth(Value: integer);
+        procedure SetGlyph(Value: TBitmap);
+        function GetNumGlyphs: TNumGlyphs;
+        procedure SetNumGlyphs(Value: TNumGlyphs);
+        procedure SetDown(Value: boolean);
+        procedure SetFlat(Value: boolean);
+        procedure SetAllowAllUp(Value: boolean);
+        procedure SetGroupIndex(Value: integer);
+        procedure SetLayout(Value: TButtonLayout);
+        procedure SetSpacing(Value: integer);
+        procedure SetMargin(Value: integer);
+        procedure UpdateTracking;
+        procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
+        procedure CMButtonPressed(var Message: TMessage); message CM_BUTTONPRESSED;
+        procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
+        procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
+        procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
+        procedure CMSysColorChange(var Message: TMessage); message CM_SYSCOLORCHANGE;
+        procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
+        procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
+        procedure WMLButtonDblClk(var Message: TWMLButtonDown); message WM_LBUTTONDBLCLK;
 
-        Procedure DrawButtonSeperatorUp(Canvas: TCanvas);
-        Procedure DrawButtonSeperatorDown(Canvas: TCanvas);
-        Procedure DrawTriangle(Canvas: TCanvas; Top, Left, Width: Integer);
-        Procedure SetDroppedDown(Const Value: Boolean);
-        Procedure SetSelectionColor(Const Value: TColor);
-        Procedure PopupWndProc(Var Msg: TMessage);
-        Function GetCustomText: String;
-        Procedure SetCustomText(Const Value: String);
-        Function GetDefaultText: String;
-        Procedure SetDefaultText(Const Value: String);
-        Procedure SetShowSystemColors(Const Value: Boolean);
-        Function GetShowSystemColors: Boolean;
-        Procedure SetTransparent(Const Value: Boolean);
-        Procedure SetIndicatorBorder(Const Value: TIndicatorBorder);
-        Function GetPopupSpacing: Integer;
-        Procedure SetPopupSpacing(Const Value: Integer);
-    Protected
-        Procedure DoDefaultEvent; Virtual;
-        Procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); Override;
-        Function GetPalette: HPALETTE; Override;
-        Procedure Loaded; Override;
-        Procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); Override;
-        Procedure MouseMove(Shift: TShiftState; X, Y: Integer); Override;
-        Procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); Override;
-        Procedure Paint; Override;
-    Public
-        Constructor Create(AOwner: TComponent); Override;
-        Destructor Destroy; Override;
+        procedure DrawButtonSeperatorUp(Canvas: TCanvas);
+        procedure DrawButtonSeperatorDown(Canvas: TCanvas);
+        procedure DrawTriangle(Canvas: TCanvas; Top, Left, Width: integer);
+        procedure SetDroppedDown(const Value: boolean);
+        procedure SetSelectionColor(const Value: TColor);
+        procedure PopupWndProc(var Msg: TMessage);
+        function GetCustomText: string;
+        procedure SetCustomText(const Value: string);
+        function GetDefaultText: string;
+        procedure SetDefaultText(const Value: string);
+        procedure SetShowSystemColors(const Value: boolean);
+        function GetShowSystemColors: boolean;
+        procedure SetTransparent(const Value: boolean);
+        procedure SetIndicatorBorder(const Value: TIndicatorBorder);
+        function GetPopupSpacing: integer;
+        procedure SetPopupSpacing(const Value: integer);
+    protected
+        procedure DoDefaultEvent; virtual;
+        procedure ActionChange(Sender: TObject; CheckDefaults: boolean); override;
+        function GetPalette: HPALETTE; override;
+        procedure Loaded; override;
+        procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
+        procedure MouseMove(Shift: TShiftState; X, Y: integer); override;
+        procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
+        procedure Paint; override;
+    public
+        constructor Create(AOwner: TComponent); override;
+        destructor Destroy; override;
 
-        Procedure Click; Override;
+        procedure Click; override;
 
-        Property DroppedDown: Boolean Read FDroppedDown Write SetDroppedDown;
-    Published
-        Property Action;
-        Property AllowAllUp: Boolean Read FAllowAllUp Write SetAllowAllUp Default False;
-        Property Anchors;
-        Property BiDiMode;
-        Property Caption;
-        Property Constraints;
-        Property CustomText: String Read GetCustomText Write SetCustomText;
-        Property DefaultText: String Read GetDefaultText Write SetDefaultText;
-        Property Down: Boolean Read FDown Write SetDown Default False;
-        Property DropDownArrowColor: TColor Read FDropDownArrowColor Write SetDropDownArrowColor Default clBlack;
-        Property DropDownWidth: Integer Read FDropDownWidth Write SetDropDownWidth Default 15;
-        Property Enabled;
-        Property Flat: Boolean Read FFlat Write SetFlat Default False;
-        Property Font;
-        Property Glyph: TBitmap Read GetGlyph Write SetGlyph;
-        Property GroupIndex: Integer Read FGroupIndex Write SetGroupIndex Default 0;
-        Property IndicatorBorder: TIndicatorBorder Read FIndicatorBorder Write SetIndicatorBorder Default ibFlat;
-        Property Layout: TButtonLayout Read FLayout Write SetLayout Default blGlyphLeft;
-        Property Margin: Integer Read FMargin Write SetMargin Default -1;
-        Property NumGlyphs: TNumGlyphs Read GetNumGlyphs Write SetNumGlyphs Default 1;
-        Property ParentBiDiMode;
-        Property ParentFont;
-        Property ParentShowHint;
-        Property PopupSpacing: Integer Read GetPopupSpacing Write SetPopupSpacing;
-        Property SelectionColor: TColor Read FSelectionColor Write SetSelectionColor Default clBlack;
-        Property ShowHint;
-        Property ShowSystemColors: Boolean Read GetShowSystemColors Write SetShowSystemColors;
-        Property Spacing: Integer Read FSpacing Write SetSpacing Default 4;
-        Property Transparent: Boolean Read FTransparent Write SetTransparent Default True;
-        Property Visible;
+        property DroppedDown: boolean read FDroppedDown write SetDroppedDown;
+    published
+        property Action;
+        property AllowAllUp: boolean read FAllowAllUp write SetAllowAllUp default FALSE;
+        property Anchors;
+        property BiDiMode;
+        property Caption;
+        property Constraints;
+        property CustomText: string read GetCustomText write SetCustomText;
+        property DefaultText: string read GetDefaultText write SetDefaultText;
+        property Down: boolean read FDown write SetDown default FALSE;
+        property DropDownArrowColor: TColor read FDropDownArrowColor write SetDropDownArrowColor default clBlack;
+        property DropDownWidth: integer read FDropDownWidth write SetDropDownWidth default 15;
+        property Enabled;
+        property Flat: boolean read FFlat write SetFlat default FALSE;
+        property Font;
+        property Glyph: TBitmap read GetGlyph write SetGlyph;
+        property GroupIndex: integer read FGroupIndex write SetGroupIndex default 0;
+        property IndicatorBorder: TIndicatorBorder read FIndicatorBorder write SetIndicatorBorder default ibFlat;
+        property Layout: TButtonLayout read FLayout write SetLayout default blGlyphLeft;
+        property Margin: integer read FMargin write SetMargin default -1;
+        property NumGlyphs: TNumGlyphs read GetNumGlyphs write SetNumGlyphs default 1;
+        property ParentBiDiMode;
+        property ParentFont;
+        property ParentShowHint;
+        property PopupSpacing: integer read GetPopupSpacing write SetPopupSpacing;
+        property SelectionColor: TColor read FSelectionColor write SetSelectionColor default clBlack;
+        property ShowHint;
+        property ShowSystemColors: boolean read GetShowSystemColors write SetShowSystemColors;
+        property Spacing: integer read FSpacing write SetSpacing default 4;
+        property Transparent: boolean read FTransparent write SetTransparent default TRUE;
+        property Visible;
 
-        Property OnChange: TNotifyEvent Read FOnChange Write FOnChange;
-        Property OnClick;
-        Property OnDblClick;
-        Property OnDefaultSelect: TNotifyEvent Read FOnDefaultSelect Write FOnDefaultSelect;
-        Property OnDropChanged: TNotifyEvent Read FOnDropChanged Write FOnDropChanged;
-        Property OnDropChanging: TDropChangingEvent Read FOnDropChanging Write FOnDropChanging;
-        Property OnHint: THintEvent Read FOnHint Write FOnHint;
-        Property OnMouseDown;
-        Property OnMouseMove;
-        Property OnMouseUp;
-    End;
+        property OnChange: TNotifyEvent read FOnChange write FOnChange;
+        property OnClick;
+        property OnDblClick;
+        property OnDefaultSelect: TNotifyEvent read FOnDefaultSelect write FOnDefaultSelect;
+        property OnDropChanged: TNotifyEvent read FOnDropChanged write FOnDropChanged;
+        property OnDropChanging: TDropChangingEvent read FOnDropChanging write FOnDropChanging;
+        property OnHint: THintEvent read FOnHint write FOnHint;
+        property OnMouseDown;
+        property OnMouseMove;
+        property OnMouseUp;
+    end;
 
-Implementation
+implementation
 
 {$IFDEF WIN32}
-Uses
+uses
     ActnList, ImgList;
 {$ENDIF}
 {$IFDEF LINUX}
@@ -201,21 +201,21 @@ uses
   QActnList, QImgList, Types;
 {$ENDIF}
 
-Const
+const
     DRAW_BUTTON_UP = 8208;
     DRAW_BUTTON_DOWN = 8720;
 
-Type
-    TColorEntry = Record
-        Name: Pchar;
-        Case Boolean Of
-            True: (R, G, B, reserved: Byte);
-            False: (Color: COLORREF);
-    End;
+type
+    TColorEntry = record
+        Name: pchar;
+        case boolean of
+            TRUE: (R, G, B, reserved: byte);
+            FALSE: (Color: COLORREF);
+    end;
 
-Const DefaultColorCount = 40;
+const DefaultColorCount = 40;
       // these colors are the same as used in Office 97/2000
-    DefaultColors: Array[0..DefaultColorCount - 1] Of TColorEntry = (
+    DefaultColors: array[0..DefaultColorCount - 1] of TColorEntry = (
         (Name: 'Black'; Color: $000000),
         (Name: 'Brown'; Color: $003399),
         (Name: 'Olive Green'; Color: $003333),
@@ -263,7 +263,7 @@ Const DefaultColorCount = 40;
         );
 
     SysColorCount = 25;
-    SysColors: Array[0..SysColorCount - 1] Of TColorEntry = (
+    SysColors: array[0..SysColorCount - 1] of TColorEntry = (
         (Name: 'system color: scroll bar'; Color: COLORREF(clScrollBar)),
         (Name: 'system color: background'; Color: COLORREF(clBackground)),
         (Name: 'system color: active caption'; Color: COLORREF(clActiveCaption)),
@@ -291,89 +291,89 @@ Const DefaultColorCount = 40;
         (Name: 'system color: info background'; Color: COLORREF(clInfoBk))
         );
 
-Type
-    TGlyphList = Class(TImageList)
-    Private
+type
+    TGlyphList = class(TImageList)
+    private
         FUsed: TBits;
-        FCount: Integer;
-        Function AllocateIndex: Integer;
-    Public
-        Constructor CreateSize(AWidth, AHeight: Integer);
-        Destructor Destroy; Override;
+        FCount: integer;
+        function AllocateIndex: integer;
+    public
+        constructor CreateSize(AWidth, AHeight: integer);
+        destructor Destroy; override;
 
-        Function AddMasked(Image: TBitmap; MaskColor: TColor): Integer;
-        Procedure Delete(Index: Integer);
-        Property Count: Integer Read FCount;
-    End;
+        function AddMasked(Image: TBitmap; MaskColor: TColor): integer;
+        procedure Delete(Index: integer);
+        property Count: integer read FCount;
+    end;
 
-    TGlyphCache = Class
-    Private
+    TGlyphCache = class
+    private
         FGlyphLists: TList;
-    Public
-        Constructor Create;
-        Destructor Destroy; Override;
+    public
+        constructor Create;
+        destructor Destroy; override;
 
-        Function GetList(AWidth, AHeight: Integer): TGlyphList;
-        Procedure ReturnList(List: TGlyphList);
-        Function Empty: Boolean;
-    End;
+        function GetList(AWidth, AHeight: integer): TGlyphList;
+        procedure ReturnList(List: TGlyphList);
+        function Empty: boolean;
+    end;
 
-    TButtonGlyph = Class
-    Private
+    TButtonGlyph = class
+    private
         FOriginal: TBitmap;
         FGlyphList: TGlyphList;
-        FIndexes: Array[TButtonState] Of Integer;
+        FIndexes: array[TButtonState] of integer;
         FTransparentColor: TColor;
         FNumGlyphs: TNumGlyphs;
         FOnChange: TNotifyEvent;
-        Procedure GlyphChanged(Sender: TObject);
-        Procedure SetGlyph(Value: TBitmap);
-        Procedure SetNumGlyphs(Value: TNumGlyphs);
-        Procedure Invalidate;
-        Function CreateButtonGlyph(State: TButtonState): Integer;
-        Procedure DrawButtonGlyph(Canvas: TCanvas; Const GlyphPos: TPoint;
-            State: TButtonState; Transparent: Boolean);
-        Procedure DrawButtonText(Canvas: TCanvas; Const Caption: String;
-            TextBounds: TRect; State: TButtonState; BiDiFlags: Longint);
-        Procedure CalcButtonLayout(Canvas: TCanvas; Const Client: TRect;
-            Const Offset: TPoint; Const Caption: String; Layout: TButtonLayout;
-            Margin, Spacing: Integer; Var GlyphPos: TPoint; Var TextBounds: TRect;
-            Const DropDownWidth: Integer; BiDiFlags: Longint);
-    Public
-        Constructor Create;
-        Destructor Destroy; Override;
+        procedure GlyphChanged(Sender: TObject);
+        procedure SetGlyph(Value: TBitmap);
+        procedure SetNumGlyphs(Value: TNumGlyphs);
+        procedure Invalidate;
+        function CreateButtonGlyph(State: TButtonState): integer;
+        procedure DrawButtonGlyph(Canvas: TCanvas; const GlyphPos: TPoint;
+            State: TButtonState; Transparent: boolean);
+        procedure DrawButtonText(Canvas: TCanvas; const Caption: string;
+            TextBounds: TRect; State: TButtonState; BiDiFlags: longint);
+        procedure CalcButtonLayout(Canvas: TCanvas; const Client: TRect;
+            const Offset: TPoint; const Caption: string; Layout: TButtonLayout;
+            Margin, Spacing: integer; var GlyphPos: TPoint; var TextBounds: TRect;
+            const DropDownWidth: integer; BiDiFlags: longint);
+    public
+        constructor Create;
+        destructor Destroy; override;
 
-        Function Draw(Canvas: TCanvas; Const Client: TRect; Const Offset: TPoint;
-            Const Caption: String; Layout: TButtonLayout; Margin, Spacing: Integer;
-            State: TButtonState; Transparent: Boolean;
-            Const DropDownWidth: Integer; BiDiFlags: Longint): TRect;
+        function Draw(Canvas: TCanvas; const Client: TRect; const Offset: TPoint;
+            const Caption: string; Layout: TButtonLayout; Margin, Spacing: integer;
+            State: TButtonState; Transparent: boolean;
+            const DropDownWidth: integer; BiDiFlags: longint): TRect;
 
-        Property Glyph: TBitmap Read FOriginal Write SetGlyph;
-        Property NumGlyphs: TNumGlyphs Read FNumGlyphs Write SetNumGlyphs;
-        Property OnChange: TNotifyEvent Read FOnChange Write FOnChange;
-    End;
+        property Glyph: TBitmap read FOriginal write SetGlyph;
+        property NumGlyphs: TNumGlyphs read FNumGlyphs write SetNumGlyphs;
+        property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    end;
 
-    TCombEntry = Record
+    TCombEntry = record
         Position: TPoint;
         Color: COLORREF;
-    End;
+    end;
 
-    TCombArray = Array Of TCombEntry;
+    TCombArray = array of TCombEntry;
 
-    TFloatPoint = Record
-        X, Y: Extended;
-    End;
+    TFloatPoint = record
+        X, Y: extended;
+    end;
 
-    TRGB = Record
-        Red, Green, Blue: Single;
-    End;
+    TRGB = record
+        Red, Green, Blue: single;
+    end;
 
     TSelectionMode = (smNone, smColor, smBW, smRamp);
 
-    TColorPopup = Class(TWinControl)
-    Private
+    TColorPopup = class(TWinControl)
+    private
         FDefaultText,
-        FCustomText: String;
+        FCustomText: string;
         FCurrentColor: TCOlor;
         FCanvas: TCanvas;
         FMargin,
@@ -381,9 +381,9 @@ Type
         FColumnCount,
         FRowCount,
         FSysRowCount,
-        FBoxSize: Integer;
+        FBoxSize: integer;
         FSelectedIndex,
-        FHoverIndex: Integer;
+        FHoverIndex: integer;
         FWindowRect,
         FCustomTextRect,
         FDefaultTextRect,
@@ -391,74 +391,74 @@ Type
         FBWCombRect,
         FSliderRect,
         FCustomColorRect: TRect;
-        FShowSysColors: Boolean;
+        FShowSysColors: boolean;
 
     // custom color picking
         FCombSize,
-        FLevels: Integer;
+        FLevels: integer;
         FBWCombs,
         FColorCombs: TCombArray;
-        FCombCorners: Array[0..5] Of TFloatPoint;
+        FCombCorners: array[0..5] of TFloatPoint;
         FCenterColor: TRGB;
-        FCenterIntensity: Single; // scale factor for the center color
+        FCenterIntensity: single; // scale factor for the center color
         FCustomIndex,             // If FSelectedIndex contains CustomCell then this index shows
                               // which index in the custom area has been selected.
                               // Positive values indicate the color comb and negativ values
                               // indicate the B&W combs (complement). This value is offset with
                               // 1 to use index 0 to show no selection.
-        FRadius: Integer;
+        FRadius: integer;
         FSelectionMode: TSelectionMode; // indicates where the user has clicked
                                     // with the mouse to restrict draw selection
-        Procedure SelectColor(Color: TColor);
-        Procedure ChangeHoverSelection(Index: Integer);
-        Procedure DrawCell(Index: Integer);
-        Procedure InvalidateCell(Index: Integer);
-        Procedure EndSelection(Cancel: Boolean);
-        Function GetCellRect(Index: Integer; Var Rect: TRect): Boolean;
-        Function GetColumn(Index: Integer): Integer;
-        Function GetIndex(Row, Col: Integer): Integer;
-        Function GetRow(Index: Integer): Integer;
-        Procedure Initialise;
-        Procedure AdjustWindow;
-        Procedure SetSpacing(Value: Integer);
-        Procedure SetSelectedColor(Const Value: TColor);
-        Procedure CMHintShow(Var Message: TMessage); Message CM_HINTSHOW;
-        Procedure CNKeyDown(Var Message: TWMKeyDown); Message CN_KEYDOWN;
-        Procedure CNSysKeyDown(Var Message: TWMChar); Message CN_SYSKEYDOWN;
-        Procedure WMActivateApp(Var Message: TWMActivateApp); Message WM_ACTIVATEAPP;
-        Procedure WMLButtonDown(Var Message: TWMLButtonDown); Message WM_LBUTTONDOWN;
-        Procedure WMKillFocus(Var Message: TWMKillFocus); Message WM_KILLFOCUS;
-        Procedure WMLButtonUp(Var Message: TWMLButtonUp); Message WM_LBUTTONUP;
-        Procedure WMMouseMove(Var Message: TWMMouseMove); Message WM_MOUSEMOVE;
-        Procedure WMPaint(Var Message: TWMPaint); Message WM_PAINT;
-        Function SelectionFromPoint(P: TPoint): Integer;
-        Procedure DrawCombControls;
-        Procedure DrawComb(Canvas: TCanvas; X, Y, Size: Integer);
-        Function HandleBWArea(Const Message: TWMMouse): Boolean;
-        Function HandleColorComb(Const Message: TWMMouse): Boolean;
-        Function HandleSlider(Const Message: TWMMouse): Boolean;
-        Function PtInComb(Comb: TCombEntry; P: TPoint; Scale: Integer): Boolean;
-        Procedure HandleCustomColors(Var Message: TWMMouse);
-        Function GetHint(Cell: Integer): String;
-        Function FindBWArea(X, Y: Integer): Integer;
-        Function FindColorArea(X, Y: Integer): Integer;
-        Procedure DrawSeparator(Left, Top, Right: Integer);
-        Procedure ChangeSelection(NewSelection: Integer);
-    Protected
-        Procedure CalculateCombLayout;
-        Procedure CreateParams(Var Params: TCreateParams); Override;
-        Procedure CreateWnd; Override;
-        Procedure ShowPopupAligned;
-    Public
-        Constructor Create(AOwner: TComponent); Override;
-        Destructor Destroy; Override;
+        procedure SelectColor(Color: TColor);
+        procedure ChangeHoverSelection(Index: integer);
+        procedure DrawCell(Index: integer);
+        procedure InvalidateCell(Index: integer);
+        procedure EndSelection(Cancel: boolean);
+        function GetCellRect(Index: integer; var Rect: TRect): boolean;
+        function GetColumn(Index: integer): integer;
+        function GetIndex(Row, Col: integer): integer;
+        function GetRow(Index: integer): integer;
+        procedure Initialise;
+        procedure AdjustWindow;
+        procedure SetSpacing(Value: integer);
+        procedure SetSelectedColor(const Value: TColor);
+        procedure CMHintShow(var Message: TMessage); message CM_HINTSHOW;
+        procedure CNKeyDown(var Message: TWMKeyDown); message CN_KEYDOWN;
+        procedure CNSysKeyDown(var Message: TWMChar); message CN_SYSKEYDOWN;
+        procedure WMActivateApp(var Message: TWMActivateApp); message WM_ACTIVATEAPP;
+        procedure WMLButtonDown(var Message: TWMLButtonDown); message WM_LBUTTONDOWN;
+        procedure WMKillFocus(var Message: TWMKillFocus); message WM_KILLFOCUS;
+        procedure WMLButtonUp(var Message: TWMLButtonUp); message WM_LBUTTONUP;
+        procedure WMMouseMove(var Message: TWMMouseMove); message WM_MOUSEMOVE;
+        procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
+        function SelectionFromPoint(P: TPoint): integer;
+        procedure DrawCombControls;
+        procedure DrawComb(Canvas: TCanvas; X, Y, Size: integer);
+        function HandleBWArea(const Message: TWMMouse): boolean;
+        function HandleColorComb(const Message: TWMMouse): boolean;
+        function HandleSlider(const Message: TWMMouse): boolean;
+        function PtInComb(Comb: TCombEntry; P: TPoint; Scale: integer): boolean;
+        procedure HandleCustomColors(var Message: TWMMouse);
+        function GetHint(Cell: integer): string;
+        function FindBWArea(X, Y: integer): integer;
+        function FindColorArea(X, Y: integer): integer;
+        procedure DrawSeparator(Left, Top, Right: integer);
+        procedure ChangeSelection(NewSelection: integer);
+    protected
+        procedure CalculateCombLayout;
+        procedure CreateParams(var Params: TCreateParams); override;
+        procedure CreateWnd; override;
+        procedure ShowPopupAligned;
+    public
+        constructor Create(AOwner: TComponent); override;
+        destructor Destroy; override;
 
-        Property SelectedColor: TColor Read FCurrentColor Write SetSelectedColor;
-        Property Spacing: Integer Read FSpacing Write SetSpacing;
-    End;
+        property SelectedColor: TColor read FCurrentColor write SetSelectedColor;
+        property Spacing: integer read FSpacing write SetSpacing;
+    end;
 
-Const DefCenterColor: TRGB = (Red: 1; Green: 1; Blue: 1);  // White
-    DefColors: Array[0..5] Of TRGB = (
+const DefCenterColor: TRGB = (Red: 1; Green: 1; Blue: 1);  // White
+    DefColors: array[0..5] of TRGB = (
         (Red: 1; Green: 0; Blue: 1),     // Magenta
         (Red: 1; Green: 0; Blue: 0),     // Red
         (Red: 1; Green: 1; Blue: 0),     // Yellow
@@ -468,288 +468,288 @@ Const DefCenterColor: TRGB = (Red: 1; Green: 1; Blue: 1);  // White
         );
     DefCenter: TFloatPoint = (X: 0; Y: 0);
 
-Var GlyphCache: TGlyphCache;
-    ButtonCount: Integer;
+var GlyphCache: TGlyphCache;
+    ButtonCount: integer;
 
 //----------------- TGlyphList ------------------------------------------------
 
-Constructor TGlyphList.CreateSize(AWidth, AHeight: Integer);
+constructor TGlyphList.CreateSize(AWidth, AHeight: integer);
 
-Begin
-    Inherited CreateSize(AWidth, AHeight);
+begin
+    inherited CreateSize(AWidth, AHeight);
     FUsed := TBits.Create;
-End;
+end;
 
 //-----------------------------------------------------------------------------
 
-Destructor TGlyphList.Destroy;
+destructor TGlyphList.Destroy;
 
-Begin
-    If Assigned(FUsed) Then
+begin
+    if Assigned(FUsed) then
         FUsed.Free;
-    Inherited Destroy;
-End;
+    inherited Destroy;
+end;
 
 //-----------------------------------------------------------------------------
 
-Function TGlyphList.AllocateIndex: Integer;
+function TGlyphList.AllocateIndex: integer;
 
-Begin
+begin
     Result := FUsed.OpenBit;
-    If Result >= FUsed.Size Then
-    Begin
-        Result := Inherited Add(Nil, Nil);
+    if Result >= FUsed.Size then
+    begin
+        Result := inherited Add(NIL, NIL);
         FUsed.Size := Result + 1;
-    End;
-    FUsed[Result] := True;
-End;
+    end;
+    FUsed[Result] := TRUE;
+end;
 
 //-----------------------------------------------------------------------------
 
-Function TGlyphList.AddMasked(Image: TBitmap; MaskColor: TColor): Integer;
+function TGlyphList.AddMasked(Image: TBitmap; MaskColor: TColor): integer;
 
-Begin
+begin
     Result := AllocateIndex;
     ReplaceMasked(Result, Image, MaskColor);
     Inc(FCount);
-End;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TGlyphList.Delete(Index: Integer);
+procedure TGlyphList.Delete(Index: integer);
 
-Begin
-    If FUsed[Index] Then
-    Begin
+begin
+    if FUsed[Index] then
+    begin
         Dec(FCount);
-        FUsed[Index] := False;
-    End;
-End;
+        FUsed[Index] := FALSE;
+    end;
+end;
 
 //----------------- TGlyphCache -----------------------------------------------
 
-Constructor TGlyphCache.Create;
+constructor TGlyphCache.Create;
 
-Begin
-    Inherited Create;
+begin
+    inherited Create;
     FGlyphLists := TList.Create;
-End;
+end;
 
 //-----------------------------------------------------------------------------
 
-Destructor TGlyphCache.Destroy;
+destructor TGlyphCache.Destroy;
 
-Begin
-    If Assigned(FGlyphLists) Then
+begin
+    if Assigned(FGlyphLists) then
         FGlyphLists.Free;
-    Inherited Destroy;
-End;
+    inherited Destroy;
+end;
 
 //-----------------------------------------------------------------------------
 
-Function TGlyphCache.GetList(AWidth, AHeight: Integer): TGlyphList;
+function TGlyphCache.GetList(AWidth, AHeight: integer): TGlyphList;
 
-Var I: Integer;
+var I: integer;
 
-Begin
-    For I := FGlyphLists.Count - 1 Downto 0 Do
-    Begin
+begin
+    for I := FGlyphLists.Count - 1 downto 0 do
+    begin
         Result := FGlyphLists[I];
-        With Result Do
-            If (AWidth = Width) And (AHeight = Height) Then
+        with Result do
+            if (AWidth = Width) and (AHeight = Height) then
                 Exit;
-    End;
+    end;
     Result := TGlyphList.CreateSize(AWidth, AHeight);
     FGlyphLists.Add(Result);
-End;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TGlyphCache.ReturnList(List: TGlyphList);
+procedure TGlyphCache.ReturnList(List: TGlyphList);
 
-Begin
-    If List = Nil Then
+begin
+    if List = NIL then
         Exit;
-    If List.Count = 0 Then
-    Begin
+    if List.Count = 0 then
+    begin
         FGlyphLists.Remove(List);
         List.Free;
-    End;
-End;
+    end;
+end;
 
 //-----------------------------------------------------------------------------
 
-Function TGlyphCache.Empty: Boolean;
+function TGlyphCache.Empty: boolean;
 
-Begin
+begin
     Result := FGlyphLists.Count = 0;
-End;
+end;
 
 //----------------- TButtonGlyph ----------------------------------------------
 
-Constructor TButtonGlyph.Create;
+constructor TButtonGlyph.Create;
 
-Var I: TButtonState;
+var I: TButtonState;
 
-Begin
-    Inherited Create;
+begin
+    inherited Create;
     FOriginal := TBitmap.Create;
     FOriginal.OnChange := GlyphChanged;
     FTransparentColor := clOlive;
     FNumGlyphs := 1;
-    For I := Low(I) To High(I) Do
+    for I := Low(I) to High(I) do
         FIndexes[I] := -1;
-    If GlyphCache = Nil Then
+    if GlyphCache = NIL then
         GlyphCache := TGlyphCache.Create;
-End;
+end;
 
 //-----------------------------------------------------------------------------
 
-Destructor TButtonGlyph.Destroy;
+destructor TButtonGlyph.Destroy;
 
-Begin
-    If Assigned(FOriginal) Then
+begin
+    if Assigned(FOriginal) then
         FOriginal.Free;
     Invalidate;
-    If Assigned(GlyphCache) And GlyphCache.Empty Then
-    Begin
+    if Assigned(GlyphCache) and GlyphCache.Empty then
+    begin
         GlyphCache.Free;
-        GlyphCache := Nil;
-    End;
-    Inherited Destroy;
-End;
+        GlyphCache := NIL;
+    end;
+    inherited Destroy;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TButtonGlyph.Invalidate;
+procedure TButtonGlyph.Invalidate;
 
-Var I: TButtonState;
+var I: TButtonState;
 
-Begin
-    For I := Low(I) To High(I) Do
-    Begin
-        If FIndexes[I] <> -1 Then
+begin
+    for I := Low(I) to High(I) do
+    begin
+        if FIndexes[I] <> -1 then
             FGlyphList.Delete(FIndexes[I]);
         FIndexes[I] := -1;
-    End;
+    end;
     GlyphCache.ReturnList(FGlyphList);
-    FGlyphList := Nil;
-End;
+    FGlyphList := NIL;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TButtonGlyph.GlyphChanged(Sender: TObject);
+procedure TButtonGlyph.GlyphChanged(Sender: TObject);
 
-Begin
-    If Sender = FOriginal Then
-    Begin
+begin
+    if Sender = FOriginal then
+    begin
         FTransparentColor := FOriginal.TransparentColor;
         Invalidate;
-        If Assigned(FOnChange) Then
+        if Assigned(FOnChange) then
             FOnChange(Self);
-    End;
-End;
+    end;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TButtonGlyph.SetGlyph(Value: TBitmap);
+procedure TButtonGlyph.SetGlyph(Value: TBitmap);
 
-Var Glyphs: Integer;
+var Glyphs: integer;
 
-Begin
+begin
     Invalidate;
     FOriginal.Assign(Value);
-    If (Value <> Nil) And (Value.Height > 0) Then
-    Begin
+    if (Value <> NIL) and (Value.Height > 0) then
+    begin
         FTransparentColor := Value.TransparentColor;
-        If Value.Width Mod Value.Height = 0 Then
-        Begin
-            Glyphs := Value.Width Div Value.Height;
-            If Glyphs > 4 Then
+        if Value.Width mod Value.Height = 0 then
+        begin
+            Glyphs := Value.Width div Value.Height;
+            if Glyphs > 4 then
                 Glyphs := 1;
             SetNumGlyphs(Glyphs);
-        End;
-    End;
-End;
+        end;
+    end;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TButtonGlyph.SetNumGlyphs(Value: TNumGlyphs);
+procedure TButtonGlyph.SetNumGlyphs(Value: TNumGlyphs);
 
-Begin
-    If (Value <> FNumGlyphs) And (Value > 0) Then
-    Begin
+begin
+    if (Value <> FNumGlyphs) and (Value > 0) then
+    begin
         Invalidate;
         FNumGlyphs := Value;
         GlyphChanged(Glyph);
-    End;
-End;
+    end;
+end;
 
 //-----------------------------------------------------------------------------
 
-Function TButtonGlyph.CreateButtonGlyph(State: TButtonState): Integer;
+function TButtonGlyph.CreateButtonGlyph(State: TButtonState): integer;
 
-Const ROP_DSPDxax = $00E20746;
+const ROP_DSPDxax = $00E20746;
 
-Var TmpImage, DDB, MonoBmp: TBitmap;
-    IWidth, IHeight: Integer;
+var TmpImage, DDB, MonoBmp: TBitmap;
+    IWidth, IHeight: integer;
     IRect, ORect: TRect;
     I: TButtonState;
     DestDC: HDC;
 
-Begin
-    If (State = bsDown) And (NumGlyphs < 3) Then
+begin
+    if (State = bsDown) and (NumGlyphs < 3) then
         State := bsUp;
     Result := FIndexes[State];
-    If Result <> -1 Then
+    if Result <> -1 then
         Exit;
-    If (FOriginal.Width Or FOriginal.Height) = 0 Then
+    if (FOriginal.Width or FOriginal.Height) = 0 then
         Exit;
 
-    IWidth := FOriginal.Width Div FNumGlyphs;
+    IWidth := FOriginal.Width div FNumGlyphs;
     IHeight := FOriginal.Height;
-    If FGlyphList = Nil Then
-    Begin
-        If GlyphCache = Nil Then
+    if FGlyphList = NIL then
+    begin
+        if GlyphCache = NIL then
             GlyphCache := TGlyphCache.Create;
         FGlyphList := GlyphCache.GetList(IWidth, IHeight);
-    End;
+    end;
     TmpImage := TBitmap.Create;
-    Try
+    try
         TmpImage.Width := IWidth;
         TmpImage.Height := IHeight;
         IRect := Rect(0, 0, IWidth, IHeight);
         TmpImage.Canvas.Brush.Color := clBtnFace;
         TmpImage.Palette := CopyPalette(FOriginal.Palette);
         I := State;
-        If Ord(I) >= NumGlyphs Then
+        if Ord(I) >= NumGlyphs then
             I := bsUp;
         ORect := Rect(Ord(I) * IWidth, 0, (Ord(I) + 1) * IWidth, IHeight);
-        Case State Of
+        case State of
             bsUp, bsDown,
             bsExclusive:
-            Begin
+            begin
                 TmpImage.Canvas.CopyRect(IRect, FOriginal.Canvas, ORect);
-                If FOriginal.TransparentMode = tmFixed Then
+                if FOriginal.TransparentMode = tmFixed then
                     FIndexes[State] := FGlyphList.AddMasked(TmpImage, FTransparentColor)
-                Else
+                else
                     FIndexes[State] := FGlyphList.AddMasked(TmpImage, clDefault);
-            End;
+            end;
             bsDisabled:
-            Begin
-                MonoBmp := Nil;
-                DDB := Nil;
-                Try
+            begin
+                MonoBmp := NIL;
+                DDB := NIL;
+                try
                     MonoBmp := TBitmap.Create;
                     DDB := TBitmap.Create;
                     DDB.Assign(FOriginal);
                     DDB.HandleType := bmDDB;
-                    If NumGlyphs > 1 Then
-                        With TmpImage.Canvas Do
-                        Begin
+                    if NumGlyphs > 1 then
+                        with TmpImage.Canvas do
+                        begin
               // Change white & gray to clBtnHighlight and clBtnShadow
                             CopyRect(IRect, DDB.Canvas, ORect);
-                            MonoBmp.Monochrome := True;
+                            MonoBmp.Monochrome := TRUE;
                             MonoBmp.Width := IWidth;
                             MonoBmp.Height := IHeight;
 
@@ -779,27 +779,27 @@ Begin
                             SetTextColor(DestDC, clBlack);
                             SetBkColor(DestDC, clWhite);
                             BitBlt(DestDC, 0, 0, IWidth, IHeight, MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
-                        End
-                    Else
-                    Begin
+                        end
+                    else
+                    begin
               // Create a disabled version
-                        With MonoBmp Do
-                        Begin
+                        with MonoBmp do
+                        begin
                             Assign(FOriginal);
                             HandleType := bmDDB;
                             Canvas.Brush.Color := clBlack;
                             Width := IWidth;
-                            If Monochrome Then
-                            Begin
+                            if Monochrome then
+                            begin
                                 Canvas.Font.Color := clWhite;
-                                Monochrome := False;
+                                Monochrome := FALSE;
                                 Canvas.Brush.Color := clWhite;
-                            End;
-                            Monochrome := True;
-                        End;
+                            end;
+                            Monochrome := TRUE;
+                        end;
 
-                        With TmpImage.Canvas Do
-                        Begin
+                        with TmpImage.Canvas do
+                        begin
                             Brush.Color := clBtnFace;
                             FillRect(IRect);
                             Brush.Color := clBtnHighlight;
@@ -810,263 +810,263 @@ Begin
                             SetTextColor(Handle, clBlack);
                             SetBkColor(Handle, clWhite);
                             BitBlt(Handle, 0, 0, IWidth, IHeight, MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
-                        End;
-                    End;
-                Finally
+                        end;
+                    end;
+                finally
                     DDB.Free;
                     MonoBmp.Free;
-                End;
+                end;
                 FIndexes[State] := FGlyphList.AddMasked(TmpImage, clDefault);
-            End;
-        End;
-    Finally
+            end;
+        end;
+    finally
         TmpImage.Free;
-    End;
+    end;
     Result := FIndexes[State];
     FOriginal.Dormant;
-End;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TButtonGlyph.DrawButtonGlyph(Canvas: TCanvas; Const GlyphPos: TPoint;
-    State: TButtonState; Transparent: Boolean);
+procedure TButtonGlyph.DrawButtonGlyph(Canvas: TCanvas; const GlyphPos: TPoint;
+    State: TButtonState; Transparent: boolean);
 
-Var Index: Integer;
+var Index: integer;
 
-Begin
-    If Assigned(FOriginal) Then
-    Begin
-        If (FOriginal.Width = 0) Or (FOriginal.Height = 0) Then
+begin
+    if Assigned(FOriginal) then
+    begin
+        if (FOriginal.Width = 0) or (FOriginal.Height = 0) then
             Exit;
 
         Index := CreateButtonGlyph(State);
 
-        With GlyphPos Do
-            If Transparent Or (State = bsExclusive) Then
+        with GlyphPos do
+            if Transparent or (State = bsExclusive) then
                 ImageList_DrawEx(FGlyphList.Handle, Index, Canvas.Handle, X, Y, 0, 0, clNone, clNone, ILD_Transparent)
-            Else
+            else
                 ImageList_DrawEx(FGlyphList.Handle, Index, Canvas.Handle, X, Y, 0, 0, ColorToRGB(clBtnFace), clNone, ILD_Normal);
-    End;
-End;
+    end;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TButtonGlyph.DrawButtonText(Canvas: TCanvas; Const Caption: String;
+procedure TButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;
     TextBounds: TRect; State: TButtonState;
-    BiDiFlags: Longint);
+    BiDiFlags: longint);
 
-Begin
-    With Canvas Do
-    Begin
+begin
+    with Canvas do
+    begin
         Brush.Style := bsClear;
-        If State = bsDisabled Then
-        Begin
+        if State = bsDisabled then
+        begin
             OffsetRect(TextBounds, 1, 1);
             Font.Color := clBtnHighlight;
-            DrawText(Handle, Pchar(Caption), Length(Caption), TextBounds, DT_CENTER Or DT_VCENTER Or BiDiFlags);
+            DrawText(Handle, pchar(Caption), Length(Caption), TextBounds, DT_CENTER or DT_VCENTER or BiDiFlags);
             OffsetRect(TextBounds, -1, -1);
             Font.Color := clBtnShadow;
-            DrawText(Handle, Pchar(Caption), Length(Caption), TextBounds, DT_CENTER Or DT_VCENTER Or BiDiFlags);
-        End
-        Else
-            DrawText(Handle, Pchar(Caption), Length(Caption), TextBounds, DT_CENTER Or DT_VCENTER Or BiDiFlags);
-    End;
-End;
+            DrawText(Handle, pchar(Caption), Length(Caption), TextBounds, DT_CENTER or DT_VCENTER or BiDiFlags);
+        end
+        else
+            DrawText(Handle, pchar(Caption), Length(Caption), TextBounds, DT_CENTER or DT_VCENTER or BiDiFlags);
+    end;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TButtonGlyph.CalcButtonLayout(Canvas: TCanvas; Const Client: TRect;
-    Const Offset: TPoint; Const Caption: String; Layout: TButtonLayout; Margin,
-    Spacing: Integer; Var GlyphPos: TPoint; Var TextBounds: TRect;
-    Const DropDownWidth: Integer; BiDiFlags: Longint);
+procedure TButtonGlyph.CalcButtonLayout(Canvas: TCanvas; const Client: TRect;
+    const Offset: TPoint; const Caption: string; Layout: TButtonLayout; Margin,
+    Spacing: integer; var GlyphPos: TPoint; var TextBounds: TRect;
+    const DropDownWidth: integer; BiDiFlags: longint);
 
-Var TextPos: TPoint;
+var TextPos: TPoint;
     ClientSize,
     GlyphSize,
     TextSize: TPoint;
     TotalSize: TPoint;
 
-Begin
-    If (BiDiFlags And DT_RIGHT) = DT_RIGHT Then
-        If Layout = blGlyphLeft Then
+begin
+    if (BiDiFlags and DT_RIGHT) = DT_RIGHT then
+        if Layout = blGlyphLeft then
             Layout := blGlyphRight
-        Else
-        If Layout = blGlyphRight Then
+        else
+        if Layout = blGlyphRight then
             Layout := blGlyphLeft;
 
   // calculate the item sizes
     ClientSize := Point(Client.Right - Client.Left - DropDownWidth, Client.Bottom - Client.Top);
 
-    If FOriginal <> Nil Then
-        GlyphSize := Point(FOriginal.Width Div FNumGlyphs, FOriginal.Height)
-    Else GlyphSize := Point(0, 0);
+    if FOriginal <> NIL then
+        GlyphSize := Point(FOriginal.Width div FNumGlyphs, FOriginal.Height)
+    else GlyphSize := Point(0, 0);
 
-    If Length(Caption) > 0 Then
-    Begin
+    if Length(Caption) > 0 then
+    begin
         TextBounds := Rect(0, 0, Client.Right - Client.Left, 0);
-        DrawText(Canvas.Handle, Pchar(Caption), Length(Caption), TextBounds, DT_CALCRECT Or BiDiFlags);
+        DrawText(Canvas.Handle, pchar(Caption), Length(Caption), TextBounds, DT_CALCRECT or BiDiFlags);
         TextSize := Point(TextBounds.Right - TextBounds.Left, TextBounds.Bottom - TextBounds.Top);
-    End
-    Else
-    Begin
+    end
+    else
+    begin
         TextBounds := Rect(0, 0, 0, 0);
         TextSize := Point(0, 0);
-    End;
+    end;
 
   // If the layout has the glyph on the right or the left, then both the
   // text and the glyph are centered vertically.  If the glyph is on the top
   // or the bottom, then both the text and the glyph are centered horizontally.
-    If Layout In [blGlyphLeft, blGlyphRight] Then
-    Begin
-        GlyphPos.Y := (ClientSize.Y - GlyphSize.Y + 1) Div 2;
-        TextPos.Y := (ClientSize.Y - TextSize.Y + 1) Div 2;
-    End
-    Else
-    Begin
-        GlyphPos.X := (ClientSize.X - GlyphSize.X + 1) Div 2;
-        TextPos.X := (ClientSize.X - TextSize.X + 1) Div 2;
-    End;
+    if Layout in [blGlyphLeft, blGlyphRight] then
+    begin
+        GlyphPos.Y := (ClientSize.Y - GlyphSize.Y + 1) div 2;
+        TextPos.Y := (ClientSize.Y - TextSize.Y + 1) div 2;
+    end
+    else
+    begin
+        GlyphPos.X := (ClientSize.X - GlyphSize.X + 1) div 2;
+        TextPos.X := (ClientSize.X - TextSize.X + 1) div 2;
+    end;
 
   // if there is no text or no bitmap, then Spacing is irrelevant
-    If (TextSize.X = 0) Or (GlyphSize.X = 0) Then
+    if (TextSize.X = 0) or (GlyphSize.X = 0) then
         Spacing := 0;
 
   // adjust Margin and Spacing
-    If Margin = -1 Then
-    Begin
-        If Spacing = -1 Then
-        Begin
+    if Margin = -1 then
+    begin
+        if Spacing = -1 then
+        begin
             TotalSize := Point(GlyphSize.X + TextSize.X, GlyphSize.Y + TextSize.Y);
-            If Layout In [blGlyphLeft, blGlyphRight] Then
-                Margin := (ClientSize.X - TotalSize.X) Div 3
-            Else Margin := (ClientSize.Y - TotalSize.Y) Div 3;
+            if Layout in [blGlyphLeft, blGlyphRight] then
+                Margin := (ClientSize.X - TotalSize.X) div 3
+            else Margin := (ClientSize.Y - TotalSize.Y) div 3;
             Spacing := Margin;
-        End
-        Else
-        Begin
+        end
+        else
+        begin
             TotalSize := Point(GlyphSize.X + Spacing + TextSize.X, GlyphSize.Y + Spacing + TextSize.Y);
-            If Layout In [blGlyphLeft, blGlyphRight] Then
-                Margin := (ClientSize.X - TotalSize.X + 1) Div 2
-            Else Margin := (ClientSize.Y - TotalSize.Y + 1) Div 2;
-        End;
-    End
-    Else
-    Begin
-        If Spacing = -1 Then
-        Begin
+            if Layout in [blGlyphLeft, blGlyphRight] then
+                Margin := (ClientSize.X - TotalSize.X + 1) div 2
+            else Margin := (ClientSize.Y - TotalSize.Y + 1) div 2;
+        end;
+    end
+    else
+    begin
+        if Spacing = -1 then
+        begin
             TotalSize := Point(ClientSize.X - (Margin + GlyphSize.X), ClientSize.Y - (Margin + GlyphSize.Y));
-            If Layout In [blGlyphLeft, blGlyphRight] Then
-                Spacing := (TotalSize.X - TextSize.X) Div 2
-            Else Spacing := (TotalSize.Y - TextSize.Y) Div 2;
-        End;
-    End;
+            if Layout in [blGlyphLeft, blGlyphRight] then
+                Spacing := (TotalSize.X - TextSize.X) div 2
+            else Spacing := (TotalSize.Y - TextSize.Y) div 2;
+        end;
+    end;
 
-    Case Layout Of
+    case Layout of
         blGlyphLeft:
-        Begin
+        begin
             GlyphPos.X := Margin;
             TextPos.X := GlyphPos.X + GlyphSize.X + Spacing;
-        End;
+        end;
         blGlyphRight:
-        Begin
+        begin
             GlyphPos.X := ClientSize.X - Margin - GlyphSize.X;
             TextPos.X := GlyphPos.X - Spacing - TextSize.X;
-        End;
+        end;
         blGlyphTop:
-        Begin
+        begin
             GlyphPos.Y := Margin;
             TextPos.Y := GlyphPos.Y + GlyphSize.Y + Spacing;
-        End;
+        end;
         blGlyphBottom:
-        Begin
+        begin
             GlyphPos.Y := ClientSize.Y - Margin - GlyphSize.Y;
             TextPos.Y := GlyphPos.Y - Spacing - TextSize.Y;
-        End;
-    End;
+        end;
+    end;
 
   // fixup the result variables
-    With GlyphPos Do
-    Begin
+    with GlyphPos do
+    begin
         Inc(X, Client.Left + Offset.X);
         Inc(Y, Client.Top + Offset.Y);
-    End;
+    end;
     OffsetRect(TextBounds, TextPos.X + Client.Left + Offset.X, TextPos.Y + Client.Top + Offset.X);
-End;
+end;
 
 //-----------------------------------------------------------------------------
 
-Function TButtonGlyph.Draw(Canvas: TCanvas; Const Client: TRect;
-    Const Offset: TPoint; Const Caption: String; Layout: TButtonLayout;
-    Margin, Spacing: Integer; State: TButtonState; Transparent: Boolean;
-    Const DropDownWidth: Integer; BiDiFlags: Longint): TRect;
+function TButtonGlyph.Draw(Canvas: TCanvas; const Client: TRect;
+    const Offset: TPoint; const Caption: string; Layout: TButtonLayout;
+    Margin, Spacing: integer; State: TButtonState; Transparent: boolean;
+    const DropDownWidth: integer; BiDiFlags: longint): TRect;
 
-Var GlyphPos: TPoint;
+var GlyphPos: TPoint;
     R: TRect;
 
-Begin
+begin
     CalcButtonLayout(Canvas, Client, Offset, Caption, Layout, Margin, Spacing, GlyphPos, R, DropDownWidth, BidiFlags);
     DrawButtonGlyph(Canvas, GlyphPos, State, Transparent);
     DrawButtonText(Canvas, Caption, R, State, BiDiFlags);
 
   // return a rectangle wherein the color indicator can be drawn
-    If Caption = '' Then
-    Begin
+    if Caption = '' then
+    begin
         Result := Client;
         Dec(Result.Right, DropDownWidth + 2);
         InflateRect(Result, -2, -2);
 
     // consider glyph if no text is to be painted (else it is already taken into account)
-        If Assigned(FOriginal) And (FOriginal.Width > 0) And (FOriginal.Height > 0) Then
-            Case Layout Of
+        if Assigned(FOriginal) and (FOriginal.Width > 0) and (FOriginal.Height > 0) then
+            case Layout of
                 blGlyphLeft:
-                Begin
+                begin
                     Result.Left := GlyphPos.X + FOriginal.Width + 4;
                     Result.Top := GlyphPos.Y;
                     Result.Bottom := GlyphPos.Y + FOriginal.Height;
-                End;
+                end;
                 blGlyphRight:
-                Begin
+                begin
                     Result.Right := GlyphPos.X - 4;
                     Result.Top := GlyphPos.Y;
                     Result.Bottom := GlyphPos.Y + FOriginal.Height;
-                End;
+                end;
                 blGlyphTop:
                     Result.Top := GlyphPos.Y + FOriginal.Height + 4;
                 blGlyphBottom:
                     Result.Bottom := GlyphPos.Y - 4;
-            End;
-    End
-    Else
-    Begin
+            end;
+    end
+    else
+    begin
     // consider caption
         Result := Rect(R.Left, R.Bottom, R.Right, R.Bottom + 6);
-        If (Result.Bottom + 2) > Client.Bottom Then
+        if (Result.Bottom + 2) > Client.Bottom then
             Result.Bottom := Client.Bottom - 2;
-    End;
-End;
+    end;
+end;
 
 //----------------- TColorPopup ------------------------------------------------
 
-Constructor TColorPopup.Create(AOwner: TComponent);
+constructor TColorPopup.Create(AOwner: TComponent);
 
-Begin
-    Inherited;
+begin
+    inherited;
     ControlStyle := ControlStyle - [csAcceptsControls] + [csOpaque];
 
     FCanvas := TCanvas.Create;
     Color := clBtnFace;
-    ShowHint := True;
+    ShowHint := TRUE;
 
     Initialise;
-End;
+end;
 
 //------------------------------------------------------------------------------
 
-Procedure TColorPopup.Initialise;
+procedure TColorPopup.Initialise;
 
-Var I: Integer;
+var I: integer;
 
-Begin
+begin
     FBoxSize := 18;
     FMargin := GetSystemMetrics(SM_CXEDGE);
     FSpacing := 8;
@@ -1074,331 +1074,331 @@ Begin
     FSelectedIndex := NoCell;
 
   // init comb caclulation
-    For I := 0 To 5 Do
-    Begin
+    for I := 0 to 5 do
+    begin
         FCombCorners[I].X := 0.5 * cos(Pi * (90 - I * 60) / 180);
         FCombCorners[I].Y := 0.5 * sin(Pi * (90 - I * 60) / 180);
-    End;
+    end;
     FRadius := 66;
     FLevels := 7;
     FCombSize := Trunc(FRadius / (FLevels - 1));
     FCenterColor := DefCenterColor;
     FCenterIntensity := 1;
-End;
+end;
 
 //------------------------------------------------------------------------------
 
-Destructor TColorPopup.Destroy;
+destructor TColorPopup.Destroy;
 
-Begin
-    FBWCombs := Nil;
-    FColorCombs := Nil;
-    If Assigned(FCanvas) Then
+begin
+    FBWCombs := NIL;
+    FColorCombs := NIL;
+    if Assigned(FCanvas) then
         FCanvas.Free;
-    Inherited;
-End;
+    inherited;
+end;
 
 //------------------------------------------------------------------------------
 
-Procedure TColorPopup.CNSysKeyDown(Var Message: TWMKeyDown);
+procedure TColorPopup.CNSysKeyDown(var Message: TWMKeyDown);
 
 // handles accelerator keys
 
-Begin
-    With Message Do
-    Begin
-        If (Length(FDefaultText) > 0) And IsAccel(CharCode, FDefaultText) Then
-        Begin
+begin
+    with Message do
+    begin
+        if (Length(FDefaultText) > 0) and IsAccel(CharCode, FDefaultText) then
+        begin
             ChangeSelection(DefaultCell);
-            EndSelection(False);
+            EndSelection(FALSE);
             Result := 1;
-        End
-        Else
-        If (FSelectedIndex <> CustomCell) And
-            (Length(FCustomText) > 0) And
-            IsAccel(CharCode, FCustomText) Then
-        Begin
+        end
+        else
+        if (FSelectedIndex <> CustomCell) and
+            (Length(FCustomText) > 0) and
+            IsAccel(CharCode, FCustomText) then
+        begin
             ChangeSelection(CustomCell);
             Result := 1;
-        End
-        Else Inherited;
-    End;
-End;
+        end
+        else inherited;
+    end;
+end;
 
 //------------------------------------------------------------------------------
 
-Procedure TColorPopup.CNKeyDown(Var Message: TWMKeyDown);
+procedure TColorPopup.CNKeyDown(var Message: TWMKeyDown);
 
 // if an arrow key is pressed, then move the selection
 
-Var Row,
+var Row,
     MaxRow,
-    Column: Integer;
+    Column: integer;
 
-Begin
-    Inherited;
+begin
+    inherited;
 
-    If FHoverIndex <> NoCell Then
-    Begin
+    if FHoverIndex <> NoCell then
+    begin
         Row := GetRow(FHoverIndex);
         Column := GetColumn(FHoverIndex);
-    End
-    Else
-    Begin
+    end
+    else
+    begin
         Row := GetRow(FSelectedIndex);
         Column := GetColumn(FSelectedIndex);
-    End;
+    end;
 
-    If FShowSysColors Then
+    if FShowSysColors then
         MaxRow := DefaultColorCount + SysColorCount - 1
-    Else MaxRow := DefaultColorCount - 1;
+    else MaxRow := DefaultColorCount - 1;
 
-    Case Message.CharCode Of
+    case Message.CharCode of
         VK_DOWN:
-        Begin
-            If Row = DefaultCell Then
-            Begin
+        begin
+            if Row = DefaultCell then
+            begin
                 Row := 0;
                 Column := 0;
-            End
-            Else
-            If Row = CustomCell Then
-            Begin
-                If Length(FDefaultText) > 0 Then
-                Begin
+            end
+            else
+            if Row = CustomCell then
+            begin
+                if Length(FDefaultText) > 0 then
+                begin
                     Row := DefaultCell;
                     Column := Row;
-                End
-                Else
-                Begin
+                end
+                else
+                begin
                     Row := 0;
                     Column := 0;
-                End;
-            End
-            Else
-            Begin
+                end;
+            end
+            else
+            begin
                 Inc(Row);
-                If GetIndex(Row, Column) < 0 Then
-                Begin
-                    If Length(FCustomText) > 0 Then
-                    Begin
+                if GetIndex(Row, Column) < 0 then
+                begin
+                    if Length(FCustomText) > 0 then
+                    begin
                         Row := CustomCell;
                         Column := Row;
-                    End
-                    Else
-                    Begin
-                        If Length(FDefaultText) > 0 Then
-                        Begin
+                    end
+                    else
+                    begin
+                        if Length(FDefaultText) > 0 then
+                        begin
                             Row := DefaultCell;
                             Column := Row;
-                        End
-                        Else
-                        Begin
+                        end
+                        else
+                        begin
                             Row := 0;
                             Column := 0;
-                        End;
-                    End;
-                End;
-            End;
+                        end;
+                    end;
+                end;
+            end;
             ChangeHoverSelection(GetIndex(Row, Column));
             Message.Result := 1;
-        End;
+        end;
 
         VK_UP:
-        Begin
-            If Row = DefaultCell Then
-            Begin
-                If Length(FCustomText) > 0 Then
-                Begin
+        begin
+            if Row = DefaultCell then
+            begin
+                if Length(FCustomText) > 0 then
+                begin
                     Row := CustomCell;
                     Column := Row;
-                End
-                Else
-                Begin
+                end
+                else
+                begin
                     Row := GetRow(MaxRow);
                     Column := GetColumn(MaxRow);
-                End;
-            End
-            Else
-            If Row = CustomCell Then
-            Begin
+                end;
+            end
+            else
+            if Row = CustomCell then
+            begin
                 Row := GetRow(MaxRow);
                 Column := GetColumn(MaxRow);
-            End
-            Else
-            If Row > 0 Then
+            end
+            else
+            if Row > 0 then
                 Dec(Row)
-            Else
-            Begin
-                If Length(FDefaultText) > 0 Then
-                Begin
+            else
+            begin
+                if Length(FDefaultText) > 0 then
+                begin
                     Row := DefaultCell;
                     Column := Row;
-                End
-                Else
-                If Length(FCustomText) > 0 Then
-                Begin
+                end
+                else
+                if Length(FCustomText) > 0 then
+                begin
                     Row := CustomCell;
                     Column := Row;
-                End
-                Else
-                Begin
+                end
+                else
+                begin
                     Row := GetRow(MaxRow);
                     Column := GetColumn(MaxRow);
-                End;
-            End;
+                end;
+            end;
             ChangeHoverSelection(GetIndex(Row, Column));
             Message.Result := 1;
-        End;
+        end;
 
         VK_RIGHT:
-        Begin
-            If Row = DefaultCell Then
-            Begin
+        begin
+            if Row = DefaultCell then
+            begin
                 Row := 0;
                 Column := 0;
-            End
-            Else
-            If Row = CustomCell Then
-            Begin
-                If Length(FDefaultText) > 0 Then
-                Begin
+            end
+            else
+            if Row = CustomCell then
+            begin
+                if Length(FDefaultText) > 0 then
+                begin
                     Row := DefaultCell;
                     Column := Row;
-                End
-                Else
-                Begin
+                end
+                else
+                begin
                     Row := 0;
                     Column := 0;
-                End;
-            End
-            Else
-            If Column < FColumnCount - 1 Then
+                end;
+            end
+            else
+            if Column < FColumnCount - 1 then
                 Inc(Column)
-            Else
-            Begin
+            else
+            begin
                 Column := 0;
                 Inc(Row);
-            End;
+            end;
 
-            If GetIndex(Row, Column) = NoCell Then
-            Begin
-                If Length(FCustomText) > 0 Then
-                Begin
+            if GetIndex(Row, Column) = NoCell then
+            begin
+                if Length(FCustomText) > 0 then
+                begin
                     Row := CustomCell;
                     Column := Row;
-                End
-                Else
-                If Length(FDefaultText) > 0 Then
-                Begin
+                end
+                else
+                if Length(FDefaultText) > 0 then
+                begin
                     Row := DefaultCell;
                     Column := Row;
-                End
-                Else
-                Begin
+                end
+                else
+                begin
                     Row := 0;
                     Column := 0;
-                End;
-            End;
+                end;
+            end;
             ChangeHoverSelection(GetIndex(row, Column));
             Message.Result := 1;
-        End;
+        end;
 
         VK_LEFT:
-        Begin
-            If Row = DefaultCell Then
-            Begin
-                If Length(FCustomText) > 0 Then
-                Begin
+        begin
+            if Row = DefaultCell then
+            begin
+                if Length(FCustomText) > 0 then
+                begin
                     Row := CustomCell;
                     Column := Row;
-                End
-                Else
-                Begin
+                end
+                else
+                begin
                     Row := GetRow(MaxRow);
                     Column := GetColumn(MaxRow);
-                End;
-            End
-            Else
-            If Row = CustomCell Then
-            Begin
+                end;
+            end
+            else
+            if Row = CustomCell then
+            begin
                 Row := GetRow(MaxRow);
                 Column := GetColumn(MaxRow);
-            End
-            Else
-            If Column > 0 Then
+            end
+            else
+            if Column > 0 then
                 Dec(Column)
-            Else
-            Begin
-                If Row > 0 Then
-                Begin
+            else
+            begin
+                if Row > 0 then
+                begin
                     Dec(Row);
                     Column := FColumnCount - 1;
-                End
-                Else
-                Begin
-                    If Length(FDefaultText) > 0 Then
-                    Begin
+                end
+                else
+                begin
+                    if Length(FDefaultText) > 0 then
+                    begin
                         Row := DefaultCell;
                         Column := Row;
-                    End
-                    Else
-                    If Length(FCustomText) > 0 Then
-                    Begin
+                    end
+                    else
+                    if Length(FCustomText) > 0 then
+                    begin
                         Row := CustomCell;
                         Column := Row;
-                    End
-                    Else
-                    Begin
+                    end
+                    else
+                    begin
                         Row := GetRow(MaxRow);
                         Column := GetColumn(MaxRow);
-                    End;
-                End;
-            End;
+                    end;
+                end;
+            end;
             ChangeHoverSelection(GetIndex(Row, Column));
             Message.Result := 1;
-        End;
+        end;
 
         VK_ESCAPE:
-        Begin
-            EndSelection(True);
+        begin
+            EndSelection(TRUE);
             Message.Result := 1;
-        End;
+        end;
 
         VK_RETURN,
         VK_SPACE:
-        Begin
+        begin
         // this case can only occur if there was no click on the window
         // hence the hover index is the new color
             FSelectedIndex := FHoverIndex;
-            EndSelection(False);
+            EndSelection(FALSE);
             Message.Result := 1;
-        End;
-    End;
-End;
+        end;
+    end;
+end;
 
 //------------------------------------------------------------------------------
 
-Procedure TColorPopup.DrawSeparator(Left, Top, Right: Integer);
+procedure TColorPopup.DrawSeparator(Left, Top, Right: integer);
 
-Var R: TRect;
+var R: TRect;
 
-Begin
+begin
     R := Rect(Left, Top, Right, Top);
     DrawEdge(FCanvas.Handle, R, EDGE_ETCHED, BF_TOP);
-End;
+end;
 
 //------------------------------------------------------------------------------
 
-Procedure TColorPopup.DrawCell(Index: Integer);
+procedure TColorPopup.DrawCell(Index: integer);
 
-Var R, MarkRect: TRect;
+var R, MarkRect: TRect;
     CellColor: TColor;
 
-Begin
+begin
   // for the custom text area
-    If (Length(FCustomText) > 0) And (Index = CustomCell) Then
-    Begin
+    if (Length(FCustomText) > 0) and (Index = CustomCell) then
+    begin
     // the extent of the actual text button
         R := FCustomTextRect;
 
@@ -1406,48 +1406,48 @@ Begin
         FCanvas.Brush.Color := clBtnFace;
         FCanvas.FillRect(R);
 
-        With FCustomTextRect Do
+        with FCustomTextRect do
             DrawSeparator(Left, Top - 2 * FMargin, Right);
 
         InflateRect(R, -1, 0);
 
     // fill background
-        If (FSelectedIndex = Index) And (FHoverIndex <> Index) Then
+        if (FSelectedIndex = Index) and (FHoverIndex <> Index) then
             FCanvas.Brush.Color := clBtnHighlight
-        Else FCanvas.Brush.Color := clBtnFace;
+        else FCanvas.Brush.Color := clBtnFace;
 
         FCanvas.FillRect(R);
     // draw button
-        If (FSelectedIndex = Index) Or
-            ((FHoverIndex = Index) And (csLButtonDown In ControlState)) Then
+        if (FSelectedIndex = Index) or
+            ((FHoverIndex = Index) and (csLButtonDown in ControlState)) then
             DrawEdge(FCanvas.Handle, R, BDR_SUNKENOUTER, BF_RECT)
-        Else
-        If FHoverIndex = Index Then
+        else
+        if FHoverIndex = Index then
             DrawEdge(FCanvas.Handle, R, BDR_RAISEDINNER, BF_RECT);
 
     // draw custom text
-        DrawText(FCanvas.Handle, Pchar(FCustomText), Length(FCustomText), R, DT_CENTER Or DT_VCENTER Or DT_SINGLELINE);
+        DrawText(FCanvas.Handle, pchar(FCustomText), Length(FCustomText), R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
 
     // draw preview color rectangle
-        If FCustomIndex = 0 Then
-        Begin
+        if FCustomIndex = 0 then
+        begin
             FCanvas.Brush.Color := clBtnShadow;
             FCanvas.FrameRect(FCustomColorRect);
-        End
-        Else
-        Begin
+        end
+        else
+        begin
             FCanvas.Pen.Color := clGray;
-            If FCustomIndex > 0 Then
+            if FCustomIndex > 0 then
                 FCanvas.Brush.Color := FColorCombs[FCustomIndex - 1].Color
-            Else FCanvas.Brush.Color := FBWCombs[-(FCustomIndex + 1)].Color;
-            With FCustomColorRect Do
+            else FCanvas.Brush.Color := FBWCombs[-(FCustomIndex + 1)].Color;
+            with FCustomColorRect do
                 FCanvas.Rectangle(Left, Top, Right, Bottom);
-        End;
-    End
-    Else
+        end;
+    end
+    else
     // for the default text area
-    If (Length(FDefaultText) > 0) And (Index = DefaultCell) Then
-    Begin
+    if (Length(FDefaultText) > 0) and (Index = DefaultCell) then
+    begin
         R := FDefaultTextRect;
 
       // Fill background
@@ -1457,52 +1457,52 @@ Begin
         InflateRect(R, -1, -1);
 
       // fill background
-        If (FSelectedIndex = Index) And (FHoverIndex <> Index) Then
+        if (FSelectedIndex = Index) and (FHoverIndex <> Index) then
             FCanvas.Brush.Color := clBtnHighlight
-        Else FCanvas.Brush.Color := clBtnFace;
+        else FCanvas.Brush.Color := clBtnFace;
 
         FCanvas.FillRect(R);
       // draw button
-        If (FSelectedIndex = Index) Or
-            ((FHoverIndex = Index) And (csLButtonDown In ControlState)) Then
+        if (FSelectedIndex = Index) or
+            ((FHoverIndex = Index) and (csLButtonDown in ControlState)) then
             DrawEdge(FCanvas.Handle, R, BDR_SUNKENOUTER, BF_RECT)
-        Else
-        If FHoverIndex = Index Then
+        else
+        if FHoverIndex = Index then
             DrawEdge(FCanvas.Handle, R, BDR_RAISEDINNER, BF_RECT);
 
       // draw small rectangle
-        With MarkRect Do
-        Begin
+        with MarkRect do
+        begin
             MarkRect := R;
             InflateRect(MarkRect, -FMargin - 1, -FMargin - 1);
             FCanvas.Brush.Color := clBtnShadow;
             FCanvas.FrameRect(MarkRect);
-        End;
+        end;
 
       // draw default text
         SetBkMode(FCanvas.Handle, TRANSPARENT);
-        DrawText(FCanvas.Handle, Pchar(FDefaultText), Length(FDefaultText), R, DT_CENTER Or DT_VCENTER Or DT_SINGLELINE);
-    End
-    Else
-    Begin
-        If GetCellRect(Index, R) Then
-        Begin
-            If Index < DefaultColorCount Then
+        DrawText(FCanvas.Handle, pchar(FDefaultText), Length(FDefaultText), R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
+    end
+    else
+    begin
+        if GetCellRect(Index, R) then
+        begin
+            if Index < DefaultColorCount then
                 CellColor := TColor(DefaultColors[Index].Color)
-            Else CellColor := TColor(SysColors[Index - DefaultColorCount].Color);
+            else CellColor := TColor(SysColors[Index - DefaultColorCount].Color);
             FCanvas.Pen.Color := clGray;
         // fill background
-            If (FSelectedIndex = Index) And (FHoverIndex <> Index) Then
+            if (FSelectedIndex = Index) and (FHoverIndex <> Index) then
                 FCanvas.Brush.Color := clBtnHighlight
-            Else FCanvas.Brush.Color := clBtnFace;
+            else FCanvas.Brush.Color := clBtnFace;
             FCanvas.FillRect(R);
 
         // draw button
-            If (FSelectedIndex = Index) Or
-                ((FHoverIndex = Index) And (csLButtonDown In ControlState)) Then
+            if (FSelectedIndex = Index) or
+                ((FHoverIndex = Index) and (csLButtonDown in ControlState)) then
                 DrawEdge(FCanvas.Handle, R, BDR_SUNKENOUTER, BF_RECT)
-            Else
-            If FHoverIndex = Index Then
+            else
+            if FHoverIndex = Index then
                 DrawEdge(FCanvas.Handle, R, BDR_RAISEDINNER, BF_RECT);
 
             FCanvas.Brush.Color := CellColor;
@@ -1510,53 +1510,53 @@ Begin
         // draw the cell colour
             InflateRect(R, -(FMargin + 1), -(FMargin + 1));
             FCanvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
-        End;
-    End;
-End;
+        end;
+    end;
+end;
 
 //------------------------------------------------------------------------------
 
-Procedure TColorPopup.DrawComb(Canvas: TCanvas; X, Y: Integer; Size: Integer);
+procedure TColorPopup.DrawComb(Canvas: TCanvas; X, Y: integer; Size: integer);
 
 // draws one single comb at position X, Y and with size Size
 // fill color must already be set on call
 
-Var I: Integer;
-    P: Array[0..5] Of TPoint;
+var I: integer;
+    P: array[0..5] of TPoint;
 
-Begin
-    For I := 0 To 5 Do
-    Begin
+begin
+    for I := 0 to 5 do
+    begin
         P[I].X := Round(FCombCorners[I].X * Size + X);
         P[I].Y := Round(FCombCorners[I].Y * Size + Y);
-    End;
+    end;
     Canvas.Polygon(P);
-End;
+end;
 
 //------------------------------------------------------------------------------
 
-Procedure TColorPopup.DrawCombControls;
+procedure TColorPopup.DrawCombControls;
 
-Var I, Index: Integer;
+var I, Index: integer;
     XOffs, YOffs,
-    Count: Integer;
-    dColor: Single;
+    Count: integer;
+    dColor: single;
     OffScreen: TBitmap;
     {$ifdef DEBUG}
       R: TRect;
     {$endif}
 
-Begin
+begin
   // to make the painting (and selecting) flicker free we use an offscreen
   // bitmap here
     OffScreen := TBitmap.Create;
-    Try
+    try
         OffScreen.Width := Width;
         OffScreen.Height := FColorCombRect.Bottom - FColorCombRect.Top +
             FBWCombRect.Bottom - FBWCombRect.Top + 2 * FMargin;
 
-        With OffScreen.Canvas Do
-        Begin
+        with OffScreen.Canvas do
+        begin
             Brush.Color := clBtnFace;
             FillRect(ClipRect);
             Pen.Style := psClear;
@@ -1565,15 +1565,15 @@ Begin
             YOffs := FRadius;
 
       // draw the combs
-            For I := 0 To High(FColorCombs) Do
-            Begin
+            for I := 0 to High(FColorCombs) do
+            begin
                 Brush.Color := FColorCombs[I].Color;
                 DrawComb(OffScreen.Canvas, FColorCombs[I].Position.X + XOffs, FColorCombs[I].Position.Y + YOffs, FCombSize);
-            End;
+            end;
 
       // mark selected comb
-            If FCustomIndex > 0 Then
-            Begin
+            if FCustomIndex > 0 then
+            begin
                 Index := FCustomIndex - 1;
                 Pen.Style := psSolid;
                 Pen.Mode := pmXOR;
@@ -1584,38 +1584,38 @@ Begin
                 Pen.Style := psClear;
                 Pen.Mode := pmCopy;
                 Pen.Width := 1;
-            End;
+            end;
 
       // draw white-to-black combs
             XOffs := FColorCombRect.Left;
             YOffs := FColorCombRect.Bottom - FColorCombRect.Top - 4;
       // brush is automatically reset to bsSolid
-            For I := 0 To High(FBWCombs) Do
-            Begin
+            for I := 0 to High(FBWCombs) do
+            begin
                 Brush.Color := FBWCombs[I].Color;
-                If I In [0, High(FBWCombs)]
-                Then
+                if I in [0, High(FBWCombs)]
+                then
                     DrawComb(OffScreen.Canvas, FBWCombs[I].Position.X + XOffs, FBWCombs[I].Position.Y + YOffs, 2 * FCombSize)
-                Else DrawComb(OffScreen.Canvas, FBWCombs[I].Position.X + XOffs, FBWCombs[I].Position.Y + YOffs, FCombSize);
-            End;
+                else DrawComb(OffScreen.Canvas, FBWCombs[I].Position.X + XOffs, FBWCombs[I].Position.Y + YOffs, FCombSize);
+            end;
 
       // mark selected comb 
-            If FCustomIndex < 0 Then
-            Begin
+            if FCustomIndex < 0 then
+            begin
                 Index := -(FCustomIndex + 1);
                 Pen.Style := psSolid;
                 Pen.Mode := pmXOR;
                 Pen.Color := clWhite;
                 Pen.Width := 2;
                 Brush.Style := bsClear;
-                If Index In [0, High(FBWCombs)]
-                Then
+                if Index in [0, High(FBWCombs)]
+                then
                     DrawComb(OffScreen.Canvas, FBWCombs[Index].Position.X + XOffs, FBWCombs[Index].Position.Y + YOffs, 2 * FCombSize)
-                Else DrawComb(OffScreen.Canvas, FBWCombs[Index].Position.X + XOffs, FBWCombs[Index].Position.Y + YOffs, FCombSize);
+                else DrawComb(OffScreen.Canvas, FBWCombs[Index].Position.X + XOffs, FBWCombs[Index].Position.Y + YOffs, FCombSize);
                 Pen.Style := psClear;
                 Pen.Mode := pmCopy;
                 Pen.Width := 1;
-            End;
+            end;
 
       // center-color trackbar
             XOffs := FSliderRect.Left;
@@ -1624,14 +1624,14 @@ Begin
             dColor := 255 / Count;
             Pen.Style := psSolid;
       // b&w ramp
-            For I := 0 To Count Do
-            Begin
+            for I := 0 to Count do
+            begin
                 Pen.Color := RGB(Round((Count - I) * dColor),
                     Round((Count - I) * dColor),
                     Round((Count - I) * dColor));
                 MoveTo(XOffs, YOffs + I);
                 LineTo(XOffs + 10, YOffs + I);
-            End;
+            end;
 
       // marker
             Inc(XOffs, 11);
@@ -1653,146 +1653,146 @@ Begin
       {$endif}
 
             Pen.Style := psClear;
-        End;
+        end;
     // finally put the drawing on the screen
         FCanvas.Draw(0, FColorCombRect.Top, OffScreen);
-    Finally
+    finally
         Offscreen.Free;
-    End;
-End;
+    end;
+end;
 
 //------------------------------------------------------------------------------
 
-Procedure TColorPopup.WMPaint(Var Message: TWMPaint);
+procedure TColorPopup.WMPaint(var Message: TWMPaint);
 
-Var PS: TPaintStruct;
-    I: Cardinal;
+var PS: TPaintStruct;
+    I: cardinal;
     R: TRect;
-    SeparatorTop: Integer;
+    SeparatorTop: integer;
 
-Begin
-    If Message.DC = 0 Then
+begin
+    if Message.DC = 0 then
         FCanvas.Handle := BeginPaint(Handle, PS)
-    Else FCanvas.Handle := Message.DC;
-    Try
+    else FCanvas.Handle := Message.DC;
+    try
     // use system default font for popup text 
         FCanvas.Font.Handle := GetStockObject(DEFAULT_GUI_FONT);
-        If FColorCombs = Nil Then
+        if FColorCombs = NIL then
             CalculateCombLayout;
 
     // default area text
-        If Length(FDefaultText) > 0 Then
+        if Length(FDefaultText) > 0 then
             DrawCell(DefaultCell);
 
     // Draw colour cells
-        For I := 0 To DefaultColorCount - 1 Do
+        for I := 0 to DefaultColorCount - 1 do
             DrawCell(I);
 
-        If FShowSysColors Then
-        Begin
+        if FShowSysColors then
+        begin
             SeparatorTop := FRowCount * FBoxSize + FMargin;
-            If Length(FDefaultText) > 0 Then
+            if Length(FDefaultText) > 0 then
                 Inc(SeparatorTop, FDefaultTextRect.Bottom);
-            With FCustomTextRect Do
+            with FCustomTextRect do
                 DrawSeparator(FMargin + FSpacing, SeparatorTop, Width - FMargin - FSpacing);
 
-            For I := 0 To SysColorCount - 1 Do
+            for I := 0 to SysColorCount - 1 do
                 DrawCell(I + DefaultColorCount);
-        End;
+        end;
 
     // Draw custom text
-        If Length(FCustomText) > 0 Then
+        if Length(FCustomText) > 0 then
             DrawCell(CustomCell);
 
-        If FSelectedIndex = CustomCell Then
+        if FSelectedIndex = CustomCell then
             DrawCombControls;
 
     // draw raised window edge (ex-window style WS_EX_WINDOWEDGE is supposed to do this,
     // but for some reason doesn't paint it)
         R := ClientRect;
         DrawEdge(FCanvas.Handle, R, EDGE_RAISED, BF_RECT);
-    Finally
+    finally
         FCanvas.Font.Handle := 0; // a stock object never needs to be freed
         FCanvas.Handle := 0;
-        If Message.DC = 0 Then
+        if Message.DC = 0 then
             EndPaint(Handle, PS);
-    End;
-End;
+    end;
+end;
 
 //------------------------------------------------------------------------------
 
-Function TColorPopup.SelectionFromPoint(P: TPoint): Integer;
+function TColorPopup.SelectionFromPoint(P: TPoint): integer;
 
 // determines the button at the given position
 
-Begin
+begin
     Result := NoCell;
 
   // first check we aren't in text box
-    If (Length(FCustomText) > 0) And PtInRect(FCustomTextRect, P) Then
+    if (Length(FCustomText) > 0) and PtInRect(FCustomTextRect, P) then
         Result := CustomCell
-    Else
-    If (Length(FDefaultText) > 0) And PtInRect(FDefaultTextRect, P) Then
+    else
+    if (Length(FDefaultText) > 0) and PtInRect(FDefaultTextRect, P) then
         Result := DefaultCell
-    Else
-    Begin
+    else
+    begin
       // take into account text box
-        If Length(FDefaultText) > 0 Then
+        if Length(FDefaultText) > 0 then
             Dec(P.Y, FDefaultTextRect.Bottom - FDefaultTextRect.Top);
 
       // Get the row and column
-        If P.X > FSpacing Then
-        Begin
+        if P.X > FSpacing then
+        begin
             Dec(P.X, FSpacing);
         // take the margin into account, 2 * FMargin is too small while 3 * FMargin
         // is correct, but looks a bit strange (the arrow corner is so small, it isn't
         // really recognized by the eye) hence I took 2.5 * FMargin
-            Dec(P.Y, 5 * FMargin Div 2);
-            If (P.X >= 0) And (P.Y >= 0) Then
-            Begin
+            Dec(P.Y, 5 * FMargin div 2);
+            if (P.X >= 0) and (P.Y >= 0) then
+            begin
           // consider system colors
-                If FShowSysColors And ((P.Y Div FBoxSize) >= FRowCount) Then
-                Begin
+                if FShowSysColors and ((P.Y div FBoxSize) >= FRowCount) then
+                begin
             // here we know the point is out of the default color area, so
             // take the separator line between default and system colors into account
                     Dec(P.Y, 3 * FMargin);
             // if we now are back in the default area then the point was originally
             // between both areas and we have therefore to reject a hit
-                    If (P.Y Div FBoxSize) < FRowCount Then
+                    if (P.Y div FBoxSize) < FRowCount then
                         Exit;
-                End;
-                Result := GetIndex(P.Y Div FBoxSize, P.X Div FBoxSize);
-            End;
-        End;
-    End;
-End;
+                end;
+                Result := GetIndex(P.Y div FBoxSize, P.X div FBoxSize);
+            end;
+        end;
+    end;
+end;
 
 //------------------------------------------------------------------------------
 
-Function TColorPopup.HandleSlider(Const Message: TWMMouse): Boolean;
+function TColorPopup.HandleSlider(const Message: TWMMouse): boolean;
 
 // determines whether the mouse position is within the slider area (result is then True
 // else False) and acts accordingly
 
-Var Shift: TShiftState;
-    dY: Integer;
+var Shift: TShiftState;
+    dY: integer;
     R: TRect;
 
-Begin
-    Result := PtInRect(FSliderRect, Point(Message.XPos, Message.YPos)) And (FSelectionMode = smNone) Or
-        ((Message.XPos >= FSliderRect.Left) And (Message.XPos <= FSliderRect.Right) And (FSelectionMode = smRamp));
-    If Result Then
-    Begin
+begin
+    Result := PtInRect(FSliderRect, Point(Message.XPos, Message.YPos)) and (FSelectionMode = smNone) or
+        ((Message.XPos >= FSliderRect.Left) and (Message.XPos <= FSliderRect.Right) and (FSelectionMode = smRamp));
+    if Result then
+    begin
         Shift := KeysToShiftState(Message.Keys);
-        If ssLeft In Shift Then
-        Begin
+        if ssLeft in Shift then
+        begin
             FSelectionMode := smRamp;
       // left mouse button pressed -> change the intensity of the center color comb
             dY := FSliderRect.Bottom - FSliderRect.Top;
             FCenterIntensity := 1 - (Message.YPos - FSliderRect.Top) / dY;
-            If FCenterIntensity < 0 Then
+            if FCenterIntensity < 0 then
                 FCenterIntensity := 0;
-            If FCenterIntensity > 1 Then
+            if FCenterIntensity > 1 then
                 FCenterIntensity := 1;
             FCenterColor.Red := DefCenterColor.Red * FCenterIntensity;
             FCenterColor.Green := DefCenterColor.Green * FCenterIntensity;
@@ -1801,553 +1801,553 @@ Begin
             Dec(R.Top, 3);
             Inc(R.Bottom, 3);
             Inc(R.Left, 10);
-            InvalidateRect(Handle, @R, False);
-            FColorCombs := Nil;
-            InvalidateRect(Handle, @FColorCombRect, False);
-            InvalidateRect(Handle, @FCustomColorRect, False);
+            InvalidateRect(Handle, @R, FALSE);
+            FColorCombs := NIL;
+            InvalidateRect(Handle, @FColorCombRect, FALSE);
+            InvalidateRect(Handle, @FCustomColorRect, FALSE);
             UpdateWindow(Handle);
-        End;
-    End;
-End;
+        end;
+    end;
+end;
 
 //------------------------------------------------------------------------------
 
-Function TColorPopup.PtInComb(Comb: TCombEntry; P: TPoint; Scale: Integer): Boolean;
+function TColorPopup.PtInComb(Comb: TCombEntry; P: TPoint; Scale: integer): boolean;
 
 // simplyfied "PointInPolygon" test, we know a comb is "nearly" a circle...
 
-Begin
+begin
     Result := (Sqr(Comb.Position.X - P.X) + Sqr(Comb.Position.Y - P.Y)) <= (Scale * Scale);
-End;
+end;
 
 //------------------------------------------------------------------------------
 
-Function TColorPopup.FindBWArea(X, Y: Integer): Integer;
+function TColorPopup.FindBWArea(X, Y: integer): integer;
 
 // Looks for a comb at position (X, Y) in the black&white area.
 // Result is -1 if nothing could be found else the index of the particular comb
 // into FBWCombs.
 
-Var I: Integer;
+var I: integer;
     Pt: TPoint;
-    Scale: Integer;
+    Scale: integer;
 
-Begin
+begin
     Result := -1;
     Pt := Point(X - FBWCombRect.Left, Y - FBWCombRect.Top);
 
-    For I := 0 To High(FBWCombs) Do
-    Begin
-        If I In [0, High(FBWCombs)] Then
+    for I := 0 to High(FBWCombs) do
+    begin
+        if I in [0, High(FBWCombs)] then
             Scale := FCombSize
-        Else Scale := FCombSize Div 2;
-        If PtInComb(FBWCombs[I], Pt, Scale) Then
-        Begin
+        else Scale := FCombSize div 2;
+        if PtInComb(FBWCombs[I], Pt, Scale) then
+        begin
             Result := I;
             Break;
-        End;
-    End;
-End;
+        end;
+    end;
+end;
 
 //------------------------------------------------------------------------------
 
-Function TColorPopup.HandleBWArea(Const Message: TWMMouse): Boolean;
+function TColorPopup.HandleBWArea(const Message: TWMMouse): boolean;
 
 // determines whether the mouse position is within the B&W comb area (result is then True
 // else False) and acts accordingly
 
-Var Index: Integer;
+var Index: integer;
     Shift: TShiftState;
 
-Begin
-    Result := PtInRect(FBWCombRect, Point(Message.XPos, Message.YPos)) And (FSelectionMode In [smNone, smBW]);
-    If Result Then
-    Begin
+begin
+    Result := PtInRect(FBWCombRect, Point(Message.XPos, Message.YPos)) and (FSelectionMode in [smNone, smBW]);
+    if Result then
+    begin
         Shift := KeysToShiftState(Message.Keys);
-        If ssLeft In Shift Then
-        Begin
+        if ssLeft in Shift then
+        begin
             FSelectionMode := smBW;
             Index := FindBWArea(Message.XPos, Message.YPos);
 
-            If Index > -1 Then
-            Begin
+            if Index > -1 then
+            begin
         // remove selection comb if it was previously in color comb
-                If FCustomIndex > 0 Then
-                    InvalidateRect(Handle, @FColorCombRect, False);
-                If FCustomIndex <> -(Index + 1) Then
-                Begin
+                if FCustomIndex > 0 then
+                    InvalidateRect(Handle, @FColorCombRect, FALSE);
+                if FCustomIndex <> -(Index + 1) then
+                begin
                     FCustomIndex := -(Index + 1);
-                    InvalidateRect(Handle, @FBWCombRect, False);
-                    InvalidateRect(Handle, @FCustomColorRect, False);
+                    InvalidateRect(Handle, @FBWCombRect, FALSE);
+                    InvalidateRect(Handle, @FCustomColorRect, FALSE);
                     UpdateWindow(Handle);
-                End;
-            End
-            Else Result := False;
-        End;
-    End;
-End;
+                end;
+            end
+            else Result := FALSE;
+        end;
+    end;
+end;
 
 //------------------------------------------------------------------------------
 
-Function TColorPopup.FindColorArea(X, Y: Integer): Integer;
+function TColorPopup.FindColorArea(X, Y: integer): integer;
 
 // Looks for a comb at position (X, Y) in the custom color area.
 // Result is -1 if nothing could be found else the index of the particular comb
 // into FColorCombs.
 
-Var I: Integer;
+var I: integer;
     Pt: TPoint;
 
-Begin
+begin
     Result := -1;
     Pt := Point(X - (FRadius + FColorCombRect.Left),
         Y - (FRadius + FColorCombRect.Top));
 
-    For I := 0 To High(FColorCombs) Do
-    Begin
-        If PtInComb(FColorCombs[I], Pt, FCombSize Div 2) Then
-        Begin
+    for I := 0 to High(FColorCombs) do
+    begin
+        if PtInComb(FColorCombs[I], Pt, FCombSize div 2) then
+        begin
             Result := I;
             Break;
-        End;
-    End;
-End;
+        end;
+    end;
+end;
 
 //------------------------------------------------------------------------------
 
-Function TColorPopup.HandleColorComb(Const Message: TWMMouse): Boolean;
+function TColorPopup.HandleColorComb(const Message: TWMMouse): boolean;
 
 // determines whether the mouse position is within the color comb area (result is then True
 // else False) and acts accordingly
 
-Var Index: Integer;
+var Index: integer;
     Shift: TShiftState;
 
-Begin
-    Result := PtInRect(FColorCombRect, Point(Message.XPos, Message.YPos)) And (FSelectionMode In [smNone, smColor]);
-    If Result Then
-    Begin
+begin
+    Result := PtInRect(FColorCombRect, Point(Message.XPos, Message.YPos)) and (FSelectionMode in [smNone, smColor]);
+    if Result then
+    begin
         Shift := KeysToShiftState(Message.Keys);
-        If ssLeft In Shift Then
-        Begin
+        if ssLeft in Shift then
+        begin
             FSelectionMode := smColor;
             Index := FindColorArea(Message.XPos, Message.YPos);
-            If Index > -1 Then
-            Begin
+            if Index > -1 then
+            begin
         // remove selection comb if it was previously in b&w comb
-                If FCustomIndex < 0 Then
-                    InvalidateRect(Handle, @FBWCombRect, False);
-                If FCustomIndex <> (Index + 1) Then
-                Begin
+                if FCustomIndex < 0 then
+                    InvalidateRect(Handle, @FBWCombRect, FALSE);
+                if FCustomIndex <> (Index + 1) then
+                begin
                     FCustomIndex := Index + 1;
-                    InvalidateRect(Handle, @FColorCombRect, False);
-                    InvalidateRect(Handle, @FCustomColorRect, False);
+                    InvalidateRect(Handle, @FColorCombRect, FALSE);
+                    InvalidateRect(Handle, @FCustomColorRect, FALSE);
                     UpdateWindow(Handle);
-                End;
-            End
-            Else Result := False;
-        End;
-    End;
-End;
+                end;
+            end
+            else Result := FALSE;
+        end;
+    end;
+end;
 
 //------------------------------------------------------------------------------
 
-Procedure TColorPopup.HandleCustomColors(Var Message: TWMMouse);
+procedure TColorPopup.HandleCustomColors(var Message: TWMMouse);
 
-Begin
-    If Not HandleSlider(Message) Then
-        If Not HandleBWArea(Message) Then
-            If Not HandleColorComb(Message) Then
-            Begin
+begin
+    if not HandleSlider(Message) then
+        if not HandleBWArea(Message) then
+            if not HandleColorComb(Message) then
+            begin
         // user has clicked somewhere else, so remove last custom selection
-                If FCustomIndex > 0 Then
-                    InvalidateRect(Handle, @FColorCombRect, False)
-                Else
-                If FCustomIndex < 0 Then
-                    InvalidateRect(Handle, @FBWCombRect, False);
+                if FCustomIndex > 0 then
+                    InvalidateRect(Handle, @FColorCombRect, FALSE)
+                else
+                if FCustomIndex < 0 then
+                    InvalidateRect(Handle, @FBWCombRect, FALSE);
 
-                InvalidateRect(Handle, @FCustomColorRect, False);
+                InvalidateRect(Handle, @FCustomColorRect, FALSE);
                 FCustomIndex := 0;
                 UpdateWindow(Handle);
-            End;
-End;
+            end;
+end;
 
 //------------------------------------------------------------------------------
 
-Procedure TColorPopup.WMMouseMove(Var Message: TWMMouseMove);
+procedure TColorPopup.WMMouseMove(var Message: TWMMouseMove);
 
-Var NewSelection: Integer;
+var NewSelection: integer;
 
-Begin
-    Inherited;
+begin
+    inherited;
   // determine new hover index
     NewSelection := SelectionFromPoint(Point(Message.XPos, Message.YPos));
 
-    If NewSelection <> FHoverIndex Then
+    if NewSelection <> FHoverIndex then
         ChangeHoverSelection(NewSelection);
-    If (NewSelection = -1) And
-        PtInRect(ClientRect, Point(Message.XPos, Message.YPos)) And
-        (csLButtonDown In ControlState) Then
+    if (NewSelection = -1) and
+        PtInRect(ClientRect, Point(Message.XPos, Message.YPos)) and
+        (csLButtonDown in ControlState) then
         HandleCustomColors(Message);
-End;
+end;
 
 //------------------------------------------------------------------------------
 
-Procedure TColorPopup.WMLButtonDown(Var Message: TWMLButtonDown);
+procedure TColorPopup.WMLButtonDown(var Message: TWMLButtonDown);
 
-Begin
-    Inherited;
+begin
+    inherited;
 
-    If PtInRect(ClientRect, Point(Message.XPos, Message.YPos)) Then
-    Begin
+    if PtInRect(ClientRect, Point(Message.XPos, Message.YPos)) then
+    begin
 
-        If FHoverIndex <> NoCell Then
-        Begin
+        if FHoverIndex <> NoCell then
+        begin
             InvalidateCell(FHoverIndex);
             UpdateWindow(Handle);
-        End;
+        end;
 
-        If FHoverIndex = -1 Then
+        if FHoverIndex = -1 then
             HandleCustomColors(Message);
-    End
-    Else EndSelection(True); // hide popup window if the user has clicked elsewhere
-End;
+    end
+    else EndSelection(TRUE); // hide popup window if the user has clicked elsewhere
+end;
 
 //------------------------------------------------------------------------------
 
-Procedure TColorPopup.ShowPopupAligned;
+procedure TColorPopup.ShowPopupAligned;
 
-Var Pt: TPoint;
+var Pt: TPoint;
     Parent: TColorPickerButton;
-    ParentTop: Integer;
+    ParentTop: integer;
     R: TRect;
-    H: Integer;
+    H: integer;
 
-Begin
+begin
     HandleNeeded;
-    If FSelectedIndex = CustomCell Then
-    Begin
+    if FSelectedIndex = CustomCell then
+    begin
     // make room for the custem color picking area
         R := Rect(FWindowRect.Left, FWindowRect.Bottom - 3, FWindowRect.Right, FWindowRect.Bottom);
         H := FBWCombRect.Bottom + 2 * FMargin;
-    End
-    Else
-    Begin
+    end
+    else
+    begin
     // hide the custem color picking area
         R := Rect(FWindowRect.Left, FWindowRect.Bottom - 3, FWindowRect.Right, FWindowRect.Bottom);
         H := FWindowRect.Bottom;
-    End;
+    end;
   // to ensure the window frame is drawn correctly we invalidate the lower bound explicitely
-    InvalidateRect(Handle, @R, True);
+    InvalidateRect(Handle, @R, TRUE);
 
   // Make sure the window is still entirely visible and aligned.
   // There's no VCL parent window as this popup is a child of the desktop,
   // but we have the owner and get the parent from this.
     Parent := TColorPickerButton(Owner);
     Pt := Parent.Parent.ClientToScreen(Point(Parent.Left - 1, Parent.Top + Parent.Height));
-    If (Pt.y + H) > Screen.Height Then
+    if (Pt.y + H) > Screen.Height then
         Pt.y := Screen.Height - H;
     ParentTop := Parent.Parent.ClientToScreen(Point(Parent.Left, Parent.Top)).y;
-    If Pt.y < ParentTop Then
+    if Pt.y < ParentTop then
         Pt.y := ParentTop - H;
-    If (Pt.x + Width) > Screen.Width Then
+    if (Pt.x + Width) > Screen.Width then
         Pt.x := Screen.Width - Width;
-    If Pt.x < 0 Then
+    if Pt.x < 0 then
         Pt.x := 0;
     SetWindowPos(Handle, HWND_TOPMOST, Pt.X, Pt.Y, FWindowRect.Right, H, SWP_SHOWWINDOW);
-End;
+end;
 
 //------------------------------------------------------------------------------
 
-Procedure TColorPopup.ChangeSelection(NewSelection: Integer);
+procedure TColorPopup.ChangeSelection(NewSelection: integer);
 
-Begin
-    If NewSelection <> NoCell Then
-    Begin
-        If FSelectedIndex <> NoCell Then
+begin
+    if NewSelection <> NoCell then
+    begin
+        if FSelectedIndex <> NoCell then
             InvalidateCell(FSelectedIndex);
         FSelectedIndex := NewSelection;
-        If FSelectedIndex <> NoCell Then
+        if FSelectedIndex <> NoCell then
             InvalidateCell(FSelectedIndex);
 
-        If FSelectedIndex = CustomCell Then
+        if FSelectedIndex = CustomCell then
             ShowPopupAligned;
-    End;
-End;
+    end;
+end;
 
 //------------------------------------------------------------------------------
 
-Procedure TColorPopup.WMLButtonUp(Var Message: TWMLButtonUp);
+procedure TColorPopup.WMLButtonUp(var Message: TWMLButtonUp);
 
-Var NewSelection: Integer;
+var NewSelection: integer;
     LastMode: TSelectionMode;
 
-Begin
-    Inherited;
+begin
+    inherited;
   // determine new selection index
     NewSelection := SelectionFromPoint(Point(Message.XPos, Message.YPos));
     LastMode := FSelectionMode;
     FSelectionMode := smNone;
-    If (NewSelection <> NoCell) Or
-        ((FSelectedIndex = CustomCell) And (FCustomIndex <> 0)) Then
-    Begin
+    if (NewSelection <> NoCell) or
+        ((FSelectedIndex = CustomCell) and (FCustomIndex <> 0)) then
+    begin
         ChangeSelection(NewSelection);
-        If ((FSelectedIndex = CustomCell) And (LastMode In [smColor, smBW])) Or
-            (FSelectedIndex <> NoCell) And
-            (FSelectedIndex <> CustomCell) Then
-            EndSelection(False)
-        Else SetCapture(TColorPickerButton(Owner).FPopupWnd);
-    End
-    Else
+        if ((FSelectedIndex = CustomCell) and (LastMode in [smColor, smBW])) or
+            (FSelectedIndex <> NoCell) and
+            (FSelectedIndex <> CustomCell) then
+            EndSelection(FALSE)
+        else SetCapture(TColorPickerButton(Owner).FPopupWnd);
+    end
+    else
     // we need to restore the mouse capturing, else the utility window will loose it
     // (safety feature of Windows?)
         SetCapture(TColorPickerButton(Owner).FPopupWnd);
-End;
+end;
 
 //------------------------------------------------------------------------------
 
-Function TColorPopup.GetIndex(Row, Col: Integer): Integer;
+function TColorPopup.GetIndex(Row, Col: integer): integer;
 
-Begin
+begin
     Result := NoCell;
-    If ((Row = CustomCell) Or (Col = CustomCell)) And
-        (Length(FCustomText) > 0) Then
+    if ((Row = CustomCell) or (Col = CustomCell)) and
+        (Length(FCustomText) > 0) then
         Result := CustomCell
-    Else
-    If ((Row = DefaultCell) Or (Col = DefaultCell)) And
-        (Length(FDefaultText) > 0) Then
+    else
+    if ((Row = DefaultCell) or (Col = DefaultCell)) and
+        (Length(FDefaultText) > 0) then
         Result := DefaultCell
-    Else
-    If (Col In [0..FColumnCount - 1]) And (Row >= 0) Then
-    Begin
+    else
+    if (Col in [0..FColumnCount - 1]) and (Row >= 0) then
+    begin
 
-        If Row < FRowCount Then
-        Begin
+        if Row < FRowCount then
+        begin
             Result := Row * FColumnCount + Col;
           // consider not fully filled last row
-            If Result >= DefaultColorCount Then
+            if Result >= DefaultColorCount then
                 Result := NoCell;
-        End
-        Else
-        If FShowSysColors Then
-        Begin
+        end
+        else
+        if FShowSysColors then
+        begin
             Dec(Row, FRowCount);
-            If Row < FSysRowCount Then
-            Begin
+            if Row < FSysRowCount then
+            begin
                 Result := Row * FColumnCount + Col;
               // consider not fully filled last row
-                If Result >= SysColorCount Then
+                if Result >= SysColorCount then
                     Result := NoCell
-                Else Inc(Result, DefaultColorCount);
-            End;
-        End;
-    End;
-End;
+                else Inc(Result, DefaultColorCount);
+            end;
+        end;
+    end;
+end;
 
 //------------------------------------------------------------------------------
 
-Function TColorPopup.GetRow(Index: Integer): Integer;
+function TColorPopup.GetRow(Index: integer): integer;
 
-Begin
-    If (Index = CustomCell) And (Length(FCustomText) > 0) Then
+begin
+    if (Index = CustomCell) and (Length(FCustomText) > 0) then
         Result := CustomCell
-    Else
-    If (Index = DefaultCell) And (Length(FDefaultText) > 0) Then
+    else
+    if (Index = DefaultCell) and (Length(FDefaultText) > 0) then
         Result := DefaultCell
-    Else Result := Index Div FColumnCount;
-End;
+    else Result := Index div FColumnCount;
+end;
 
 //------------------------------------------------------------------------------
 
-Function TColorPopup.GetColumn(Index: Integer): Integer;
+function TColorPopup.GetColumn(Index: integer): integer;
 
-Begin
-    If (Index = CustomCell) And (Length(FCustomText) > 0) Then
+begin
+    if (Index = CustomCell) and (Length(FCustomText) > 0) then
         Result := CustomCell
-    Else
-    If (Index = DefaultCell) And (Length(FDefaultText) > 0) Then
+    else
+    if (Index = DefaultCell) and (Length(FDefaultText) > 0) then
         Result := DefaultCell
-    Else Result := Index Mod FColumnCount;
-End;
+    else Result := Index mod FColumnCount;
+end;
 
 //------------------------------------------------------------------------------
 
-Procedure TColorPopup.SelectColor(Color: TColor);
+procedure TColorPopup.SelectColor(Color: TColor);
 
 // looks up the given color in our lists and sets the proper indices
 
-Var I: Integer;
+var I: integer;
     C: COLORREF;
-    found: Boolean;
+    found: boolean;
 
-Begin
-    found := False;
+begin
+    found := FALSE;
 
   // handle special colors first
-    If Color = clNone Then
+    if Color = clNone then
         FSelectedIndex := NoCell
-    Else
-    If Color = clDefault Then
+    else
+    if Color = clDefault then
         FSelectedIndex := DefaultCell
-    Else
-    Begin
+    else
+    begin
       // if the incoming color is one of the predefined colors (clBtnFace etc.) and
       // system colors are active then start looking in the system color list
-        If FShowSysColors And (Color < 0) Then
-        Begin
-            For I := 0 To SysColorCount - 1 Do
-                If TColor(SysColors[I].Color) = Color Then
-                Begin
+        if FShowSysColors and (Color < 0) then
+        begin
+            for I := 0 to SysColorCount - 1 do
+                if TColor(SysColors[I].Color) = Color then
+                begin
                     FSelectedIndex := I + DefaultColorCount;
-                    found := True;
+                    found := TRUE;
                     Break;
-                End;
-        End;
+                end;
+        end;
 
-        If Not found Then
-        Begin
+        if not found then
+        begin
             C := ColorToRGB(Color);
-            For I := 0 To DefaultColorCount - 1 Do
+            for I := 0 to DefaultColorCount - 1 do
           // only Borland knows why the result of ColorToRGB is Longint not COLORREF,
           // in order to make the compiler quiet I need a Longint cast here
-                If ColorToRGB(DefaultColors[I].Color) = Longint(C) Then
-                Begin
+                if ColorToRGB(DefaultColors[I].Color) = longint(C) then
+                begin
                     FSelectedIndex := I;
-                    found := True;
+                    found := TRUE;
                     Break;
-                End;
+                end;
 
         // look in the system colors if not already done yet
-            If Not found And FShowSysColors And (Color >= 0) Then
-            Begin
-                For I := 0 To SysColorCount - 1 Do
-                Begin
-                    If ColorToRGB(TColor(SysColors[I].Color)) = Longint(C) Then
-                    Begin
+            if not found and FShowSysColors and (Color >= 0) then
+            begin
+                for I := 0 to SysColorCount - 1 do
+                begin
+                    if ColorToRGB(TColor(SysColors[I].Color)) = longint(C) then
+                    begin
                         FSelectedIndex := I + DefaultColorCount;
-                        found := True;
+                        found := TRUE;
                         Break;
-                    End;
-                End;
-            End;
+                    end;
+                end;
+            end;
 
-            If Not found Then
-            Begin
-                If FColorCombs = Nil Then
+            if not found then
+            begin
+                if FColorCombs = NIL then
                     CalculateCombLayout;
                 FCustomIndex := 0;
                 FSelectedIndex := NoCell;
-                For I := 0 To High(FBWCombs) Do
-                    If FBWCombs[I].Color = C Then
-                    Begin
+                for I := 0 to High(FBWCombs) do
+                    if FBWCombs[I].Color = C then
+                    begin
                         FSelectedIndex := CustomCell;
                         FCustomIndex := -(I + 1);
-                        found := True;
+                        found := TRUE;
                         Break;
-                    End;
+                    end;
 
-                If Not found Then
-                    For I := 0 To High(FColorCombs) Do
-                        If FColorCombs[I].Color = C Then
-                        Begin
+                if not found then
+                    for I := 0 to High(FColorCombs) do
+                        if FColorCombs[I].Color = C then
+                        begin
                             FSelectedIndex := CustomCell;
                             FCustomIndex := I + 1;
                             Break;
-                        End;
-            End;
-        End;
-    End;
-End;
+                        end;
+            end;
+        end;
+    end;
+end;
 
 //------------------------------------------------------------------------------
 
-Function TColorPopup.GetCellRect(Index: Integer; Var Rect: TRect): Boolean;
+function TColorPopup.GetCellRect(Index: integer; var Rect: TRect): boolean;
 
 // gets the dimensions of the colour cell given by Index
 
-Begin
-    Result := False;
-    If Index = CustomCell Then
-    Begin
+begin
+    Result := FALSE;
+    if Index = CustomCell then
+    begin
         Rect := FCustomTextRect;
-        Result := True;
-    End
-    Else
-    If Index = DefaultCell Then
-    Begin
+        Result := TRUE;
+    end
+    else
+    if Index = DefaultCell then
+    begin
         Rect := FDefaultTextRect;
-        Result := True;
-    End
-    Else
-    If Index >= 0 Then
-    Begin
+        Result := TRUE;
+    end
+    else
+    if Index >= 0 then
+    begin
         Rect.Left := GetColumn(Index) * FBoxSize + FMargin + FSpacing;
         Rect.Top := GetRow(Index) * FBoxSize + 2 * FMargin;
 
         // move everything down if we are displaying a default text area
-        If Length(FDefaultText) > 0 Then
+        if Length(FDefaultText) > 0 then
             Inc(Rect.Top, FDefaultTextRect.Bottom - 2 * FMargin);
 
         // move everything further down if we consider syscolors
-        If Index >= DefaultColorCount Then
+        if Index >= DefaultColorCount then
             Inc(Rect.Top, 3 * FMargin);
 
         Rect.Right := Rect.Left + FBoxSize;
         Rect.Bottom := Rect.Top + FBoxSize;
 
-        Result := True;
-    End;
-End;
+        Result := TRUE;
+    end;
+end;
 
 //------------------------------------------------------------------------------
 
-Procedure TColorPopup.AdjustWindow;
+procedure TColorPopup.AdjustWindow;
 
 // works out an appropriate size and position of this window
 
-Var TextSize,
+var TextSize,
     DefaultSize: TSize;
     DC: HDC;
-    WHeight: Integer;
+    WHeight: integer;
 
-Begin
+begin
   // If we are showing a custom or default text area, get the font and text size.
-    If (Length(FCustomText) > 0) Or (Length(FDefaultText) > 0) Then
-    Begin
+    if (Length(FCustomText) > 0) or (Length(FDefaultText) > 0) then
+    begin
         DC := GetDC(Handle);
         FCanvas.Handle := DC;
         FCanvas.Font.Handle := GetStockObject(DEFAULT_GUI_FONT);
-        Try
+        try
       // Get the size of the custom text (if there IS custom text)
             TextSize.cx := 0;
             TextSize.cy := 0;
-            If Length(FCustomText) > 0 Then
+            if Length(FCustomText) > 0 then
                 TextSize := FCanvas.TextExtent(FCustomText);
 
       // Get the size of the default text (if there IS default text)
-            If Length(FDefaultText) > 0 Then
-            Begin
+            if Length(FDefaultText) > 0 then
+            begin
                 DefaultSize := FCanvas.TextExtent(FDefaultText);
-                If DefaultSize.cx > TextSize.cx Then
+                if DefaultSize.cx > TextSize.cx then
                     TextSize.cx := DefaultSize.cx;
-                If DefaultSize.cy > TextSize.cy Then
+                if DefaultSize.cy > TextSize.cy then
                     TextSize.cy := DefaultSize.cy;
-            End;
+            end;
 
             Inc(TextSize.cx, 2 * FMargin);
             Inc(TextSize.cy, 4 * FMargin + 2);
 
-        Finally
+        finally
             FCanvas.Font.Handle := 0;
             FCanvas.Handle := 0;
             ReleaseDC(Handle, DC);
-        End;
-    End;
+        end;
+    end;
 
   // Get the number of columns and rows
     FColumnCount := 8;
-    FRowCount := DefaultColorCount Div FColumnCount;
-    If (DefaultColorCount Mod FColumnCount) <> 0 Then
+    FRowCount := DefaultColorCount div FColumnCount;
+    if (DefaultColorCount mod FColumnCount) <> 0 then
         Inc(FRowCount);
 
     FWindowRect := Rect(0, 0,
@@ -2359,30 +2359,30 @@ Begin
 
   // if default text, then expand window if necessary, and set text width as
   // window width
-    If Length(FDefaultText) > 0 Then
-    Begin
-        If TextSize.cx > (FWindowRect.Right - FWindowRect.Left) Then
+    if Length(FDefaultText) > 0 then
+    begin
+        if TextSize.cx > (FWindowRect.Right - FWindowRect.Left) then
             FWindowRect.Right := FWindowRect.Left + TextSize.cx;
         TextSize.cx := FWindowRect.Right - FWindowRect.Left - 2 * FMargin;
 
     // work out the text area
         FDefaultTextRect := Rect(FMargin + FSpacing, 2 * FMargin, FMargin - FSpacing + TextSize.cx, 2 * FMargin + TextSize.cy);
         Inc(FWindowRect.Bottom, FDefaultTextRect.Bottom - FDefaultTextRect.Top + 2 * FMargin);
-    End;
+    end;
 
-    If FShowSysColors Then
-    Begin
-        FSysRowCount := SysColorCount Div FColumnCount;
-        If (SysColorCount Mod FColumnCount) <> 0 Then
+    if FShowSysColors then
+    begin
+        FSysRowCount := SysColorCount div FColumnCount;
+        if (SysColorCount mod FColumnCount) <> 0 then
             Inc(FSysRowCount);
         Inc(FWindowRect.Bottom, FSysRowCount * FBoxSize + 2 * FMargin);
-    End;
+    end;
 
   // if custom text, then expand window if necessary, and set text width as
   // window width
-    If Length(FCustomText) > 0 Then
-    Begin
-        If TextSize.cx > (FWindowRect.Right - FWindowRect.Left) Then
+    if Length(FCustomText) > 0 then
+    begin
+        if TextSize.cx > (FWindowRect.Right - FWindowRect.Left) then
             FWindowRect.Right := FWindowRect.Left + TextSize.cx;
         TextSize.cx := FWindowRect.Right - FWindowRect.Left - 2 * FMargin;
 
@@ -2397,10 +2397,10 @@ Begin
         InflateRect(FCustomColorRect, -(FMargin + 1), -(FMargin + 1));
         OffsetRect(FCustomColorRect,
             FCustomTextRect.Right - FBoxSize - FMargin,
-            FCustomTextRect.Top + (FCustomTextRect.Bottom - FCustomTextRect.Top - FCustomColorRect.Bottom - FMargin - 1) Div 2);
+            FCustomTextRect.Top + (FCustomTextRect.Bottom - FCustomTextRect.Top - FCustomColorRect.Bottom - FMargin - 1) div 2);
 
         Inc(FWindowRect.Bottom, FCustomTextRect.Bottom - FCustomTextRect.Top + 2 * FMargin);
-    End;
+    end;
 
   // work out custom color choice area (color combs) (FWindowRect covers only the always visible part)
     FColorCombRect := Rect(FMargin + FSpacing,
@@ -2419,17 +2419,17 @@ Begin
         FColorCombRect.Bottom - FCombSize);
 
   // set the window size
-    With FWindowRect Do
+    with FWindowRect do
         SetBounds(Left, Top, Right - Left, Bottom - Top);
-End;
+end;
 
 //------------------------------------------------------------------------------
 
-Procedure TColorPopup.ChangeHoverSelection(Index: Integer);
+procedure TColorPopup.ChangeHoverSelection(Index: integer);
 
-Begin
-    If Not FShowSysColors And (Index >= DefaultColorCount) Or
-        (Index >= (DefaultColorCount + SysColorCount)) Then
+begin
+    if not FShowSysColors and (Index >= DefaultColorCount) or
+        (Index >= (DefaultColorCount + SysColorCount)) then
         Index := NoCell;
 
   // remove old hover selection
@@ -2438,77 +2438,77 @@ Begin
     FHoverIndex := Index;
     InvalidateCell(FHoverIndex);
     UpdateWindow(Handle);
-End;
+end;
 
 //------------------------------------------------------------------------------
 
-Procedure TColorPopup.EndSelection(Cancel: Boolean);
+procedure TColorPopup.EndSelection(Cancel: boolean);
 
-Begin
-    With Owner As TColorPickerButton Do
-    Begin
-        If Not Cancel Then
-        Begin
-            If FSelectedIndex > -1 Then
-                If FSelectedIndex < DefaultColorCount Then
+begin
+    with Owner as TColorPickerButton do
+    begin
+        if not Cancel then
+        begin
+            if FSelectedIndex > -1 then
+                if FSelectedIndex < DefaultColorCount then
                     SelectionColor := TColor(DefaultColors[FSelectedIndex].Color)
-                Else SelectionColor := TColor(SysColors[FSelectedIndex - DefaultColorCount].Color)
-            Else
-            If FSelectedIndex = CustomCell Then
-            Begin
-                If FCustomIndex < 0 Then
+                else SelectionColor := TColor(SysColors[FSelectedIndex - DefaultColorCount].Color)
+            else
+            if FSelectedIndex = CustomCell then
+            begin
+                if FCustomIndex < 0 then
                     SelectionColor := FBWCombs[-(FCustomIndex + 1)].Color
-                Else
-                If FCustomIndex > 0 Then
+                else
+                if FCustomIndex > 0 then
                     SelectionColor := FColorCombs[FCustomIndex - 1].Color;
-            End
-            Else DoDefaultEvent;
-        End;
-        DroppedDown := False;
-    End;
-End;
+            end
+            else DoDefaultEvent;
+        end;
+        DroppedDown := FALSE;
+    end;
+end;
 
 //------------------------------------------------------------------------------
 
-Procedure TColorPopup.WMKillFocus(Var Message: TWMKillFocus);
+procedure TColorPopup.WMKillFocus(var Message: TWMKillFocus);
 
-Begin
-    Inherited;
-    (Owner As TColorPickerButton).DroppedDown := False;
-End;
+begin
+    inherited;
+    (Owner as TColorPickerButton).DroppedDown := FALSE;
+end;
 
 //------------------------------------------------------------------------------
 
-Procedure TColorPopup.CalculateCombLayout;
+procedure TColorPopup.CalculateCombLayout;
 
 // fills arrays with centers and colors for the custom color and black & white combs,
 // these arrays are used to quickly draw the combx and do hit tests
 
   //--------------- local functions -----------------------
 
-    Function RGBFromFloat(Color: TRGB): COLORREF;
+    function RGBFromFloat(Color: TRGB): COLORREF;
 
-    Begin
+    begin
         Result := RGB(Round(255 * Color.Red), Round(255 * Color.Green), Round(255 * Color.Blue));
-    End;
+    end;
 
   //-------------------------------------------------------
 
-    Function GrayFromIntensity(Intensity: Byte): COLORREF;
+    function GrayFromIntensity(Intensity: byte): COLORREF;
 
-    Begin
+    begin
         Result := RGB(Intensity, Intensity, Intensity);
-    End;
+    end;
 
   //--------------- end local functions -------------------
 
-Var CurrentIndex: Cardinal;
+var CurrentIndex: cardinal;
     CurrentColor: TRGB;
     CurrentPos: TFloatPoint;
-    CombCount: Cardinal;
+    CombCount: cardinal;
     I, J,
-    Level: Cardinal;
-    Scale: Extended;
+    Level: cardinal;
+    Scale: extended;
 
     // triangle vars
     Pos1, Pos2: TFloatPoint;
@@ -2518,10 +2518,10 @@ Var CurrentIndex: Cardinal;
     dPos: TFloatPoint;
     dColor: TRGB;
 
-Begin
+begin
   // this ensures the radius and comb size is set correctly
     HandleNeeded;
-    If FLevels < 1 Then
+    if FLevels < 1 then
         FLevels := 1;
   // To draw perfectly aligned combs we split the final comb into six triangles (sextants)
   // and calculate each separately. The center comb is stored as first entry in the array
@@ -2543,7 +2543,7 @@ Begin
   // Count = 1 + 6 * (((n-1) * n) / 2)
   // Because there's always an even number involved (either n or n-1) we can use an integer div
   // instead of a float div here...
-    CombCount := 1 + 6 * (((FLevels - 1) * FLevels) Div 2);
+    CombCount := 1 + 6 * (((FLevels - 1) * FLevels) div 2);
     SetLength(FColorCombs, CombCount);
 
   // store center values
@@ -2552,7 +2552,7 @@ Begin
     Inc(CurrentIndex);
 
   // go out off here if there are not further levels to draw
-    If FLevels < 2 Then
+    if FLevels < 2 then
         Exit;
 
   // now go for each sextant, the generic corners have been calculated already at creation
@@ -2567,8 +2567,8 @@ Begin
   //             \/  4 \/
   //              ------
 
-    For I := 0 To 5 Do
-    Begin
+    for I := 0 to 5 do
+    begin
     // initialize triangle corner values
     //
     //                center (always at 0,0)
@@ -2593,18 +2593,18 @@ Begin
         Pos1.X := FCombCorners[I].Y * Scale;
         Pos1.Y := FCombCorners[I].X * Scale;
         Color1 := DefColors[I];
-        If I = 5 Then
-        Begin
+        if I = 5 then
+        begin
             Pos2.X := FCombCorners[0].Y * Scale;
             Pos2.Y := FCombCorners[0].X * Scale;
             Color2 := DefColors[0];
-        End
-        Else
-        Begin
+        end
+        else
+        begin
             Pos2.X := FCombCorners[I + 1].Y * Scale;
             Pos2.Y := FCombCorners[I + 1].X * Scale;
             Color2 := DefColors[I + 1];
-        End;
+        end;
         dPos1.X := Pos1.X / (FLevels - 1);
         dPos1.Y := Pos1.Y / (FLevels - 1);
         dPos2.X := Pos2.X / (FLevels - 1);
@@ -2628,10 +2628,10 @@ Begin
     // We can ignore level 0 (as this is the center we already have determined) as well
     // as the last step of each span (as this is the start value in the next triangle and will
     // be calculated there). We have, though, take them into the calculation of the running terms. 
-        For Level := 0 To FLevels - 1 Do
-        Begin
-            If Level > 0 Then
-            Begin
+        for Level := 0 to FLevels - 1 do
+        begin
+            if Level > 0 then
+            begin
         // initialize span values
                 dPos.X := (Pos2.X - Pos1.X) / Level;
                 dPos.Y := (Pos2.Y - Pos1.Y) / Level;
@@ -2641,8 +2641,8 @@ Begin
                 CurrentPos := Pos1;
                 CurrentColor := Color1;
 
-                For J := 0 To Level - 1 Do
-                Begin
+                for J := 0 to Level - 1 do
+                begin
           // store current values in the array
                     FColorCombs[CurrentIndex].Position.X := Round(CurrentPos.X);
                     FColorCombs[CurrentIndex].Position.Y := Round(CurrentPos.Y);
@@ -2656,8 +2656,8 @@ Begin
                     CurrentColor.Red := CurrentColor.Red + dColor.Red;
                     CurrentColor.Green := CurrentColor.Green + dColor.Green;
                     CurrentColor.Blue := CurrentColor.Blue + dColor.Blue;
-                End;
-            End;
+                end;
+            end;
       // advance running terms
             Pos1.X := Pos1.X + dPos1.X;
             Pos1.Y := Pos1.Y + dPos1.Y;
@@ -2671,8 +2671,8 @@ Begin
             Color2.Red := Color2.Red + dColor2.Red;
             Color2.Green := Color2.Green + dColor2.Green;
             Color2.Blue := Color2.Blue + dColor2.Blue;
-        End;
-    End;
+        end;
+    end;
 
   // second step is to build a list for the black & white area
   // 17 entries from pure white to pure black
@@ -2684,134 +2684,134 @@ Begin
     Inc(CurrentIndex);
 
     CurrentPos.X := 3 * FCombSize;
-    CurrentPos.Y := 3 * (FCombSize Div 4);
+    CurrentPos.Y := 3 * (FCombSize div 4);
     dPos.X := Round(FCombSize * cos(Pi / 6) / 2);
     dPos.Y := Round(FCombSize * (1 + sin(Pi / 6)) / 2);
-    For I := 0 To 14 Do
-    Begin
+    for I := 0 to 14 do
+    begin
         FBWCombs[CurrentIndex].Color := GrayFromIntensity((16 - CurrentIndex) * 15);
-        If Odd(I) Then
+        if Odd(I) then
             FBWCombs[CurrentIndex].Position := Point(Round(CurrentPos.X + I * dPos.X), Round(CurrentPos.Y + dPos.Y))
-        Else FBWCombs[CurrentIndex].Position := Point(Round(CurrentPos.X + I * dPos.X), Round(CurrentPos.Y));
+        else FBWCombs[CurrentIndex].Position := Point(Round(CurrentPos.X + I * dPos.X), Round(CurrentPos.Y));
         Inc(CurrentIndex);
-    End;
+    end;
     FBWCombs[CurrentIndex].Color := 0;
     FBWCombs[CurrentIndex].Position := Point(Round(CurrentPos.X + 16 * dPos.X + FCombSize), FCombSize);
-End;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPopup.CreateParams(Var Params: TCreateParams);
+procedure TColorPopup.CreateParams(var Params: TCreateParams);
 
-Begin
-    Inherited CreateParams(Params);
-    With Params Do
-    Begin
+begin
+    inherited CreateParams(Params);
+    with Params do
+    begin
         WndParent := GetDesktopWindow;
-        Style := WS_CLIPSIBLINGS Or WS_CHILD;
-        ExStyle := WS_EX_TOPMOST Or WS_EX_TOOLWINDOW;
-        WindowClass.Style := CS_DBLCLKS Or CS_SAVEBITS;
-    End;
-End;
+        Style := WS_CLIPSIBLINGS or WS_CHILD;
+        ExStyle := WS_EX_TOPMOST or WS_EX_TOOLWINDOW;
+        WindowClass.Style := CS_DBLCLKS or CS_SAVEBITS;
+    end;
+end;
 
 //------------------------------------------------------------------------------
 
-Procedure TColorPopup.CreateWnd;
+procedure TColorPopup.CreateWnd;
 
-Begin
-    Inherited;
+begin
+    inherited;
     AdjustWindow;
-End;
+end;
 
 //------------------------------------------------------------------------------
 
-Procedure TColorPopup.SetSpacing(Value: Integer);
+procedure TColorPopup.SetSpacing(Value: integer);
 
-Begin
-    If Value < 0 Then
+begin
+    if Value < 0 then
         Value := 0;
-    If FSpacing <> Value Then
-    Begin
+    if FSpacing <> Value then
+    begin
         FSpacing := Value;
         Invalidate;
-    End;
-End;
+    end;
+end;
 
 //------------------------------------------------------------------------------
 
-Procedure TColorPopup.InvalidateCell(Index: Integer);
+procedure TColorPopup.InvalidateCell(Index: integer);
 
-Var R: TRect;
+var R: TRect;
 
-Begin
-    If GetCellRect(Index, R) Then
-        InvalidateRect(Handle, @R, False);
-End;
+begin
+    if GetCellRect(Index, R) then
+        InvalidateRect(Handle, @R, FALSE);
+end;
 
 //------------------------------------------------------------------------------
 
-Function TColorPopup.GetHint(Cell: Integer): String;
+function TColorPopup.GetHint(Cell: integer): string;
 
-Begin
+begin
     Result := '';
-    If Assigned(TColorPickerButton(Owner).FOnHint) Then
+    if Assigned(TColorPickerButton(Owner).FOnHint) then
         TColorPickerButton(Owner).FOnHint(Owner, Cell, Result);
-End;
+end;
 
 //------------------------------------------------------------------------------
 
-Procedure TColorPopup.CMHintShow(Var Message: TMessage);
+procedure TColorPopup.CMHintShow(var Message: TMessage);
 
 // determine hint message (tooltip) and out-of-hint rect
 
-Var Index: Integer;
-    r, g, b: Byte;
+var Index: integer;
+    r, g, b: byte;
     Colors: TCombArray;
 
-Begin
-    Colors := Nil;
-    With TCMHintShow(Message) Do
-    Begin
-        If Not TColorPickerButton(Owner).ShowHint Then
+begin
+    Colors := NIL;
+    with TCMHintShow(Message) do
+    begin
+        if not TColorPickerButton(Owner).ShowHint then
             Message.Result := 1
-        Else
-        Begin
-            With HintInfo^ Do
-            Begin
+        else
+        begin
+            with HintInfo^ do
+            begin
         // show that we want a hint
                 Result := 0;
         // predefined colors always get their names as tooltip
-                If FHoverIndex >= 0 Then
-                Begin
+                if FHoverIndex >= 0 then
+                begin
                     GetCellRect(FHoverIndex, CursorRect);
-                    If FHoverIndex < DefaultColorCount Then
+                    if FHoverIndex < DefaultColorCount then
                         HintStr := DefaultColors[FHoverIndex].Name
-                    Else HintStr := SysColors[FHoverIndex - DefaultColorCount].Name;
-                End
-                Else
+                    else HintStr := SysColors[FHoverIndex - DefaultColorCount].Name;
+                end
+                else
           // both special cells get their hint either from the application by
           // means of the OnHint event or the hint string of the owner control
-                If (FHoverIndex = DefaultCell) Or
-                    (FHoverIndex = CustomCell) Then
-                Begin
+                if (FHoverIndex = DefaultCell) or
+                    (FHoverIndex = CustomCell) then
+                begin
                     HintStr := GetHint(FHoverIndex);
-                    If HintStr = '' Then
+                    if HintStr = '' then
                         HintStr := TColorPickerButton(Owner).Hint
-                    Else
-                    Begin
+                    else
+                    begin
               // if the application supplied a hint by event then deflate the cursor rect
               // to the belonging button
-                        If FHoverIndex = DefaultCell Then
+                        if FHoverIndex = DefaultCell then
                             CursorRect := FDefaultTextRect
-                        Else CursorRect := FCustomTextRect;
-                    End;
-                End
-                Else
-                Begin
+                        else CursorRect := FCustomTextRect;
+                    end;
+                end
+                else
+                begin
             // well, mouse is not hovering over one of the buttons, now check for
             // the ramp and the custom color areas
-                    If PtInRect(FSliderRect, Point(CursorPos.X, CursorPos.Y)) Then
-                    Begin
+                    if PtInRect(FSliderRect, Point(CursorPos.X, CursorPos.Y)) then
+                    begin
               // in case of the intensity slider we show the current intensity
                         HintStr := Format('Intensity: %d%%', [Round(100 * FCenterIntensity)]);
                         CursorRect := Rect(FSliderRect.Left, CursorPos.Y - 2,
@@ -2820,66 +2820,66 @@ Begin
                         HideTimeout := 5000;
                         CursorRect := Rect(FSliderRect.Left, CursorPos.Y,
                             FSliderRect.Right, CursorPos.Y);
-                    End
-                    Else
-                    Begin
+                    end
+                    else
+                    begin
                         Index := -1;
-                        If PtInRect(FBWCombRect, Point(CursorPos.X, CursorPos.Y)) Then
-                        Begin
+                        if PtInRect(FBWCombRect, Point(CursorPos.X, CursorPos.Y)) then
+                        begin
                 // considering black&white area...
-                            If csLButtonDown In ControlState Then
+                            if csLButtonDown in ControlState then
                                 Index := -(FCustomIndex + 1)
-                            Else Index := FindBWArea(CursorPos.X, CursorPos.Y);
+                            else Index := FindBWArea(CursorPos.X, CursorPos.Y);
                             Colors := FBWCombs;
-                        End
-                        Else
-                        If PtInRect(FColorCombRect, Point(CursorPos.X, CursorPos.Y)) Then
-                        Begin
+                        end
+                        else
+                        if PtInRect(FColorCombRect, Point(CursorPos.X, CursorPos.Y)) then
+                        begin
                   // considering color comb area...
-                            If csLButtonDown In ControlState Then
+                            if csLButtonDown in ControlState then
                                 Index := FCustomIndex - 1
-                            Else Index := FindColorArea(CursorPos.X, CursorPos.Y);
+                            else Index := FindColorArea(CursorPos.X, CursorPos.Y);
                             Colors := FColorCombs;
-                        End;
+                        end;
 
-                        If (Index > -1) And (Colors <> Nil) Then
-                        Begin
-                            With Colors[Index] Do
-                            Begin
+                        if (Index > -1) and (Colors <> NIL) then
+                        begin
+                            with Colors[Index] do
+                            begin
                                 r := GetRValue(Color);
                                 g := GetGValue(Color);
                                 b := GetBValue(Color);
-                            End;
+                            end;
                             HintStr := Format('red: %d, green: %d, blue: %d', [r, g, b]);
                             HideTimeout := 5000;
-                        End
-                        Else HintStr := GetHint(NoCell);
+                        end
+                        else HintStr := GetHint(NoCell);
 
               // make the hint follow the mouse
                         CursorRect := Rect(CursorPos.X, CursorPos.Y,
                             CursorPos.X, CursorPos.Y);
-                    End;
-                End;
-            End;
-        End;
-    End;
-End;
+                    end;
+                end;
+            end;
+        end;
+    end;
+end;
 
 //------------------------------------------------------------------------------
 
-Procedure TColorPopup.SetSelectedColor(Const Value: TColor);
+procedure TColorPopup.SetSelectedColor(const Value: TColor);
 
-Begin
+begin
     FCurrentColor := Value;
     SelectColor(Value);
-End;
+end;
 
 //----------------- TColorPickerButton ------------------------------------------
 
-Constructor TColorPickerButton.Create(AOwner: TComponent);
+constructor TColorPickerButton.Create(AOwner: TComponent);
 
-Begin
-    Inherited Create(AOwner);
+begin
+    inherited Create(AOwner);
     FSelectionColor := clBlack;
     FColorPopup := TColorPopup.Create(Self);
   // park the window somewhere it can't be seen
@@ -2893,22 +2893,22 @@ Begin
     SetBounds(0, 0, 45, 22);
     FDropDownWidth := 15;
     ControlStyle := [csCaptureMouse, csDoubleClicks];
-    ParentFont := True;
+    ParentFont := TRUE;
     Color := clBtnFace;
     FSpacing := 4;
     FMargin := -1;
     FLayout := blGlyphLeft;
-    FTransparent := True;
+    FTransparent := TRUE;
     FIndicatorBorder := ibFlat;
 
     Inc(ButtonCount);
-End;
+end;
 
 //-----------------------------------------------------------------------------
 
-Destructor TColorPickerButton.Destroy;
+destructor TColorPickerButton.Destroy;
 
-Begin
+begin
   // to avoid "deprecated" message use
   // Classes.AllocateHWnd not Forms.AllocateHWnd
     Classes.DeallocateHWnd(FPopupWnd);
@@ -2916,87 +2916,87 @@ Begin
   // the color popup window will automatically be freed since the button is the owner
   // of the popup
     TButtonGlyph(FGlyph).Free;
-    Inherited Destroy;
-End;
+    inherited Destroy;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.PopupWndProc(Var Msg: TMessage);
+procedure TColorPickerButton.PopupWndProc(var Msg: TMessage);
 
-Var P: TPoint;
+var P: TPoint;
 
-Begin
-    Case Msg.Msg Of
+begin
+    case Msg.Msg of
         WM_MOUSEFIRST..WM_MOUSELAST:
-        Begin
-            With TWMMouse(Msg) Do
-            Begin
+        begin
+            with TWMMouse(Msg) do
+            begin
                 P := SmallPointToPoint(Pos);
                 MapWindowPoints(FPopupWnd, FColorPopup.Handle, P, 1);
                 Pos := PointToSmallPoint(P);
-            End;
+            end;
             FColorPopup.WindowProc(Msg);
-        End;
+        end;
         CN_KEYDOWN,
         CN_SYSKEYDOWN:
             FColorPopup.WindowProc(Msg);
-    Else
-        With Msg Do
+    else
+        with Msg do
             Result := DefWindowProc(FPopupWnd, Msg, wParam, lParam);
-    End;
-End;
+    end;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.SetDropDownArrowColor(Value: TColor);
+procedure TColorPickerButton.SetDropDownArrowColor(Value: TColor);
 
-Begin
-    If Not (FDropDownArrowColor = Value) Then;
-    Begin
+begin
+    if not (FDropDownArrowColor = Value) then;
+    begin
         FDropDownArrowColor := Value;
         Invalidate;
-    End;
-End;
+    end;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.SetDropDownWidth(Value: Integer);
+procedure TColorPickerButton.SetDropDownWidth(Value: integer);
 
-Begin
-    If Not (FDropDownWidth = Value) Then;
-    Begin
+begin
+    if not (FDropDownWidth = Value) then;
+    begin
         FDropDownWidth := Value;
         Invalidate;
-    End;
-End;
+    end;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.Paint;
+procedure TColorPickerButton.Paint;
 
-Const MAX_WIDTH = 5;
-    DownStyles: Array[Boolean] Of Integer = (BDR_RAISEDINNER, BDR_SUNKENOUTER);
-    FillStyles: Array[Boolean] Of Integer = (BF_MIDDLE, 0);
+const MAX_WIDTH = 5;
+    DownStyles: array[boolean] of integer = (BDR_RAISEDINNER, BDR_SUNKENOUTER);
+    FillStyles: array[boolean] of integer = (BF_MIDDLE, 0);
 
-Var PaintRect: TRect;
+var PaintRect: TRect;
     ExtraRect: TRect;
-    DrawFlags: Integer;
+    DrawFlags: integer;
     Offset: TPoint;
-    LeftPos: Integer;
+    LeftPos: integer;
 
-Begin
-    If Not Enabled Then
-    Begin
+begin
+    if not Enabled then
+    begin
         FState := bsDisabled;
-        FDragging := False;
-    End
-    Else
-    If (FState = bsDisabled) Then
-    Begin
-        If FDown And (GroupIndex <> 0) Then
+        FDragging := FALSE;
+    end
+    else
+    if (FState = bsDisabled) then
+    begin
+        if FDown and (GroupIndex <> 0) then
             FState := bsExclusive
-        Else FState := bsUp;
-    End;
+        else FState := bsUp;
+    end;
 
     Canvas.Font := Self.Font;
 
@@ -3004,104 +3004,104 @@ Begin
   // determines also the position to draw the arrow...
     PaintRect := Rect(0, 0, Width, Height);
     ExtraRect := Rect(Width - FDropDownWidth, 0, Width, Height);
-    LeftPos := (Width - FDropDownWidth) + ((FDropDownWidth + MAX_WIDTH) Div 2) - MAX_WIDTH - 1;
+    LeftPos := (Width - FDropDownWidth) + ((FDropDownWidth + MAX_WIDTH) div 2) - MAX_WIDTH - 1;
 
   // Determines if the button is a flat or normal button... each uses
   // different painting methods
-    If Not FFlat Then
-    Begin
-        DrawFlags := DFCS_BUTTONPUSH Or DFCS_ADJUSTRECT;
+    if not FFlat then
+    begin
+        DrawFlags := DFCS_BUTTONPUSH or DFCS_ADJUSTRECT;
 
-        If FState In [bsDown, bsExclusive] Then
-            DrawFlags := DrawFlags Or DFCS_PUSHED;
+        if FState in [bsDown, bsExclusive] then
+            DrawFlags := DrawFlags or DFCS_PUSHED;
 
     // Check if the mouse is in the drop down zone. If it is we then check
     // the state of the button to determine the drawing sequence
-        If FDropDownZone Then
-        Begin
-            If FDroppedDown Then
-            Begin
+        if FDropDownZone then
+        begin
+            if FDroppedDown then
+            begin
         // paint pressed Drop Down Button
                 DrawFrameControl(Canvas.Handle, PaintRect, DFC_BUTTON, DRAW_BUTTON_UP);
                 DrawFrameControl(Canvas.Handle, ExtraRect, DFC_BUTTON, DRAW_BUTTON_DOWN);
-            End
-            Else
-            Begin
+            end
+            else
+            begin
         // paint depressed Drop Down Button
                 DrawFrameControl(Canvas.Handle, PaintRect, DFC_BUTTON, DRAW_BUTTON_UP);
                 DrawFrameControl(Canvas.Handle, ExtraRect, DFC_BUTTON, DRAW_BUTTON_UP);
                 DrawButtonSeperatorUp(Canvas);
-            End;
-        End
-        Else
-        Begin
+            end;
+        end
+        else
+        begin
             DrawFrameControl(Canvas.Handle, PaintRect, DFC_BUTTON, DrawFlags);
 
       // Determine the type of drop down seperator...
-            If (FState In [bsDown, bsExclusive]) Then
+            if (FState in [bsDown, bsExclusive]) then
                 DrawButtonSeperatorDown(Canvas)
-            Else DrawButtonSeperatorUp(Canvas);
-        End;
-    End
-    Else
-    Begin
-        If (FState In [bsDown, bsExclusive]) Or
-            (FMouseInControl And (FState <> bsDisabled)) Or
-            (csDesigning In ComponentState) Then
-        Begin
+            else DrawButtonSeperatorUp(Canvas);
+        end;
+    end
+    else
+    begin
+        if (FState in [bsDown, bsExclusive]) or
+            (FMouseInControl and (FState <> bsDisabled)) or
+            (csDesigning in ComponentState) then
+        begin
       // Check if the mouse is in the drop down zone. If it is we then check
       // the state of the button to determine the drawing sequence
-            If FDropDownZone Then
-            Begin
-                If FDroppedDown Then
-                Begin
+            if FDropDownZone then
+            begin
+                if FDroppedDown then
+                begin
           // Paint pressed Drop Down Button
-                    DrawEdge(Canvas.Handle, PaintRect, DownStyles[False], FillStyles[FTransparent] Or BF_RECT);
-                    DrawEdge(Canvas.Handle, ExtraRect, DownStyles[True], FillStyles[FTransparent] Or BF_RECT);
-                End
-                Else
-                Begin
+                    DrawEdge(Canvas.Handle, PaintRect, DownStyles[FALSE], FillStyles[FTransparent] or BF_RECT);
+                    DrawEdge(Canvas.Handle, ExtraRect, DownStyles[TRUE], FillStyles[FTransparent] or BF_RECT);
+                end
+                else
+                begin
           // Paint depressed Drop Down Button
-                    DrawEdge(Canvas.Handle, PaintRect, DownStyles[False], FillStyles[FTransparent] Or BF_RECT);
-                    DrawEdge(Canvas.Handle, ExtraRect, DownStyles[False], FillStyles[FTransparent] Or BF_RECT);
+                    DrawEdge(Canvas.Handle, PaintRect, DownStyles[FALSE], FillStyles[FTransparent] or BF_RECT);
+                    DrawEdge(Canvas.Handle, ExtraRect, DownStyles[FALSE], FillStyles[FTransparent] or BF_RECT);
                     DrawButtonSeperatorUp(Canvas);
-                End;
-            End
-            Else
-            Begin
-                DrawEdge(Canvas.Handle, PaintRect, DownStyles[FState In [bsDown, bsExclusive]], FillStyles[FTransparent] Or BF_RECT);
+                end;
+            end
+            else
+            begin
+                DrawEdge(Canvas.Handle, PaintRect, DownStyles[FState in [bsDown, bsExclusive]], FillStyles[FTransparent] or BF_RECT);
 
-                If (FState In [bsDown, bsExclusive]) Then
+                if (FState in [bsDown, bsExclusive]) then
                     DrawButtonSeperatorDown(Canvas)
-                Else DrawButtonSeperatorUp(Canvas);
-            End;
-        End
-        Else
-        If Not FTransparent Then
-        Begin
+                else DrawButtonSeperatorUp(Canvas);
+            end;
+        end
+        else
+        if not FTransparent then
+        begin
             Canvas.Brush.Style := bsSolid;
             Canvas.Brush.Color := Color;
             Canvas.FillRect(PaintRect);
-        End;
+        end;
         InflateRect(PaintRect, -1, -1);
-    End;
+    end;
 
 
-    If (FState In [bsDown, bsExclusive]) And Not (FDropDownZone) Then
-    Begin
-        If (FState = bsExclusive) And (Not FFlat Or Not FMouseInControl) Then
-        Begin
+    if (FState in [bsDown, bsExclusive]) and not (FDropDownZone) then
+    begin
+        if (FState = bsExclusive) and (not FFlat or not FMouseInControl) then
+        begin
             Canvas.Brush.Bitmap := AllocPatternBitmap(clBtnFace, clBtnHighlight);
             Canvas.FillRect(PaintRect);
-        End;
+        end;
         Offset.X := 1;
         Offset.Y := 1;
-    End
-    Else
-    Begin
+    end
+    else
+    begin
         Offset.X := 0;
         Offset.Y := 0;
-    End;
+    end;
 
     PaintRect := TButtonGlyph(FGlyph).Draw(Canvas, PaintRect, Offset, Caption, FLayout, FMargin,
         FSpacing, FState, FTransparent, FDropDownWidth, DrawTextBiDiModeFlags(0));
@@ -3110,762 +3110,762 @@ Begin
     Canvas.Brush.Color := FSelectionColor;
     Canvas.Pen.Color := clBtnShadow;
 
-    Case FIndicatorBorder Of
+    case FIndicatorBorder of
         ibNone:
             Canvas.FillRect(PaintRect);
         ibFlat:
-            With PaintRect Do
+            with PaintRect do
                 Canvas.Rectangle(Left, Top, Right, Bottom);
-    Else
-        If FIndicatorBorder = ibSunken Then
+    else
+        if FIndicatorBorder = ibSunken then
             DrawEdge(Canvas.Handle, PaintRect, BDR_SUNKENOUTER, BF_RECT)
-        Else DrawEdge(Canvas.Handle, PaintRect, BDR_RAISEDINNER, BF_RECT);
+        else DrawEdge(Canvas.Handle, PaintRect, BDR_RAISEDINNER, BF_RECT);
         InflateRect(PaintRect, -1, -1);
         Canvas.FillRect(PaintRect);
-    End;
+    end;
 
   // Draws the arrow for the correct state
-    If FState = bsDisabled Then
-    Begin
+    if FState = bsDisabled then
+    begin
         Canvas.Pen.Style := psClear;
         Canvas.Brush.Color := clBtnShadow;
-    End
-    Else
-    Begin
+    end
+    else
+    begin
         Canvas.Pen.Color := FDropDownArrowColor;
         Canvas.Brush.Color := FDropDownArrowColor;
-    End;
+    end;
 
-    If FDropDownZone And FDroppedDown Or (FState = bsDown) And Not (FDropDownZone) Then
-        DrawTriangle(Canvas, (Height Div 2) + 1, LeftPos + 1, MAX_WIDTH)
-    Else
-        DrawTriangle(Canvas, (Height Div 2), LeftPos, MAX_WIDTH);
-End;
+    if FDropDownZone and FDroppedDown or (FState = bsDown) and not (FDropDownZone) then
+        DrawTriangle(Canvas, (Height div 2) + 1, LeftPos + 1, MAX_WIDTH)
+    else
+        DrawTriangle(Canvas, (Height div 2), LeftPos, MAX_WIDTH);
+end;
 
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.UpdateTracking;
+procedure TColorPickerButton.UpdateTracking;
 
-Var P: TPoint;
+var P: TPoint;
 
-Begin
-    If FFlat Then
-    Begin
-        If Enabled Then
-        Begin
+begin
+    if FFlat then
+    begin
+        if Enabled then
+        begin
             GetCursorPos(P);
-            FMouseInControl := Not (FindDragTarget(P, True) = Self);
-            If FMouseInControl Then
+            FMouseInControl := not (FindDragTarget(P, TRUE) = Self);
+            if FMouseInControl then
                 Perform(CM_MOUSELEAVE, 0, 0)
-            Else Perform(CM_MOUSEENTER, 0, 0);
-        End;
-    End;
-End;
+            else Perform(CM_MOUSEENTER, 0, 0);
+        end;
+    end;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.Loaded;
+procedure TColorPickerButton.Loaded;
 
-Var State: TButtonState;
+var State: TButtonState;
 
-Begin
-    Inherited Loaded;
-    If Enabled Then
+begin
+    inherited Loaded;
+    if Enabled then
         State := bsUp
-    Else State := bsDisabled;
+    else State := bsDisabled;
     TButtonGlyph(FGlyph).CreateButtonGlyph(State);
-End;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TColorPickerButton.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: integer);
 
-Begin
-    Inherited MouseDown(Button, Shift, X, Y);
+begin
+    inherited MouseDown(Button, Shift, X, Y);
 
-    If (Button = mbLeft) And Enabled Then
-    Begin
+    if (Button = mbLeft) and Enabled then
+    begin
     // Determine if mouse is currently in the drop down section...
         FDropDownZone := (X > Width - FDropDownWidth);
 
     // If so display the button in the proper state and display the menu
-        If FDropDownZone Then
-        Begin
-            If Not FDroppedDown Then
-            Begin
+        if FDropDownZone then
+        begin
+            if not FDroppedDown then
+            begin
                 Update;
-                DroppedDown := True;
-            End;
+                DroppedDown := TRUE;
+            end;
 
       // Setting this flag to false is very important, we want the dsUp state to
       // be used to display the button properly the next time the mouse moves in
-            FDragging := False;
-        End
-        Else
-        Begin
-            If Not FDown Then
-            Begin
+            FDragging := FALSE;
+        end
+        else
+        begin
+            if not FDown then
+            begin
                 FState := bsDown;
                 Invalidate;
-            End;
+            end;
 
-            FDragging := True;
-        End;
-    End;
-End;
+            FDragging := TRUE;
+        end;
+    end;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.MouseMove(Shift: TShiftState; X, Y: Integer);
+procedure TColorPickerButton.MouseMove(Shift: TShiftState; X, Y: integer);
 
-Var NewState: TButtonState;
+var NewState: TButtonState;
 
-Begin
-    Inherited MouseMove(Shift, X, Y);
-    If FDragging Then
-    Begin
-        If Not FDown Then
+begin
+    inherited MouseMove(Shift, X, Y);
+    if FDragging then
+    begin
+        if not FDown then
             NewState := bsUp
-        Else NewState := bsExclusive;
-        If (X >= 0) And (X < ClientWidth) And (Y >= 0) And (Y <= ClientHeight) Then
-            If FDown Then
+        else NewState := bsExclusive;
+        if (X >= 0) and (X < ClientWidth) and (Y >= 0) and (Y <= ClientHeight) then
+            if FDown then
                 NewState := bsExclusive
-            Else NewState := bsDown;
-        If NewState <> FState Then
-        Begin
+            else NewState := bsDown;
+        if NewState <> FState then
+        begin
             FState := NewState;
             Invalidate;
-        End;
-    End;
-End;
+        end;
+    end;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TColorPickerButton.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer);
 
-Var DoClick: Boolean;
+var DoClick: boolean;
 
-Begin
-    Inherited MouseUp(Button, Shift, X, Y);
-    If FDragging Then
-    Begin
-        FDragging := False;
-        DoClick := (X >= 0) And (X < ClientWidth) And (Y >= 0) And (Y <= ClientHeight);
-        If FGroupIndex = 0 Then
-        Begin
+begin
+    inherited MouseUp(Button, Shift, X, Y);
+    if FDragging then
+    begin
+        FDragging := FALSE;
+        DoClick := (X >= 0) and (X < ClientWidth) and (Y >= 0) and (Y <= ClientHeight);
+        if FGroupIndex = 0 then
+        begin
       // Redraw face in case mouse is captured
             FState := bsUp;
-            FMouseInControl := False;
-            If DoClick And Not (FState In [bsExclusive, bsDown]) Then
+            FMouseInControl := FALSE;
+            if DoClick and not (FState in [bsExclusive, bsDown]) then
                 Invalidate;
-        End
-        Else
-        If DoClick Then
-        Begin
-            SetDown(Not FDown);
-            If FDown Then
+        end
+        else
+        if DoClick then
+        begin
+            SetDown(not FDown);
+            if FDown then
                 Repaint;
-        End
-        Else
-        Begin
-            If FDown Then
+        end
+        else
+        begin
+            if FDown then
                 FState := bsExclusive;
             Repaint;
-        End;
-        If DoClick Then
+        end;
+        if DoClick then
             Click;
         UpdateTracking;
-    End;
-End;
+    end;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.Click;
+procedure TColorPickerButton.Click;
 
-Begin
-    Inherited Click;
-End;
+begin
+    inherited Click;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.DoDefaultEvent;
+procedure TColorPickerButton.DoDefaultEvent;
 
-Begin
-    If Assigned(FOnDefaultSelect) Then
+begin
+    if Assigned(FOnDefaultSelect) then
         FOnDefaultSelect(Self);
-End;
+end;
 
 //-----------------------------------------------------------------------------
 
-Function TColorPickerButton.GetPalette: HPALETTE;
+function TColorPickerButton.GetPalette: HPALETTE;
 
-Begin
+begin
     Result := Glyph.Palette;
-End;
+end;
 
 //-----------------------------------------------------------------------------
 
-Function TColorPickerButton.GetGlyph: TBitmap;
+function TColorPickerButton.GetGlyph: TBitmap;
 
-Begin
+begin
     Result := TButtonGlyph(FGlyph).Glyph;
-End;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.SetGlyph(Value: TBitmap);
+procedure TColorPickerButton.SetGlyph(Value: TBitmap);
 
-Begin
+begin
     TButtonGlyph(FGlyph).Glyph := Value;
     Invalidate;
-End;
+end;
 
 //-----------------------------------------------------------------------------
 
-Function TColorPickerButton.GetNumGlyphs: TNumGlyphs;
+function TColorPickerButton.GetNumGlyphs: TNumGlyphs;
 
-Begin
+begin
     Result := TButtonGlyph(FGlyph).NumGlyphs;
-End;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.DrawButtonSeperatorUp(Canvas: TCanvas);
+procedure TColorPickerButton.DrawButtonSeperatorUp(Canvas: TCanvas);
 
-Begin
-    With Canvas Do
-    Begin
+begin
+    with Canvas do
+    begin
         Pen.Style := psSolid;
         Brush.Style := bsClear;
         Pen.Color := clBtnHighlight;
         Rectangle(Width - DropDownWidth, 1, Width - DropDownWidth + 1, Height - 1);
         Pen.Color := clBtnShadow;
         Rectangle(Width - DropDownWidth - 1, 1, Width - DropDownWidth, Height - 1);
-    End;
-End;
+    end;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.DrawButtonSeperatorDown(Canvas: TCanvas);
+procedure TColorPickerButton.DrawButtonSeperatorDown(Canvas: TCanvas);
 
-Begin
-    With Canvas Do
-    Begin
+begin
+    with Canvas do
+    begin
         Pen.Style := psSolid;
         Brush.Style := bsClear;
         Pen.Color := clBtnHighlight;
         Rectangle(Width - DropDownWidth + 1, 2, Width - DropDownWidth + 2, Height - 2);
         Pen.Color := clBtnShadow;
         Rectangle(Width - DropDownWidth, 2, Width - DropDownWidth + 1, Height - 2);
-    End;
-End;
+    end;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.DrawTriangle(Canvas: TCanvas; Top, Left, Width: Integer);
+procedure TColorPickerButton.DrawTriangle(Canvas: TCanvas; Top, Left, Width: integer);
 
-Begin
-    If Odd(Width) Then
+begin
+    if Odd(Width) then
         Inc(Width);
     dec(Top);
     dec(left);
     Canvas.Polygon([Point(Left, Top),
         Point(Left + Width, Top),
-        Point(Left + Width Div 2, Top + Width Div 2)]);
-End;
+        Point(Left + Width div 2, Top + Width div 2)]);
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.SetNumGlyphs(Value: TNumGlyphs);
+procedure TColorPickerButton.SetNumGlyphs(Value: TNumGlyphs);
 
-Begin
-    If Value < 0 Then
+begin
+    if Value < 0 then
         Value := 1
-    Else
-    If Value > 4 Then
+    else
+    if Value > 4 then
         Value := 4;
 
-    If Value <> TButtonGlyph(FGlyph).NumGlyphs Then
-    Begin
+    if Value <> TButtonGlyph(FGlyph).NumGlyphs then
+    begin
         TButtonGlyph(FGlyph).NumGlyphs := Value;
         Invalidate;
-    End;
-End;
+    end;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.GlyphChanged(Sender: TObject);
+procedure TColorPickerButton.GlyphChanged(Sender: TObject);
 
-Begin
+begin
     Invalidate;
-End;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.UpdateExclusive;
+procedure TColorPickerButton.UpdateExclusive;
 
-Var Msg: TMessage;
+var Msg: TMessage;
 
-Begin
-    If (FGroupIndex <> 0) And (Parent <> Nil) Then
-    Begin
+begin
+    if (FGroupIndex <> 0) and (Parent <> NIL) then
+    begin
         Msg.Msg := CM_BUTTONPRESSED;
         Msg.WParam := FGroupIndex;
-        Msg.LParam := Longint(Self);
+        Msg.LParam := longint(Self);
         Msg.Result := 0;
         Parent.Broadcast(Msg);
-    End;
-End;
+    end;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.SetDown(Value: Boolean);
+procedure TColorPickerButton.SetDown(Value: boolean);
 
-Begin
-    If FGroupIndex = 0 Then
-        Value := False;
-    If Value <> FDown Then
-    Begin
-        If FDown And (Not FAllowAllUp) Then
+begin
+    if FGroupIndex = 0 then
+        Value := FALSE;
+    if Value <> FDown then
+    begin
+        if FDown and (not FAllowAllUp) then
             Exit;
         FDown := Value;
-        If Value Then
-        Begin
-            If FState = bsUp Then
+        if Value then
+        begin
+            if FState = bsUp then
                 Invalidate;
             FState := bsExclusive;
-        End
-        Else
-        Begin
+        end
+        else
+        begin
             FState := bsUp;
             Repaint;
-        End;
-        If Value Then
+        end;
+        if Value then
             UpdateExclusive;
-    End;
-End;
+    end;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.SetFlat(Value: Boolean);
+procedure TColorPickerButton.SetFlat(Value: boolean);
 
-Begin
-    If Value <> FFlat Then
-    Begin
+begin
+    if Value <> FFlat then
+    begin
         FFlat := Value;
-        If Value Then
+        if Value then
             ControlStyle := ControlStyle - [csOpaque]
-        Else ControlStyle := ControlStyle + [csOpaque];
+        else ControlStyle := ControlStyle + [csOpaque];
         Invalidate;
-    End;
-End;
+    end;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.SetGroupIndex(Value: Integer);
+procedure TColorPickerButton.SetGroupIndex(Value: integer);
 
-Begin
-    If FGroupIndex <> Value Then
-    Begin
+begin
+    if FGroupIndex <> Value then
+    begin
         FGroupIndex := Value;
         UpdateExclusive;
-    End;
-End;
+    end;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.SetLayout(Value: TButtonLayout);
+procedure TColorPickerButton.SetLayout(Value: TButtonLayout);
 
-Begin
-    If FLayout <> Value Then
-    Begin
+begin
+    if FLayout <> Value then
+    begin
         FLayout := Value;
         Invalidate;
-    End;
-End;
+    end;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.SetMargin(Value: Integer);
+procedure TColorPickerButton.SetMargin(Value: integer);
 
-Begin
-    If (Value <> FMargin) And (Value >= -1) Then
-    Begin
+begin
+    if (Value <> FMargin) and (Value >= -1) then
+    begin
         FMargin := Value;
         Invalidate;
-    End;
-End;
+    end;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.SetSpacing(Value: Integer);
+procedure TColorPickerButton.SetSpacing(Value: integer);
 
-Begin
-    If Value <> FSpacing Then
-    Begin
+begin
+    if Value <> FSpacing then
+    begin
         FSpacing := Value;
         Invalidate;
-    End;
-End;
+    end;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.SetAllowAllUp(Value: Boolean);
+procedure TColorPickerButton.SetAllowAllUp(Value: boolean);
 
-Begin
-    If FAllowAllUp <> Value Then
-    Begin
+begin
+    if FAllowAllUp <> Value then
+    begin
         FAllowAllUp := Value;
         UpdateExclusive;
-    End;
-End;
+    end;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPopup.WMActivateApp(Var Message: TWMActivateApp);
+procedure TColorPopup.WMActivateApp(var Message: TWMActivateApp);
 
-Begin
-    Inherited;
-    If Not Message.Active Then
-        EndSelection(True);
-End;
+begin
+    inherited;
+    if not Message.Active then
+        EndSelection(TRUE);
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.WMLButtonDblClk(Var Message: TWMLButtonDown);
+procedure TColorPickerButton.WMLButtonDblClk(var Message: TWMLButtonDown);
 
-Begin
-    Inherited;
-    If FDown Then
+begin
+    inherited;
+    if FDown then
         DblClick;
-End;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.CMEnabledChanged(Var Message: TMessage);
+procedure TColorPickerButton.CMEnabledChanged(var Message: TMessage);
 
-Const NewState: Array[Boolean] Of TButtonState = (bsDisabled, bsUp);
+const NewState: array[boolean] of TButtonState = (bsDisabled, bsUp);
 
-Begin
+begin
     TButtonGlyph(FGlyph).CreateButtonGlyph(NewState[Enabled]);
     UpdateTracking;
     Repaint;
-End;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.CMButtonPressed(Var Message: TMessage);
+procedure TColorPickerButton.CMButtonPressed(var Message: TMessage);
 
-Var Sender: TColorPickerButton;
+var Sender: TColorPickerButton;
 
-Begin
-    If Message.WParam = FGroupIndex Then
-    Begin
+begin
+    if Message.WParam = FGroupIndex then
+    begin
         Sender := TColorPickerButton(Message.LParam);
-        If Sender <> Self Then
-        Begin
-            If Sender.Down And FDown Then
-            Begin
-                FDown := False;
+        if Sender <> Self then
+        begin
+            if Sender.Down and FDown then
+            begin
+                FDown := FALSE;
                 FState := bsUp;
                 Invalidate;
-            End;
+            end;
             FAllowAllUp := Sender.AllowAllUp;
-        End;
-    End;
-End;
+        end;
+    end;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.CMDialogChar(Var Message: TCMDialogChar);
+procedure TColorPickerButton.CMDialogChar(var Message: TCMDialogChar);
 
-Begin
-    With Message Do
-        If IsAccel(CharCode, Caption) And
-            Enabled And
-            Visible And
-            Assigned(Parent) And
-            Parent.Showing Then
-        Begin
+begin
+    with Message do
+        if IsAccel(CharCode, Caption) and
+            Enabled and
+            Visible and
+            Assigned(Parent) and
+            Parent.Showing then
+        begin
             Click;
             Result := 1;
-        End
-        Else Inherited;
-End;
+        end
+        else inherited;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.CMFontChanged(Var Message: TMessage);
+procedure TColorPickerButton.CMFontChanged(var Message: TMessage);
 
-Begin
+begin
     Invalidate;
-End;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.CMTextChanged(Var Message: TMessage);
+procedure TColorPickerButton.CMTextChanged(var Message: TMessage);
 
-Begin
+begin
     Invalidate;
-End;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.CMSysColorChange(Var Message: TMessage);
+procedure TColorPickerButton.CMSysColorChange(var Message: TMessage);
 
-Begin
-    With TButtonGlyph(FGlyph) Do
-    Begin
+begin
+    with TButtonGlyph(FGlyph) do
+    begin
         Invalidate;
         CreateButtonGlyph(FState);
-    End;
-End;
+    end;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.CMMouseEnter(Var Message: TMessage);
+procedure TColorPickerButton.CMMouseEnter(var Message: TMessage);
 
-Begin
-    Inherited;
-    If FFlat And Not FMouseInControl And Enabled Then
-    Begin
-        FMouseInControl := True;
+begin
+    inherited;
+    if FFlat and not FMouseInControl and Enabled then
+    begin
+        FMouseInControl := TRUE;
         Repaint;
-    End;
-End;
+    end;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.CMMouseLeave(Var Message: TMessage);
+procedure TColorPickerButton.CMMouseLeave(var Message: TMessage);
 
-Begin
-    Inherited;
-    If FFlat And FMouseInControl And Enabled And Not FDragging Then
-    Begin
-        FMouseInControl := False;
+begin
+    inherited;
+    if FFlat and FMouseInControl and Enabled and not FDragging then
+    begin
+        FMouseInControl := FALSE;
         Invalidate;
-    End;
-End;
+    end;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.SetDroppedDown(Const Value: Boolean);
+procedure TColorPickerButton.SetDroppedDown(const Value: boolean);
 
-Var Allowed: Boolean;
+var Allowed: boolean;
 
-Begin
-    If FDroppedDown <> Value Then
-    Begin
-        Allowed := True;
-        If Assigned(FOnDropChanging) Then
+begin
+    if FDroppedDown <> Value then
+    begin
+        Allowed := TRUE;
+        if Assigned(FOnDropChanging) then
             FOnDropChanging(Self, Allowed);
-        If Allowed Then
-        Begin
+        if Allowed then
+        begin
             FDroppedDown := Value;
-            If FDroppedDown Then
-            Begin
+            if FDroppedDown then
+            begin
                 FState := bsDown;
                 TColorPopup(FColorPopup).SelectedColor := FSelectionColor;
                 TColorPopup(FColorPopup).ShowPopupAligned;
                 SetCapture(FPopupWnd);
-            End
-            Else
-            Begin
+            end
+            else
+            begin
                 FState := bsUp;
                 ReleaseCapture;
                 ShowWindow(FColorPopup.Handle, SW_HIDE);
-            End;
-            If Assigned(FOnDropChanged) Then
+            end;
+            if Assigned(FOnDropChanged) then
                 FOnDropChanged(Self);
             Invalidate;
-        End;
-    End;
-End;
+        end;
+    end;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.SetSelectionColor(Const Value: TColor);
+procedure TColorPickerButton.SetSelectionColor(const Value: TColor);
 
-Begin
-    If FSelectionColor <> Value Then
-    Begin
+begin
+    if FSelectionColor <> Value then
+    begin
         FSelectionColor := Value;
         Invalidate;
-        If FDroppedDown Then
+        if FDroppedDown then
             TColorPopup(FColorPopup).SelectColor(Value);
-        If Assigned(FOnChange) Then
+        if Assigned(FOnChange) then
             FOnChange(Self);
-    End;
-End;
+    end;
+end;
 
 //-----------------------------------------------------------------------------
 
-Function TColorPickerButton.GetCustomText: String;
+function TColorPickerButton.GetCustomText: string;
 
-Begin
+begin
     Result := TColorPopup(FColorPopup).FCustomText;
-End;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.SetCustomText(Const Value: String);
+procedure TColorPickerButton.SetCustomText(const Value: string);
 
-Begin
-    With TColorPopup(FColorPopup) Do
-    Begin
-        If FCustomText <> Value Then
-        Begin
+begin
+    with TColorPopup(FColorPopup) do
+    begin
+        if FCustomText <> Value then
+        begin
             FCustomText := Value;
-            If (FCustomText = '') And (FSelectedIndex = CustomCell) Then
+            if (FCustomText = '') and (FSelectedIndex = CustomCell) then
                 FSelectedIndex := NoCell;
             AdjustWindow;
-            If FDroppedDown Then
-            Begin
+            if FDroppedDown then
+            begin
                 Invalidate;
                 ShowPopupAligned;
-            End;
-        End;
-    End;
-End;
+            end;
+        end;
+    end;
+end;
 
 //-----------------------------------------------------------------------------
 
-Function TColorPickerButton.GetDefaultText: String;
+function TColorPickerButton.GetDefaultText: string;
 
-Begin
+begin
     Result := TColorPopup(FColorPopup).FDefaultText;
-End;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.SetDefaultText(Const Value: String);
+procedure TColorPickerButton.SetDefaultText(const Value: string);
 
-Begin
-    If TColorPopup(FColorPopup).FDefaultText <> Value Then
-    Begin
-        With TColorPopup(FColorPopup) Do
-        Begin
+begin
+    if TColorPopup(FColorPopup).FDefaultText <> Value then
+    begin
+        with TColorPopup(FColorPopup) do
+        begin
             FDefaultText := Value;
             AdjustWindow;
-            If FDroppedDown Then
-            Begin
+            if FDroppedDown then
+            begin
                 Invalidate;
                 ShowPopupAligned;
-            End;
-        End;
-    End;
-End;
+            end;
+        end;
+    end;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.SetShowSystemColors(Const Value: Boolean);
+procedure TColorPickerButton.SetShowSystemColors(const Value: boolean);
 
-Begin
-    With TColorPopup(FColorPopup) Do
-    Begin
-        If FShowSysColors <> Value Then
-        Begin
+begin
+    with TColorPopup(FColorPopup) do
+    begin
+        if FShowSysColors <> Value then
+        begin
             FShowSysColors := Value;
             AdjustWindow;
-            If FDroppedDown Then
-            Begin
+            if FDroppedDown then
+            begin
                 Invalidate;
                 ShowPopupAligned;
-            End;
-        End;
-    End;
-End;
+            end;
+        end;
+    end;
+end;
 
 //-----------------------------------------------------------------------------
 
-Function TColorPickerButton.GetShowSystemColors: Boolean;
+function TColorPickerButton.GetShowSystemColors: boolean;
 
-Begin
+begin
     Result := TColorPopup(FColorPopup).FShowSysColors;
-End;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.SetTransparent(Const Value: Boolean);
+procedure TColorPickerButton.SetTransparent(const Value: boolean);
 
-Begin
-    If Value <> FTransparent Then
-    Begin
+begin
+    if Value <> FTransparent then
+    begin
         FTransparent := Value;
-        If Value Then
+        if Value then
             ControlStyle := ControlStyle - [csOpaque]
-        Else ControlStyle := ControlStyle + [csOpaque];
+        else ControlStyle := ControlStyle + [csOpaque];
         Invalidate;
-    End;
-End;
+    end;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.ActionChange(Sender: TObject; CheckDefaults: Boolean);
+procedure TColorPickerButton.ActionChange(Sender: TObject; CheckDefaults: boolean);
 
   //--------------- local functions -----------------------
 
-    Procedure CopyImage(ImageList: TCustomImageList; Index: Integer);
+    procedure CopyImage(ImageList: TCustomImageList; Index: integer);
 
-    Begin
-        With Glyph Do
-        Begin
+    begin
+        with Glyph do
+        begin
             Width := ImageList.Width;
             Height := ImageList.Height;
             Canvas.Brush.Color := clFuchsia;//! for lack of a better color
             Canvas.FillRect(Rect(0, 0, Width, Height));
             ImageList.Draw(Canvas, 0, 0, Index);
-        End;
-    End;
+        end;
+    end;
 
   //--------------- end local functions -------------------
 
-Begin
-    Inherited ActionChange(Sender, CheckDefaults);
-    If Sender Is TCustomAction Then
-        With TCustomAction(Sender) Do
-        Begin
+begin
+    inherited ActionChange(Sender, CheckDefaults);
+    if Sender is TCustomAction then
+        with TCustomAction(Sender) do
+        begin
       // Copy image from action's imagelist
-            If Glyph.Empty And
-                Assigned(ActionList) And
-                Assigned(ActionList.Images) And
-                (ImageIndex >= 0) And
-                (ImageIndex < ActionList.Images.Count) Then
+            if Glyph.Empty and
+                Assigned(ActionList) and
+                Assigned(ActionList.Images) and
+                (ImageIndex >= 0) and
+                (ImageIndex < ActionList.Images.Count) then
                 CopyImage(ActionList.Images, ImageIndex);
-        End;
-End;
+        end;
+end;
 
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.SetIndicatorBorder(Const Value: TIndicatorBorder);
+procedure TColorPickerButton.SetIndicatorBorder(const Value: TIndicatorBorder);
 
-Begin
-    If FIndicatorBorder <> Value Then
-    Begin
+begin
+    if FIndicatorBorder <> Value then
+    begin
         FIndicatorBorder := Value;
         Invalidate;
-    End;
-End;
+    end;
+end;
 
 //-----------------------------------------------------------------------------
 
-Function TColorPickerButton.GetPopupSpacing: Integer;
+function TColorPickerButton.GetPopupSpacing: integer;
 
-Begin
+begin
     Result := TColorPopup(FColorPopup).Spacing;
-End;
+end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TColorPickerButton.SetPopupSpacing(Const Value: Integer);
+procedure TColorPickerButton.SetPopupSpacing(const Value: integer);
 
-Begin
+begin
     TColorPopup(FColorPopup).Spacing := Value;
-End;
+end;
 
 //-----------------------------------------------------------------------------
 
-End.
+end.

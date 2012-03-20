@@ -17,11 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-Unit TipOfTheDayFm;
+unit TipOfTheDayFm;
 
-Interface
+interface
 
-Uses
+uses
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
     Dialogs, StdCtrls, ComCtrls, ExtCtrls, ShellAPI, XPMenu;
@@ -31,8 +31,8 @@ Uses
   QDialogs, QStdCtrls, QComCtrls, QExtCtrls, XPMenu;
 {$ENDIF}
 
-Type
-    TTipOfTheDayForm = Class(TForm)
+type
+    TTipOfTheDayForm = class(TForm)
         btnPrev: TButton;
         btnNext: TButton;
         btnClose: TButton;
@@ -44,87 +44,87 @@ Type
         Bevel1: TBevel;
         Image: TImage;
         lblUrl: TLabel;
-        Procedure FormShow(Sender: TObject);
-        Procedure btnCloseClick(Sender: TObject);
-        Procedure FormCreate(Sender: TObject);
-        Procedure FormDestroy(Sender: TObject);
-        Procedure btnNextClick(Sender: TObject);
-        Procedure btnPrevClick(Sender: TObject);
-        Procedure FormClose(Sender: TObject; Var Action: TCloseAction);
-        Procedure lblUrlClick(Sender: TObject);
-    Private
+        procedure FormShow(Sender: TObject);
+        procedure btnCloseClick(Sender: TObject);
+        procedure FormCreate(Sender: TObject);
+        procedure FormDestroy(Sender: TObject);
+        procedure btnNextClick(Sender: TObject);
+        procedure btnPrevClick(Sender: TObject);
+        procedure FormClose(Sender: TObject; var Action: TCloseAction);
+        procedure lblUrlClick(Sender: TObject);
+    private
         { Private declarations }
         sl: TStringList;
-        TipsCounter: Integer;
-        HiddenUrl: String;
-        Function ConvertMacros(Str: String): String;
-        Procedure LoadFromFile(Filename: String);
-        Function CurrentTip: String;
-        Function NextTip: String;
-        Function PreviousTip: String;
-        Procedure SetTipsCounter(Const Value: Integer);
-        Procedure LoadText;
-    Public
+        TipsCounter: integer;
+        HiddenUrl: string;
+        function ConvertMacros(Str: string): string;
+        procedure LoadFromFile(Filename: string);
+        function CurrentTip: string;
+        function NextTip: string;
+        function PreviousTip: string;
+        procedure SetTipsCounter(const Value: integer);
+        procedure LoadText;
+    public
         { Public declarations }
-        Property Current: Integer Read TipsCounter Write SetTipsCounter;
-    Protected
-        Procedure CreateParams(Var Params: TCreateParams); Override;
-    End;
+        property Current: integer read TipsCounter write SetTipsCounter;
+    protected
+        procedure CreateParams(var Params: TCreateParams); override;
+    end;
 
-Var
+var
     TipOfTheDayForm: TTipOfTheDayForm;
 
-Implementation
+implementation
 
-Uses
+uses
     devcfg, MultiLangSupport;
 
 {$R *.dfm}
 
-Procedure TTipOfTheDayForm.FormShow(Sender: TObject);
-Var
-    S: String;
-    LangNoExt: String;
-    ExtPos: Integer;
-Begin
-    lblUrl.Visible := False;
+procedure TTipOfTheDayForm.FormShow(Sender: TObject);
+var
+    S: string;
+    LangNoExt: string;
+    ExtPos: integer;
+begin
+    lblUrl.Visible := FALSE;
     LangNoExt := Lang.FileFromDescription(devData.Language);
     ExtPos := Pos(ExtractFileExt(LangNoExt), LangNoExt);
     Delete(LangNoExt, ExtPos, MaxInt);
     S := devDirs.Lang + ExtractFileName(LangNoExt) + '.tips';
-    If Not FileExists(S) Then
+    if not FileExists(S) then
         S := devDirs.Lang + 'English.tips';
-    If Not FileExists(S) Then
-    Begin
-        btnNext.Enabled := False;
-        btnPrev.Enabled := False;
-    End
-    Else
-    Begin
+    if not FileExists(S) then
+    begin
+        btnNext.Enabled := FALSE;
+        btnPrev.Enabled := FALSE;
+    end
+    else
+    begin
         LoadFromFile(S);
-        If (TipsCounter < 0) Or (TipsCounter >= sl.Count) Then
+        if (TipsCounter < 0) or (TipsCounter >= sl.Count) then
             TipsCounter := 0;
-        If sl.Count > 0 Then
+        if sl.Count > 0 then
             lblTip.Caption := CurrentTip
-        Else
-        Begin
-            btnNext.Enabled := False;
-            btnPrev.Enabled := False;
-        End;
-    End;
-End;
+        else
+        begin
+            btnNext.Enabled := FALSE;
+            btnPrev.Enabled := FALSE;
+        end;
+    end;
+end;
 
-Procedure TTipOfTheDayForm.btnCloseClick(Sender: TObject);
-Begin
+procedure TTipOfTheDayForm.btnCloseClick(Sender: TObject);
+begin
     Close;
-End;
+end;
 
-Function TTipOfTheDayForm.ConvertMacros(Str: String): String;
-Var
-    idx: Integer;
-    url: String;
-    urldesc: String;
-Begin
+function TTipOfTheDayForm.ConvertMacros(Str: string): string;
+var
+    idx: integer;
+    url: string;
+    urldesc: string;
+begin
     // <CR> macro
     Result := StringReplace(Str, '<CR>', #10, [rfReplaceAll]);
 
@@ -132,113 +132,113 @@ Begin
     url := '';
     urldesc := '';
     idx := Pos('<URL>', Result);
-    If idx > 0 Then
-    Begin
+    if idx > 0 then
+    begin
         url := Copy(Result, idx + 5, MaxInt);
         Delete(Result, idx, MaxInt);
         idx := Pos('<UDESC>', url);
-        lblUrl.Visible := True;
-        If idx > 0 Then
-        Begin
+        lblUrl.Visible := TRUE;
+        if idx > 0 then
+        begin
             urldesc := Copy(url, idx + 7, MaxInt);
             Delete(url, idx, MaxInt);
-        End;
-        If urldesc = '' Then
+        end;
+        if urldesc = '' then
             urldesc := url;
         lblUrl.Caption := urldesc;
         HiddenUrl := url;
-        lblUrl.Visible := True;
-    End
-    Else
-        lblUrl.Visible := False;
-End;
+        lblUrl.Visible := TRUE;
+    end
+    else
+        lblUrl.Visible := FALSE;
+end;
 
-Procedure TTipOfTheDayForm.FormCreate(Sender: TObject);
-Begin
+procedure TTipOfTheDayForm.FormCreate(Sender: TObject);
+begin
     LoadText;
     TipsCounter := 0;
     sl := TStringList.Create;
-End;
+end;
 
-Procedure TTipOfTheDayForm.FormDestroy(Sender: TObject);
-Begin
+procedure TTipOfTheDayForm.FormDestroy(Sender: TObject);
+begin
     sl.Free;
-End;
+end;
 
-Function TTipOfTheDayForm.CurrentTip: String;
-Begin
+function TTipOfTheDayForm.CurrentTip: string;
+begin
     Result := ConvertMacros(sl[TipsCounter]);
-End;
+end;
 
-Function TTipOfTheDayForm.NextTip: String;
-Begin
-    If TipsCounter < sl.Count - 1 Then
+function TTipOfTheDayForm.NextTip: string;
+begin
+    if TipsCounter < sl.Count - 1 then
         Inc(TipsCounter)
-    Else
+    else
         TipsCounter := 0;
     Result := ConvertMacros(sl[TipsCounter]);
-End;
+end;
 
-Function TTipOfTheDayForm.PreviousTip: String;
-Begin
-    If TipsCounter > 0 Then
+function TTipOfTheDayForm.PreviousTip: string;
+begin
+    if TipsCounter > 0 then
         Dec(TipsCounter)
-    Else
+    else
         TipsCounter := sl.Count - 1;
     Result := ConvertMacros(sl[TipsCounter]);
-End;
+end;
 
-Procedure TTipOfTheDayForm.btnNextClick(Sender: TObject);
-Begin
+procedure TTipOfTheDayForm.btnNextClick(Sender: TObject);
+begin
     lblTip.Caption := NextTip;
-End;
+end;
 
-Procedure TTipOfTheDayForm.btnPrevClick(Sender: TObject);
-Begin
+procedure TTipOfTheDayForm.btnPrevClick(Sender: TObject);
+begin
     lblTip.Caption := PreviousTip;
-End;
+end;
 
-Procedure TTipOfTheDayForm.LoadFromFile(Filename: String);
-Var
-    I: Integer;
-Begin
-    Try
+procedure TTipOfTheDayForm.LoadFromFile(Filename: string);
+var
+    I: integer;
+begin
+    try
         sl.LoadFromFile(Filename);
         I := 0;
-        While I < sl.Count Do
-        Begin
-            If Trim(sl[I]) = '' Then
+        while I < sl.Count do
+        begin
+            if Trim(sl[I]) = '' then
                 sl.Delete(I) // delete empty lines
-            Else
-            If Trim(sl[I])[1] = '#' Then
+            else
+            if Trim(sl[I])[1] = '#' then
                 sl.Delete(I) // delete lines starting with '#' (comments)
-            Else
+            else
                 Inc(I);
-        End;
-    Finally
-    End;
-End;
+        end;
+    finally
+    end;
+end;
 
-Procedure TTipOfTheDayForm.SetTipsCounter(Const Value: Integer);
-Begin
-    If Value <> TipsCounter Then
+procedure TTipOfTheDayForm.SetTipsCounter(const Value: integer);
+begin
+    if Value <> TipsCounter then
         TipsCounter := Value;
-End;
+end;
 
-Procedure TTipOfTheDayForm.FormClose(Sender: TObject;
-    Var Action: TCloseAction);
-Begin
+procedure TTipOfTheDayForm.FormClose(Sender: TObject;
+    var Action: TCloseAction);
+begin
     Action := caFree;
-End;
+end;
 
-Procedure TTipOfTheDayForm.lblUrlClick(Sender: TObject);
-Begin
-    ShellExecute(0, 'open', Pchar(HiddenUrl), '', '', SW_SHOWNORMAL);
-End;
+procedure TTipOfTheDayForm.lblUrlClick(Sender: TObject);
+begin
+    ShellExecute(0, 'open', pchar(HiddenUrl), '', '', SW_SHOWNORMAL);
+end;
 
-Procedure TTipOfTheDayForm.LoadText;
-Begin
-    DesktopFont := True;
+procedure TTipOfTheDayForm.LoadText;
+begin
+    DesktopFont := TRUE;
     XPMenu.Active := devData.XPTheme;
     Caption := Lang[ID_TIPS_CAPTION];
     lblTitle.Caption := Lang[ID_TIPS_DIDYOUKNOW];
@@ -247,19 +247,19 @@ Begin
     btnNext.Caption := Lang[ID_TIPS_NEXTTIP];
     btnPrev.Caption := Lang[ID_TIPS_PREVIOUSTIP];
     btnClose.Caption := Lang[ID_BTN_CLOSE];
-End;
+end;
 
-Procedure TTipOfTheDayForm.CreateParams(Var Params: TCreateParams);
-Begin
-    Inherited;
-    If (Parent <> Nil) Or (ParentWindow <> 0) Then
+procedure TTipOfTheDayForm.CreateParams(var Params: TCreateParams);
+begin
+    inherited;
+    if (Parent <> NIL) or (ParentWindow <> 0) then
         Exit;  // must not mess with wndparent if form is embedded
 
-    If Assigned(Owner) And (Owner Is TWincontrol) Then
+    if Assigned(Owner) and (Owner is TWincontrol) then
         Params.WndParent := TWinControl(Owner).handle
-    Else
-    If Assigned(Screen.Activeform) Then
+    else
+    if Assigned(Screen.Activeform) then
         Params.WndParent := Screen.Activeform.Handle;
-End;
+end;
 
-End.
+end.

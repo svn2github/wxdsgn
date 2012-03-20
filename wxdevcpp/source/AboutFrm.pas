@@ -19,11 +19,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-Unit AboutFrm;
+unit AboutFrm;
 
-Interface
+interface
 
-Uses
+uses
     Version,
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
@@ -34,8 +34,8 @@ Uses
   QStdCtrls, QButtons, QExtCtrls, utila;
 {$ENDIF}
 
-Type
-    TAboutForm = Class(TForm)
+type
+    TAboutForm = class(TForm)
         btnOk: TBitBtn;
         btnUpdateCheck: TBitBtn;
         banner: TImage;
@@ -69,17 +69,17 @@ Type
         Book: TLabel;
         Label1: TLabel;
         BuildNumber: TLabel;
-        Procedure LabelClick(Sender: TObject);
-        Procedure FormCreate(Sender: TObject);
-        Procedure btnUpdateCheckClick(Sender: TObject);
-    Private
-        Procedure LoadText;
-    Protected
-        Procedure CreateParams(Var Params: TCreateParams); Override;
-    End;
+        procedure LabelClick(Sender: TObject);
+        procedure FormCreate(Sender: TObject);
+        procedure btnUpdateCheckClick(Sender: TObject);
+    private
+        procedure LoadText;
+    protected
+        procedure CreateParams(var Params: TCreateParams); override;
+    end;
 
-Implementation
-Uses
+implementation
+uses
 {$IFDEF WIN32}
     ShellAPI, devcfg, MultiLangSupport, main;
 {$ENDIF}
@@ -91,9 +91,9 @@ Uses
 
 
 
-Procedure TAboutForm.LoadText;
-Begin
-    DesktopFont := True;
+procedure TAboutForm.LoadText;
+begin
+    DesktopFont := TRUE;
     XPMenu.Active := devData.XPTheme;
     Caption := 'About wxDev-C++';
     License.Caption := Lang[ID_AB_LICENSE];
@@ -102,20 +102,20 @@ Begin
     btnUpdateCheck.Caption := Lang[ID_AB_UPDATE];
     Authors.Caption := Lang[ID_BTN_AUTHOR];
     BuildNumber.Caption := GetAppVersion;
-End;
+end;
 
-Procedure TAboutForm.LabelClick(Sender: TObject);
-Var s: String;
-Begin
-    If pos('@', (Sender As TLabel).Caption) <> 0 Then
-        s := 'mailto:' + (Sender As TLabel).Caption
-    Else
-        s := (Sender As TLabel).Caption;
-    ShellExecute(GetDesktopWindow(), 'open', Pchar(s), Nil, Nil, SW_SHOWNORMAL);
-End;
+procedure TAboutForm.LabelClick(Sender: TObject);
+var s: string;
+begin
+    if pos('@', (Sender as TLabel).Caption) <> 0 then
+        s := 'mailto:' + (Sender as TLabel).Caption
+    else
+        s := (Sender as TLabel).Caption;
+    ShellExecute(GetDesktopWindow(), 'open', pchar(s), NIL, NIL, SW_SHOWNORMAL);
+end;
 
-Procedure TAboutForm.FormCreate(Sender: TObject);
-Begin
+procedure TAboutForm.FormCreate(Sender: TObject);
+begin
     LoadText;
     wxDevCopyright.Font.Style := [fsBold];
     CopyrightLabel.Font.Style := [fsBold];
@@ -127,24 +127,24 @@ Begin
     wxWebsite.Font.Color := clBlue;
     Book.Font.Style := [fsUnderline];
     Book.Font.Color := clBlue;
-End;
+end;
 
-Procedure TAboutForm.btnUpdateCheckClick(Sender: TObject);
-Begin
+procedure TAboutForm.btnUpdateCheckClick(Sender: TObject);
+begin
     MainForm.actUpdateCheckExecute(sender);
-End;
+end;
 
-Procedure TAboutForm.CreateParams(Var Params: TCreateParams);
-Begin
-    Inherited;
-    If (Parent <> Nil) Or (ParentWindow <> 0) Then
+procedure TAboutForm.CreateParams(var Params: TCreateParams);
+begin
+    inherited;
+    if (Parent <> NIL) or (ParentWindow <> 0) then
         Exit;  // must not mess with wndparent if form is embedded
 
-    If Assigned(Owner) And (Owner Is TWincontrol) Then
+    if Assigned(Owner) and (Owner is TWincontrol) then
         Params.WndParent := TWinControl(Owner).handle
-    Else
-    If Assigned(Screen.Activeform) Then
+    else
+    if Assigned(Screen.Activeform) then
         Params.WndParent := Screen.Activeform.Handle;
-End;
+end;
 
-End.
+end.

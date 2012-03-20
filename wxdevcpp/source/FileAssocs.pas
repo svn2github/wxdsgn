@@ -17,11 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-Unit FileAssocs;
+unit FileAssocs;
 
-Interface
+interface
 
-Uses
+uses
 {$IFDEF WIN32}
     Windows, SysUtils, Classes, Forms, Registry, ShlObj, uVista;
 {$ENDIF}
@@ -29,17 +29,17 @@ Uses
   SysUtils, Classes, QForms;
 {$ENDIF}
 
-Procedure CheckAssociations;
-Procedure Associate(Index: Integer);
-Procedure UnAssociate(Index: Integer);
-Function IsAssociated(Index: Integer): Boolean;
-Function CheckFiletype(Const extension, filetype, description,
-    verb, serverapp: String): Boolean;
+procedure CheckAssociations;
+procedure Associate(Index: integer);
+procedure UnAssociate(Index: integer);
+function IsAssociated(Index: integer): boolean;
+function CheckFiletype(const extension, filetype, description,
+    verb, serverapp: string): boolean;
 
-Var
-    DDETopic: String;
+var
+    DDETopic: string;
 
-Const
+const
     // if you change anything here, update devcfg.pas, specifically devData...
     // and update MustAssociate(), Associate() and UnAssociate() below
     AssociationsCount = 7;
@@ -48,7 +48,7 @@ Const
     // field 3 is the icon number
     // field 4 is "" (empty) if you want DDE services for this extension
     // (if not empty, launches a new instance - nice for .dev files ;)
-    Associations: Array[0..6, 0..3] Of String = (
+    Associations: array[0..6, 0..3] of string = (
         ('c', 'C Source File', '4', ''),
         ('cpp', 'C++ Source File', '5', ''),
         ('h', 'C Header File', '6', ''),
@@ -57,34 +57,34 @@ Const
         ('rc', 'Resource Source File', '8', ''),
         ('template', 'Dev-C++ Template File', '1', ''));
 
-Implementation
+implementation
 
-Uses
+uses
     devcfg;
 
-Var
-    Associated: Array[0..AssociationsCount - 1] Of Boolean;
+var
+    Associated: array[0..AssociationsCount - 1] of boolean;
 
 // forward decls
-Procedure RegisterFiletype(
-    Const extension, filetype, description, verb, serverapp, IcoNum: String);
-    Forward;
-Procedure RegisterDDEServer(
-    Const filetype, verb, topic, servername, macro: String); Forward;
+procedure RegisterFiletype(
+    const extension, filetype, description, verb, serverapp, IcoNum: string);
+    forward;
+procedure RegisterDDEServer(
+    const filetype, verb, topic, servername, macro: string); forward;
 
-Procedure RefreshIcons;
-Begin
-    SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, Nil, Nil);
-End;
+procedure RefreshIcons;
+begin
+    SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, NIL, NIL);
+end;
 
-Function IsAssociated(Index: Integer): Boolean;
-Begin
+function IsAssociated(Index: integer): boolean;
+begin
     Result := Associated[Index];
-End;
+end;
 
-Function MustAssociate(Index: Integer): Boolean;
-Begin
-    Case Index Of
+function MustAssociate(Index: integer): boolean;
+begin
+    case Index of
         0:
             Result := devData.AssociateC;
         1:
@@ -99,56 +99,56 @@ Begin
             Result := devData.AssociateRc;
         6:
             Result := devData.AssociateTemplate;
-    Else
-        Result := False;
-    End;
-End;
+    else
+        Result := FALSE;
+    end;
+end;
 
-Procedure UnAssociate(Index: Integer);
-Var
+procedure UnAssociate(Index: integer);
+var
     reg: TRegistry;
-Begin
+begin
 
 // This code can't be done on Windows with UAC since
 //   need admin privledges to write to the registry.
 //  I've commented it out. GAR 11 FEB 2012
 
-    If (isElevatedUAC) Then
-    Begin
+    if (isElevatedUAC) then
+    begin
         reg := TRegistry.Create;
-        Try
+        try
             reg.Rootkey := HKEY_CLASSES_ROOT;
-            If reg.KeyExists('devcpp.' + Associations[Index, 0]) Then
-            Begin
+            if reg.KeyExists('devcpp.' + Associations[Index, 0]) then
+            begin
                 reg.DeleteKey('.' + Associations[Index, 0]);
                 reg.DeleteKey('devcpp.' + Associations[Index, 0]);
-            End;
-        Finally
+            end;
+        finally
             reg.free;
-        End;
-        Associated[Index] := False;
-        Case Index Of
+        end;
+        Associated[Index] := FALSE;
+        case Index of
             0:
-                devData.AssociateC := False;
+                devData.AssociateC := FALSE;
             1:
-                devData.AssociateCpp := False;
+                devData.AssociateCpp := FALSE;
             2:
-                devData.AssociateH := False;
+                devData.AssociateH := FALSE;
             3:
-                devData.AssociateHpp := False;
+                devData.AssociateHpp := FALSE;
             4:
-                devData.AssociateDev := False;
+                devData.AssociateDev := FALSE;
             5:
-                devData.AssociateRc := False;
+                devData.AssociateRc := FALSE;
             6:
-                devData.AssociateTemplate := False;
-        End;
+                devData.AssociateTemplate := FALSE;
+        end;
         RefreshIcons;
-    End;
-End;
+    end;
+end;
 
-Procedure Associate(Index: Integer);
-Begin
+procedure Associate(Index: integer);
+begin
     RegisterFiletype(
         '.' + Associations[Index, 0],
         'devcpp.' + Associations[Index, 0],
@@ -156,196 +156,196 @@ Begin
         'open',
         Application.Exename + ' "%1"',
         Associations[Index, 2]);
-    If Associations[Index, 3] = '' Then
+    if Associations[Index, 3] = '' then
         RegisterDDEServer(
             'devcpp.' + Associations[Index, 0],
             'open',
             DDETopic,
             Uppercase(ChangeFileExt(ExtractFilename(Application.Exename), EmptyStr)),
             '[Open("%1")]');
-    Associated[Index] := True;
-    Case Index Of
+    Associated[Index] := TRUE;
+    case Index of
         0:
-            devData.AssociateC := True;
+            devData.AssociateC := TRUE;
         1:
-            devData.AssociateCpp := True;
+            devData.AssociateCpp := TRUE;
         2:
-            devData.AssociateH := True;
+            devData.AssociateH := TRUE;
         3:
-            devData.AssociateHpp := True;
+            devData.AssociateHpp := TRUE;
         4:
-            devData.AssociateDev := True;
+            devData.AssociateDev := TRUE;
         5:
-            devData.AssociateRc := True;
+            devData.AssociateRc := TRUE;
         6:
-            devData.AssociateTemplate := True;
-    End;
+            devData.AssociateTemplate := TRUE;
+    end;
     RefreshIcons;
-End;
+end;
 
-Function CheckFiletype(Const extension, filetype, description,
-    verb, serverapp: String): Boolean;
-Var
+function CheckFiletype(const extension, filetype, description,
+    verb, serverapp: string): boolean;
+var
     reg: TRegistry;
-    keystring: String;
-    regdfile: String;
-Begin
+    keystring: string;
+    regdfile: string;
+begin
     reg := TRegistry.Create(KEY_READ);
-    Try
-        Result := False;
+    try
+        Result := FALSE;
         reg.Rootkey := HKEY_CLASSES_ROOT;
-        If Not reg.OpenKey(extension, False) Then
+        if not reg.OpenKey(extension, FALSE) then
             Exit;
         reg.CloseKey;
-        If Not reg.OpenKey(filetype, False) Then
+        if not reg.OpenKey(filetype, FALSE) then
             Exit;
         reg.closekey;
         keystring := Format('%s\shell\%s\command', [filetype, verb]);
-        If Not reg.OpenKey(keystring, False) Then
+        if not reg.OpenKey(keystring, FALSE) then
             Exit;
         regdfile := reg.ReadString('');
         reg.CloseKey;
-        If CompareText(regdfile, serverapp) <> 0 Then
+        if CompareText(regdfile, serverapp) <> 0 then
             Exit;
-        Result := True;
-    Finally
+        Result := TRUE;
+    finally
         reg.free;
-    End;
-End;
+    end;
+end;
 
-Procedure RegisterFiletype(Const extension, filetype, description,
-    verb, serverapp, IcoNum: String);
-Var
+procedure RegisterFiletype(const extension, filetype, description,
+    verb, serverapp, IcoNum: string);
+var
     reg: TRegistry;
-    keystring: String;
-Begin
+    keystring: string;
+begin
 
 // This code can't be done on Windows with UAC since
 //   need admin privledges to write to the registry.
 //  I've commented it out. GAR 11 FEB 2012
 
-    If (isElevatedUAC) Then
-    Begin
+    if (isElevatedUAC) then
+    begin
 
         reg := TRegistry.Create;
-        Try
+        try
             reg.Rootkey := HKEY_CLASSES_ROOT;
-            If Not reg.OpenKey(extension, True) Then
+            if not reg.OpenKey(extension, TRUE) then
                 Exit;
             reg.WriteString('', filetype);
             reg.CloseKey;
-            If Not reg.OpenKey(filetype, True) Then
+            if not reg.OpenKey(filetype, TRUE) then
                 Exit;
             reg.WriteString('', description);
             reg.closekey;
             keystring := Format('%s\shell\%s\command', [filetype, verb]);
-            If Not reg.OpenKey(keystring, True) Then
+            if not reg.OpenKey(keystring, TRUE) then
                 Exit;
             reg.WriteString('', serverapp);
             reg.CloseKey;
-            If Not reg.OpenKey(filetype + '\DefaultIcon', True) Then
+            if not reg.OpenKey(filetype + '\DefaultIcon', TRUE) then
                 Exit;
             reg.WriteString('', Application.ExeName + ',' + IcoNum);
             reg.CloseKey;
             RefreshIcons;
-        Finally
+        finally
             reg.free;
-        End;
+        end;
 
-    End;
+    end;
 
-End;
+end;
 
-Function CheckDDEServer(Const filetype, verb, topic, servername:
-    String): Boolean;
-Var
+function CheckDDEServer(const filetype, verb, topic, servername:
+    string): boolean;
+var
     reg: TRegistry;
-    keystring: String;
-Begin
+    keystring: string;
+begin
     reg := TRegistry.Create(KEY_READ);
-    Try
-        Result := False;
+    try
+        Result := FALSE;
         reg.Rootkey := HKEY_CLASSES_ROOT;
         keystring := Format('%s\shell\%s\ddeexec', [filetype, verb]);
-        If Not reg.OpenKey(keystring, False) Then
+        if not reg.OpenKey(keystring, FALSE) then
             Exit;
         reg.CloseKey;
-        If Not reg.OpenKey(keystring + '\Application', False) Then
+        if not reg.OpenKey(keystring + '\Application', FALSE) then
             Exit;
         reg.CloseKey;
-        If Not reg.OpenKey(keystring + '\topic', False) Then
+        if not reg.OpenKey(keystring + '\topic', FALSE) then
             Exit;
         reg.CloseKey;
-        Result := True;
-    Finally
+        Result := TRUE;
+    finally
         reg.free;
-    End;
-End;
+    end;
+end;
 
-Procedure RegisterDDEServer(Const filetype, verb, topic, servername, macro:
-    String);
-Var
+procedure RegisterDDEServer(const filetype, verb, topic, servername, macro:
+    string);
+var
     reg: TRegistry;
-    keystring: String;
-Begin
+    keystring: string;
+begin
 // This code can't be done on Windows with UAC since
 //   need admin privledges to write to the registry.
 //  I've commented it out. GAR 11 FEB 2012
 
-    If (isElevatedUAC) Then
-    Begin
+    if (isElevatedUAC) then
+    begin
         reg := TRegistry.Create;
-        Try
+        try
             reg.Rootkey := HKEY_CLASSES_ROOT;
             keystring := Format('%s\shell\%s\ddeexec', [filetype, verb]);
-            If Not reg.OpenKey(keystring, True) Then
+            if not reg.OpenKey(keystring, TRUE) then
                 Exit;
             reg.WriteString('', macro);
             reg.CloseKey;
-            If Not reg.OpenKey(keystring + '\Application', True) Then
+            if not reg.OpenKey(keystring + '\Application', TRUE) then
                 Exit;
             reg.WriteString('', servername);
             reg.CloseKey;
-            If Not reg.OpenKey(keystring + '\topic', True) Then
+            if not reg.OpenKey(keystring + '\topic', TRUE) then
                 Exit;
             reg.WriteString('', topic);
             reg.CloseKey;
-        Finally
+        finally
             reg.free;
-        End;
+        end;
 
-    End;
+    end;
 
-End;
+end;
 
-Procedure CheckAssociations;
-Var
-    I: Integer;
-    DdeOK: Array[0..AssociationsCount - 1] Of Boolean;
-Begin
-    For I := 0 To AssociationsCount - 1 Do
+procedure CheckAssociations;
+var
+    I: integer;
+    DdeOK: array[0..AssociationsCount - 1] of boolean;
+begin
+    for I := 0 to AssociationsCount - 1 do
         Associated[I] := CheckFiletype('.' + Associations[I, 0],
             'devcpp.' + Associations[I, 0],
             Associations[I, 1],
             'open',
             Application.Exename + ' "%1"');
 
-    For I := 0 To AssociationsCount - 1 Do
-        If (Not Associated[I]) And MustAssociate(I) Then
-        Begin
+    for I := 0 to AssociationsCount - 1 do
+        if (not Associated[I]) and MustAssociate(I) then
+        begin
             Associate(I);
-        End;
+        end;
 
-    For I := 0 To AssociationsCount - 1 Do
-        DdeOK[I] := (Associations[I, 3] <> '') Or
+    for I := 0 to AssociationsCount - 1 do
+        DdeOK[I] := (Associations[I, 3] <> '') or
             CheckDDEServer('devcpp.' + Associations[I, 0],
             'open',
             DDETopic,
             Uppercase(ChangeFileExt(ExtractFilename(Application.Exename),
             EmptyStr)));
 
-    For I := 0 To AssociationsCount - 1 Do
-        If (Not DdeOK[I]) And MustAssociate(I) Then
+    for I := 0 to AssociationsCount - 1 do
+        if (not DdeOK[I]) and MustAssociate(I) then
             RegisterDDEServer(
                 'devcpp.' + Associations[I, 0],
                 'open',
@@ -353,6 +353,6 @@ Begin
                 Uppercase(ChangeFileExt(ExtractFilename(Application.Exename),
                 EmptyStr)),
                 '[Open("%1")]');
-End;
+end;
 
-End.
+end.

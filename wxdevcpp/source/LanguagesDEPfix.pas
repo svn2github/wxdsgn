@@ -1,4 +1,4 @@
-Unit LanguagesDEPfix;
+unit LanguagesDEPfix;
 
 { Patch for Data Execution Prevention (DEP) problems with SysUtils.TLanguages. }
 { In the Delphi RTL the TLanguages constructor dynamically builds and executes }
@@ -18,141 +18,141 @@ Unit LanguagesDEPfix;
 { Disclaimer: use at your own risk!                                            }
 
 {$WARN SYMBOL_PLATFORM OFF}
-Interface
+interface
 
-Uses
+uses
     Windows, Classes;
 
-Implementation
+implementation
 
-Uses
+uses
     SysUtils, SysConst;
 
-Type
+type
     PJumpRec = ^TJumpRec;
-    TJumpRec = Packed Record
-        OpCode: Byte;
+    TJumpRec = packed record
+        OpCode: byte;
         Address: DWord;
-    End;
+    end;
 
     PLongJumpRec = ^TLongJumpRec;
-    TLongJumpRec = Packed Record
-        OpCode: Word;
+    TLongJumpRec = packed record
+        OpCode: word;
         Address: DWord;
-    End;
+    end;
 
     // hack for access to private members of TLanguage
-    THackLanguages = Class
-    Private
-        FSysLangs: Array Of TLangRec;
-    End;
+    THackLanguages = class
+    private
+        FSysLangs: array of TLangRec;
+    end;
 
     // replacement for TLanguages.Create
-    TLanguagesDEPfix = Class(TLanguages)
-    Private
-        Function LocalesCallback(LocaleID: Pchar): Integer; Stdcall;
-    Public
-        Constructor Create;
-    End;
+    TLanguagesDEPfix = class(TLanguages)
+    private
+        function LocalesCallback(LocaleID: pchar): integer; stdcall;
+    public
+        constructor Create;
+    end;
 
-Var
+var
     FTempLanguages: TLanguagesDEPfix;
 
-Function EnumLocalesCallback(LocaleID: Pchar): Integer; Stdcall;
-Begin
+function EnumLocalesCallback(LocaleID: pchar): integer; stdcall;
+begin
     Result := FTempLanguages.LocalesCallback(LocaleID);
-End;
+end;
 
-Function GetLocaleDataW(ID: LCID; Flag: DWORD): String;
-Var
-    Buffer: Array[0..1023] Of Widechar;
-Begin
+function GetLocaleDataW(ID: LCID; Flag: DWORD): string;
+var
+    Buffer: array[0..1023] of widechar;
+begin
     Buffer[0] := #0;
-    GetLocaleInfoW(ID, Flag, Buffer, SizeOf(Buffer) Div 2);
+    GetLocaleInfoW(ID, Flag, Buffer, SizeOf(Buffer) div 2);
     Result := Buffer;
-End;
+end;
 
-Function GetLocaleDataA(ID: LCID; Flag: DWORD): String;
-Var
-    Buffer: Array[0..1023] Of Char;
-Begin
+function GetLocaleDataA(ID: LCID; Flag: DWORD): string;
+var
+    Buffer: array[0..1023] of char;
+begin
     Buffer[0] := #0;
     SetString(Result, Buffer, GetLocaleInfoA(ID, Flag, Buffer,
         SizeOf(Buffer)) - 1);
-End;
+end;
 
 { TLanguagesDEPfix }
 
-Function TLanguagesDEPfix.LocalesCallback(LocaleID: Pchar): Integer; Stdcall;
-Type
+function TLanguagesDEPfix.LocalesCallback(LocaleID: pchar): integer; stdcall;
+type
     PSysLangs = ^TSysLangs;
-    TSysLangs = Array Of TLangRec;
-Var
+    TSysLangs = array of TLangRec;
+var
     AID: LCID;
-    ShortLangName: String;
-    GetLocaleDataProc: Function(ID: LCID; Flag: DWORD): String;
+    ShortLangName: string;
+    GetLocaleDataProc: function(ID: LCID; Flag: DWORD): string;
     PSLangs: PSysLangs;
-Begin
-    If Win32Platform = VER_PLATFORM_WIN32_NT Then
+begin
+    if Win32Platform = VER_PLATFORM_WIN32_NT then
         GetLocaleDataProc := @GetLocaleDataW
-    Else
+    else
         GetLocaleDataProc := @GetLocaleDataA;
     AID := StrToInt('$' + Copy(LocaleID, 5, 4));
     ShortLangName := GetLocaleDataProc(AID, LOCALE_SABBREVLANGNAME);
-    If ShortLangName <> '' Then
-    Begin
+    if ShortLangName <> '' then
+    begin
         PSLangs := @THackLanguages(Self).FSysLangs;
         SetLength(PSLangs^, Length(PSLangs^) + 1);
-        With PSLangs^[High(PSLangs^)] Do
-        Begin
+        with PSLangs^[High(PSLangs^)] do
+        begin
             FName := GetLocaleDataProc(AID, LOCALE_SLANGUAGE);
             FLCID := AID;
             FExt := ShortLangName;
-        End;
-    End;
+        end;
+    end;
     Result := 1;
-End;
+end;
 
-Constructor TLanguagesDEPfix.Create;
-Begin
+constructor TLanguagesDEPfix.Create;
+begin
     FTempLanguages := Self;
     EnumSystemLocales(@EnumLocalesCallback, LCID_SUPPORTED);
-End;
+end;
 
-Var
+var
     FLanguages: TLanguagesDEPfix;
 
-Function Languages: TLanguages;
-Begin
-    If FLanguages = Nil Then
+function Languages: TLanguages;
+begin
+    if FLanguages = NIL then
         FLanguages := TLanguagesDEPfix.Create;
     Result := FLanguages;
-End;
+end;
 
-Procedure ApplyLanguagesDEPfix;
-Var
+procedure ApplyLanguagesDEPfix;
+var
     JumpRec: PJumpRec;
     LongJumpRec: PLongJumpRec;
     OldProtect: DWord;
-    IsPackages: Boolean;
-Begin
+    IsPackages: boolean;
+begin
     JumpRec := PJumpRec(@SysUtils.Languages);
     LongJumpRec := Pointer(JumpRec);
 
     IsPackages := LongJumpRec.OpCode = $25FF; // runtime package?
-    If IsPackages Then
+    if IsPackages then
         JumpRec := Pointer(PDWord(LongJumpRec.Address)^);
 
-    If Not VirtualProtect(JumpRec, SizeOf(JumpRec^),
-        PAGE_EXECUTE_WRITECOPY, @OldProtect) Then
+    if not VirtualProtect(JumpRec, SizeOf(JumpRec^),
+        PAGE_EXECUTE_WRITECOPY, @OldProtect) then
         // If we cannot change the access right the following line will crash. Exit here anyway.
         Exit;
     JumpRec.OpCode := $E9; // 32bit jump near
-    JumpRec.Address := Integer(@Languages) - Integer(JumpRec) - 5;
+    JumpRec.Address := integer(@Languages) - integer(JumpRec) - 5;
     VirtualProtect(JumpRec, SizeOf(JumpRec^), OldProtect, @OldProtect);
-End;
+end;
 
-Initialization
+initialization
     ApplyLanguagesDEPfix;
 
-End.
+end.

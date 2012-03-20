@@ -1,8 +1,8 @@
-Unit wxdesigner;
+unit wxdesigner;
 
-Interface
+interface
 
-Uses
+uses
     Classes, iniFiles, ActnList, Menus, ExtCtrls, ComCtrls, Controls, Types, Messages,
     StdCtrls, Forms, SysUtils, Windows, Dialogs, Graphics, Spin,
     JclStrings, JvExControls, JvComponent, TypInfo, JclRTTI, JvStringHolder,
@@ -18,20 +18,20 @@ Uses
 
 {$I ..\..\LangIDs.inc}
 
-Type
-    TdevWxOptions = Record
-        majorVersion: Shortint;
-        minorVersion: Shortint;
-        releaseVersion: Shortint;
+type
+    TdevWxOptions = record
+        majorVersion: shortint;
+        minorVersion: shortint;
+        releaseVersion: shortint;
 
-        unicodeSupport: Boolean;
-        monolithicLibrary: Boolean;
-        debugLibrary: Boolean;
-        staticLibrary: Boolean;
-    End;
+        unicodeSupport: boolean;
+        monolithicLibrary: boolean;
+        debugLibrary: boolean;
+        staticLibrary: boolean;
+    end;
 
-Type
-    TWXDsgn = Class(TComponent, IPlug_In_BPL)
+type
+    TWXDsgn = class(TComponent, IPlug_In_BPL)
         actNewwxDialog: TAction;
         NewWxDialogItem: TMenuItem;
         ShowPropertyInspItem: TMenuItem;
@@ -57,65 +57,65 @@ Type
         actWxPropertyInspectorPaste: TAction;
         editors: TObjectHash;
 
-        Procedure actDesignerCopyExecute(Sender: TObject);
-        Procedure actDesignerCutExecute(Sender: TObject);
-        Procedure actWxPropertyInspectorCutExecute(Sender: TObject);
-        Procedure actWxPropertyInspectorCopyExecute(Sender: TObject);
-        Procedure actWxPropertyInspectorPasteExecute(Sender: TObject);
-        Procedure actWxPropertyInspectorDeleteExecute(Sender: TObject);
-        Procedure actDesignerPasteExecute(Sender: TObject);
-        Procedure actDesignerDeleteExecute(Sender: TObject);
-        Procedure WxPropertyInspectorContextPopup(Sender: TObject; MousePos: TPoint; Var Handled: Boolean);
-        Procedure ELDesigner1ContextPopup(Sender: TObject; MousePos: TPoint; Var Handled: Boolean);
-        Procedure ELDesigner1ChangeSelection(Sender: TObject);
-        Procedure ELDesigner1ControlDeleted(Sender: TObject; AControl: TControl);
-        Procedure ELDesigner1ControlHint(Sender: TObject; AControl: TControl; Var AHint: String);
-        Procedure ELDesigner1ControlInserted(Sender: TObject; AControl: TControl);
-        Procedure ELDesigner1ControlInserting(Sender: TObject; Var AParent: TWinControl; Var AControlClass: TControlClass);
-        Procedure ELDesigner1ControlDoubleClick(Sender: TObject);
-        Procedure ELDesigner1KeyDown(Sender: TObject; Var Key: Word; Shift: TShiftState);
-        Procedure ELDesigner1Modified(Sender: TObject);
-        Procedure JvInspPropertiesAfterItemCreate(Sender: TObject; Item: TJvCustomInspectorItem);
-        Procedure JvInspPropertiesDataValueChanged(Sender: TObject; Data: TJvCustomInspectorData);
-        Procedure JvInspEventsAfterItemCreate(Sender: TObject; Item: TJvCustomInspectorItem);
-        Procedure JvInspEventsDataValueChanged(Sender: TObject; Data: TJvCustomInspectorData);
-        Procedure JvInspEventsMouseMove(Sender: TObject; Shift: TShiftState; X: Integer; Y: Integer);
-        Procedure JvInspEventsMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer);
-        Procedure JvInspEventsKeyDown(Sender: TObject; Var Key: Word; Shift: TShiftState);
-        Procedure JvInspEventsItemValueChanged(Sender: TObject; Item: TJvCustomInspectorItem);
-        Procedure cbxControlsxChange(Sender: TObject);
-        Procedure JvInspPropertiesBeforeSelection(Sender: TObject; NewItem: TJvCustomInspectorItem; Var Allow: Boolean);
-        Procedure JvInspPropertiesItemValueChanged(Sender: TObject; Item: TJvCustomInspectorItem);
-        Procedure ViewControlIDsClick(Sender: TObject);
-        Procedure AlignToGridClick(Sender: TObject);
-        Procedure AlignToLeftClick(Sender: TObject);
-        Procedure AlignToRightClick(Sender: TObject);
-        Procedure AlignToMiddleVerticalClick(Sender: TObject);
-        Procedure AlignToMiddleHorizontalClick(Sender: TObject);
-        Procedure AlignToTopClick(Sender: TObject);
-        Procedure AlignToBottomClick(Sender: TObject);
-        Procedure DesignerOptionsClick(Sender: TObject);
-        Procedure ChangeCreationOrder1Click(Sender: TObject);
-        Procedure SelectParentClick(Sender: TObject);
-        Procedure LockControlClick(Sender: TObject);
-        Procedure OnPropertyItemSelected(Sender: TObject);
-        Function IsFromScrollBarShowing: Boolean;
-        Procedure actNewWxFrameExecute(Sender: TObject);
-        Procedure actNewwxDialogExecute(Sender: TObject);
-        Procedure UpdateXRC(editorName: String);
-        Procedure actShowPropertyInspItemExecute(Sender: TObject);
-        Procedure actShowComponentPaletteItemExecute(Sender: TObject);
+        procedure actDesignerCopyExecute(Sender: TObject);
+        procedure actDesignerCutExecute(Sender: TObject);
+        procedure actWxPropertyInspectorCutExecute(Sender: TObject);
+        procedure actWxPropertyInspectorCopyExecute(Sender: TObject);
+        procedure actWxPropertyInspectorPasteExecute(Sender: TObject);
+        procedure actWxPropertyInspectorDeleteExecute(Sender: TObject);
+        procedure actDesignerPasteExecute(Sender: TObject);
+        procedure actDesignerDeleteExecute(Sender: TObject);
+        procedure WxPropertyInspectorContextPopup(Sender: TObject; MousePos: TPoint; var Handled: boolean);
+        procedure ELDesigner1ContextPopup(Sender: TObject; MousePos: TPoint; var Handled: boolean);
+        procedure ELDesigner1ChangeSelection(Sender: TObject);
+        procedure ELDesigner1ControlDeleted(Sender: TObject; AControl: TControl);
+        procedure ELDesigner1ControlHint(Sender: TObject; AControl: TControl; var AHint: string);
+        procedure ELDesigner1ControlInserted(Sender: TObject; AControl: TControl);
+        procedure ELDesigner1ControlInserting(Sender: TObject; var AParent: TWinControl; var AControlClass: TControlClass);
+        procedure ELDesigner1ControlDoubleClick(Sender: TObject);
+        procedure ELDesigner1KeyDown(Sender: TObject; var Key: word; Shift: TShiftState);
+        procedure ELDesigner1Modified(Sender: TObject);
+        procedure JvInspPropertiesAfterItemCreate(Sender: TObject; Item: TJvCustomInspectorItem);
+        procedure JvInspPropertiesDataValueChanged(Sender: TObject; Data: TJvCustomInspectorData);
+        procedure JvInspEventsAfterItemCreate(Sender: TObject; Item: TJvCustomInspectorItem);
+        procedure JvInspEventsDataValueChanged(Sender: TObject; Data: TJvCustomInspectorData);
+        procedure JvInspEventsMouseMove(Sender: TObject; Shift: TShiftState; X: integer; Y: integer);
+        procedure JvInspEventsMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X: integer; Y: integer);
+        procedure JvInspEventsKeyDown(Sender: TObject; var Key: word; Shift: TShiftState);
+        procedure JvInspEventsItemValueChanged(Sender: TObject; Item: TJvCustomInspectorItem);
+        procedure cbxControlsxChange(Sender: TObject);
+        procedure JvInspPropertiesBeforeSelection(Sender: TObject; NewItem: TJvCustomInspectorItem; var Allow: boolean);
+        procedure JvInspPropertiesItemValueChanged(Sender: TObject; Item: TJvCustomInspectorItem);
+        procedure ViewControlIDsClick(Sender: TObject);
+        procedure AlignToGridClick(Sender: TObject);
+        procedure AlignToLeftClick(Sender: TObject);
+        procedure AlignToRightClick(Sender: TObject);
+        procedure AlignToMiddleVerticalClick(Sender: TObject);
+        procedure AlignToMiddleHorizontalClick(Sender: TObject);
+        procedure AlignToTopClick(Sender: TObject);
+        procedure AlignToBottomClick(Sender: TObject);
+        procedure DesignerOptionsClick(Sender: TObject);
+        procedure ChangeCreationOrder1Click(Sender: TObject);
+        procedure SelectParentClick(Sender: TObject);
+        procedure LockControlClick(Sender: TObject);
+        procedure OnPropertyItemSelected(Sender: TObject);
+        function IsFromScrollBarShowing: boolean;
+        procedure actNewWxFrameExecute(Sender: TObject);
+        procedure actNewwxDialogExecute(Sender: TObject);
+        procedure UpdateXRC(editorName: string);
+        procedure actShowPropertyInspItemExecute(Sender: TObject);
+        procedure actShowComponentPaletteItemExecute(Sender: TObject);
 
-    Private
-        plugin_name: String;
+    private
+        plugin_name: string;
         palettePanel: TPanel;
-        cleanUpJvInspEvents: Boolean;
-    Public
+        cleanUpJvInspEvents: boolean;
+    public
         ownerForm: TForm;
-        editorNames: Array Of String;
-        Function GetCurrentFileName: String;
-        Function GetCurrentClassName: String;
-    Public
+        editorNames: array of string;
+        function GetCurrentFileName: string;
+        function GetCurrentClassName: string;
+    public
     // Wx Property Inspector Popup Menu
         WxPropertyInspectorPopup: TPopupMenu;
         WxPropertyInspectorMenuEdit: TMenuItem;
@@ -168,8 +168,8 @@ Type
 
         strStdwxIDList: TStringList;
 
-        XPTheme: Boolean; // Use XP theme
-        configFolder: String;
+        XPTheme: boolean; // Use XP theme
+        configFolder: string;
 
         tabwxWidgets: TTabSheet; // For compiler options pane
         grpwxVersion: TGroupBox;
@@ -188,148 +188,148 @@ Type
         dynamicLib: TRadioButton;
 
 
-    Private
+    private
         fwxOptions: TdevWxOptions;
-        pendingEditorSwitch: Boolean; // EAB: Let's see if we can make JvInspector to behave when switching to editor from Events field
-        Property wxOptions: TdevWxOptions Read fwxOptions Write fwxOptions;
-        Procedure CreateNewDialogOrFrameCode(dsgnType: TWxDesignerType; frm: TfrmCreateFormProp; insertProj: Integer);
-        Procedure NewWxProjectCode(dsgnType: TWxDesignerType);
-        Procedure ParseAndSaveTemplate(template, destination: String; frm: TfrmCreateFormProp);
-        Function CreateCreateFormDlg(dsgnType: TWxDesignerType; insertProj: Integer; projShow: Boolean; filenamebase: String = ''): TfrmCreateFormProp;
+        pendingEditorSwitch: boolean; // EAB: Let's see if we can make JvInspector to behave when switching to editor from Events field
+        property wxOptions: TdevWxOptions read fwxOptions write fwxOptions;
+        procedure CreateNewDialogOrFrameCode(dsgnType: TWxDesignerType; frm: TfrmCreateFormProp; insertProj: integer);
+        procedure NewWxProjectCode(dsgnType: TWxDesignerType);
+        procedure ParseAndSaveTemplate(template, destination: string; frm: TfrmCreateFormProp);
+        function CreateCreateFormDlg(dsgnType: TWxDesignerType; insertProj: integer; projShow: boolean; filenamebase: string = ''): TfrmCreateFormProp;
 
-        Function CreateFormFile(strFName, strCName, strFTitle: String; dlgSStyle: TWxDlgStyleSet; dsgnType: TWxDesignerType): Boolean;
-        Procedure GetIntialFormData(frm: TfrmCreateFormProp; Var strFName, strCName, strFTitle: String; Var dlgStyle: TWxDlgStyleSet; dsgnType: TWxDesignerType);
-        Function CreateSourceCodes(strCppFile, strHppFile: String; FCreateFormProp: TfrmCreateFormProp; Var cppCode, hppCode: String; dsgnType: TWxDesignerType): Boolean;
-        Function CreateAppSourceCodes(strCppFile, strHppFile, strAppCppFile, strAppHppFile: String; FCreateFormProp: TfrmCreateFormProp; Var cppCode, hppCode, appcppCode, apphppCode: String; dsgnType: TWxDesignerType): Boolean;
-        Procedure LoadText(force: Boolean);
+        function CreateFormFile(strFName, strCName, strFTitle: string; dlgSStyle: TWxDlgStyleSet; dsgnType: TWxDesignerType): boolean;
+        procedure GetIntialFormData(frm: TfrmCreateFormProp; var strFName, strCName, strFTitle: string; var dlgStyle: TWxDlgStyleSet; dsgnType: TWxDesignerType);
+        function CreateSourceCodes(strCppFile, strHppFile: string; FCreateFormProp: TfrmCreateFormProp; var cppCode, hppCode: string; dsgnType: TWxDesignerType): boolean;
+        function CreateAppSourceCodes(strCppFile, strHppFile, strAppCppFile, strAppHppFile: string; FCreateFormProp: TfrmCreateFormProp; var cppCode, hppCode, appcppCode, apphppCode: string; dsgnType: TWxDesignerType): boolean;
+        procedure LoadText(force: boolean);
 
-    Public
-        CacheCreated: Boolean;
+    public
+        CacheCreated: boolean;
         main: IPlug;
         parentHande: HWND;
     {Guru's Code}
 
         ComputerInfo1: TJvComputerInfoEx;
 
-        strGlobalCurrentFunction: String;
-        DisablePropertyBuilding: Boolean;
-        boolInspectorDataClear: Boolean;
-        intControlCount: Integer;
+        strGlobalCurrentFunction: string;
+        DisablePropertyBuilding: boolean;
+        boolInspectorDataClear: boolean;
+        intControlCount: integer;
         SelectedComponent: TComponent;
         PreviousComponent: TComponent;
-        PreviousStringValue: String;
-        PreviousComponentName: String;
-        FirstComponentBeingDeleted: String;
-        Procedure GenerateSource(sourceFileName: String; text: TSynEdit);
-        Procedure BuildProperties(Comp: TControl; boolForce: Boolean = False);
-        Procedure BuildComponentList(Designer: TfrmNewForm);
-        Function isCurrentFormFilesNeedToBeSaved: Boolean;
-        Function saveCurrentFormFiles: Boolean;
-        Function CreateFunctionInEditor(Var strFunctionName: String; strReturnType, strParameter: String; Var ErrorString: String; strClassName: String = ''): Boolean; Overload;
-        Function CreateFunctionInEditor(strClassName: String; SelComponent: TComponent; Var strFunctionName: String; strEventFullName: String; Var ErrorString: String): Boolean; Overload;
-        Function LocateFunctionInEditor(eventProperty: TJvCustomInspectorData; strClassName: String; SelComponent: TComponent; Var strFunctionName: String; strEventFullName: String): Boolean;
-        Procedure OnEventPopup(Item: TJvCustomInspectorItem; Value: TStrings);
-        Procedure OnStdWxIDListPopup(Item: TJvCustomInspectorItem; Value: TStrings);
-        Procedure UpdateDefaultFormContent;
-        Function GetCurrentDesignerForm: TfrmNewForm;
-        Function IsCurrentPageDesigner: Boolean;
-        Function IsDelphiPlugin: Boolean;
-        Function ReplaceClassNameInEditor(strLst: TStringList; text: TSynEdit; FromClassName, ToClassName: String): Boolean;
+        PreviousStringValue: string;
+        PreviousComponentName: string;
+        FirstComponentBeingDeleted: string;
+        procedure GenerateSource(sourceFileName: string; text: TSynEdit);
+        procedure BuildProperties(comp: TControl; boolForce: boolean = FALSE);
+        procedure BuildComponentList(Designer: TfrmNewForm);
+        function isCurrentFormFilesNeedToBeSaved: boolean;
+        function saveCurrentFormFiles: boolean;
+        function CreateFunctionInEditor(var strFunctionName: string; strReturnType, strParameter: string; var ErrorString: string; strClassName: string = ''): boolean; overload;
+        function CreateFunctionInEditor(strClassName: string; SelComponent: TComponent; var strFunctionName: string; strEventFullName: string; var ErrorString: string): boolean; overload;
+        function LocateFunctionInEditor(eventProperty: TJvCustomInspectorData; strClassName: string; SelComponent: TComponent; var strFunctionName: string; strEventFullName: string): boolean;
+        procedure OnEventPopup(Item: TJvCustomInspectorItem; Value: TStrings);
+        procedure OnStdWxIDListPopup(Item: TJvCustomInspectorItem; Value: TStrings);
+        procedure UpdateDefaultFormContent;
+        function GetCurrentDesignerForm: TfrmNewForm;
+        function IsCurrentPageDesigner: boolean;
+        function IsDelphiPlugin: boolean;
+        function ReplaceClassNameInEditor(strLst: TStringList; text: TSynEdit; FromClassName, ToClassName: string): boolean;
 
-        Function LocateFunction(strFunctionName: String): Boolean;
+        function LocateFunction(strFunctionName: string): boolean;
 
     // iplugin methods
-        Function SaveFileAndCloseEditor(EditorFilename: String): Boolean;
-        Procedure CutExecute;
-        Procedure CopyExecute;
-        Procedure PasteExecute;
-        Procedure InitEditor(strFileName: String);
-        Procedure Initialize(name: String; module: HModule; _parent: HWND; _controlBar: TControlBar; _owner: TForm; Config: String; toolbar_x: Integer; toolbar_y: Integer);
-        Procedure AssignPlugger(plug: IPlug);
-        Procedure DisableDesignerControls;
-        Procedure OpenFile(s: String);
-        Procedure OpenUnit(EditorFilename: String);
-        Function IsForm(s: String): Boolean;
-        Function GetFilters: TStringList;
-        Function GetSrcFilters: TStringList;
-        Function GetFilter(editorName: String): String;
-        Function Get_EXT(editorName: String): String;
-        Function Get_EXT_Index(editorName: String): Integer;
-        Procedure NewProject(s: String);
-        Procedure GenerateXPM(s: String; b: Boolean);
-        Procedure FormKeyDown(Sender: TObject; Var Key: Word; Shift: TShiftState);
-        Procedure SetDesignerActiveState(state: Boolean);
-        Procedure EnableDesignerControls;
-        Procedure SetBoolInspectorDataClear(b: Boolean);
-        Procedure SetDisablePropertyBuilding(b: Boolean);
-        Procedure AssignDesignerControl(editorName: String);
-        Function SaveFile(EditorFilename: String): Boolean;
-        Procedure ActivateDesigner(s: String);
-        Function GetLoginName: String;
-        Function GetLangString(LangID: Integer): String;
+        function SaveFileAndCloseEditor(EditorFilename: string): boolean;
+        procedure CutExecute;
+        procedure CopyExecute;
+        procedure PasteExecute;
+        procedure InitEditor(strFileName: string);
+        procedure Initialize(name: string; module: HModule; _parent: HWND; _controlBar: TControlBar; _owner: TForm; Config: string; toolbar_x: integer; toolbar_y: integer);
+        procedure AssignPlugger(plug: IPlug);
+        procedure DisableDesignerControls;
+        procedure OpenFile(s: string);
+        procedure OpenUnit(EditorFilename: string);
+        function IsForm(s: string): boolean;
+        function GetFilters: TStringList;
+        function GetSrcFilters: TStringList;
+        function GetFilter(editorName: string): string;
+        function Get_EXT(editorName: string): string;
+        function Get_EXT_Index(editorName: string): integer;
+        procedure NewProject(s: string);
+        procedure GenerateXPM(s: string; b: boolean);
+        procedure FormKeyDown(Sender: TObject; var Key: word; Shift: TShiftState);
+        procedure SetDesignerActiveState(state: boolean);
+        procedure EnableDesignerControls;
+        procedure SetBoolInspectorDataClear(b: boolean);
+        procedure SetDisablePropertyBuilding(b: boolean);
+        procedure AssignDesignerControl(editorName: string);
+        function SaveFile(EditorFilename: string): boolean;
+        procedure ActivateDesigner(s: string);
+        function GetLoginName: string;
+        function GetLangString(LangID: integer): string;
 
-        Procedure UpdateDesignerData(FileName: String);
-        Procedure Reload(FileName: String);
-        Function ReloadForm(FileName: String): Boolean;
-        Procedure ReloadFromFile(FileName: String; fileToReloadFrom: String);
-        Procedure TerminateEditor(FileName: String);
-        Procedure DestroyDLL;
-        Procedure OnDockableFormClosed(Sender: TObject; Var Action: TCloseAction);
-        Function IsSource(FileName: String): Boolean;
-        Function GetDefaultText(FileName: String): String;
-        Function MainPageChanged(FileName: String): Boolean;
-        Function ShouldNotCloseEditor(FileName: String; curFilename: String): Boolean;
-        Function HasDesigner(editorName: String): Boolean;
-        Function ManagesUnit: Boolean;
+        procedure UpdateDesignerData(FileName: string);
+        procedure Reload(FileName: string);
+        function ReloadForm(FileName: string): boolean;
+        procedure ReloadFromFile(FileName: string; fileToReloadFrom: string);
+        procedure TerminateEditor(FileName: string);
+        procedure DestroyDLL;
+        procedure OnDockableFormClosed(Sender: TObject; var Action: TCloseAction);
+        function IsSource(FileName: string): boolean;
+        function GetDefaultText(FileName: string): string;
+        function MainPageChanged(FileName: string): boolean;
+        function ShouldNotCloseEditor(FileName: string; curFilename: string): boolean;
+        function HasDesigner(editorName: string): boolean;
+        function ManagesUnit: boolean;
 
-        Procedure OnToolbarEvent(WM_COMMAND: Word);
-        Function Retrieve_File_New_Menus: TList;
-        Function Retrieve_File_Import_Menus: TList;
-        Function Retrieve_File_Export_Menus: TList;
-        Function Retrieve_Edit_Menus: TList;
-        Function Retrieve_Search_Menus: TList;
-        Function Retrieve_View_Menus: TList;
-        Function Retrieve_View_Toolbars_Menus: TList;
-        Function Retrieve_Project_Menus: TList;
-        Function Retrieve_Execute_Menus: TList;
-        Function Retrieve_Debug_Menus: TList;
-        Function Retrieve_Tools_Menus: TList;
-        Function Retrieve_Help_Menus: TList;
-        Function Retrieve_Toolbars: TToolBar;
-        Function Retrieve_Message_Tabs: TList;
-        Procedure SetEditorName(currentName: String; newName: String);
-        Function GetPluginName: String;
-        Function GetChild: HWND;
-        Function GetXMLExtension: String;
-        Function Retrieve_LeftDock_Panels: TList;
-        Function Retrieve_RightDock_Panels: TList;
-        Function Retrieve_BottomDock_Panels: TList;
-        Function ConvertLibsToCurrentVersion(strValue: String): String;
-        Procedure CreateNewXPMs(strFileName: String);
-        Function EditorDisplaysText(FileName: String): Boolean;
-        Function GetTextHighlighterType(FileName: String): String;
-        Function GET_COMMON_CPP_INCLUDE_DIR: String;
-        Function GetCompilerMacros: String;
-        Function GetCompilerPreprocDefines: String;
-        Function Retrieve_CompilerOptionsPane: TTabSheet;
-        Procedure LoadCompilerSettings(name: String; value: String);
-        Procedure LoadCompilerOptions;
-        Procedure SaveCompilerOptions;
-        Function GetCompilerOptions: TSettings;
-        Procedure SetCompilerOptionstoDefaults;
-        Procedure TestReport;
-        Procedure AfterStartupCheck;
-        Procedure FullScreenSwitch;
-        Function GetContextForHelp: String;
+        procedure OnToolbarEvent(WM_COMMAND: word);
+        function Retrieve_File_New_Menus: TList;
+        function Retrieve_File_Import_Menus: TList;
+        function Retrieve_File_Export_Menus: TList;
+        function Retrieve_Edit_Menus: TList;
+        function Retrieve_Search_Menus: TList;
+        function Retrieve_View_Menus: TList;
+        function Retrieve_View_Toolbars_Menus: TList;
+        function Retrieve_Project_Menus: TList;
+        function Retrieve_Execute_Menus: TList;
+        function Retrieve_Debug_Menus: TList;
+        function Retrieve_Tools_Menus: TList;
+        function Retrieve_Help_Menus: TList;
+        function Retrieve_Toolbars: TToolBar;
+        function Retrieve_Message_Tabs: TList;
+        procedure SetEditorName(currentName: string; newName: string);
+        function GetPluginName: string;
+        function GetChild: HWND;
+        function GetXMLExtension: string;
+        function Retrieve_LeftDock_Panels: TList;
+        function Retrieve_RightDock_Panels: TList;
+        function Retrieve_BottomDock_Panels: TList;
+        function ConvertLibsToCurrentVersion(strValue: string): string;
+        procedure CreateNewXPMs(strFileName: string);
+        function EditorDisplaysText(FileName: string): boolean;
+        function GetTextHighlighterType(FileName: string): string;
+        function GET_COMMON_CPP_INCLUDE_DIR: string;
+        function GetCompilerMacros: string;
+        function GetCompilerPreprocDefines: string;
+        function Retrieve_CompilerOptionsPane: TTabSheet;
+        procedure LoadCompilerSettings(name: string; value: string);
+        procedure LoadCompilerOptions;
+        procedure SaveCompilerOptions;
+        function GetCompilerOptions: TSettings;
+        procedure SetCompilerOptionstoDefaults;
+        procedure TestReport;
+        procedure AfterStartupCheck;
+        procedure FullScreenSwitch;
+        function GetContextForHelp: string;
 
-    End;
+    end;
 
-Var
+var
     wx_designer: TWXDsgn;
 
-Implementation
+implementation
 
-Uses
+uses
 
  //Components
     CreateOrderFm, ViewIDForm,
@@ -340,7 +340,7 @@ Uses
     wxAuiToolBar, wxAuiNotebook, wxAuiBar, WxAuiNoteBookPage
     ;
 
-Const
+const
 
     IniVersion = 1;
     INT_BRACES = 1;
@@ -357,45 +357,45 @@ Const
     INT_SWITCH = 12;
     INT_CPP_COMMENT = 13;
 
-Procedure TWXDsgn.Initialize(name: String; module: HModule; _parent: HWND; _controlBar: TControlBar; _owner: TForm; Config: String; toolbar_x: Integer; toolbar_y: Integer);
-Var
-    I: Integer;
+procedure TWXDsgn.Initialize(name: string; module: HModule; _parent: HWND; _controlBar: TControlBar; _owner: TForm; Config: string; toolbar_x: integer; toolbar_y: integer);
+var
+    I: integer;
     ini: TiniFile;
-Begin
+begin
     plugin_name := name;
-    XPTheme := False;
+    XPTheme := FALSE;
     ownerForm := _owner;
     wx_designer := Self;
     editors := TObjectHash.Create;
     configFolder := Config;
     parentHande := _parent;
-    pendingEditorSwitch := False;
+    pendingEditorSwitch := FALSE;
 
-    cleanUpJvInspEvents := False;
+    cleanUpJvInspEvents := FALSE;
 
     ComputerInfo1 := TJvComputerInfoEx.Create(ownerForm);
 
   //Property Inspector
     frmInspectorDock := TForm.Create(ownerForm);
-    frmInspectorDock.ParentFont := True;
+    frmInspectorDock.ParentFont := TRUE;
     frmInspectorDock.Font.Assign(ownerForm.Font);
-    With frmInspectorDock Do
-    Begin
+    with frmInspectorDock do
+    begin
         Name := 'frmInspectorDock';
         Caption := GetLangString(ID_WX_PROPINSPECTOR);
         BorderStyle := bsSizeToolWin;
         Color := clBtnFace;
         Width := 300;
 
-        DockSite := True;
+        DockSite := TRUE;
         DragKind := dkDock;
         DragMode := dmAutomatic;
         FormStyle := fsStayOnTop;
         OnClose := OnDockableFormClosed;
-    End;
+    end;
 
     frmPaletteDock := TForm.Create(ownerForm);
-    frmPaletteDock.ParentFont := True;
+    frmPaletteDock.ParentFont := TRUE;
     frmPaletteDock.Font.Assign(ownerForm.Font);
     palettePanel := TPanel.Create(frmPaletteDock);
     palettePanel.Parent := frmPaletteDock;
@@ -406,127 +406,127 @@ Begin
     palettePanel.Anchors := [akLeft, akTop, akRight, akBottom];
 
     ComponentPalette := TComponentPalette.Create(palettePanel);
-    ComponentPalette.Visible := False;
-    With frmPaletteDock Do
-    Begin
+    ComponentPalette.Visible := FALSE;
+    with frmPaletteDock do
+    begin
         Name := 'frmPaletteDock';
         Caption := main.GetLangString(133);
         BorderStyle := bsSizeToolWin;
         Color := clBtnFace;
         Width := 170;
 
-        DockSite := True;
+        DockSite := TRUE;
         DragKind := dkDock;
         DragMode := dmAutomatic;
         FormStyle := fsStayOnTop;
         OnClose := OnDockableFormClosed;
-    End;
+    end;
 
   //Add the property inspector view menu item
     ShowPropertyInspItem := TMenuItem.Create(Self);
-    With ShowPropertyInspItem Do
-    Begin
+    with ShowPropertyInspItem do
+    begin
         Caption := GetLangString(ID_WX_SHOWPROPINSPECTOR); //'Show Property Inspector';
         Action := actShowPropertyInspItem;
         OnClick := actShowPropertyInspItemExecute;
-        Checked := True;
-    End;
+        Checked := TRUE;
+    end;
 
     //Add the property inspector view menu item
     ShowComponentPaletteItem := TMenuItem.Create(Self);
-    With ShowComponentPaletteItem Do
-    Begin
+    with ShowComponentPaletteItem do
+    begin
         Caption := GetLangString(ID_WX_SHOWCOMPPALETTE); //'Show Component Palette';
         Action := actShowComponentPaletteItem;
         OnClick := actShowComponentPaletteItemExecute;
-        Checked := True;
-    End;
+        Checked := TRUE;
+    end;
 
-    boolInspectorDataClear := True;
-    DisablePropertyBuilding := False;
+    boolInspectorDataClear := TRUE;
+    DisablePropertyBuilding := FALSE;
 
     NewWxDialogItem := TMenuItem.Create(Self);
-    With NewWxDialogItem Do
-    Begin
+    with NewWxDialogItem do
+    begin
         Caption := GetLangString(ID_WX_NEWDIALOG); //'New wxDialog';
         ImageIndex := 1;
         Action := actNewwxDialog;
         OnClick := actNewWxDialogExecute;
-    End;
+    end;
 
     NewWxFrameItem := TMenuItem.Create(Self);
-    With NewWxFrameItem Do
-    Begin
+    with NewWxFrameItem do
+    begin
         Caption := GetLangString(ID_WX_NEWFRAME); //'New wxFrame';
         ImageIndex := 1;
         Action := actNewWxFrame;
         OnClick := actNewWxFrameExecute;
-    End;
+    end;
 
     actDesignerCopy := TAction.Create(Self);
-    With actDesignerCopy Do
-    Begin
+    with actDesignerCopy do
+    begin
         Category := 'Designer';
         Caption := GetLangString(ID_ITEM_COPY); //'Copy';
         ShortCut := 49219;
         OnExecute := actDesignerCopyExecute;
-    End;
+    end;
     actDesignerCut := TAction.Create(Self);
-    With actDesignerCut Do
-    Begin
+    with actDesignerCut do
+    begin
         Category := 'Designer';
         Caption := GetLangString(ID_ITEM_CUT); //'Cut';
         ShortCut := 49240;
         OnExecute := actDesignerCutExecute;
-    End;
+    end;
     actDesignerPaste := TAction.Create(Self);
-    With actDesignerPaste Do
-    Begin
+    with actDesignerPaste do
+    begin
         Category := 'Designer';
         Caption := GetLangString(ID_ITEM_PASTE); //'Paste';
         ShortCut := 49238;
         OnExecute := actDesignerPasteExecute;
-    End;
+    end;
     actDesignerDelete := TAction.Create(Self);
-    With actDesignerDelete Do
-    Begin
+    with actDesignerDelete do
+    begin
         Category := 'Designer';
         Caption := GetLangString(ID_ITEM_DELETE); //'Delete';
         ShortCut := 16430;
         OnExecute := actDesignerDeleteExecute;
-    End;
+    end;
     actNewWxFrame := TAction.Create(Self);
-    With actNewWxFrame Do
-    Begin
+    with actNewWxFrame do
+    begin
         Category := 'File';
         Caption := GetLangString(ID_WX_NEWFRAME); //'New wxFrame';
         ImageIndex := 1;
         OnExecute := actNewWxFrameExecute;
-    End;
+    end;
     actWxPropertyInspectorCut := TAction.Create(Self);
-    With actWxPropertyInspectorCut Do
-    Begin
+    with actWxPropertyInspectorCut do
+    begin
         Category := 'Designer';
         Caption := GetLangString(ID_ITEM_CUT); //'Cut';
         ShortCut := 16472;
         OnExecute := actWxPropertyInspectorCutExecute;
-    End;
+    end;
     actWxPropertyInspectorCopy := TAction.Create(Self);
-    With actWxPropertyInspectorCopy Do
-    Begin
+    with actWxPropertyInspectorCopy do
+    begin
         Category := 'Designer';
         Caption := GetLangString(ID_ITEM_COPY); //'Copy';
         ShortCut := 16451;
         OnExecute := actWxPropertyInspectorCopyExecute;
-    End;
+    end;
     actWxPropertyInspectorPaste := TAction.Create(Self);
-    With actWxPropertyInspectorPaste Do
-    Begin
+    with actWxPropertyInspectorPaste do
+    begin
         Category := 'Designer';
         Caption := GetLangString(ID_ITEM_PASTE); //'Paste';
         ShortCut := 16470;
         OnExecute := actWxPropertyInspectorPasteExecute;
-    End;
+    end;
 
   { END Initialization of past code from TMainForm }
 
@@ -566,188 +566,188 @@ Begin
     DesignerMenuDesignerOptions := TMenuItem.Create(Self);
     ToolsMenuDesignerOptions := TMenuItem.Create(Self);
 
-    With WxPropertyInspectorPopup Do
-    Begin
+    with WxPropertyInspectorPopup do
+    begin
         Name := 'WxPropertyInspectorPopup';
-    End;
-    With WxPropertyInspectorMenuEdit Do
-    Begin
+    end;
+    with WxPropertyInspectorMenuEdit do
+    begin
         Name := 'WxPropertyInspectorMenuEdit';
         Caption := GetLangString(ID_WX_PROPERTYEDIT); //'Wx Property Edit';
-    End;
-    With WxPropertyInspectorMenuCopy Do
-    Begin
+    end;
+    with WxPropertyInspectorMenuCopy do
+    begin
         Name := 'WxPropertyInspectorMenuCopy';
         Action := actWxPropertyInspectorCopy;
-    End;
-    With WxPropertyInspectorMenuCut Do
-    Begin
+    end;
+    with WxPropertyInspectorMenuCut do
+    begin
         Name := 'WxPropertyInspectorMenuCut';
         Action := actWxPropertyInspectorCut;
-    End;
-    With WxPropertyInspectorMenuPaste Do
-    Begin
+    end;
+    with WxPropertyInspectorMenuPaste do
+    begin
         Name := 'WxPropertyInspectorMenuPaste';
         Action := actWxPropertyInspectorPaste;
-    End;
-    With WxPropertyInspectorMenuDelete Do
-    Begin
+    end;
+    with WxPropertyInspectorMenuDelete do
+    begin
         Name := 'WxPropertyInspectorMenuDelete';
         Action := actDelete;
-    End;
+    end;
 
-    With DesignerPopup Do
-    Begin
+    with DesignerPopup do
+    begin
         Name := 'DesignerPopup';
-    End;
-    With DesignerMenuEdit Do
-    Begin
+    end;
+    with DesignerMenuEdit do
+    begin
         Name := 'DesignerMenuEdit';
         Caption := GetLangString(ID_MNU_EDIT); //'Edit';
-    End;
-    With DesignerMenuCopy Do
-    Begin
+    end;
+    with DesignerMenuCopy do
+    begin
         Name := 'DesignerMenuCopy';
         Action := actDesignerCopy;
-    End;
-    With DesignerMenuCut Do
-    Begin
+    end;
+    with DesignerMenuCut do
+    begin
         Name := 'DesignerMenuCut';
         Action := actDesignerCut;
-    End;
-    With DesignerMenuPaste Do
-    Begin
+    end;
+    with DesignerMenuPaste do
+    begin
         Name := 'DesignerMenuPaste';
         Action := actDesignerPaste;
-    End;
-    With DesignerMenuDelete Do
-    Begin
+    end;
+    with DesignerMenuDelete do
+    begin
         Name := 'DesignerMenuDelete';
         Action := actDesignerDelete;
-    End;
-    With DesignerMenuSep1 Do
-    Begin
+    end;
+    with DesignerMenuSep1 do
+    begin
         Name := 'DesignerMenuSep1';
         Caption := '-';
-    End;
-    With DesignerMenuCopyWidgetName Do
-    Begin
+    end;
+    with DesignerMenuCopyWidgetName do
+    begin
         Name := 'DesignerMenuCopyWidgetName';
         Caption := GetLangString(ID_WX_COPYNAME); //'Copy Widget Name';
-        Visible := False;
-    End;
-    With DesignerMenuChangeCreationOrder Do
-    Begin
+        Visible := FALSE;
+    end;
+    with DesignerMenuChangeCreationOrder do
+    begin
         Name := 'DesignerMenuChangeCreationOrder';
         Caption := GetLangString(ID_WX_CHANGEORDER); //'Change Creation Order';
         OnClick := ChangeCreationOrder1Click;
-    End;
-    With DesignerMenuSelectParent Do
-    Begin
+    end;
+    with DesignerMenuSelectParent do
+    begin
         Name := 'DesignerMenuSelectParent';
         Caption := GetLangString(ID_WX_SELECTPARENT); //'Select Parent';
-    End;
-    With DesignerMenuLocked Do
-    Begin
+    end;
+    with DesignerMenuLocked do
+    begin
         Name := 'DesignerMenuLocked';
         Caption := GetLangString(ID_WX_LOCKCONTROL); //'Lock Control';
         OnClick := LockControlClick;
-    End;
-    With DesignerMenuSep2 Do
-    Begin
+    end;
+    with DesignerMenuSep2 do
+    begin
         Name := 'DesignerMenuSep2';
         Caption := '-';
-    End;
-    With DesignerMenuViewIDs Do
-    Begin
+    end;
+    with DesignerMenuViewIDs do
+    begin
         Name := 'DesignerMenuViewIDs';
         Caption := GetLangString(ID_WX_VIEWCONTROLID); //'View Control IDs';
         OnClick := ViewControlIDsClick;
-    End;
-    With DesignerMenuAlign Do
-    Begin
+    end;
+    with DesignerMenuAlign do
+    begin
         Name := 'DesignerMenuAlign';
         Caption := GetLangString(ID_WX_ALIGN); //'Align';
-    End;
+    end;
 
-    With DesignerMenuAlignToGrid Do
-    Begin
+    with DesignerMenuAlignToGrid do
+    begin
         Name := 'DesignerMenuAlignToGrid';
         Caption := GetLangString(ID_WX_TOGRID); //'To Grid';
         OnClick := AlignToGridClick;
-    End;
+    end;
 
-    With DesignerMenuAlignVertical Do
-    Begin
+    with DesignerMenuAlignVertical do
+    begin
         Name := 'DesignerMenuAlignVertical';
         Caption := GetLangString(ID_WX_VERTICAL); //'Vertical';
-    End;
+    end;
 
-    With DesignerMenuAlignHorizontal Do
-    Begin
+    with DesignerMenuAlignHorizontal do
+    begin
         Name := 'DesignerMenuAlignHorizontal';
         Caption := GetLangString(ID_WX_HORIZONTAL); //'Horizontal';
-    End;
+    end;
 
-    With DesignerMenuAlignToLeft Do
-    Begin
+    with DesignerMenuAlignToLeft do
+    begin
         Name := 'DesignerMenuAlignToLeft';
         Caption := GetLangString(ID_WX_TOLEFT); //'To Left';
         OnClick := AlignToLeftClick;
-    End;
+    end;
 
-    With DesignerMenuAlignToRight Do
-    Begin
+    with DesignerMenuAlignToRight do
+    begin
         Name := 'DesignerMenuAlignToRight';
         Caption := GetLangString(ID_WX_TORIGHT); //'To Right';
         OnClick := AlignToRightClick;
-    End;
+    end;
 
-    With DesignerMenuAlignToMiddleVertical Do
-    Begin
+    with DesignerMenuAlignToMiddleVertical do
+    begin
         Name := 'DesignerMenuAlignToMiddleVertical';
         Caption := GetLangString(ID_WX_TOCENTER); //'To Center';
         OnClick := AlignToMiddleVerticalClick;
-    End;
+    end;
 
-    With DesignerMenuAlignToMiddleHorizontal Do
-    Begin
+    with DesignerMenuAlignToMiddleHorizontal do
+    begin
         Name := 'DesignerMenuAlignToMiddleHorizontal';
         Caption := GetLangString(ID_WX_TOCENTER); //'To Center';
         OnClick := AlignToMiddleHorizontalClick;
-    End;
+    end;
 
-    With DesignerMenuAlignToTop Do
-    Begin
+    with DesignerMenuAlignToTop do
+    begin
         Name := 'DesignerMenuAlignToTop';
         Caption := GetLangString(ID_WX_TOTOP); //'To Top';
         OnClick := AlignToTopClick;
-    End;
+    end;
 
-    With DesignerMenuAlignToBottom Do
-    Begin
+    with DesignerMenuAlignToBottom do
+    begin
         Name := 'DesignerMenuAlignToBottom';
         Caption := GetLangString(ID_WX_TOBOTTOM); //'To Bottom';
         OnClick := AlignToBottomClick;
-    End;
+    end;
 
-    With DesignerMenuSep3 Do
-    Begin
+    with DesignerMenuSep3 do
+    begin
         Name := 'DesignerMenuSep3';
         Caption := '-';
-    End;
-    With DesignerMenuDesignerOptions Do
-    Begin
+    end;
+    with DesignerMenuDesignerOptions do
+    begin
         Name := 'DesignerMenuDesignerOptions';
         Caption := GetLangString(ID_WX_DESIGNEROPTS); //'Designer Options';
         OnClick := DesignerOptionsClick;
-    End;
-    With ToolsMenuDesignerOptions Do
-    Begin
+    end;
+    with ToolsMenuDesignerOptions do
+    begin
         Name := 'ToolsMenuDesignerOptions';
         Caption := GetLangString(ID_WX_DESIGNEROPTS); //'Designer Options';
         OnClick := DesignerOptionsClick;
-    End;
+    end;
 
     WxPropertyInspectorPopup.Items.Add(WxPropertyInspectorMenuCut);
     WxPropertyInspectorPopup.Items.Add(WxPropertyInspectorMenuCopy);
@@ -783,26 +783,26 @@ Begin
   //Object inspector Styles
     JvInspectorDotNETPainter1 := TJvInspectorBorlandPainter.Create(frmInspectorDock);
     JvInspectorDotNETPainter2 := TJvInspectorBorlandPainter.Create(frmInspectorDock);
-    With JvInspectorDotNETPainter1 Do
-    Begin
+    with JvInspectorDotNETPainter1 do
+    begin
         Name := 'JvInspectorDotNETPainter1';
-        DrawNameEndEllipsis := False;
-    End;
-    With JvInspectorDotNETPainter2 Do
-    Begin
+        DrawNameEndEllipsis := FALSE;
+    end;
+    with JvInspectorDotNETPainter2 do
+    begin
         Name := 'JvInspectorDotNETPainter2';
-        DrawNameEndEllipsis := False;
-    End;
+        DrawNameEndEllipsis := FALSE;
+    end;
 
     ELDesigner1 := TELDesigner.Create(Self);
-    With ELDesigner1 Do
-    Begin
+    with ELDesigner1 do
+    begin
         Name := 'ELDesigner1';
         ClipboardFormat := 'Extension Library designer components';
         PopupMenu := DesignerPopup;
-        SnapToGrid := False;
-        GenerateXRC := False;
-        Floating := False;
+        SnapToGrid := FALSE;
+        GenerateXRC := FALSE;
+        Floating := FALSE;
         OnContextPopup := ELDesigner1ContextPopup;
         OnChangeSelection := ELDesigner1ChangeSelection;
         OnControlDeleted := ELDesigner1ControlDeleted;
@@ -812,10 +812,10 @@ Begin
         OnModified := ELDesigner1Modified;
         OnDblClick := ELDesigner1ControlDoubleClick;
         OnKeyDown := ELDesigner1KeyDown;
-    End;
+    end;
 
     ini := TiniFile.Create(Config + ChangeFileExt(ExtractFileName(Application.ExeName), '') + '.ini');
-    Try
+    try
         ELDesigner1.Grid.Visible := ini.ReadBool('wxWidgets', 'cbGridVisible', ELDesigner1.Grid.Visible);
         ELDesigner1.Grid.XStep := ini.ReadInteger('wxWidgets', 'lbGridXStepUpDown', ELDesigner1.Grid.XStep);
         ELDesigner1.Grid.YStep := ini.ReadInteger('wxWidgets', 'lbGridYStepUpDown', ELDesigner1.Grid.YStep);
@@ -827,34 +827,34 @@ Begin
     // Possible values are wxT(), _T(), and _()
         StringFormat := ini.ReadString('wxWidgets', 'cbStringFormat', StringFormat);
     // if there's no preference saved in the ini file, then default to wxT()
-        If trim(StringFormat) = '' Then
+        if trim(StringFormat) = '' then
             StringFormat := 'wxT';
-        UseDefaultPos := ini.ReadBool('wxWidgets', 'cbUseDefaultPos', False); // ?? UseDefaultPos);
-        UseDefaultSize := ini.ReadBool('wxWidgets', 'cbUseDefaultSize', False); //?? UseDefaultSize);
-        UseIndividEnums := ini.ReadBool('wxWidgets', 'cbIndividualEnums', True); //?? UseIndividEnums);
+        UseDefaultPos := ini.ReadBool('wxWidgets', 'cbUseDefaultPos', FALSE); // ?? UseDefaultPos);
+        UseDefaultSize := ini.ReadBool('wxWidgets', 'cbUseDefaultSize', FALSE); //?? UseDefaultSize);
+        UseIndividEnums := ini.ReadBool('wxWidgets', 'cbIndividualEnums', TRUE); //?? UseIndividEnums);
 
-        If ini.ReadBool('wxWidgets', 'cbControlHints', True) Then
+        if ini.ReadBool('wxWidgets', 'cbControlHints', TRUE) then
             ELDesigner1.ShowingHints := ELDesigner1.ShowingHints + [htControl]
-        Else
+        else
             ELDesigner1.ShowingHints := ELDesigner1.ShowingHints - [htControl];
 
-        If ini.ReadBool('wxWidgets', 'cbSizeHints', True) Then
+        if ini.ReadBool('wxWidgets', 'cbSizeHints', TRUE) then
             ELDesigner1.ShowingHints := ELDesigner1.ShowingHints + [htSize]
-        Else
+        else
             ELDesigner1.ShowingHints := ELDesigner1.ShowingHints - [htSize];
 
-        If ini.ReadBool('wxWidgets', 'cbMoveHints', True) Then
+        if ini.ReadBool('wxWidgets', 'cbMoveHints', TRUE) then
             ELDesigner1.ShowingHints := ELDesigner1.ShowingHints + [htMove]
-        Else
+        else
             ELDesigner1.ShowingHints := ELDesigner1.ShowingHints - [htMove];
 
-        If ini.ReadBool('wxWidgets', 'cbInsertHints', True) Then
+        if ini.ReadBool('wxWidgets', 'cbInsertHints', TRUE) then
             ELDesigner1.ShowingHints := ELDesigner1.ShowingHints + [htInsert]
-        Else
+        else
             ELDesigner1.ShowingHints := ELDesigner1.ShowingHints - [htInsert];
-    Finally
+    finally
         ini.destroy;
-    End;
+    end;
 
     pnlMainInsp := TPanel.Create(frmInspectorDock);
     cbxControlsx := TComboBox.Create(frmInspectorDock);
@@ -864,8 +864,8 @@ Begin
     TabEvent := TTabSheet.Create(frmInspectorDock);
     JvInspEvents := TJvInspector.Create(frmInspectorDock);
 
-    With pnlMainInsp Do
-    Begin
+    with pnlMainInsp do
+    begin
         Name := 'pnlMainInsp';
         Caption := '';
         Parent := frmInspectorDock;
@@ -876,9 +876,9 @@ Begin
         Align := alClient;
         BevelOuter := bvNone;
         TabOrder := 0;
-    End;
-    With cbxControlsx Do
-    Begin
+    end;
+    with cbxControlsx do
+    begin
         Name := 'cbxControlsx';
         Parent := pnlMainInsp;
         Align := alTop;
@@ -887,14 +887,14 @@ Begin
         Width := 201;
         Height := 21;
         Style := csDropDownList;
-        Enabled := False;
+        Enabled := FALSE;
         ItemHeight := 13;
-        Sorted := True;
+        Sorted := TRUE;
         TabOrder := 0;
         OnChange := cbxControlsxChange;
-    End;
-    With pgCtrlObjectInspector Do
-    Begin
+    end;
+    with pgCtrlObjectInspector do
+    begin
         Name := 'pgCtrlObjectInspector';
         Parent := pnlMainInsp;
         Left := 0;
@@ -903,20 +903,20 @@ Begin
         Height := 79;
         ActivePage := TabProperty;
         Align := alClient;
-        Enabled := False;
+        Enabled := FALSE;
         TabIndex := 0;
         TabOrder := 1;
-    End;
-    With TabProperty Do
-    Begin
+    end;
+    with TabProperty do
+    begin
         Name := 'TabProperty';
         Parent := pgCtrlObjectInspector;
         PageControl := pgCtrlObjectInspector;
         Caption := GetLangString(ID_WX_PROPERTIES);
         ImageIndex := -1;
-    End;
-    With JvInspProperties Do
-    Begin
+    end;
+    with JvInspProperties do
+    begin
         Name := 'JvInspProperties';
         Parent := TabProperty;
         Left := 0;
@@ -926,13 +926,13 @@ Begin
         Align := alClient;
         BandWidth := 150;
         BevelInner := bvNone;
-        RelativeDivider := False;
+        RelativeDivider := FALSE;
         Divider := 100;
         ItemHeight := 16;
         Painter := JvInspectorDotNETPainter1;
-        ReadOnly := False;
-        UseBands := False;
-        WantTabs := False;
+        ReadOnly := FALSE;
+        UseBands := FALSE;
+        WantTabs := FALSE;
 
     // Add popup menu for Wx property inspector
         OnEditorContextPopup := WxPropertyInspectorContextPopup;
@@ -940,17 +940,17 @@ Begin
         BeforeSelection := JvInspPropertiesBeforeSelection;
         OnDataValueChanged := JvInspPropertiesDataValueChanged;
         OnItemValueChanged := JvInspPropertiesItemValueChanged;
-    End;
-    With TabEvent Do
-    Begin
+    end;
+    with TabEvent do
+    begin
         Name := 'TabEvent';
         Parent := pgCtrlObjectInspector;
         PageControl := pgCtrlObjectInspector;
         Caption := GetLangString(ID_WX_EVENTS);
         ImageIndex := -1;
-    End;
-    With JvInspEvents Do
-    Begin
+    end;
+    with JvInspEvents do
+    begin
         Name := 'JvInspEvents';
         Parent := TabEvent;
         Left := 0;
@@ -960,13 +960,13 @@ Begin
         Align := alClient;
         BandWidth := 150;
         BevelInner := bvNone;
-        RelativeDivider := False;
+        RelativeDivider := FALSE;
         Divider := 100;
         ItemHeight := 16;
         Painter := JvInspectorDotNETPainter2;
-        ReadOnly := False;
-        UseBands := False;
-        WantTabs := False;
+        ReadOnly := FALSE;
+        UseBands := FALSE;
+        WantTabs := FALSE;
 
     // Add popup menu for Wx property inspector
         OnEditorContextPopup := WxPropertyInspectorContextPopup;
@@ -977,51 +977,51 @@ Begin
         OnMouseMove := JvInspEventsMouseMove;
         OnMouseUp := JvInspEventsMouseUp;
         OnEditorKeyDown := JvInspEventsKeyDown;
-    End;
+    end;
 
   //Setting data for the newly created GUI
     intControlCount := 1000;
 
-    boolInspectorDataClear := True;
-    DisablePropertyBuilding := False;
+    boolInspectorDataClear := TRUE;
+    DisablePropertyBuilding := FALSE;
 
   // Initializing compiler options pane
     lblwxMinor := TLabel.Create(ownerForm);
-    With lblwxMinor Do
-    Begin
+    with lblwxMinor do
+    begin
         Left := 8;
         Top := 46;
         Width := 29;
         Height := 13;
-        ParentFont := False;
+        ParentFont := FALSE;
         Caption := GetLangString(ID_POPT_VMINOR); //'Minor:';
-    End;
+    end;
 
     lblwxMajor := TLabel.Create(ownerForm);
-    With lblwxMajor Do
-    Begin
+    with lblwxMajor do
+    begin
         Left := 8;
         Top := 19;
         Width := 29;
         Height := 13;
-        ParentFont := False;
+        ParentFont := FALSE;
         Caption := GetLangString(ID_POPT_VMAJOR); //'Major:';
-    End;
+    end;
 
     lblwxRelease := TLabel.Create(ownerForm);
-    With lblwxRelease Do
-    Begin
+    with lblwxRelease do
+    begin
         Left := 8;
         Top := 73;
         Width := 42;
         Height := 13;
-        ParentFont := False;
+        ParentFont := FALSE;
         Caption := GetLangString(ID_POPT_VRELEASE); //'Release:';
-    End;
+    end;
 
     spwxMajor := TSpinEdit.Create(ownerForm);
-    With spwxMajor Do
-    Begin
+    with spwxMajor do
+    begin
         Left := 60;
         Top := 16;
         Width := 45;
@@ -1030,12 +1030,12 @@ Begin
         MinValue := 0;
         TabOrder := 0;
         Value := 2;
-        ParentFont := False;
-    End;
+        ParentFont := FALSE;
+    end;
 
     spwxMinor := TSpinEdit.Create(ownerForm);
-    With spwxMinor Do
-    Begin
+    with spwxMinor do
+    begin
         Left := 60;
         Top := 43;
         Width := 45;
@@ -1044,12 +1044,12 @@ Begin
         MinValue := 0;
         TabOrder := 1;
         Value := 9;
-        ParentFont := False;
-    End;
+        ParentFont := FALSE;
+    end;
 
     spwxRelease := TSpinEdit.Create(ownerForm);
-    With spwxRelease Do
-    Begin
+    with spwxRelease do
+    begin
         Left := 60;
         Top := 70;
         Width := 45;
@@ -1058,20 +1058,20 @@ Begin
         MinValue := 0;
         TabOrder := 2;
         Value := 2;
-        ParentFont := False;
-    End;
+        ParentFont := FALSE;
+    end;
 
     grpwxVersion := TGroupBox.Create(ownerForm);
-    With grpwxVersion Do
-    Begin
+    with grpwxVersion do
+    begin
         Left := 8;
         Top := 5;
         Width := 403;
         Height := 100;
         Caption := GetLangString(ID_POPT_VERTAB); //'Version';
         TabOrder := 0;
-        ParentFont := False;
-    End;
+        ParentFont := FALSE;
+    end;
     grpwxVersion.InsertControl(spwxRelease);
     grpwxVersion.InsertControl(spwxMinor);
     grpwxVersion.InsertControl(spwxMajor);
@@ -1080,59 +1080,59 @@ Begin
     grpwxVersion.InsertControl(lblwxMinor);
 
     chkwxUnicode := TCheckBox.Create(ownerForm);
-    With chkwxUnicode Do
-    Begin
+    with chkwxUnicode do
+    begin
         Left := 8;
         Top := 16;
         Width := 130;
         Height := 17;
         Caption := 'Unicode Support';
-        ParentFont := False;
+        ParentFont := FALSE;
         TabOrder := 0;
-    End;
+    end;
 
     chkwxMonolithic := TCheckBox.Create(ownerForm);
-    With chkwxMonolithic Do
-    Begin
+    with chkwxMonolithic do
+    begin
         Left := 8;
         Top := 36;
         Width := 130;
         Height := 17;
         Caption := 'Monolithic Library';
-        ParentFont := False;
+        ParentFont := FALSE;
         TabOrder := 1;
-    End;
+    end;
 
     chkwxDebug := TCheckBox.Create(ownerForm);
-    With chkwxDebug Do
-    Begin
+    with chkwxDebug do
+    begin
         Left := 8;
         Top := 56;
         Width := 97;
         Height := 17;
         Caption := 'Debug Build';
-        ParentFont := False;
+        ParentFont := FALSE;
         TabOrder := 2;
-    End;
+    end;
 
     grpwxType := TGroupBox.Create(ownerForm);
-    With grpwxType Do
-    Begin
+    with grpwxType do
+    begin
         Left := 8;
         Top := 112;
         Width := 403;
         Height := 80;
         Caption := 'Features';
-        ParentFont := False;
+        ParentFont := FALSE;
         TabOrder := 1;
-    End;
+    end;
     grpwxType.InsertControl(chkwxDebug);
     grpwxType.InsertControl(chkwxMonolithic);
     grpwxType.InsertControl(chkwxUnicode);
 
     rdwxLibraryType := TRadioGroup.Create(self);
-    With rdwxLibraryType Do
-    Begin
+    with rdwxLibraryType do
+    begin
         Left := 8;
         Top := 200;
         Width := 403;
@@ -1140,43 +1140,43 @@ Begin
         Caption := 'Library Type';
         ItemIndex := 0;
         TabOrder := 2;
-        ParentFont := False;
-    End;
+        ParentFont := FALSE;
+    end;
 
     staticLib := TRadioButton.Create(self);
-    With staticLib Do
-    Begin
+    with staticLib do
+    begin
         Left := 10;
         Top := 15;
         Width := 150;
         Height := 20;
         Caption := 'Static Import Library';
-        ParentFont := False;
-    End;
+        ParentFont := FALSE;
+    end;
     staticLib.Caption := 'Static Import Library';
 
     dynamicLib := TRadioButton.Create(self);
-    With dynamicLib Do
-    Begin
+    with dynamicLib do
+    begin
         Left := 10;
         Top := 35;
         Width := 150;
         Height := 20;
         Caption := 'Dynamic Library (DLL)';
-        ParentFont := False;
-    End;
+        ParentFont := FALSE;
+    end;
 
     rdwxLibraryType.InsertControl(staticLib);
     rdwxLibraryType.InsertControl(dynamicLib);
 
     tabwxWidgets := TTabSheet.Create(self);
-    With tabwxWidgets Do
-    Begin
+    with tabwxWidgets do
+    begin
         Caption := 'wxWidgets';
         ImageIndex := 4;
-        Visible := True;
-        ParentFont := False;
-    End;
+        Visible := TRUE;
+        ParentFont := FALSE;
+    end;
 
     tabwxWidgets.InsertControl(grpwxVersion);
     tabwxWidgets.InsertControl(grpwxType);
@@ -1184,27 +1184,27 @@ Begin
 
 
 
-End; // end Initialize
+end; // end Initialize
 
-Procedure TWXDsgn.AssignPlugger(plug: IPlug);
-Begin
-    main := plug As IPlug;
+procedure TWXDsgn.AssignPlugger(plug: IPlug);
+begin
+    main := plug as IPlug;
     XPTheme := main.IsUsingXPTheme;
-End;
+end;
 
-Procedure TWXDsgn.OpenFile(s: String);
-Begin
-    If IsForm(s) Then
-    Begin
-        main.OpenFile(GetLongName(ChangeFileExt(s, H_EXT)), True);
-        main.OpenFile(GetLongName(ChangeFileExt(s, CPP_EXT)), True);
-        If ELDesigner1.GenerateXRC Then
-            main.OpenFile(ChangeFileExt(s, XRC_EXT), True);
-    End;
-End;
+procedure TWXDsgn.OpenFile(s: string);
+begin
+    if IsForm(s) then
+    begin
+        main.OpenFile(GetLongName(ChangeFileExt(s, H_EXT)), TRUE);
+        main.OpenFile(GetLongName(ChangeFileExt(s, CPP_EXT)), TRUE);
+        if ELDesigner1.GenerateXRC then
+            main.OpenFile(ChangeFileExt(s, XRC_EXT), TRUE);
+    end;
+end;
 
-Procedure TWXDsgn.LoadText(force: Boolean);
-Begin
+procedure TWXDsgn.LoadText(force: boolean);
+begin
     frmInspectorDock.Caption := GetLangString(ID_WX_PROPINSPECTOR);
     frmPaletteDock.Caption := GetLangString(ID_WX_COMPONENTS);
     ShowPropertyInspItem.Caption := GetLangString(ID_WX_SHOWPROPINSPECTOR);
@@ -1246,100 +1246,100 @@ Begin
     lblwxMajor.Caption := GetLangString(ID_POPT_VMAJOR);
     lblwxRelease.Caption := GetLangString(ID_POPT_VRELEASE);
     grpwxVersion.Caption := GetLangString(ID_POPT_VERTAB);
-End;
+end;
 
-Function TWXDsgn.IsForm(s: String): Boolean;
-Begin
-    If (CompareStr(ExtractFileExt(s), WXFORM_EXT) = 0) Then
-        Result := True
-    Else
-        Result := False;
-End;
+function TWXDsgn.IsForm(s: string): boolean;
+begin
+    if (CompareStr(ExtractFileExt(s), WXFORM_EXT) = 0) then
+        Result := TRUE
+    else
+        Result := FALSE;
+end;
 
-Function TWXDsgn.GetFilter(editorName: String): String;
-Begin
-    If isXRCExt(editorName) Then
+function TWXDsgn.GetFilter(editorName: string): string;
+begin
+    if isXRCExt(editorName) then
         Result := FLT_XRC
-    Else
+    else
         Result := FLT_WXFORMS;
-End;
+end;
 
-Function TWXDsgn.Get_EXT(editorName: String): String;
-Begin
-    If isXRCExt(editorName) Then
+function TWXDsgn.Get_EXT(editorName: string): string;
+begin
+    if isXRCExt(editorName) then
         Result := XRC_EXT
-    Else
+    else
         Result := WXFORM_EXT;
-End;
+end;
 
-Function TWXDsgn.Get_EXT_Index(editorName: String): Integer;
-Begin
-    If isXRCExt(editorName) Then
+function TWXDsgn.Get_EXT_Index(editorName: string): integer;
+begin
+    if isXRCExt(editorName) then
         Result := 8     // EAB: this should be done dinamically; giving plugins the last current index at creation time.
-    Else
+    else
         Result := 7;
-End;
+end;
 
-Function TWXDsgn.SaveFile(EditorFilename: String): Boolean;
-Begin
-    Result := False;
+function TWXDsgn.SaveFile(EditorFilename: string): boolean;
+begin
+    Result := FALSE;
   //For a wxDev-C++ build, there are a few related editors that must be saved at
   //the same time.
 
   //See if the current file is a Form-related document
   //TODO: lowjoel: the following code assumes that the editor for the sibling file
   //               is open. Why do we need such a lousy restriction?
-    If FileExists(ChangeFileExt(EditorFilename, WXFORM_EXT)) Then
+    if FileExists(ChangeFileExt(EditorFilename, WXFORM_EXT)) then
     //The current file is a form and has related files. If we save the form, all
        //the related files needs to be saved at the same time.
-    Begin
-        If main.isFileOpenedinEditor(ChangeFileExt(EditorFilename, WXFORM_EXT)) Then
-        Begin
+    begin
+        if main.isFileOpenedinEditor(ChangeFileExt(EditorFilename, WXFORM_EXT)) then
+        begin
             Result := main.SaveFileFromPlugin(ChangeFileExt(EditorFilename, WXFORM_EXT));
 
       //Just Generate XPM's while saving the file
-            GenerateXPM(EditorFilename, False);
-            If editors.Exists(EditorFilename) Then
-                (editors[ChangeFileExt(EditorFilename, WXFORM_EXT)] As TWXEditor).GetDesigner.CreateNewXPMs(EditorFilename);
-        End;
+            GenerateXPM(EditorFilename, FALSE);
+            if editors.Exists(EditorFilename) then
+                (editors[ChangeFileExt(EditorFilename, WXFORM_EXT)] as TWXEditor).GetDesigner.CreateNewXPMs(EditorFilename);
+        end;
 
     //If the user wants XRC files to be generated, save the XRC file as well
     //BUT: if the user does NOT want XRC files, we should not confuse the user
     //     and delete the file
-        If ELDesigner1.GenerateXRC Then
-        Begin
-            If main.isFileOpenedinEditor(ChangeFileExt(EditorFilename, XRC_EXT)) Then
-            Begin
-                Result := Result And main.SaveFileFromPlugin(ChangeFileExt(EditorFilename, XRC_EXT));
-            End;
-        End
-        Else
+        if ELDesigner1.GenerateXRC then
+        begin
+            if main.isFileOpenedinEditor(ChangeFileExt(EditorFilename, XRC_EXT)) then
+            begin
+                Result := Result and main.SaveFileFromPlugin(ChangeFileExt(EditorFilename, XRC_EXT));
+            end;
+        end
+        else
         ;
     //Delete the now-outdated XRC file
     //TODO: lowjoel: safer way?
 
-        If main.isFileOpenedinEditor(ChangeFileExt(EditorFilename, H_EXT)) Then
-        Begin
-            Result := Result And main.SaveFileFromPlugin(ChangeFileExt(EditorFilename, H_EXT));
-        End;
+        if main.isFileOpenedinEditor(ChangeFileExt(EditorFilename, H_EXT)) then
+        begin
+            Result := Result and main.SaveFileFromPlugin(ChangeFileExt(EditorFilename, H_EXT));
+        end;
 
-        If main.isFileOpenedinEditor(ChangeFileExt(EditorFilename, CPP_EXT)) Then
-        Begin
-            Result := Result And main.SaveFileFromPlugin(ChangeFileExt(EditorFilename, CPP_EXT));
-        End;
+        if main.isFileOpenedinEditor(ChangeFileExt(EditorFilename, CPP_EXT)) then
+        begin
+            Result := Result and main.SaveFileFromPlugin(ChangeFileExt(EditorFilename, CPP_EXT));
+        end;
 
-    End;
-End;
+    end;
+end;
 
-Function TWXDsgn.SaveFileAndCloseEditor(EditorFilename: String): Boolean;
-Var
-    flag: Boolean;
+function TWXDsgn.SaveFileAndCloseEditor(EditorFilename: string): boolean;
+var
+    flag: boolean;
 
-Begin
-    flag := False;
-    If FileExists(ChangeFileExt(EditorFilename, WXFORM_EXT)) Then
-    Begin
-        flag := True;
+begin
+    flag := FALSE;
+    if FileExists(ChangeFileExt(EditorFilename, WXFORM_EXT)) then
+    begin
+        flag := TRUE;
         main.SaveFileFromPlugin(ChangeFileExt(EditorFilename, CPP_EXT));
         main.CloseEditorFromPlugin(ChangeFileExt(EditorFilename, CPP_EXT));
 
@@ -1351,187 +1351,187 @@ Begin
 
         main.SaveFileFromPlugin(ChangeFileExt(EditorFilename, XRC_EXT));
         main.CloseEditorFromPlugin(ChangeFileExt(EditorFilename, XRC_EXT));
-    End;
+    end;
 
     Result := flag;
 
-End;
+end;
 
-Procedure TWXDsgn.OpenUnit(EditorFilename: String);
-Var
-    AlreadyActivated: Boolean;
-Begin
-    AlreadyActivated := True;
-    If FileExists(ChangeFileExt(EditorFilename, WXFORM_EXT)) Then
-    Begin
-        If Not main.isFileOpenedinEditor(ChangeFileExt(EditorFilename, WXFORM_EXT)) Then
-            If Not main.OpenUnitInProject(ChangeFileExt(EditorFilename, WXFORM_EXT)) Then
-                main.OpenFile(ChangeFileExt(EditorFilename, WXFORM_EXT), True);
+procedure TWXDsgn.OpenUnit(EditorFilename: string);
+var
+    AlreadyActivated: boolean;
+begin
+    AlreadyActivated := TRUE;
+    if FileExists(ChangeFileExt(EditorFilename, WXFORM_EXT)) then
+    begin
+        if not main.isFileOpenedinEditor(ChangeFileExt(EditorFilename, WXFORM_EXT)) then
+            if not main.OpenUnitInProject(ChangeFileExt(EditorFilename, WXFORM_EXT)) then
+                main.OpenFile(ChangeFileExt(EditorFilename, WXFORM_EXT), TRUE);
 
-        If (ELDesigner1.GenerateXRC) And FileExists(ChangeFileExt(EditorFilename, XRC_EXT))
-            And (Not main.isFileOpenedinEditor(ChangeFileExt(EditorFilename, XRC_EXT))) Then
-            If Not main.OpenUnitInProject(ChangeFileExt(EditorFilename, XRC_EXT)) Then
-                main.OpenFile(ChangeFileExt(EditorFilename, XRC_EXT), True);
+        if (ELDesigner1.GenerateXRC) and FileExists(ChangeFileExt(EditorFilename, XRC_EXT))
+            and (not main.isFileOpenedinEditor(ChangeFileExt(EditorFilename, XRC_EXT))) then
+            if not main.OpenUnitInProject(ChangeFileExt(EditorFilename, XRC_EXT)) then
+                main.OpenFile(ChangeFileExt(EditorFilename, XRC_EXT), TRUE);
 
-        If FileExists(ChangeFileExt(EditorFilename, H_EXT)) And (Not main.isFileOpenedinEditor(ChangeFileExt(EditorFilename, H_EXT))) Then
-            If Not main.OpenUnitInProject(ChangeFileExt(EditorFilename, H_EXT)) Then
-                main.OpenFile(ChangeFileExt(EditorFilename, H_EXT), True);
+        if FileExists(ChangeFileExt(EditorFilename, H_EXT)) and (not main.isFileOpenedinEditor(ChangeFileExt(EditorFilename, H_EXT))) then
+            if not main.OpenUnitInProject(ChangeFileExt(EditorFilename, H_EXT)) then
+                main.OpenFile(ChangeFileExt(EditorFilename, H_EXT), TRUE);
 
-        If FileExists(ChangeFileExt(EditorFilename, CPP_EXT)) And (Not main.isFileOpenedinEditor(ChangeFileExt(EditorFilename, CPP_EXT))) Then
-            If Not main.OpenUnitInProject(ChangeFileExt(EditorFilename, CPP_EXT)) Then
-                main.OpenFile(ChangeFileExt(EditorFilename, CPP_EXT), True);
+        if FileExists(ChangeFileExt(EditorFilename, CPP_EXT)) and (not main.isFileOpenedinEditor(ChangeFileExt(EditorFilename, CPP_EXT))) then
+            if not main.OpenUnitInProject(ChangeFileExt(EditorFilename, CPP_EXT)) then
+                main.OpenFile(ChangeFileExt(EditorFilename, CPP_EXT), TRUE);
 
     //Reactivate the editor;
-        If FileExists(EditorFilename) Then
-        Begin
-            If Not main.isFileOpenedinEditor(EditorFilename) Then
-                main.OpenFile(EditorFilename, True)
-            Else
-            Begin
+        if FileExists(EditorFilename) then
+        begin
+            if not main.isFileOpenedinEditor(EditorFilename) then
+                main.OpenFile(EditorFilename, TRUE)
+            else
+            begin
                 main.ActivateEditor(EditorFilename);
-                AlreadyActivated := True;
-            End;
-        End;
-    End;
-    If AlreadyActivated = False Then
+                AlreadyActivated := TRUE;
+            end;
+        end;
+    end;
+    if AlreadyActivated = FALSE then
         main.ActivateEditor(EditorFilename);
-End;
+end;
 
-Procedure TWXDsgn.NewProject(s: String);
-Begin
-    If strContains('wxWidgets Frame', s) Then
+procedure TWXDsgn.NewProject(s: string);
+begin
+    if strContains('wxWidgets Frame', s) then
         NewWxProjectCode(dtWxFrame)
-    Else
-    If strContains('wxWidgets Dialog', s) Then
+    else
+    if strContains('wxWidgets Dialog', s) then
         NewWxProjectCode(dtWxDialog);
-End;
+end;
 
-Procedure TWXDsgn.CutExecute;
-Begin
-    If (JvInspProperties.Focused) Or (JvInspEvents.Focused) Then // If property inspector is focused, then cut text
+procedure TWXDsgn.CutExecute;
+begin
+    if (JvInspProperties.Focused) or (JvInspEvents.Focused) then // If property inspector is focused, then cut text
         actWxPropertyInspectorCut.Execute
-    Else // Otherwise form component is selected so cut whole component (control and code)
+    else // Otherwise form component is selected so cut whole component (control and code)
         actDesignerCut.Execute;
-End;
+end;
 
-Procedure TWXDsgn.CopyExecute;
-Begin
-    If (JvInspProperties.Focused) Or (JvInspEvents.Focused) Then // If property inspector is focused, then copy text
+procedure TWXDsgn.CopyExecute;
+begin
+    if (JvInspProperties.Focused) or (JvInspEvents.Focused) then // If property inspector is focused, then copy text
         actWxPropertyInspectorCopy.Execute
-    Else // Otherwise form component is selected so copy whole component (control and code)
+    else // Otherwise form component is selected so copy whole component (control and code)
         actDesignerCopy.Execute;
-End;
+end;
 
-Procedure TWXDsgn.PasteExecute;
-Begin
-    If (JvInspProperties.Focused) Or (JvInspEvents.Focused) Then // If property inspector is focused, then paste text
+procedure TWXDsgn.PasteExecute;
+begin
+    if (JvInspProperties.Focused) or (JvInspEvents.Focused) then // If property inspector is focused, then paste text
         actWxPropertyInspectorPaste.Execute
-    Else // Otherwise form component is selected so paste whole component (control and code)
+    else // Otherwise form component is selected so paste whole component (control and code)
         actDesignerPaste.Execute;
-End;
+end;
 
-Procedure TWXDsgn.FormKeyDown(Sender: TObject; Var Key: Word; Shift: TShiftState);
-Var
-    i: Integer;
-    designerFlag: Boolean;
-Begin
+procedure TWXDsgn.FormKeyDown(Sender: TObject; var Key: word; Shift: TShiftState);
+var
+    i: integer;
+    designerFlag: boolean;
+begin
 
-    designerFlag := True;
-    If ELDesigner1.Floating Then
+    designerFlag := TRUE;
+    if ELDesigner1.Floating then
         designerFlag := self.IsForm(main.GetActiveEditorName);
 
-    If (ssCtrl In Shift) And ELDesigner1.Active And designerFlag And Not JvInspProperties.Focused And
-        Not JvInspEvents.Focused And Not cleanUpJvInspEvents Then // If Designer Form is in focus
-    Begin
-        Case key Of
+    if (ssCtrl in Shift) and ELDesigner1.Active and designerFlag and not JvInspProperties.Focused and
+        not JvInspEvents.Focused and not cleanUpJvInspEvents then // If Designer Form is in focus
+    begin
+        case key of
       //Move the selected component
             VK_Left:
-                For i := 0 To (ELDesigner1.SelectedControls.Count - 1) Do
+                for i := 0 to (ELDesigner1.SelectedControls.Count - 1) do
                     ELDesigner1.SelectedControls.Items[i].Left := ELDesigner1.SelectedControls.Items[i].Left - 1;
             VK_Right:
-                For i := 0 To (ELDesigner1.SelectedControls.Count - 1) Do
+                for i := 0 to (ELDesigner1.SelectedControls.Count - 1) do
                     ELDesigner1.SelectedControls.Items[i].Left := ELDesigner1.SelectedControls.Items[i].Left + 1;
             VK_Up:
-                For i := 0 To (ELDesigner1.SelectedControls.Count - 1) Do
+                for i := 0 to (ELDesigner1.SelectedControls.Count - 1) do
                     ELDesigner1.SelectedControls.Items[i].Top := ELDesigner1.SelectedControls.Items[i].Top - 1;
             VK_Down:
-                For i := 0 To (ELDesigner1.SelectedControls.Count - 1) Do
+                for i := 0 to (ELDesigner1.SelectedControls.Count - 1) do
                     ELDesigner1.SelectedControls.Items[i].Top := ELDesigner1.SelectedControls.Items[i].Top + 1;
-        End;
+        end;
 
 
         ELDesigner1.OnModified(Sender);
 
-    End;
+    end;
 
-End;
+end;
 
-Procedure TWXDsgn.AssignDesignerControl(editorName: String);
-Begin
-    If editors.Exists(editorName) Then
-        ELDesigner1.DesignControl := (editors[editorName] As TWXEditor).GetDesigner;
-End;
+procedure TWXDsgn.AssignDesignerControl(editorName: string);
+begin
+    if editors.Exists(editorName) then
+        ELDesigner1.DesignControl := (editors[editorName] as TWXEditor).GetDesigner;
+end;
 
-Procedure TWXDsgn.SetDesignerActiveState(state: Boolean);
-Begin
+procedure TWXDsgn.SetDesignerActiveState(state: boolean);
+begin
     ELDesigner1.Active := state;
-End;
+end;
 
 // Get the login name to use as a default if the author name is unknown
 
-Function TWXDsgn.GetLoginName: String;
-Var
-    buffer: Array[0..255] Of Char;
+function TWXDsgn.GetLoginName: string;
+var
+    buffer: array[0..255] of char;
     size: dword;
-Begin
+begin
     size := 256;
-    If main.RetrieveUserName(buffer, size) Then
+    if main.RetrieveUserName(buffer, size) then
         Result := buffer
-    Else
+    else
         Result := '';
-End;
+end;
 
-Function TWXDsgn.GetLangString(LangID: Integer): String;
-Begin
+function TWXDsgn.GetLangString(LangID: integer): string;
+begin
 
     Result := main.GetLangString(LangID);
 
-End;
+end;
 
 // Create a dialog that will be destroyed by the client code
 
-Function TWXDsgn.CreateCreateFormDlg(dsgnType: TWxDesignerType; insertProj: Integer; projShow: Boolean; filenamebase: String = ''): TfrmCreateFormProp;
-Var
-    SuggestedFilename: String;
+function TWXDsgn.CreateCreateFormDlg(dsgnType: TWxDesignerType; insertProj: integer; projShow: boolean; filenamebase: string = ''): TfrmCreateFormProp;
+var
+    SuggestedFilename: string;
     INI: Tinifile;
     profileNames: TStrings;
-    defaultProfileIndex: Integer;
-Begin
-    If filenamebase = '' Then
+    defaultProfileIndex: integer;
+begin
+    if filenamebase = '' then
         SuggestedFilename := main.GetUntitledFileName
-    Else
+    else
         SuggestedFilename := filenamebase;
     Result := TfrmCreateFormProp.Create(self);
     Result.JvFormStorage1.RestoreFormPlacement;
-    Result.JvFormStorage1.Active := False;
+    Result.JvFormStorage1.Active := FALSE;
     Result.txtTitle.Text := SuggestedFilename;
 
-    If dsgnType = dtWxFrame Then
+    if dsgnType = dtWxFrame then
         Result.Caption := GetLangString(ID_WX_NEWFRAME) //'New wxWidgets Frame'
-    Else
+    else
         Result.Caption := GetLangString(ID_WX_NEWDIALOG); //'New wxWidgets Dialog';
 
   //Suggest a filename to the user
-    If dsgnType = dtWxFrame Then
-    Begin
+    if dsgnType = dtWxFrame then
+    begin
         Result.txtFileName.Text := CreateValidFileName(SuggestedFilename + 'Frm');
         Result.txtClassName.Text := CreateValidClassName(SuggestedFilename + 'Frm');
-    End
-    Else
-    Begin
+    end
+    else
+    begin
         Result.txtFileName.Text := CreateValidFileName(SuggestedFilename + 'Dlg');
         Result.txtClassName.Text := CreateValidClassName(SuggestedFilename + 'Dlg');
-    End;
+    end;
 
   // Open the ini file and see if we have any default values for author, class, license
   // ReadString will return either the ini key or the default
@@ -1541,105 +1541,105 @@ Begin
 
   // Add compiler profile names to the dropdown box
     profileNames := main.GetCompilerProfileNames(defaultProfileIndex);
-    If (profileNames.Count <> 0) And (projShow = True) Then // if nil, then this is not part of a project (so no profile)
-    Begin
+    if (profileNames.Count <> 0) and (projShow = TRUE) then // if nil, then this is not part of a project (so no profile)
+    begin
         Result.ProfileNameSelect.Show;
         Result.ProfileLabel.Show;
         Result.ProfileNameSelect.Clear;
         Result.ProfileNameSelect.Items := profileNames;
         Result.ProfileNameSelect.ItemIndex := defaultProfileIndex; // default compiler profile selection
-    End
-    Else
-    Begin
+    end
+    else
+    begin
         Result.ProfileNameSelect.Hide;
         Result.ProfileLabel.Hide;
-    End;
+    end;
   //Decide where the file will be stored
-    If insertProj = 1 Then
+    if insertProj = 1 then
         Result.txtSaveTo.Text := IncludeTrailingPathDelimiter(ExtractFileDir(main.GetProjectFileName))
-    Else
+    else
         Result.txtSaveTo.Text := IncludeTrailingPathDelimiter(LocalAppDataPath);
   {else if main.GetDevDirsDefault <> '' then
     Result.txtSaveTo.Text := IncludeTrailingPathDelimiter(main.GetDevDirsDefault)
   else if Trim(Result.txtSaveTo.Text) = '' then
     Result.txtSaveTo.Text := IncludeTrailingPathDelimiter(ExtractFileDir(Application.ExeName));}
-End;
+end;
 
-Procedure TWXDsgn.CreateNewDialogOrFrameCode(dsgnType: TWxDesignerType; frm: TfrmCreateFormProp; insertProj: Integer);
-Var
-    TemplatesDir: String;
-    BaseFilename: String;
-    currFile: String;
-    OwnsDlg: Boolean;
+procedure TWXDsgn.CreateNewDialogOrFrameCode(dsgnType: TWxDesignerType; frm: TfrmCreateFormProp; insertProj: integer);
+var
+    TemplatesDir: string;
+    BaseFilename: string;
+    currFile: string;
+    OwnsDlg: boolean;
 
-    strFName, strCName, strFTitle: String;
+    strFName, strCName, strFTitle: string;
     dlgSStyle: TWxDlgStyleSet;
-    strCppFile, strHppFile: String;
+    strCppFile, strHppFile: string;
     INI: Tinifile;
 
     strLstXRCCode: TStringList;
 
-Begin
+begin
   //Get the path of our templates
     TemplatesDir := IncludeTrailingPathDelimiter(main.GetRealPathFix(main.GetDevDirsTemplates, ExtractFileDir(Application.ExeName)));
 
   //Get the paths of the source code
-    If dsgnType = dtWxFrame Then
-    Begin
+    if dsgnType = dtWxFrame then
+    begin
         strCppFile := TemplatesDir + 'wxWidgets\wxFrame.cpp.code';
         strHppFile := TemplatesDir + 'wxWidgets\wxFrame.h.code';
-    End
-    Else
-    Begin
+    end
+    else
+    begin
         strCppFile := TemplatesDir + 'wxWidgets\wxDlg.cpp.code';
         strHppFile := TemplatesDir + 'wxWidgets\wxDlg.h.code';
-    End;
+    end;
 
-    If (Not fileExists(strCppFile)) Then
-    Begin
+    if (not fileExists(strCppFile)) then
+    begin
         MessageDlg('Unable to find wxWidgets Template file: ' + strCppFile + #13 + #10#13 + #10 +
             'Please provide the template files in the template directory.', mtError, [mbOK], 0);
         exit;
-    End
-    Else
-    If (Not fileExists(strHppFile)) Then
-    Begin
+    end
+    else
+    if (not fileExists(strHppFile)) then
+    begin
         MessageDlg('Unable to find wxWidgets Template file: ' + strHppFile + #13#10#13#10 +
             'Please provide the template files in the template directory.', mtError, [mbOK], 0);
         exit;
-    End;
+    end;
 
   //Ask the user what he wants to do if the project parameter is set to 'prompt' (2)
-    If main.IsProjectAssigned And (insertProj = 2) Then
-        If MessageBox(ownerForm.Handle, Pchar(main.GetLangString(ID_MSG_NEWFILE)), 'wxDev-C++', MB_ICONQUESTION Or MB_YESNO) = 6 Then
+    if main.IsProjectAssigned and (insertProj = 2) then
+        if MessageBox(ownerForm.Handle, pchar(main.GetLangString(ID_MSG_NEWFILE)), 'wxDev-C++', MB_ICONQUESTION or MB_YESNO) = 6 then
             insertProj := 1
-        Else
+        else
             insertProj := 0
-    Else
-    If (Not main.IsProjectAssigned) Then
+    else
+    if (not main.IsProjectAssigned) then
         insertProj := 0;
 
   //Create the dialog and ask the user if we didn't specify a dialog to use
-    OwnsDlg := Not Assigned(frm);
-    If (Not Assigned(frm)) Then
-    Begin
+    OwnsDlg := not Assigned(frm);
+    if (not Assigned(frm)) then
+    begin
     //Get an instance of the dialog
-        frm := CreateCreateFormDlg(dsgnType, insertProj, False);
+        frm := CreateCreateFormDlg(dsgnType, insertProj, FALSE);
     //Show the dialog
-        If frm.showModal <> mrOK Then
-        Begin
+        if frm.showModal <> mrOK then
+        begin
             frm.Destroy;
             exit;
-        End;
+        end;
 
     //Wow, the user clicked OK: save the user name
         INI := TiniFile.Create(ConfigFolder + ChangeFileExt(ExtractFileName(Application.ExeName), '') + '.ini');
         INI.WriteString('wxWidgets', 'Author', frm.txtAuthorName.Text);
         INI.free;
-    End;
-    If Not DirectoryExists(Trim(frm.txtSaveTo.Text)) Then
-        If Not CreateDir(Trim(frm.txtSaveTo.Text)) Then
-            Raise Exception.Create('Cannot create ' + ' ' + Trim(frm.txtSaveTo.Text));
+    end;
+    if not DirectoryExists(Trim(frm.txtSaveTo.Text)) then
+        if not CreateDir(Trim(frm.txtSaveTo.Text)) then
+            raise Exception.Create('Cannot create ' + ' ' + Trim(frm.txtSaveTo.Text));
 
   //And get the base filename
     BaseFilename := IncludeTrailingPathDelimiter(Trim(frm.txtSaveTo.Text)) + Trim(frm.txtFileName.Text);
@@ -1652,45 +1652,45 @@ Begin
 
   //NinjaNL: If we have Generate XRC turned on then we need to create a blank XRC
   //         file on project initialisation
-    If ELDesigner1.GenerateXRC Then
-    Begin
+    if ELDesigner1.GenerateXRC then
+    begin
         strLstXRCCode := CreateBlankXRC;
-        Try
+        try
             strLstXRCCode.SaveToFile(ChangeFileExt(BaseFilename, XRC_EXT));
-        Finally
+        finally
             strLstXRCCode.Destroy;
-        End;
-    End;
+        end;
+    end;
 
   //Destroy the dialog if we own it
-    If OwnsDlg Then
+    if OwnsDlg then
         frm.Destroy;
 
     currFile := ChangeFileExt(BaseFilename, H_EXT);
-    main.PrepareFileForEditor(currFile, insertProj, False, True, False, 'wxdsgn');
+    main.PrepareFileForEditor(currFile, insertProj, FALSE, TRUE, FALSE, 'wxdsgn');
 
     currFile := ChangeFileExt(BaseFilename, CPP_EXT);
-    main.PrepareFileForEditor(currFile, insertProj, False, True, False, 'wxdsgn');
+    main.PrepareFileForEditor(currFile, insertProj, FALSE, TRUE, FALSE, 'wxdsgn');
 
-    If (ELDesigner1.GenerateXRC) Then
-    Begin
+    if (ELDesigner1.GenerateXRC) then
+    begin
         currFile := ChangeFileExt(BaseFilename, XRC_EXT);
-        main.PrepareFileForEditor(currFile, insertProj, False, True, False, 'wxdsgn');
-    End;
+        main.PrepareFileForEditor(currFile, insertProj, FALSE, TRUE, FALSE, 'wxdsgn');
+    end;
 
     currFile := ChangeFileExt(BaseFilename, WXFORM_EXT);
-    main.PrepareFileForEditor(currFile, insertProj, False, True, True, 'wxdsgn');
+    main.PrepareFileForEditor(currFile, insertProj, FALSE, TRUE, TRUE, 'wxdsgn');
 
     UpdateDesignerData(currFile);
 
-    If Not main.IsClassBrowserEnabled Then
+    if not main.IsClassBrowserEnabled then
         MessageDlg('The Class Browser is not enabled.' + #13#10#13#10 +
             'The addition of event handlers and other features of the Form ' +
             'Designer won''t work properly.' + #13#10#13#10 +
             'Please enable the Class Browser.', mtInformation, [mbOK], 0);
-End;
+end;
 
-Procedure TWXDsgn.NewWxProjectCode(dsgnType: TWxDesignerType);
+procedure TWXDsgn.NewWxProjectCode(dsgnType: TWxDesignerType);
 // This code creates a new wxWidgets project
 // including c++ code, headers, and resource files
 // It was scavenged from TMainForm.CreateNewDialogOrFrameCode (above).
@@ -1707,68 +1707,68 @@ Procedure TWXDsgn.NewWxProjectCode(dsgnType: TWxDesignerType);
 //       Templates\wxWidgets\wxprojDlg.h,
 //       Templates\wxWidgets\wxprojDlgApp.cpp, and
 //       Templates\wxWidgets\wxprojDlgApp.h
-Var
+var
     frm: TfrmCreateFormProp;
-    TemplatesDir: String;
-    BaseFilename: String;
-    currFile: String;
-    strAppCppFile, strAppHppFile, strAppRcFile: String;
+    TemplatesDir: string;
+    BaseFilename: string;
+    currFile: string;
+    strAppCppFile, strAppHppFile, strAppRcFile: string;
     ini: Tinifile;
-    UseRC: Boolean;
+    UseRC: boolean;
 
-Begin
+begin
 
 // GAR 10 Nov 2009
 // Hack for Wine/Linux
 // ProductName returns empty string for Wine/Linux
 // for Windows, it returns OS name (e.g. Windows Vista).
-    If (ComputerInfo1.OS.ProductName = '') Then
-        UseRC := False
-    Else
-        UseRC := True;
+    if (ComputerInfo1.OS.ProductName = '') then
+        UseRC := FALSE
+    else
+        UseRC := TRUE;
 
   //Get the path of our templates
     TemplatesDir := IncludeTrailingPathDelimiter(main.GetRealPathFix(main.GetDevDirsTemplates, ExtractFileDir(Application.ExeName)));
 
-    If (UseRC) Then
-    Begin
+    if (UseRC) then
+    begin
     //Get the filepaths of the templates
         strAppRcFile := TemplatesDir + 'wxWidgets\wxprojRes.rc';
-    End;
+    end;
 
-    If dsgnType = dtWxFrame Then
-    Begin
+    if dsgnType = dtWxFrame then
+    begin
         strAppCppFile := TemplatesDir + 'wxWidgets\wxprojFrameApp.cpp';
         strAppHppFile := TemplatesDir + 'wxWidgets\wxprojFrameApp.h';
-    End
-    Else
-    Begin
+    end
+    else
+    begin
         strAppCppFile := TemplatesDir + 'wxWidgets\wxprojDlgApp.cpp';
         strAppHppFile := TemplatesDir + 'wxWidgets\wxprojDlgApp.h';
-    End;
+    end;
 
   //If template files don't exist, we need to send an error message to user.
-    If (Not fileExists(strAppCppFile)) Then
-    Begin
+    if (not fileExists(strAppCppFile)) then
+    begin
         MessageDlg('Unable to find wxWidgets Template file: ' + strAppCppFile + #13 + #10#13 + #10 +
             'Please provide the template files in the template directory.', mtError, [mbOK], 0);
         exit;
-    End
-    Else
-    If (Not fileExists(strAppHppFile)) Then
-    Begin
+    end
+    else
+    if (not fileExists(strAppHppFile)) then
+    begin
         MessageDlg('Unable to find wxWidgets Template file: ' + strAppHppFile + #13 + #10#13 + #10 +
             'Please provide the template files in the template directory.', mtError, [mbOK], 0);
         exit;
-    End;
+    end;
 
   //Create an instance of the form creation dialog and show it
-    frm := CreateCreateFormDlg(dsgnType, 1, True, ChangeFileExt(ExtractFileName(main.GetProjectFileName), ''));
-    If frm.showModal <> mrOK Then
-    Begin
+    frm := CreateCreateFormDlg(dsgnType, 1, TRUE, ChangeFileExt(ExtractFileName(main.GetProjectFileName), ''));
+    if frm.showModal <> mrOK then
+    begin
         frm.Destroy;
         exit;
-    End;
+    end;
 
   // Change the current profile to what the user selected in the new project dialog
     main.ChangeProjectProfile(frm.ProfileNameSelect.ItemIndex);
@@ -1783,33 +1783,33 @@ Begin
     ParseAndSaveTemplate(StrAppHppFile, ChangeFileExt(BaseFilename, H_EXT), frm);
     ParseAndSaveTemplate(StrAppCppFile, ChangeFileExt(BaseFilename, CPP_EXT), frm);
 
-    If (ComputerInfo1.OS.ProductName <> '') Then
+    if (ComputerInfo1.OS.ProductName <> '') then
         ParseAndSaveTemplate(strAppRcFile, ChangeFileExt(BaseFilename, RC_EXT), frm);
 
   //Add the application entry source fle
     currFile := ChangeFileExt(BaseFilename, CPP_EXT);
-    main.PrepareFileForEditor(currFile, 0, True, True, False, '');
+    main.PrepareFileForEditor(currFile, 0, TRUE, TRUE, FALSE, '');
 
     currFile := ChangeFileExt(BaseFilename, H_EXT);
-    main.PrepareFileForEditor(currFile, 0, True, False, False, '');
+    main.PrepareFileForEditor(currFile, 0, TRUE, FALSE, FALSE, '');
 
-    If (UseRC) Then
-    Begin
+    if (UseRC) then
+    begin
         currFile := ChangeFileExt(BaseFilename, RC_EXT);
-        main.PrepareFileForEditor(currFile, 0, True, False, False, '');
-    End;
+        main.PrepareFileForEditor(currFile, 0, TRUE, FALSE, FALSE, '');
+    end;
 
   //Finally create the form creation code
     CreateNewDialogOrFrameCode(dsgnType, frm, 1);
-End;
+end;
 
-Procedure TWXDsgn.InitEditor(strFileName: String);
-Var
+procedure TWXDsgn.InitEditor(strFileName: string);
+var
     editor: TWXEditor;
     tabSheet: TTabSheet;
     text: TSynEdit;
-    editorName: String;
-Begin
+    editorName: string;
+begin
     editorName := ChangeFileExt(strFileName, WXFORM_EXT);
     tabSheet := main.GetEditorTabSheet(editorName);
     text := main.GetEditorText(editorName);
@@ -1817,117 +1817,117 @@ Begin
     SetLength(editorNames, editors.ItemCount + 1);
     editorNames[editors.ItemCount] := editorName;
     editors[editorName] := editor;
-    editor.Init(tabSheet, text, DesignerPopup, True, editorName);
+    editor.Init(tabSheet, text, DesignerPopup, TRUE, editorName);
     editor.editorNumber := editors.ItemCount - 1;
-End;
+end;
 
-Function TWXDsgn.CreateFormFile(strFName, strCName, strFTitle: String; dlgSStyle: TWxDlgStyleSet; dsgnType: TWxDesignerType): Boolean;
-Var
+function TWXDsgn.CreateFormFile(strFName, strCName, strFTitle: string; dlgSStyle: TWxDlgStyleSet; dsgnType: TWxDesignerType): boolean;
+var
     FNewFormObj: TfrmNewForm;
-Begin
-    Result := True;
+begin
+    Result := TRUE;
     FNewFormObj := TfrmNewForm.Create(ownerForm);
-    Try
-        Try
-            If dsgnType = dtWxFrame Then
+    try
+        try
+            if dsgnType = dtWxFrame then
                 FNewFormObj.Wx_DesignerType := dtWxFrame
-            Else
+            else
                 FNewFormObj.Wx_DesignerType := dtWxDialog;
 
             FNewFormObj.Caption := strFTitle;
             FNewFormObj.Wx_DialogStyle := dlgSStyle;
             FNewFormObj.Wx_Name := strCName;
-            FNewFormObj.Wx_Center := True;
+            FNewFormObj.Wx_Center := TRUE;
             FNewFormObj.fileName := strFName;
             FNewFormObj.EVT_CLOSE := 'OnClose';
             WriteComponentsToFile([FNewFormObj], ChangeFileExt(strFName, wxform_Ext));
-        Except
-            Result := False;
-        End;
-    Finally
+        except
+            Result := FALSE;
+        end;
+    finally
         FNewFormObj.Destroy;
-    End;
-End;
+    end;
+end;
 
-Procedure TWXDsgn.GetIntialFormData(frm: TfrmCreateFormProp; Var strFName, strCName, strFTitle: String; Var dlgStyle: TWxDlgStyleSet; dsgnType: TWxDesignerType);
-Begin
+procedure TWXDsgn.GetIntialFormData(frm: TfrmCreateFormProp; var strFName, strCName, strFTitle: string; var dlgStyle: TWxDlgStyleSet; dsgnType: TWxDesignerType);
+begin
     strCName := Trim(frm.txtClassName.Text);
     strFTitle := Trim(frm.txtTitle.Text);
     strFName := IncludeTrailingPathDelimiter(Trim(frm.txtSaveTo.Text)) + Trim(frm.txtFileName.Text);
 
     dlgStyle := [];
-    If frm.cbUseCaption.checked Then
+    if frm.cbUseCaption.checked then
         dlgStyle := [wxCAPTION];
 
-    If frm.cbResizeBorder.checked Then
+    if frm.cbResizeBorder.checked then
         dlgStyle := dlgStyle + [wxRESIZE_BORDER];
 
-    If frm.cbSystemMenu.checked Then
+    if frm.cbSystemMenu.checked then
         dlgStyle := dlgStyle + [wxSYSTEM_MENU];
 
-    If frm.cbThickBorder.checked Then
+    if frm.cbThickBorder.checked then
         dlgStyle := dlgStyle + [wxTHICK_FRAME];
 
-    If frm.cbStayOnTop.checked Then
+    if frm.cbStayOnTop.checked then
         dlgStyle := dlgStyle + [wxSTAY_ON_TOP];
 
-    If frm.cbNoParent.checked Then
+    if frm.cbNoParent.checked then
         dlgStyle := dlgStyle + [wxDIALOG_NO_PARENT];
 
-    If frm.cbMinButton.checked Then
+    if frm.cbMinButton.checked then
         dlgStyle := dlgStyle + [wxMINIMIZE_BOX];
 
-    If frm.cbMaxButton.checked Then
+    if frm.cbMaxButton.checked then
         dlgStyle := dlgStyle + [wxMAXIMIZE_BOX];
 
-    If frm.cbCloseButton.checked Then
+    if frm.cbCloseButton.checked then
         dlgStyle := dlgStyle + [wxCLOSE_BOX];
-End;
+end;
 
-Procedure TWXDsgn.ParseAndSaveTemplate(template, destination: String; frm: TfrmCreateFormProp);
-Var
+procedure TWXDsgn.ParseAndSaveTemplate(template, destination: string; frm: TfrmCreateFormProp);
+var
     TemplateStrings: TStringList;
-    OutputString: String;
-    WindowStyle: String;
-    ClassName: String;
-    Filename: String;
-    DateStr: String;
-    Author: String;
-    Title: String;
-    tempFileName: String;
-Begin
+    OutputString: string;
+    WindowStyle: string;
+    ClassName: string;
+    Filename: string;
+    DateStr: string;
+    Author: string;
+    Title: string;
+    tempFileName: string;
+begin
   //Determine the window style
-    If frm.cbUseCaption.checked Then
+    if frm.cbUseCaption.checked then
         WindowStyle := 'wxCAPTION | ';
 
-    If frm.cbResizeBorder.checked Then
+    if frm.cbResizeBorder.checked then
         WindowStyle := WindowStyle + 'wxRESIZE_BORDER | ';
 
-    If frm.cbSystemMenu.checked Then
+    if frm.cbSystemMenu.checked then
         WindowStyle := WindowStyle + 'wxSYSTEM_MENU | ';
 
-    If frm.cbThickBorder.checked Then
+    if frm.cbThickBorder.checked then
         WindowStyle := WindowStyle + 'wxTHICK_FRAME | ';
 
-    If frm.cbStayOnTop.checked Then
+    if frm.cbStayOnTop.checked then
         WindowStyle := WindowStyle + 'wxSTAY_ON_TOP | ';
 
-    If frm.cbNoParent.checked Then
+    if frm.cbNoParent.checked then
         WindowStyle := WindowStyle + 'wxDIALOG_NO_PARENT | ';
 
-    If frm.cbMinButton.checked Then
+    if frm.cbMinButton.checked then
         WindowStyle := WindowStyle + 'wxMINIMIZE_BOX | ';
 
-    If frm.cbMaxButton.checked Then
+    if frm.cbMaxButton.checked then
         WindowStyle := WindowStyle + 'wxMAXIMIZE_BOX | ';
 
-    If frm.cbCloseButton.checked Then
+    if frm.cbCloseButton.checked then
         WindowStyle := WindowStyle + 'wxCLOSE_BOX | ';
 
   //Finalize the window style string
-    If Length(WindowStyle) <> 0 Then
+    if Length(WindowStyle) <> 0 then
         WindowStyle := Copy(WindowStyle, 0, Length(WindowStyle) - 3)
-    Else
+    else
         WindowStyle := '0';
 
   //Get the remaining properties
@@ -1939,14 +1939,14 @@ Begin
     DateStr := DateTimeToStr(now);
     Author := Trim(frm.txtAuthorName.Text);
     Title := Trim(frm.txtTitle.Text);
-    If (FileExists(template) = False) Then
-    Begin
+    if (FileExists(template) = FALSE) then
+    begin
         ShowMessage('Unable to find Template file ' + template);
         exit;
-    End;
+    end;
   //Load the strings from file
     TemplateStrings := TStringList.Create;
-    Try
+    try
         TemplateStrings.LoadFromFile(template);
 
         OutputString := TemplateStrings.text;
@@ -1960,93 +1960,93 @@ Begin
         strSearchReplace(OutputString, '%CLASS_STYLE_STRING%', WindowStyle, [srAll]);
 
     //Replace the project only options
-        If main.IsProjectAssigned Then
-        Begin
+        if main.IsProjectAssigned then
+        begin
             strSearchReplace(OutputString, '%PROJECT_NAME%', ChangeFileExt(ExtractFileName(main.GetProjectFileName), ''), [srAll]);
             strSearchReplace(OutputString, '%APP_NAME%', ChangeFileExt(ExtractFileName(main.GetProjectFileName), '') + APP_SUFFIX, [srAll]);
-        End
-        Else
-        Begin
+        end
+        else
+        begin
             strSearchReplace(OutputString, '%PROJECT_NAME%', '', [srAll]);
             strSearchReplace(OutputString, '%APP_NAME%', '', [srAll]);
-        End;
+        end;
 
     //Finally save the entire string to file
         SaveStringToFile(OutputString, destination);
-    Finally
+    finally
         TemplateStrings.Destroy;
-    End;
-End;
+    end;
+end;
 
-Function TWXDsgn.CreateSourceCodes(strCppFile, strHppFile: String; FCreateFormProp: TfrmCreateFormProp; Var cppCode, hppCode: String; dsgnType: TWxDesignerType): Boolean;
-Var
-    strClassName, strClassTitle, strClassStyleString, strFileName, strDate, strAuthor: String;
+function TWXDsgn.CreateSourceCodes(strCppFile, strHppFile: string; FCreateFormProp: TfrmCreateFormProp; var cppCode, hppCode: string; dsgnType: TWxDesignerType): boolean;
+var
+    strClassName, strClassTitle, strClassStyleString, strFileName, strDate, strAuthor: string;
     strLstHeaderCode, strLstSourceCode, strLstXRCCode: TStringList;
 
-    Function GetStyleString: String;
-    Var
-        I: Integer;
+    function GetStyleString: string;
+    var
+        I: integer;
         strLst: TStringList;
-    Begin
+    begin
         strLst := TStringList.Create;
 
-        If FCreateFormProp.cbUseCaption.checked Then
+        if FCreateFormProp.cbUseCaption.checked then
             strLst.add('wxCAPTION');
 
-        If FCreateFormProp.cbResizeBorder.checked Then
+        if FCreateFormProp.cbResizeBorder.checked then
             strLst.add('wxRESIZE_BORDER');
 
-        If FCreateFormProp.cbSystemMenu.checked Then
+        if FCreateFormProp.cbSystemMenu.checked then
             strLst.add('wxSYSTEM_MENU');
 
-        If FCreateFormProp.cbThickBorder.checked Then
+        if FCreateFormProp.cbThickBorder.checked then
             strLst.add('wxTHICK_FRAME');
 
-        If FCreateFormProp.cbStayOnTop.checked Then
+        if FCreateFormProp.cbStayOnTop.checked then
             strLst.add('wxSTAY_ON_TOP');
 
-        If (dsgnType = dtWxDialog) Then
-            If FCreateFormProp.cbNoParent.checked Then
+        if (dsgnType = dtWxDialog) then
+            if FCreateFormProp.cbNoParent.checked then
                 strLst.add('wxDIALOG_NO_PARENT');
 
-        If FCreateFormProp.cbMinButton.checked Then
+        if FCreateFormProp.cbMinButton.checked then
             strLst.add('wxMINIMIZE_BOX');
 
-        If FCreateFormProp.cbMaxButton.checked Then
+        if FCreateFormProp.cbMaxButton.checked then
             strLst.add('wxMAXIMIZE_BOX');
 
-        If FCreateFormProp.cbCloseButton.checked Then
+        if FCreateFormProp.cbCloseButton.checked then
             strLst.add('wxCLOSE_BOX');
 
-        If strLst.Count = 0 Then
-        Begin
-            If (dsgnType = dtWxDialog) Then
-            Begin
+        if strLst.Count = 0 then
+        begin
+            if (dsgnType = dtWxDialog) then
+            begin
                 Result := 'wxDEFAULT_DIALOG_STYLE';
-            End;
-            If (dsgnType = dtWxFrame) Then
-            Begin
+            end;
+            if (dsgnType = dtWxFrame) then
+            begin
                 Result := 'wxDEFAULT_FRAME_STYLE';
-            End;
-        End
-        Else
-        Begin
-            For I := 0 To strLst.count - 1 Do // Iterate
-            Begin
-                If i <> strLst.count - 1 Then
+            end;
+        end
+        else
+        begin
+            for I := 0 to strLst.count - 1 do // Iterate
+            begin
+                if i <> strLst.count - 1 then
                     Result := Result + strLst[i] + ' | '
-                Else
+                else
                     Result := Result + ' ' + strLst[i] + ' ';
-            End; // for
-        End;
+            end; // for
+        end;
         strLst.destroy;
-    End;
+    end;
 
-    Function replaceAllSymbolsInStrLst(strLst: TStrings; Var strFileSrc: String):
-    Boolean;
-    Begin
-        Result := True;
-        Try
+    function replaceAllSymbolsInStrLst(strLst: TStrings; var strFileSrc: string):
+    boolean;
+    begin
+        Result := TRUE;
+        try
             strFileSrc := strLst.text;
             strSearchReplace(strFileSrc, '%FILE_NAME%', ExtractFileName(strFileName), [srAll]);
             strSearchReplace(strFileSrc, '%DEVCPP_DIR%', main.GetExec, [srAll]);
@@ -2058,13 +2058,13 @@ Var
             strSearchReplace(strFileSrc, '%CLASS_TITLE%', strClassTitle, [srAll]);
             strSearchReplace(strFileSrc, '%CLASS_STYLE_STRING%', strClassStyleString, [srAll]);
 
-        Finally
+        finally
 
-        End;
-    End;
-Begin
-    Result := False;
-    If Not assigned(FCreateFormProp) Then
+        end;
+    end;
+begin
+    Result := FALSE;
+    if not assigned(FCreateFormProp) then
         exit;
 
     strClassName := Trim(FCreateFormProp.txtClassName.Text);
@@ -2093,22 +2093,22 @@ Begin
 
     Result := SaveStringToFile(cppCode, ChangeFileExt(strFileName, CPP_EXT));
   //Create Source Code for the Cpp, H, and Form Files
-    If Result Then
-    Begin
+    if Result then
+    begin
         SaveStringToFile(hppCode, ChangeFileExt(strFileName, H_EXT));
 
-        If (ELDesigner1.GenerateXRC) Then
-        Begin
+        if (ELDesigner1.GenerateXRC) then
+        begin
             strLstXRCCode := CreateBlankXRC;
             Result := SaveStringToFile(strLstXRCCode.Text, ChangeFileExt(strFileName, XRC_EXT));
             strLstXRCCode.Destroy;
-        End;
+        end;
 
-    End;
+    end;
 
-End;
+end;
 
-Function TWXDsgn.CreateAppSourceCodes(strCppFile, strHppFile, strAppCppFile, strAppHppFile: String; FCreateFormProp: TfrmCreateFormProp; Var cppCode, hppCode, appcppCode, apphppCode: String; dsgnType: TWxDesignerType): Boolean;
+function TWXDsgn.CreateAppSourceCodes(strCppFile, strHppFile, strAppCppFile, strAppHppFile: string; FCreateFormProp: TfrmCreateFormProp; var cppCode, hppCode, appcppCode, apphppCode: string; dsgnType: TWxDesignerType): boolean;
 // This is scavenged from TMainForm.CreateSourceCodes (above)
 // It uses the template files passed to it through the file names contained in
 // strCppFile,strHppFile, strAppCppFile, and strAppHppFile to create new
@@ -2116,74 +2116,74 @@ Function TWXDsgn.CreateAppSourceCodes(strCppFile, strHppFile, strAppCppFile, str
 // in the templates (%FILE_NAME%, %CLASS_NAME%, %AUTHOR_NAME%, etc.) with
 // those supplied by the user. Finally, it creates a resource file and a
 // wxform file for the new project.
-Var
-    strClassName, strClassTitle, strClassStyleString, strFileName, strDate, strAuthor: String;
+var
+    strClassName, strClassTitle, strClassStyleString, strFileName, strDate, strAuthor: string;
     strLstHeaderCode, strLstSourceCode, strLstAppHeaderCode, strLstAppSourceCode, strLstXRCCode: TStringList;
 
-    Function GetStyleString: String;
-    Var
-        I: Integer;
+    function GetStyleString: string;
+    var
+        I: integer;
         strLst: TStringList;
-    Begin
+    begin
         strLst := TStringList.Create;
 
-        If FCreateFormProp.cbUseCaption.checked Then
+        if FCreateFormProp.cbUseCaption.checked then
             strLst.add('wxCAPTION');
 
-        If FCreateFormProp.cbResizeBorder.checked Then
+        if FCreateFormProp.cbResizeBorder.checked then
             strLst.add('wxRESIZE_BORDER');
 
-        If FCreateFormProp.cbSystemMenu.checked Then
+        if FCreateFormProp.cbSystemMenu.checked then
             strLst.add('wxSYSTEM_MENU');
 
-        If FCreateFormProp.cbThickBorder.checked Then
+        if FCreateFormProp.cbThickBorder.checked then
             strLst.add('wxTHICK_FRAME');
 
-        If FCreateFormProp.cbStayOnTop.checked Then
+        if FCreateFormProp.cbStayOnTop.checked then
             strLst.add('wxSTAY_ON_TOP');
 
-        If (dsgnType = dtWxDialog) Then
-            If FCreateFormProp.cbNoParent.checked Then
+        if (dsgnType = dtWxDialog) then
+            if FCreateFormProp.cbNoParent.checked then
                 strLst.add('wxDIALOG_NO_PARENT');
 
-        If FCreateFormProp.cbMinButton.checked Then
+        if FCreateFormProp.cbMinButton.checked then
             strLst.add('wxMINIMIZE_BOX');
 
-        If FCreateFormProp.cbMaxButton.checked Then
+        if FCreateFormProp.cbMaxButton.checked then
             strLst.add('wxMAXIMIZE_BOX');
 
-        If FCreateFormProp.cbCloseButton.checked Then
+        if FCreateFormProp.cbCloseButton.checked then
             strLst.add('wxCLOSE_BOX');
 
-        If strLst.Count = 0 Then
-        Begin
-            If (dsgnType = dtWxDialog) Then
+        if strLst.Count = 0 then
+        begin
+            if (dsgnType = dtWxDialog) then
                 Result := 'wxDEFAULT_DIALOG_STYLE';
 
-            If (dsgnType = dtWxFrame) Then
+            if (dsgnType = dtWxFrame) then
                 Result := 'wxDEFAULT_FRAME_STYLE';
-        End
-        Else
-        Begin
-            For I := 0 To strLst.count - 1 Do // Iterate
-            Begin
-                If i <> strLst.count - 1 Then
+        end
+        else
+        begin
+            for I := 0 to strLst.count - 1 do // Iterate
+            begin
+                if i <> strLst.count - 1 then
                     Result := Result + strLst[i] + '  |  '
-                Else
+                else
                     Result := Result + ' ' + strLst[i] + ' ';
-            End; // for
-        End;
+            end; // for
+        end;
         strLst.destroy;
-    End;
+    end;
 
   // A function within a function
   // This replaces all occurrences of several keywords in a text string
 
-    Function replaceAllSymbolsInStrLst(strLst: TStrings; Var strFileSrc: String):
-    Boolean;
-    Begin
-        Result := True;
-        Try
+    function replaceAllSymbolsInStrLst(strLst: TStrings; var strFileSrc: string):
+    boolean;
+    begin
+        Result := TRUE;
+        try
             strFileSrc := strLst.text;
             strSearchReplace(strFileSrc, '%FILE_NAME%', ExtractFileName(strFileName), [srAll]);
             strSearchReplace(strFileSrc, '%DEVCPP_DIR%', main.GetExec, [srAll]);
@@ -2197,13 +2197,13 @@ Var
             strSearchReplace(strFileSrc, '%PROJECT_NAME%', ChangeFileExt(ExtractFileName(main.GetProjectFileName), ''), [srAll]);
             strSearchReplace(strFileSrc, '%APP_NAME%', ChangeFileExt(ExtractFileName(main.GetProjectFileName), '') + APP_SUFFIX, [srAll]);
 
-        Finally
+        finally
 
-        End;
-    End;
-Begin
-    Result := False;
-    If Not assigned(FCreateFormProp) Then
+        end;
+    end;
+begin
+    Result := FALSE;
+    if not assigned(FCreateFormProp) then
         exit;
 
     strClassName := Trim(FCreateFormProp.txtClassName.Text);
@@ -2246,267 +2246,267 @@ Begin
 
   //Create Source Code for the Cpp, H, RC, and Form Files
     Result := SaveStringToFile(cppCode, ChangeFileExt(strFileName, CPP_EXT));
-    If Result Then
+    if Result then
         Result := SaveStringToFile(hppCode, ChangeFileExt(strFileName, H_EXT));
-    If Result Then
+    if Result then
         Result := SaveStringToFile(apphppCode, ChangeFileExt(main.GetProjectFileName, '') + APP_SUFFIX + H_EXT);
-    If Result Then
+    if Result then
         Result := SaveStringToFile(appcppCode, ChangeFileExt(main.GetProjectFileName, '') + APP_SUFFIX + CPP_EXT);
 
-    If Result And ELDesigner1.GenerateXRC Then
-    Begin
+    if Result and ELDesigner1.GenerateXRC then
+    begin
         strLstXRCCode := CreateBlankXRC;
         Result := SaveStringToFile(strLstXRCCode.Text, ChangeFileExt(strFileName, XRC_EXT));
         strLstXRCCode.Destroy;
-    End;
+    end;
 
-    If Result Then
+    if Result then
         Result := SaveStringToFile('#include <wx/msw/wx.rc>', ChangeFileExt(main.GetProjectFileName, '') + APP_SUFFIX + '.rc');
 
-End;
+end;
 
-Procedure TWXDsgn.ELDesigner1ContextPopup(Sender: TObject; MousePos: TPoint; Var Handled: Boolean);
-Var
+procedure TWXDsgn.ELDesigner1ContextPopup(Sender: TObject; MousePos: TPoint; var Handled: boolean);
+var
     CurrentControl: TControl;
     NewMenuItem: TMenuItem;
-    strControlName: String;
+    strControlName: string;
     FrmInterface: IWxDesignerFormInterface;
-Begin
+begin
   //Create the selected control's "inheritence" tree
-    If ELDesigner1.SelectedControls.Count > 0 Then
-    Begin
+    if ELDesigner1.SelectedControls.Count > 0 then
+    begin
         DesignerMenuSelectParent.Clear;
-        DesignerMenuSelectParent.Enabled := True;
-        DesignerMenuLocked.Enabled := True;
+        DesignerMenuSelectParent.Enabled := TRUE;
+        DesignerMenuLocked.Enabled := TRUE;
 
     //First check or uncheck the locking mode of the component
         CurrentControl := ELDesigner1.SelectedControls.Items[0];
         DesignerMenuLocked.Checked := ELDesigner1.GetLockMode(CurrentControl) <> [];
-        DesignerMenuCut.Enabled := Not DesignerMenuLocked.Checked;
-        DesignerMenuDelete.Enabled := Not DesignerMenuLocked.Checked;
+        DesignerMenuCut.Enabled := not DesignerMenuLocked.Checked;
+        DesignerMenuDelete.Enabled := not DesignerMenuLocked.Checked;
 
-        While CurrentControl.Parent <> Nil Do
-        Begin
+        while CurrentControl.Parent <> NIL do
+        begin
             CurrentControl := CurrentControl.Parent;
             NewMenuItem := TMenuItem.Create(Self);
-            If CurrentControl.GetInterface(IID_IWxDesignerFormInterface, FrmInterface) = True Then
+            if CurrentControl.GetInterface(IID_IWxDesignerFormInterface, FrmInterface) = TRUE then
                 strControlName := FrmInterface.GetFormName
-            Else
+            else
                 strControlName := CurrentControl.Name;
             NewMenuItem.Caption := strControlName;
             NewMenuItem.OnClick := SelectParentClick;
             DesignerMenuSelectParent.Add(NewMenuItem);
-        End;
-    End
-    Else
-    Begin
-        DesignerMenuSelectParent.Enabled := False;
-        DesignerMenuLocked.Enabled := False;
-    End;
+        end;
+    end
+    else
+    begin
+        DesignerMenuSelectParent.Enabled := FALSE;
+        DesignerMenuLocked.Enabled := FALSE;
+    end;
 
-    Handled := True;
+    Handled := TRUE;
     DesignerPopup.Popup(MousePos.X, MousePos.Y);
-End;
+end;
 
-Procedure TWXDsgn.WxPropertyInspectorContextPopup(Sender: TObject; MousePos: TPoint; Var Handled: Boolean);
-Var
+procedure TWXDsgn.WxPropertyInspectorContextPopup(Sender: TObject; MousePos: TPoint; var Handled: boolean);
+var
     Pos: TPoint;
-Begin
+begin
   //Create a temporary var variable
     Pos := MousePos;
-    Handled := True;
+    Handled := TRUE;
 
   //Convert to screen coordinates
     Windows.ClientToScreen(GetFocus, Pos);
 
   //Pop the menu up
     WxPropertyInspectorPopup.Popup(Pos.X, Pos.Y);
-End;
+end;
 
-Procedure TWXDsgn.ELDesigner1ChangeSelection(Sender: TObject);
-Begin
+procedure TWXDsgn.ELDesigner1ChangeSelection(Sender: TObject);
+begin
 {$IFNDEF PRIVATE_BUILD}
-    Try
+    try
 {$ENDIF}
-        If (ELDesigner1 = Nil) Or (ELDesigner1.DesignControl = Nil) Then
+        if (ELDesigner1 = NIL) or (ELDesigner1.DesignControl = NIL) then
             Exit;
 
     //Make sure the Designer Form has the focus
         ELDesigner1.DesignControl.SetFocus;
 
     //Find the index of the current control and show its properties
-        If ELDesigner1.SelectedControls.Count > 0 Then
-        Begin
+        if ELDesigner1.SelectedControls.Count > 0 then
+        begin
             cbxControlsx.ItemIndex :=
                 cbxControlsx.Items.IndexOfObject(ELDesigner1.SelectedControls[0]);
             BuildProperties(ELDesigner1.SelectedControls[0]);
-        End
-        Else
-        If isCurrentPageDesigner Then
+        end
+        else
+        if isCurrentPageDesigner then
             BuildProperties(GetCurrentDesignerForm);
 {$IFNDEF PRIVATE_BUILD}
-    Finally
-    End;
+    finally
+    end;
 {$ENDIF}
-End;
+end;
 
-Procedure TWXDsgn.ELDesigner1ControlDeleted(Sender: TObject;
+procedure TWXDsgn.ELDesigner1ControlDeleted(Sender: TObject;
     AControl: TControl);
-Var
-    intCtrlPos, i: Integer;
-    strCompName: String;
+var
+    intCtrlPos, i: integer;
+    strCompName: string;
     wxcompInterface: IWxComponentInterface;
-    editorName: String;
-Begin
+    editorName: string;
+begin
     intCtrlPos := -1;
 
-    For i := cbxControlsx.Items.Count - 1 Downto 0 Do
-    Begin
-        If AControl.GetInterface(IID_IWxComponentInterface, wxcompInterface) Then
-        Begin
+    for i := cbxControlsx.Items.Count - 1 downto 0 do
+    begin
+        if AControl.GetInterface(IID_IWxComponentInterface, wxcompInterface) then
+        begin
             strCompName := AControl.Name + ':' + wxcompInterface.GetWxClassName;
-            If AnsiSameText(cbxControlsx.Items[i], strCompName) Then
-            Begin
+            if AnsiSameText(cbxControlsx.Items[i], strCompName) then
+            begin
                 cbxControlsx.Items.Delete(i);
                 intCtrlPos := i;
-            End;
-        End;
-    End;
+            end;
+        end;
+    end;
 
-    If intCtrlPos <> -1 Then
-    Begin
-        If isCurrentPageDesigner Then
-        Begin
+    if intCtrlPos <> -1 then
+    begin
+        if isCurrentPageDesigner then
+        begin
             intCtrlPos := cbxControlsx.Items.IndexOfObject(GetCurrentDesignerForm);
-            If ELDesigner1.SelectedControls.Count > 0 Then
+            if ELDesigner1.SelectedControls.Count > 0 then
                 FirstComponentBeingDeleted := ELDesigner1.SelectedControls[0].Name;
 
             SelectedComponent := GetCurrentDesignerForm;
             BuildProperties(ELDesigner1.DesignControl);
 
-            If intCtrlPos <> -1 Then
+            if intCtrlPos <> -1 then
                 cbxControlsx.ItemIndex := intCtrlPos;
-        End;
+        end;
 
-        If AControl Is TWinControl Then
-        Begin
-            For i := 0 To TWinControl(AControl).ControlCount - 1 Do
-            Begin
+        if AControl is TWinControl then
+        begin
+            for i := 0 to TWinControl(AControl).ControlCount - 1 do
+            begin
                 intCtrlPos := cbxControlsx.Items.IndexOfObject(TWinControl(AControl).Controls[i]);
-                If intCtrlPos <> -1 Then
+                if intCtrlPos <> -1 then
                     cbxControlsx.Items.Delete(intCtrlPos);
-            End;
-        End;
-    End;
+            end;
+        end;
+    end;
 
     editorName := main.GetActiveEditorName;
-    If main.IsEditorAssigned(editorName) Then
+    if main.IsEditorAssigned(editorName) then
         UpdateDesignerData(editorName);
 
-End;
+end;
 
-Procedure TWXDsgn.ELDesigner1ControlHint(Sender: TObject;
-    AControl: TControl; Var AHint: String);
-Var
+procedure TWXDsgn.ELDesigner1ControlHint(Sender: TObject;
+    AControl: TControl; var AHint: string);
+var
     compIntf: IWxComponentInterface;
-Begin
-    If AControl.GetInterface(IID_IWxComponentInterface, compIntf) Then
-    Begin
+begin
+    if AControl.GetInterface(IID_IWxComponentInterface, compIntf) then
+    begin
         AHint := Format('%s:%s', [AControl.name, compIntf.GetWxClassName]);
-    End;
-End;
+    end;
+end;
 
-Procedure TWXDsgn.ELDesigner1ControlInserted(Sender: TObject; AControl: TControl);
-Var
-    I: Integer;
+procedure TWXDsgn.ELDesigner1ControlInserted(Sender: TObject; AControl: TControl);
+var
+    I: integer;
     compObj: TComponent;
     wxcompInterface: IWxComponentInterface;
-    strClass: String;
+    strClass: string;
     wxControlPanelInterface: IWxControlPanelInterface;
-Begin
+begin
     FirstComponentBeingDeleted := '';
-    If ELDesigner1.SelectedControls.Count > 0 Then
-    Begin
+    if ELDesigner1.SelectedControls.Count > 0 then
+    begin
         compObj := ELDesigner1.SelectedControls[ELDesigner1.SelectedControls.Count - 1];
         ELDesigner1.SelectedControls[ELDesigner1.SelectedControls.Count - 1].BringToFront;
-        ELDesigner1.SelectedControls[ELDesigner1.SelectedControls.Count - 1].Visible := True;
+        ELDesigner1.SelectedControls[ELDesigner1.SelectedControls.Count - 1].Visible := TRUE;
 
-        If compObj.GetInterface(IID_IWxComponentInterface, wxcompInterface) Then
-        Begin
+        if compObj.GetInterface(IID_IWxComponentInterface, wxcompInterface) then
+        begin
             strClass := wxcompInterface.GetWxClassName;
             SelectedComponent := compObj;
-        End;
+        end;
 
         cbxControlsx.ItemIndex :=
             cbxControlsx.Items.AddObject(ELDesigner1.SelectedControls[ELDesigner1.SelectedControls.Count - 1].Name + ':' +
             strClass, ELDesigner1.SelectedControls[ELDesigner1.SelectedControls.Count - 1]);
 
-    End;
+    end;
 
-    If (AControl Is TWinControl) Then
-    Begin
+    if (AControl is TWinControl) then
+    begin
     //TODO: Guru: Try to create an interface to make sure whether a container has
     //a limiting control. If someone is dropping more than one control then we'll
     //make the controls's parent as the parent of SplitterWindow
-        If (TWinControl(AControl).Parent <> Nil) And (TWinControl(AControl).Parent Is TWxSplitterWindow) Then
-            If TWinControl(AControl).Parent.ControlCount > 2 Then
+        if (TWinControl(AControl).Parent <> NIL) and (TWinControl(AControl).Parent is TWxSplitterWindow) then
+            if TWinControl(AControl).Parent.ControlCount > 2 then
                 TWinControl(AControl).Parent := TWinControl(AControl).Parent.Parent;
 
-        If SelectedComponent <> Nil Then
-        Begin
-            If (SelectedComponent Is TWxNoteBookPage) Then
-            Begin
+        if SelectedComponent <> NIL then
+        begin
+            if (SelectedComponent is TWxNoteBookPage) then
+            begin
                 TWinControl(SelectedComponent).Parent := TWinControl(PreviousComponent);
-                If (PreviousComponent Is TWxNotebook) Then
-                Begin
+                if (PreviousComponent is TWxNotebook) then
+                begin
                     TWxNoteBookPage(SelectedComponent).PageControl := TPageControl(PreviousComponent);
-                End;
+                end;
 
-                If (PreviousComponent Is TWxChoicebook) Then
-                Begin
+                if (PreviousComponent is TWxChoicebook) then
+                begin
                     TWxNoteBookPage(SelectedComponent).PageControl := TPageControl(TWxChoicebook(PreviousComponent).pgc1);
-                    TWxNoteBookPage(SelectedComponent).TabVisible := False;
-                End;
+                    TWxNoteBookPage(SelectedComponent).TabVisible := FALSE;
+                end;
 
-                If (PreviousComponent Is TWxListbook) Then
-                Begin
+                if (PreviousComponent is TWxListbook) then
+                begin
                     TWxNoteBookPage(SelectedComponent).PageControl := TPageControl(TWxListbook(PreviousComponent).pgc1);
-                    TWxNoteBookPage(SelectedComponent).TabVisible := False;
-                End;
+                    TWxNoteBookPage(SelectedComponent).TabVisible := FALSE;
+                end;
 
-                If (PreviousComponent Is TWxToolbook) Then
-                Begin
+                if (PreviousComponent is TWxToolbook) then
+                begin
                     TWxNoteBookPage(SelectedComponent).PageControl := TPageControl(TWxToolbook(PreviousComponent).pgc1);
-                    TWxNoteBookPage(SelectedComponent).TabVisible := False;
-                End;
+                    TWxNoteBookPage(SelectedComponent).TabVisible := FALSE;
+                end;
 
-                If (PreviousComponent Is TWxTreebook) Then
-                Begin
+                if (PreviousComponent is TWxTreebook) then
+                begin
                     TWxNoteBookPage(SelectedComponent).PageControl := TPageControl(TWxTreebook(PreviousComponent).pgc1);
-                    TWxNoteBookPage(SelectedComponent).TabVisible := False;
-                End;
-            End;
+                    TWxNoteBookPage(SelectedComponent).TabVisible := FALSE;
+                end;
+            end;
 
-            If (SelectedComponent Is TWxAuiNoteBookPage) Then
-            Begin
+            if (SelectedComponent is TWxAuiNoteBookPage) then
+            begin
                 TWinControl(SelectedComponent).Parent := TWinControl(PreviousComponent);
-                If (PreviousComponent Is TWxAuiNotebook) Then
-                Begin
+                if (PreviousComponent is TWxAuiNotebook) then
+                begin
                     TWxAuiNoteBookPage(SelectedComponent).PageControl := TPageControl(PreviousComponent);
-                End;
-            End;
+                end;
+            end;
 
-            If (SelectedComponent Is TWxNonVisibleBaseComponent) And Not (SelectedComponent.ClassName = 'TWxAuiPaneInfo') Then
+            if (SelectedComponent is TWxNonVisibleBaseComponent) and not (SelectedComponent.ClassName = 'TWxAuiPaneInfo') then
                 TWxNonVisibleBaseComponent(SelectedComponent).Parent := ELDesigner1.DesignControl;
 
-            If TfrmNewForm(ELDesigner1.DesignControl).Wx_DesignerType = dtWxFrame Then
-            Begin
-                If (SelectedComponent Is TWxToolBar) Then
+            if TfrmNewForm(ELDesigner1.DesignControl).Wx_DesignerType = dtWxFrame then
+            begin
+                if (SelectedComponent is TWxToolBar) then
                     TWxToolBar(SelectedComponent).Parent := ELDesigner1.DesignControl;
 
-                If (SelectedComponent Is TWxStatusBar) Then
+                if (SelectedComponent is TWxStatusBar) then
                     TWxStatusBar(SelectedComponent).Parent := ELDesigner1.DesignControl;
-            End;
+            end;
 
       {      //Like wxWidgets' default behaviour, fill the whole screen if only one control
       //is on the screen
@@ -2515,236 +2515,236 @@ Begin
           if TWincontrol(SelectedComponent).Parent is TForm then
             TWincontrol(SelectedComponent).Align := alClient;
       }
-        End;
-    End;
+        end;
+    end;
 
-    PreviousComponent := Nil;
-    For I := 0 To ELDesigner1.SelectedControls.Count - 1 Do // Iterate
-    Begin
+    PreviousComponent := NIL;
+    for I := 0 to ELDesigner1.SelectedControls.Count - 1 do // Iterate
+    begin
         compObj := ELDesigner1.SelectedControls[i];
-        If compObj Is TWinControl Then
+        if compObj is TWinControl then
       //if we drop a control to image or other static controls that are derived
       //from TWxControlPanel
 
-            If TWinControl(compObj).Parent.GetInterface(IID_IWxControlPanelInterface, wxControlPanelInterface) Then
-            Begin
+            if TWinControl(compObj).Parent.GetInterface(IID_IWxControlPanelInterface, wxControlPanelInterface) then
+            begin
 {$IFNDEF PRIVATE_BUILD}
-                Try
+                try
 {$ENDIF}
-                    If assigned(TWinControl(compObj).parent.parent) Then
+                    if assigned(TWinControl(compObj).parent.parent) then
                         TWinControl(compObj).parent := TWinControl(compObj).parent.parent;
 {$IFNDEF PRIVATE_BUILD}
-                Except
-                End;
+                except
+                end;
 {$ENDIF}
-            End;
+            end;
 
 {$IFNDEF PRIVATE_BUILD}
-        Try
+        try
 {$ENDIF}
-            If compObj.GetInterface(IID_IWxComponentInterface, wxcompInterface) Then
-            Begin
+            if compObj.GetInterface(IID_IWxComponentInterface, wxcompInterface) then
+            begin
                 Inc(intControlCount);
                 wxcompInterface.SetIDName('ID_' + UpperCase(compObj.Name));
                 wxcompInterface.SetIDValue(intControlCount);
-            End;
+            end;
 {$IFNDEF PRIVATE_BUILD}
-        Except
-        End;
+        except
+        end;
 {$ENDIF}
-    End; // End for
+    end; // End for
 
     ComponentPalette.UnselectComponents;
     main.UnSetActiveControl;
     UpdateDesignerData(main.GetActiveEditorName);
 
   //This makes the Sizers get painted properly.
-    If ELDesigner1.SelectedControls.Count > 0 Then
-    Begin
+    if ELDesigner1.SelectedControls.Count > 0 then
+    begin
         compObj := ELDesigner1.SelectedControls[0].parent;
-        If compObj Is TWinControl Then
-            While (compObj <> Nil) Do
-            Begin
+        if compObj is TWinControl then
+            while (compObj <> NIL) do
+            begin
                 TWinControl(compObj).refresh;
                 TWinControl(compObj).repaint;
                 TWinControl(compObj) := TWinControl(compObj).parent;
-            End; // for
-    End;
+            end; // for
+    end;
 
     ELDesigner1.DesignControl.Refresh;
     ELDesigner1.DesignControl.Repaint;
-End;
+end;
 
-Procedure TWXDsgn.DisableDesignerControls;
-Begin
+procedure TWXDsgn.DisableDesignerControls;
+begin
   //Show a busy cursor
     Screen.Cursor := crHourglass;
     Application.ProcessMessages;
 
-    cbxControlsx.Enabled := False;
-    pgCtrlObjectInspector.Enabled := False;
-    JvInspProperties.Enabled := False;
-    JvInspEvents.Enabled := False;
-    ComponentPalette.Enabled := False;
-    ComponentPalette.Visible := False;
+    cbxControlsx.Enabled := FALSE;
+    pgCtrlObjectInspector.Enabled := FALSE;
+    JvInspProperties.Enabled := FALSE;
+    JvInspEvents.Enabled := FALSE;
+    ComponentPalette.Enabled := FALSE;
+    ComponentPalette.Visible := FALSE;
     palettePanel.BevelInner := bvLowered;
 
-    ELDesigner1.Active := False;
-    ELDesigner1.DesignControl := Nil;
+    ELDesigner1.Active := FALSE;
+    ELDesigner1.DesignControl := NIL;
 
-    SelectedComponent := Nil;
-    If boolInspectorDataClear Then
-    Begin
+    SelectedComponent := NIL;
+    if boolInspectorDataClear then
+    begin
         JvInspProperties.Clear;
-        If Assigned(JvInspProperties.Root) Then
+        if Assigned(JvInspProperties.Root) then
             JvInspProperties.Root.Clear;
         JvInspEvents.Clear;
-        If Assigned(JvInspEvents.Root) Then
+        if Assigned(JvInspEvents.Root) then
             JvInspEvents.Root.Clear;
-    End;
+    end;
 
-    boolInspectorDataClear := True;
+    boolInspectorDataClear := TRUE;
     cbxControlsx.Items.Clear;
     Screen.Cursor := crDefault;
-End;
+end;
 
-Procedure TWXDsgn.EnableDesignerControls;
-Begin
+procedure TWXDsgn.EnableDesignerControls;
+begin
   //TODO: Guru: I have no clue why I'm getting an error at this place.
 {$IFNDEF PRIVATE_BUILD}
-    Try
+    try
 {$ENDIF}
-        If Assigned(ELDesigner1.DesignControl) Then
-        Begin
-            ELDesigner1.Active := True;
+        if Assigned(ELDesigner1.DesignControl) then
+        begin
+            ELDesigner1.Active := TRUE;
             ELDesigner1.DesignControl.SetFocus;
-        End;
+        end;
 {$IFNDEF PRIVATE_BUILD}
-    Finally
+    finally
 {$ENDIF}
-        cbxControlsx.Enabled := True;
+        cbxControlsx.Enabled := TRUE;
 {$IFNDEF PRIVATE_BUILD}
-    End;
+    end;
 {$ENDIF}
 
-    If cleanUpJvInspEvents Then
-    Begin
-        JvInspEvents.Root.Visible := True;
-        JvInspProperties.Root.Visible := True;
-        cleanUpJvInspEvents := False;
-    End;
+    if cleanUpJvInspEvents then
+    begin
+        JvInspEvents.Root.Visible := TRUE;
+        JvInspProperties.Root.Visible := TRUE;
+        cleanUpJvInspEvents := FALSE;
+    end;
 
-    pgCtrlObjectInspector.Enabled := True;
-    JvInspProperties.Enabled := True;
-    JvInspEvents.Enabled := True;
+    pgCtrlObjectInspector.Enabled := TRUE;
+    JvInspProperties.Enabled := TRUE;
+    JvInspEvents.Enabled := TRUE;
     palettePanel.BevelInner := bvNone;
-    ComponentPalette.Enabled := True;
-    ComponentPalette.Visible := True;
-End;
+    ComponentPalette.Enabled := TRUE;
+    ComponentPalette.Visible := TRUE;
+end;
 
-Procedure TWXDsgn.ELDesigner1ControlDoubleClick(Sender: TObject);    // EAB: Look here for designer doubleclick events
-Var
-    i, nSlectedItem: Integer;
-Begin
-    If JvInspEvents.Root.Count = 0 Then
+procedure TWXDsgn.ELDesigner1ControlDoubleClick(Sender: TObject);    // EAB: Look here for designer doubleclick events
+var
+    i, nSlectedItem: integer;
+begin
+    if JvInspEvents.Root.Count = 0 then
         exit;
     nSlectedItem := -1;
-    For i := 0 To JvInspEvents.Root.Count - 1 Do
-    Begin
-        If JvInspEvents.Root.Items[i].Hidden = False Then
-        Begin
+    for i := 0 to JvInspEvents.Root.Count - 1 do
+    begin
+        if JvInspEvents.Root.Items[i].Hidden = FALSE then
+        begin
             nSlectedItem := i;
             break;
-        End;
-    End;
-    If nSlectedItem = -1 Then
+        end;
+    end;
+    if nSlectedItem = -1 then
         exit;
 
     JvInspEvents.Show;
   //If we dont select it then the Selection Event wont get fired
     JvInspEvents.SelectedIndex := JvInspEvents.Root.Items[nSlectedItem].DisplayIndex;
 
-    If JvInspEvents.Root.Items[nSlectedItem].Data.AsString <> '' Then
-    Begin
+    if JvInspEvents.Root.Items[nSlectedItem].Data.AsString <> '' then
+    begin
         strGlobalCurrentFunction := JvInspEvents.Root.Items[nSlectedItem].Data.AsString;
-        JvInspEvents.OnDataValueChanged := Nil;
+        JvInspEvents.OnDataValueChanged := NIL;
         JvInspEvents.Root.Items[nSlectedItem].Data.AsString := '<Goto Function>';
-        JvInspEvents.Root.Items[nSlectedItem].DoneEdit(True);
+        JvInspEvents.Root.Items[nSlectedItem].DoneEdit(TRUE);
         JvInspEvents.OnDataValueChanged := JvInspEventsDataValueChanged;
-        JvInspEventsDataValueChanged(Nil, JvInspEvents.Root.Items[nSlectedItem].Data);
-    End
-    Else
-    Begin
-        JvInspEvents.OnDataValueChanged := Nil;
+        JvInspEventsDataValueChanged(NIL, JvInspEvents.Root.Items[nSlectedItem].Data);
+    end
+    else
+    begin
+        JvInspEvents.OnDataValueChanged := NIL;
         JvInspEvents.Root.Items[nSlectedItem].Data.AsString := '<Add New Function>';
-        JvInspEvents.Root.Items[nSlectedItem].DoneEdit(True);
+        JvInspEvents.Root.Items[nSlectedItem].DoneEdit(TRUE);
         JvInspEvents.OnDataValueChanged := JvInspEventsDataValueChanged;
-        JvInspEventsDataValueChanged(Nil, JvInspEvents.Root.Items[nSlectedItem].Data);
-    End;
-    If pendingEditorSwitch Then
-    Begin
-        JvInspEvents.OnMouseMove := Nil;
-        JvInspEvents.OnMouseUp := Nil;
-        pendingEditorSwitch := False;
-    End;
-End;
+        JvInspEventsDataValueChanged(NIL, JvInspEvents.Root.Items[nSlectedItem].Data);
+    end;
+    if pendingEditorSwitch then
+    begin
+        JvInspEvents.OnMouseMove := NIL;
+        JvInspEvents.OnMouseUp := NIL;
+        pendingEditorSwitch := FALSE;
+    end;
+end;
 
-Procedure TWXDsgn.ELDesigner1ControlInserting(Sender: TObject;
-    Var AParent: TWinControl; Var AControlClass: TControlClass);
-Var
+procedure TWXDsgn.ELDesigner1ControlInserting(Sender: TObject;
+    var AParent: TWinControl; var AControlClass: TControlClass);
+var
     dlgInterface: IWxDialogNonInsertableInterface;
     tlbrInterface: IWxToolBarInsertableInterface;
     nontlbrInterface: IWxToolBarNonInsertableInterface;
     //compObj: TComponent;
-    I: Integer;
+    I: integer;
 
-    Function GetNonAllowAbleControlCountForFrame(winCtrl: TWinControl): Integer;
-    Var
-        I: Integer;
-    Begin
+    function GetNonAllowAbleControlCountForFrame(winCtrl: TWinControl): integer;
+    var
+        I: integer;
+    begin
         Result := 0;
     //TODO: Guru: Weird error remover ... Shitty solution.
         FirstComponentBeingDeleted := '';
 
-        If winCtrl = Nil Then
+        if winCtrl = NIL then
             Exit;
         Result := 0;
-        For I := 0 To winCtrl.ControlCount - 1 Do
-        Begin
-            If (winCtrl.Controls[i] Is TWxToolBar) Or (winCtrl.Controls[i] Is TWxMenuBar)
-                Or (winCtrl.Controls[i] Is TWxStatusBar) Or (winCtrl.Controls[i] Is TWxPopupMenu)
-                Or (winCtrl.Controls[i] Is TWxNonVisibleBaseComponent) Then
+        for I := 0 to winCtrl.ControlCount - 1 do
+        begin
+            if (winCtrl.Controls[i] is TWxToolBar) or (winCtrl.Controls[i] is TWxMenuBar)
+                or (winCtrl.Controls[i] is TWxStatusBar) or (winCtrl.Controls[i] is TWxPopupMenu)
+                or (winCtrl.Controls[i] is TWxNonVisibleBaseComponent) then
                 Continue;
             Inc(Result);
-        End;
-    End;
+        end;
+    end;
 
-    Function isSizerAvailable(winCtrl: TWinControl): Boolean;
-    Var
-        I: Integer;
-    Begin
-        Result := False;
+    function isSizerAvailable(winCtrl: TWinControl): boolean;
+    var
+        I: integer;
+    begin
+        Result := FALSE;
     //TODO: Guru: Weird error remover ... Shitty solution.
         FirstComponentBeingDeleted := '';
 
-        If winCtrl = Nil Then
+        if winCtrl = NIL then
             Exit;
-        For I := 0 To winCtrl.ComponentCount - 1 Do
-        Begin
-            If winCtrl.Components[i] Is TWxSizerPanel Then
-            Begin
-                Result := True;
+        for I := 0 to winCtrl.ComponentCount - 1 do
+        begin
+            if winCtrl.Components[i] is TWxSizerPanel then
+            begin
+                Result := TRUE;
                 Exit;
-            End;
-        End;
-    End;
+            end;
+        end;
+    end;
 
-    Procedure ShowErrorAndReset(msgstr: String);
-    Begin
+    procedure ShowErrorAndReset(msgstr: string);
+    begin
         MessageDlg(msgstr, mtError, [mbOK], ownerForm.Handle);
         ComponentPalette.UnselectComponents;
-        PreviousComponent := Nil;
-        AControlClass := Nil;
+        PreviousComponent := NIL;
+        AControlClass := NIL;
 
     //Select the parent
         SendMessage(AParent.Handle, WM_LBUTTONDOWN, 0, MAKELONG(100, 100));
@@ -2753,154 +2753,154 @@ Var
         PostMessage(AParent.Handle, BM_CLICK, 0, MAKELONG(100, 100));
         SendMessage(AParent.Handle, WM_LBUTTONUP, 0, MAKELONG(100, 100));
         PostMessage(AParent.Handle, WM_LBUTTONUP, 0, MAKELONG(100, 100));
-    End;
+    end;
 
-Begin
-    If (Screen.Cursor = crDrag) Then
+begin
+    if (Screen.Cursor = crDrag) then
         Screen.Cursor := crDefault;
 
   //Make sure we have a component we want to insert
-    If Trim(ComponentPalette.SelectedComponent) = '' Then
+    if Trim(ComponentPalette.SelectedComponent) = '' then
         Exit;
 
   //Make sure that the type of control is valid
     AControlClass := TControlClass(GetClass(ComponentPalette.SelectedComponent));
-    If AControlClass = Nil Then
+    if AControlClass = NIL then
         Exit;
 
   //Do some sanity checks
-    If TFrmNewForm(ELDesigner1.DesignControl).Wx_DesignerType = dtWxFrame Then
-    Begin
-        If strContainsU(ComponentPalette.SelectedComponent, 'TWxStatusBar') And
-            (GetAvailableControlCount(ELDesigner1.DesignControl, 'TWxStatusBar') > 0) Then
-        Begin
+    if TFrmNewForm(ELDesigner1.DesignControl).Wx_DesignerType = dtWxFrame then
+    begin
+        if strContainsU(ComponentPalette.SelectedComponent, 'TWxStatusBar') and
+            (GetAvailableControlCount(ELDesigner1.DesignControl, 'TWxStatusBar') > 0) then
+        begin
             ShowErrorAndReset('Each frame can only have one statusbar.');
             Exit;
-        End;
+        end;
 
-        If strContainsU(ComponentPalette.SelectedComponent, 'TWxMenuBar') And
-            (GetAvailableControlCount(ELDesigner1.DesignControl, 'TWxMenuBar') > 0) Then
-        Begin
+        if strContainsU(ComponentPalette.SelectedComponent, 'TWxMenuBar') and
+            (GetAvailableControlCount(ELDesigner1.DesignControl, 'TWxMenuBar') > 0) then
+        begin
             ShowErrorAndReset('Each frame can only have one menubar.');
             Exit;
-        End;
+        end;
 
-        If StrContainsU(ComponentPalette.SelectedComponent, 'TWxStdDialogButtonSizer') Then
-        Begin
+        if StrContainsU(ComponentPalette.SelectedComponent, 'TWxStdDialogButtonSizer') then
+        begin
             ShowErrorAndReset('wxStdDialogButtonSizers can only be inserted onto a wxDialog.');
             Exit;
-        End;
+        end;
 
     //TODO: Guru: Is this dead code? Why are you checking for a wxDialog when your IF states that
     //            this part will be executed when it's a wxFrame?
-        If TWinControl(AControlClass.NewInstance).GetInterface(IID_IWxToolBarInsertableInterface, tlbrInterface) Then
-        Begin
-            If Not (StrContainsU(AParent.ClassName, 'TWxToolBar')) And
-                Not (TWinControl(AControlClass.NewInstance).GetInterface(IID_IWxToolBarNonInsertableInterface, nontlbrInterface)) Then
-            Begin
+        if TWinControl(AControlClass.NewInstance).GetInterface(IID_IWxToolBarInsertableInterface, tlbrInterface) then
+        begin
+            if not (StrContainsU(AParent.ClassName, 'TWxToolBar')) and
+                not (TWinControl(AControlClass.NewInstance).GetInterface(IID_IWxToolBarNonInsertableInterface, nontlbrInterface)) then
+            begin
                 ShowErrorAndReset('You cannot insert Toolbar control in Dialog. Use Toolbar only in wxFrame.');
                 Exit;
-            End;
-        End
-        Else
-        Begin
-            If (Not strContainsU(AParent.ClassName, 'TFrmNewForm')) And
-                (AParent.Parent <> Nil) And (StrContainsU(AParent.Parent.ClassName, 'TWxToolBar')) Then
-            Begin
+            end;
+        end
+        else
+        begin
+            if (not strContainsU(AParent.ClassName, 'TFrmNewForm')) and
+                (AParent.Parent <> NIL) and (StrContainsU(AParent.Parent.ClassName, 'TWxToolBar')) then
+            begin
                 ShowErrorAndReset('You cannot insert this control in a toolbar');
                 Exit;
-            End;
+            end;
 
-            If StrContainsU(AParent.ClassName, 'TWxToolBar') Then
-            Begin
+            if StrContainsU(AParent.ClassName, 'TWxToolBar') then
+            begin
                 ShowErrorAndReset('You cannot insert this control in a toolbar');
                 Exit;
-            End;
+            end;
 
-            If StrContainsU(AParent.ClassName, 'TWxAuiToolBar') Then
-            Begin
+            if StrContainsU(AParent.ClassName, 'TWxAuiToolBar') then
+            begin
                 PreviousComponent := TWinControl(ELDesigner1.SelectedControls[0].GetParentComponent()).Parent;
                 Exit;
-            End;
+            end;
 
-        End;
+        end;
 
-    End
-    Else
-    Begin
-        If TWinControl(AControlClass.NewInstance).GetInterface(IID_IWxDialogNonInsertableInterface, dlgInterface) Then
-        Begin
+    end
+    else
+    begin
+        if TWinControl(AControlClass.NewInstance).GetInterface(IID_IWxDialogNonInsertableInterface, dlgInterface) then
+        begin
             ShowErrorAndReset('This control cannot be used in dialogs.');
             Exit;
-        End;
+        end;
 
-        If StrContainsU(ComponentPalette.SelectedComponent, 'TWxStdDialogButtonSizer') Then
-        Begin
-            If Not isSizerAvailable(ELDesigner1.DesignControl) Then
-            Begin
+        if StrContainsU(ComponentPalette.SelectedComponent, 'TWxStdDialogButtonSizer') then
+        begin
+            if not isSizerAvailable(ELDesigner1.DesignControl) then
+            begin
                 ShowErrorAndReset('wxStdDialogButtonSizers need a parent sizer to attach to.'#13#10#13#10 +
                     'Insert a wxBoxSizer onto the wxDialog before inserting the wxStdDialogButtonSizer.');
                 Exit;
-            End;
+            end;
 
-            For I := 0 To ELDesigner1.DesignControl.ComponentCount - 1 Do
-                If ELDesigner1.DesignControl.Components[i] Is TWxSizerPanel Then
-                    AParent := ELDesigner1.DesignControl.Components[i] As TWinControl;
-        End;
+            for I := 0 to ELDesigner1.DesignControl.ComponentCount - 1 do
+                if ELDesigner1.DesignControl.Components[i] is TWxSizerPanel then
+                    AParent := ELDesigner1.DesignControl.Components[i] as TWinControl;
+        end;
 
-    End;
+    end;
 
   //Malcolm
   // This is the testing for the new wxAui interface stuff
   //Only wxAuiEnabled components should be allowed to be dropped onto a form when a wxAuiManager is present
-    If TWinControl(AControlClass.NewInstance).GetInterface(IID_IWxAuiNonInsertableInterface, dlgInterface) And
+    if TWinControl(AControlClass.NewInstance).GetInterface(IID_IWxAuiNonInsertableInterface, dlgInterface) and
         (GetAvailableControlCount(ELDesigner1.DesignControl, 'TWxAuiManager') > 0)
-        And (ELDesigner1.SelectedControls[0] Is TfrmNewForm) Then
-    Begin
+        and (ELDesigner1.SelectedControls[0] is TfrmNewForm) then
+    begin
         ShowErrorAndReset('This control cannot be placed on a form where a wxAuiManager is present.'#13#10#13#10 +
             'Please use the wxAui version which contains wxAuiPaneInfo data.');
         Exit;
-    End;
+    end;
 
   //Only wxAuiEnabled components should be allowed to be dropped onto a form when a wxAuiManager is present
-    If TWinControl(AControlClass.NewInstance).GetInterface(IID_IWxAuiPaneInfoInterface, dlgInterface) And
-        (GetAvailableControlCount(ELDesigner1.DesignControl, 'TWxAuiManager') = 0) Then
-    Begin
+    if TWinControl(AControlClass.NewInstance).GetInterface(IID_IWxAuiPaneInfoInterface, dlgInterface) and
+        (GetAvailableControlCount(ELDesigner1.DesignControl, 'TWxAuiManager') = 0) then
+    begin
         ShowErrorAndReset('This control can only be placed onto a form where a wxAuiManager is present.'#13#10#13#10 +
             'Please place a wxAuiManager component on the form first.');
         Exit;
-    End;
+    end;
 
   // each frame/dialog can only have one wxAuiManager component
-    If strContainsU(ComponentPalette.SelectedComponent, 'TWxAuiManager') And
-        (GetAvailableControlCount(ELDesigner1.DesignControl, 'TWxAuiManager') > 0) Then
-    Begin
+    if strContainsU(ComponentPalette.SelectedComponent, 'TWxAuiManager') and
+        (GetAvailableControlCount(ELDesigner1.DesignControl, 'TWxAuiManager') > 0) then
+    begin
         ShowErrorAndReset('Each frame or dialog can only have one Aui Manager.');
         Exit;
-    End;
+    end;
 
   // the user should add the wxAuiManager first before any other wxAuiComponent
-    If strContainsU(ComponentPalette.SelectedComponent, 'TWxAuiBar') And
-        (GetAvailableControlCount(ELDesigner1.DesignControl, 'TWxAuiManager') = 0) Then
-    Begin
+    if strContainsU(ComponentPalette.SelectedComponent, 'TWxAuiBar') and
+        (GetAvailableControlCount(ELDesigner1.DesignControl, 'TWxAuiManager') = 0) then
+    begin
         ShowErrorAndReset('This control can only be placed onto a form where a wxAuiManager is present.'#13#10#13#10 +
             'Please place a wxAuiManager component on the form first.');
         Exit;
-    End;
+    end;
 
-    If strContainsU(ComponentPalette.SelectedComponent, 'TWxAuiBar') And
-        (GetAvailableControlCount(ELDesigner1.DesignControl, 'TWxAuiBar') > 3) Then
-    Begin
+    if strContainsU(ComponentPalette.SelectedComponent, 'TWxAuiBar') and
+        (GetAvailableControlCount(ELDesigner1.DesignControl, 'TWxAuiBar') > 3) then
+    begin
         ShowErrorAndReset('Each frame or dialog can only contain four AuiToolBar designer items.');
         Exit;
-    End;
+    end;
 
-    If strContainsU(ComponentPalette.SelectedComponent, 'TWxAuiToolBar') And
-        ((AParent.Parent = Nil) Or Not (StrContainsU(AParent.ClassName, 'TWxAuiBar'))) Then
-    Begin
+    if strContainsU(ComponentPalette.SelectedComponent, 'TWxAuiToolBar') and
+        ((AParent.Parent = NIL) or not (StrContainsU(AParent.ClassName, 'TWxAuiBar'))) then
+    begin
         ShowErrorAndReset('This component must be dropped onto a wxAuibar design aid.');
         Exit;
-    End;
+    end;
 
   // GAR 18 August 2009 - I don't think this is valid any more.
   //  You should be able to add sizers into components as of wxWidgets 2.6
@@ -2920,87 +2920,87 @@ Begin
  //   end;
  // end;
 
-    PreviousComponent := Nil;
-    If TWinControl(AControlClass.NewInstance) Is TWxNoteBookPage Then
-    Begin
-        If ELDesigner1.SelectedControls.count = 0 Then
-        Begin
+    PreviousComponent := NIL;
+    if TWinControl(AControlClass.NewInstance) is TWxNoteBookPage then
+    begin
+        if ELDesigner1.SelectedControls.count = 0 then
+        begin
             ShowErrorAndReset('Please select a Book Container and drop the page.');
             Exit;
-        End;
+        end;
 
         PreviousComponent := ELDesigner1.SelectedControls[0];
-        If (ELDesigner1.SelectedControls[0] Is TWxNoteBookPage) Then
-        Begin
+        if (ELDesigner1.SelectedControls[0] is TWxNoteBookPage) then
+        begin
             PreviousComponent := ELDesigner1.SelectedControls[0].Parent;
-            If (PreviousComponent Is TWxNotebook) Then
+            if (PreviousComponent is TWxNotebook) then
                 Exit
-            Else
-            Begin
-                If (PreviousComponent Is TPageControl) Then
-                Begin
+            else
+            begin
+                if (PreviousComponent is TPageControl) then
+                begin
                     PreviousComponent := PreviousComponent.GetParentComponent;
                     Exit;
-                End
-                Else
-                Begin
+                end
+                else
+                begin
                     PreviousComponent := PreviousComponent.GetParentComponent; // this should be enough to do the page dropping
                     ShowMessage('non notebook');
 
                     Exit;
-                End;
-            End;
-        End;
+                end;
+            end;
+        end;
 
-        If Not (ELDesigner1.SelectedControls[0] Is TWxChoiceBook) And
-            Not (ELDesigner1.SelectedControls[0] Is TWxNoteBook) And
-            Not (ELDesigner1.SelectedControls[0] Is TWxListBook) And
-            Not (ELDesigner1.SelectedControls[0] Is TWxToolBook) And
-            Not (ELDesigner1.SelectedControls[0] Is TWxTreeBook) And
-            Not (ELDesigner1.SelectedControls[0] Is TPageControl) Then
-        Begin
+        if not (ELDesigner1.SelectedControls[0] is TWxChoiceBook) and
+            not (ELDesigner1.SelectedControls[0] is TWxNoteBook) and
+            not (ELDesigner1.SelectedControls[0] is TWxListBook) and
+            not (ELDesigner1.SelectedControls[0] is TWxToolBook) and
+            not (ELDesigner1.SelectedControls[0] is TWxTreeBook) and
+            not (ELDesigner1.SelectedControls[0] is TPageControl) then
+        begin
             ShowErrorAndReset('Please select a Book Container and drop the page.');
             Exit;
-        End;
-    End;
+        end;
+    end;
 
-    If TWinControl(AControlClass.NewInstance) Is TWxAuiNoteBookPage Then
-    Begin
-        If ELDesigner1.SelectedControls.count = 0 Then
-        Begin
+    if TWinControl(AControlClass.NewInstance) is TWxAuiNoteBookPage then
+    begin
+        if ELDesigner1.SelectedControls.count = 0 then
+        begin
             ShowErrorAndReset('Please select a wxAuiNoteBook Container and drop the page.');
             Exit;
-        End;
+        end;
 
         PreviousComponent := ELDesigner1.SelectedControls[0];
-        If (ELDesigner1.SelectedControls[0] Is TWxAuiNoteBookPage) Then
-        Begin
+        if (ELDesigner1.SelectedControls[0] is TWxAuiNoteBookPage) then
+        begin
             PreviousComponent := ELDesigner1.SelectedControls[0].Parent;
-            If (PreviousComponent Is TWxAuiNotebook) Then
+            if (PreviousComponent is TWxAuiNotebook) then
                 Exit
-            Else
-            Begin
+            else
+            begin
                 ShowMessage('Please select a wxAuiNoteBook Container and drop the page.');
                 Exit;
-            End;
-        End;
-    End;
+            end;
+        end;
+    end;
 
   /// Fix for Bug Report #1060562
-    If TWinControl(AControlClass.NewInstance) Is TWxToolButton Then
-    Begin
-        If ELDesigner1.SelectedControls.count = 0 Then
-        Begin
+    if TWinControl(AControlClass.NewInstance) is TWxToolButton then
+    begin
+        if ELDesigner1.SelectedControls.count = 0 then
+        begin
             ShowErrorAndReset('Please select either a Toolbar or AuiToolbar before dropping this control.');
             Exit;
-        End;
+        end;
 
         PreviousComponent := ELDesigner1.SelectedControls[0];
-        If (ELDesigner1.SelectedControls[0] Is TWxToolBar) Then
-        Begin
+        if (ELDesigner1.SelectedControls[0] is TWxToolBar) then
+        begin
             PreviousComponent := ELDesigner1.SelectedControls[0].Parent;
             Exit;
-        End;
+        end;
 
 {mn
     if (ELDesigner1.SelectedControls[0] is TWxAuiToolBar) then
@@ -3009,40 +3009,40 @@ Begin
       Exit;
     end;
 }
-        If (Not (ELDesigner1.SelectedControls[0] Is TWxToolBar)) And (Not (ELDesigner1.SelectedControls[0] Is TWxAuiToolBar)) Then
-        Begin
+        if (not (ELDesigner1.SelectedControls[0] is TWxToolBar)) and (not (ELDesigner1.SelectedControls[0] is TWxAuiToolBar)) then
+        begin
             ShowErrorAndReset('Please select either a Toolbar or AuiToolbar before dropping this control.');
             Exit;
-        End;
-    End;
+        end;
+    end;
 
-    If TControl(AControlClass.NewInstance) Is TWxSeparator Then
-    Begin
-        If ELDesigner1.SelectedControls.count = 0 Then
-        Begin
+    if TControl(AControlClass.NewInstance) is TWxSeparator then
+    begin
+        if ELDesigner1.SelectedControls.count = 0 then
+        begin
             ShowErrorAndReset('Please select either a Toolbar or AuiToolbar before dropping this control.');
             Exit;
-        End;
+        end;
 
         PreviousComponent := ELDesigner1.SelectedControls[0];
-        If (ELDesigner1.SelectedControls[0] Is TWxToolBar) Then
-        Begin
+        if (ELDesigner1.SelectedControls[0] is TWxToolBar) then
+        begin
             PreviousComponent := ELDesigner1.SelectedControls[0].Parent;
             Exit;
-        End;
+        end;
 
-        If (ELDesigner1.SelectedControls[0] Is TWxAuiToolBar) Then
-        Begin
+        if (ELDesigner1.SelectedControls[0] is TWxAuiToolBar) then
+        begin
             PreviousComponent := TWinControl(ELDesigner1.SelectedControls[0].GetParentComponent()).Parent;
             Exit;
-        End;
+        end;
 
-        If (Not (ELDesigner1.SelectedControls[0] Is TWxToolBar)) And (Not (ELDesigner1.SelectedControls[0] Is TWxAuiToolBar)) Then
-        Begin
+        if (not (ELDesigner1.SelectedControls[0] is TWxToolBar)) and (not (ELDesigner1.SelectedControls[0] is TWxAuiToolBar)) then
+        begin
             ShowErrorAndReset('Please select either a Toolbar or AuiToolbar before dropping this control.');
             Exit;
-        End;
-    End;
+        end;
+    end;
 
   {
     if TControl(AControlClass.NewInstance).GetInterface(IID_IWxToolBarInsertableInterface, tlbrInterface) then
@@ -3054,955 +3054,955 @@ Begin
     end;
   end;
   }
-End;
+end;
 
-Procedure TWXDsgn.ELDesigner1KeyDown(Sender: TObject; Var Key: Word;
+procedure TWXDsgn.ELDesigner1KeyDown(Sender: TObject; var Key: word;
     Shift: TShiftState);
-Begin
+begin
 
-    If Shift = [ssCtrl] Then
-    Begin
-        If (Key = Ord('C')) Then
+    if Shift = [ssCtrl] then
+    begin
+        if (Key = Ord('C')) then
             ELDesigner1.Copy;
-        If (Key = Ord('X')) Then
+        if (Key = Ord('X')) then
             ELDesigner1.Cut;
-        If (Key = Ord('V')) Then
+        if (Key = Ord('V')) then
             ELDesigner1.Paste;
-    End;
+    end;
 
   // Need to hijack delete function in designer form
   // so that the proper code cleanup is done
-    If (Key = VK_DELETE) Then
-    Begin
-        actDesignerDeleteExecute(Nil);
-    End;
+    if (Key = VK_DELETE) then
+    begin
+        actDesignerDeleteExecute(NIL);
+    end;
 
-End;
+end;
 
-Procedure TWXDsgn.ELDesigner1Modified(Sender: TObject);
-Begin
-    If Not DisablePropertyBuilding Then
+procedure TWXDsgn.ELDesigner1Modified(Sender: TObject);
+begin
+    if not DisablePropertyBuilding then
         ELDesigner1ChangeSelection(Sender);
     JvInspProperties.RefreshValues;
     UpdateDesignerData(main.GetActiveEditorName);
-End;
+end;
 
-Procedure TWXDsgn.BuildProperties(Comp: TControl; boolForce: Boolean);
-Var
-    strValue: String;
-    strSelName, strCompName: String;
-Begin
-    If Not boolForce Then
-    Begin
-        If DisablePropertyBuilding = True Then
+procedure TWXDsgn.BuildProperties(comp: TControl; boolForce: boolean);
+var
+    strValue: string;
+    strSelName, strCompName: string;
+begin
+    if not boolForce then
+    begin
+        if DisablePropertyBuilding = TRUE then
             Exit;
-        If Assigned(SelectedComponent) Then
+        if Assigned(SelectedComponent) then
             strSelName := SelectedComponent.Name;
-        If Assigned(Comp) Then
-            strCompName := Comp.Name;
+        if Assigned(comp) then
+            strCompName := comp.Name;
 
         PreviousStringValue := '';
-        If AnsiSameText(strSelName, strCompName) Then
-        Begin
-            SelectedComponent := Comp;
+        if AnsiSameText(strSelName, strCompName) then
+        begin
+            SelectedComponent := comp;
             Exit;
-        End;
+        end;
 
-        If FirstComponentBeingDeleted = Comp.Name Then
+        if FirstComponentBeingDeleted = comp.Name then
             Exit;
-    End;
+    end;
 
-    If Comp = Nil Then
+    if comp = NIL then
         Exit;
 
-    SelectedComponent := Comp;
+    SelectedComponent := comp;
 
-    If JvInspProperties.Root <> Nil Then
-        If JvInspProperties.Root.Data <> Nil Then
+    if JvInspProperties.Root <> NIL then
+        if JvInspProperties.Root.Data <> NIL then
 {$IFNDEF PRIVATE_BUILD}
-            Try
+            try
 {$ENDIF}
                 strValue := TWinControl(TJvInspectorPropData(JvInspProperties.Root.Data).Instance).Name;
 {$IFNDEF PRIVATE_BUILD}
-            Except
+            except
                 Exit;
-            End;
+            end;
 {$ENDIF}
 
   //Populate the properties list
     JvInspProperties.BeginUpdate;
     JvInspProperties.Root.Clear;
-    TJvInspectorPropData.New(JvInspProperties.Root, Comp);
+    TJvInspectorPropData.New(JvInspProperties.Root, comp);
     JvInspProperties.EndUpdate;
 
   //And the events list
     JvInspEvents.BeginUpdate;
     JvInspEvents.Root.Clear;
-    TJvInspectorPropData.New(JvInspEvents.Root, Comp);
+    TJvInspectorPropData.New(JvInspEvents.Root, comp);
     JvInspEvents.EndUpdate;
-End;
+end;
 
-Procedure TWXDsgn.BuildComponentList(Designer: TfrmNewForm);
-Var
-    i: Integer;
-    intControlMaxValue: Integer;
+procedure TWXDsgn.BuildComponentList(Designer: TfrmNewForm);
+var
+    i: integer;
+    intControlMaxValue: integer;
     wxcompInterface: IWxComponentInterface;
-Begin
+begin
     intControlMaxValue := -1;
     cbxControlsx.Clear;
     cbxControlsx.Items.BeginUpdate;
 
     cbxControlsx.AddItem(Designer.Wx_Name + ':' + Trim(Designer.Wx_Class),
         Designer);
-    For I := 0 To Designer.ComponentCount - 1 Do // Iterate
-    Begin
-        If Designer.Components[i].GetInterface(IID_IWxComponentInterface,
-            wxcompInterface) Then
-        Begin
+    for I := 0 to Designer.ComponentCount - 1 do // Iterate
+    begin
+        if Designer.Components[i].GetInterface(IID_IWxComponentInterface,
+            wxcompInterface) then
+        begin
             cbxControlsx.AddItem(Designer.Components[i].Name + ':' +
                 wxcompInterface.GetWxClassName, Designer.Components[i]);
-            If wxcompInterface.GetIDValue > intControlMaxValue Then
-            Begin
+            if wxcompInterface.GetIDValue > intControlMaxValue then
+            begin
                 intControlMaxValue := wxcompInterface.GetIDValue;
-            End;
-        End;
-    End; // for
+            end;
+        end;
+    end; // for
 
   // Correct ID numbers > 32768
-    If (intControlMaxValue > 32768) Then
-    Begin
+    if (intControlMaxValue > 32768) then
+    begin
         intControlMaxValue := 1001;
-        For I := 0 To Designer.ComponentCount - 1 Do // Iterate
-            If Designer.Components[i].GetInterface(IID_IWxComponentInterface,
-                wxcompInterface) Then
-            Begin
+        for I := 0 to Designer.ComponentCount - 1 do // Iterate
+            if Designer.Components[i].GetInterface(IID_IWxComponentInterface,
+                wxcompInterface) then
+            begin
                 wxcompInterface.SetIDValue(intControlMaxValue);
                 intControlMaxValue := intControlMaxValue + 1;
-            End;
+            end;
 
-    End;
+    end;
 
     cbxControlsx.Items.EndUpdate;
 
-    If intControlMaxValue = -1 Then
+    if intControlMaxValue = -1 then
         intControlMaxValue := 1000;
 
     intControlCount := intControlMaxValue;
 
-    If cbxControlsx.Items.Count > 0 Then
+    if cbxControlsx.Items.Count > 0 then
         cbxControlsx.ItemIndex := 0;
 
-End;
+end;
 
-Procedure TWXDsgn.JvInspPropertiesAfterItemCreate(Sender: TObject; Item: TJvCustomInspectorItem);
-Var
-    I: Integer;
-    StrCompName, StrCompCaption: String;
-    boolOk: Boolean;
+procedure TWXDsgn.JvInspPropertiesAfterItemCreate(Sender: TObject; Item: TJvCustomInspectorItem);
+var
+    I: integer;
+    StrCompName, StrCompCaption: string;
+    boolOk: boolean;
     strLst: TStringList;
-    strTemp: String;
+    strTemp: string;
     wxcompInterface: IWxComponentInterface;
-Begin
-    boolOk := False;
-    If SelectedComponent = Nil Then
+begin
+    boolOk := FALSE;
+    if SelectedComponent = NIL then
         Exit;
 
-    If Not Assigned(Item) Then
+    if not Assigned(Item) then
         Exit;
 
-    If SelectedComponent <> Nil Then
-    Begin
-        If IsValidClass(SelectedComponent) Then
-        Begin
+    if SelectedComponent <> NIL then
+    begin
+        if IsValidClass(SelectedComponent) then
+        begin
             strTemp := SelectedComponent.ClassName;
-            If SelectedComponent.GetInterface(IID_IWxComponentInterface, wxcompInterface) Then
+            if SelectedComponent.GetInterface(IID_IWxComponentInterface, wxcompInterface) then
                 strLst := wxcompInterface.GetPropertyList
-            Else
-                strLst := Nil;
+            else
+                strLst := NIL;
 
 {$IFNDEF PRIVATE_BUILD}
-            Try
+            try
 {$ENDIF}
-                If strLst <> Nil Then
-                Begin
-                    If strLst.Count > 0 Then
+                if strLst <> NIL then
+                begin
+                    if strLst.Count > 0 then
                         strLst[0] := strLst[0];
-                End
-                Else
+                end
+                else
                     Exit;
 {$IFNDEF PRIVATE_BUILD}
-            Except
+            except
                 Exit;
-            End;
+            end;
 {$ENDIF}
 
       //Populate the std wx Ids for the ID_Name selection
-            If AnsiSameText('Wx_IDName', trim(Item.DisplayName)) Then
-            Begin
+            if AnsiSameText('Wx_IDName', trim(Item.DisplayName)) then
+            begin
                 Item.Flags := Item.Flags + [iifValueList, iifAllowNonListValues];
                 Item.OnGetValueList := OnStdWxIDListPopup;
-            End;
+            end;
 
-            For I := 0 To strLst.Count - 1 Do // Iterate
-            Begin
+            for I := 0 to strLst.Count - 1 do // Iterate
+            begin
                 StrCompName := trim(ExtractComponentPropertyName(strLst[i]));
                 StrCompCaption := trim(ExtractComponentPropertyCaption(strLst[i]));
-                If AnsiSameText(StrCompName, trim(Item.DisplayName)) Then
-                Begin
-                    If AnsiSameText(Item.Data.TypeInfo.Name, 'TCaption') Then
+                if AnsiSameText(StrCompName, trim(Item.DisplayName)) then
+                begin
+                    if AnsiSameText(Item.Data.TypeInfo.Name, 'TCaption') then
                         Item.Flags := Item.Flags - [iifMultiLine];
-                    If AnsiSameText(Item.Data.TypeInfo.Name, 'TPicture') Then
+                    if AnsiSameText(Item.Data.TypeInfo.Name, 'TPicture') then
                         Item.Flags := Item.Flags + [iifEditButton];
-                    If AnsiSameText(Item.Data.TypeInfo.Name, 'TListItems') Then
+                    if AnsiSameText(Item.Data.TypeInfo.Name, 'TListItems') then
                         Item.Flags := Item.Flags + [iifEditButton];
-                    If AnsiSameText(Item.Data.TypeInfo.Name, 'TTreeNodes') Then
+                    if AnsiSameText(Item.Data.TypeInfo.Name, 'TTreeNodes') then
                         Item.Flags := Item.Flags + [iifEditButton];
 
                     Item.DisplayName := StrCompCaption;
-                    boolOk := True;
+                    boolOk := TRUE;
                     Break;
-                End;
-            End; // for
-        End;
-    End;
-    Item.Hidden := Not boolOk;
-End;
+                end;
+            end; // for
+        end;
+    end;
+    Item.Hidden := not boolOk;
+end;
 
-Function TWXDsgn.GetCurrentFileName: String;
-Begin
+function TWXDsgn.GetCurrentFileName: string;
+begin
     Result := main.GetActiveEditorName;
-End;
+end;
 
-Function TWXDsgn.GetCurrentClassName: String;
-Var
-    editorName: String;
-Begin
+function TWXDsgn.GetCurrentClassName: string;
+var
+    editorName: string;
+begin
     editorName := main.GetActiveEditorName;
-    Result := trim((editors[editorName] As TWXEditor).GetDesigner().Wx_Name);
-End;
+    Result := trim((editors[editorName] as TWXEditor).GetDesigner().Wx_Name);
+end;
 
-Procedure TWXDsgn.JvInspPropertiesDataValueChanged(Sender: TObject;
+procedure TWXDsgn.JvInspPropertiesDataValueChanged(Sender: TObject;
     Data: TJvCustomInspectorData);
-Var
-    idxName: Integer;
-    Comp: TComponent;
+var
+    idxName: integer;
+    comp: TComponent;
     wxcompInterface: IWxComponentInterface;
-    strValue, strDirName, editorName: String;
+    strValue, strDirName, editorName: string;
     cppStrLst, hppStrLst: TStringList;
-Begin
-    If JvInspProperties.Selected <> Nil Then
-    Begin
+begin
+    if JvInspProperties.Selected <> NIL then
+    begin
 
-        If assigned(JvInspProperties.Selected.Data) Then
-        Begin
+        if assigned(JvInspProperties.Selected.Data) then
+        begin
             strValue := JvInspProperties.Selected.Data.TypeInfo.Name;
-            If (UpperCase(strValue) = UpperCase('TPicture')) Or
-                (UpperCase(strvalue) = UpperCase('TComponentName')) Then
-            Begin
+            if (UpperCase(strValue) = UpperCase('TPicture')) or
+                (UpperCase(strvalue) = UpperCase('TComponentName')) then
+            begin
                 strValue := TJvInspectorPropData(JvInspProperties.Selected.Data).Instance.ClassName;
-                If main.IsEditorAssigned Then
-                Begin
+                if main.IsEditorAssigned then
+                begin
                     editorName := main.GetActiveEditorName;
-                    If ((UpperCase(SelectedComponent.ClassName) = UpperCase('TFrmNewForm'))
-                        And (Not TFrmNewForm(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).KeepFormat)) Then
-                        GenerateXPMDirectly(TFrmNewForm(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).Wx_ICON.Bitmap, (editors[editorName] As TWXEditor).GetDesigner.Wx_Name, 'Self', editorName);
+                    if ((UpperCase(SelectedComponent.ClassName) = UpperCase('TFrmNewForm'))
+                        and (not TFrmNewForm(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).KeepFormat)) then
+                        GenerateXPMDirectly(TFrmNewForm(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).Wx_ICON.Bitmap, (editors[editorName] as TWXEditor).GetDesigner.Wx_Name, 'Self', editorName);
 
-                    If ((UpperCase(SelectedComponent.ClassName) = UpperCase('TWxStaticBitmap'))
-                        And (Not TWxStaticBitmap(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).KeepFormat)) Then
-                        GenerateXPMDirectly(TWxStaticBitmap(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).Picture.Bitmap, SelectedComponent.Name, (editors[editorName] As TWXEditor).GetDesigner.Wx_Name, editorName);
+                    if ((UpperCase(SelectedComponent.ClassName) = UpperCase('TWxStaticBitmap'))
+                        and (not TWxStaticBitmap(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).KeepFormat)) then
+                        GenerateXPMDirectly(TWxStaticBitmap(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).Picture.Bitmap, SelectedComponent.Name, (editors[editorName] as TWXEditor).GetDesigner.Wx_Name, editorName);
 
-                    If ((UpperCase(SelectedComponent.ClassName) = UpperCase('TWxBitmapButton'))
-                        And (Not TWxBitmapButton(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).KeepFormat)) Then
-                        GenerateXPMDirectly(TWxBitmapButton(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).Wx_Bitmap.Bitmap, SelectedComponent.Name, (editors[editorName] As TWXEditor).GetDesigner.Wx_Name, editorName);
+                    if ((UpperCase(SelectedComponent.ClassName) = UpperCase('TWxBitmapButton'))
+                        and (not TWxBitmapButton(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).KeepFormat)) then
+                        GenerateXPMDirectly(TWxBitmapButton(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).Wx_Bitmap.Bitmap, SelectedComponent.Name, (editors[editorName] as TWXEditor).GetDesigner.Wx_Name, editorName);
 
-                    If ((UpperCase(SelectedComponent.ClassName) = UpperCase('TWxCustomButton'))
-                        And (Not TWxCustomButton(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).KeepFormat)) Then
-                        GenerateXPMDirectly(TWxCustomButton(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).Wx_Bitmap.Bitmap, SelectedComponent.Name, (editors[editorName] As TWXEditor).GetDesigner.Wx_Name, editorName);
+                    if ((UpperCase(SelectedComponent.ClassName) = UpperCase('TWxCustomButton'))
+                        and (not TWxCustomButton(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).KeepFormat)) then
+                        GenerateXPMDirectly(TWxCustomButton(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).Wx_Bitmap.Bitmap, SelectedComponent.Name, (editors[editorName] as TWXEditor).GetDesigner.Wx_Name, editorName);
 
-                    If ((UpperCase(SelectedComponent.ClassName) = UpperCase('TWxToolButton'))
-                        And (Not TWxToolButton(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).KeepFormat)) Then
-                        GenerateXPMDirectly(TWxToolButton(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).Wx_Bitmap.Bitmap, SelectedComponent.Name, (editors[editorName] As TWXEditor).GetDesigner.Wx_Name, editorName);
+                    if ((UpperCase(SelectedComponent.ClassName) = UpperCase('TWxToolButton'))
+                        and (not TWxToolButton(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).KeepFormat)) then
+                        GenerateXPMDirectly(TWxToolButton(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).Wx_Bitmap.Bitmap, SelectedComponent.Name, (editors[editorName] as TWXEditor).GetDesigner.Wx_Name, editorName);
 
-                End;
-            End;
-        End;
+                end;
+            end;
+        end;
 
-        If UpperCase(Trim(JvInspProperties.Selected.DisplayName)) = UpperCase('NAME') Then
-        Begin
-            If Not main.IsClassBrowserEnabled Then
+        if UpperCase(Trim(JvInspProperties.Selected.DisplayName)) = UpperCase('NAME') then
+        begin
+            if not main.IsClassBrowserEnabled then
                 Exit;
 
-            Comp := Self.SelectedComponent;
-            idxName := cbxControlsx.Items.IndexOfObject(Comp);
-            If idxName <> -1 Then
-            Begin
-                If Comp Is TfrmNewForm Then
-                Begin
-                    If Comp.GetInterface(IID_IWxComponentInterface, wxcompInterface) Then
-                    Begin
+            comp := Self.SelectedComponent;
+            idxName := cbxControlsx.Items.IndexOfObject(comp);
+            if idxName <> -1 then
+            begin
+                if comp is TfrmNewForm then
+                begin
+                    if comp.GetInterface(IID_IWxComponentInterface, wxcompInterface) then
+                    begin
 
-                        If AnsiSameText('ID_' + PreviousComponentName, wxcompInterface.GetIDName()) Then
-                        Begin
-                            wxcompInterface.SetIDName(UpperCase('ID_' + Comp.Name));
-                        End;
+                        if AnsiSameText('ID_' + PreviousComponentName, wxcompInterface.GetIDName()) then
+                        begin
+                            wxcompInterface.SetIDName(UpperCase('ID_' + comp.Name));
+                        end;
 
-                        cbxControlsx.Items[idxName] := TfrmNewForm(Comp).Wx_Name + ':' + wxcompInterface.GetWxClassName;
+                        cbxControlsx.Items[idxName] := TfrmNewForm(comp).Wx_Name + ':' + wxcompInterface.GetWxClassName;
                         cbxControlsx.ItemIndex := idxName;
             //Update the ClassName using PreviousStringValue
-                        If main.IsEditorAssigned Then
-                        Begin
+                        if main.IsEditorAssigned then
+                        begin
                             editorName := main.GetActiveEditorName;
                             hppStrLst := TStringList.Create;
                             cppStrLst := TStringList.Create;
                             hppStrLst.Duplicates := dupIgnore;
                             cppStrLst.Duplicates := dupIgnore;
-                            Try
-                                main.GetClassNameLocationsInEditorFiles(hppStrLst, cppStrLst, ChangeFileExt(editorName, CPP_EXT), PreviousStringValue, TfrmNewForm(Comp).Wx_Name);
-                                ReplaceClassNameInEditor(hppStrLst, main.GetEditorText(ChangeFileExt(editorName, H_EXT)), PreviousStringValue, TfrmNewForm(Comp).Wx_Name);
-                                ReplaceClassNameInEditor(cppStrLst, main.GetEditorText(ChangeFileExt(editorName, CPP_EXT)), PreviousStringValue, TfrmNewForm(Comp).Wx_Name);
-                                If ((hppStrLst.count = 0) And (cppStrLst.count = 0)) Then
+                            try
+                                main.GetClassNameLocationsInEditorFiles(hppStrLst, cppStrLst, ChangeFileExt(editorName, CPP_EXT), PreviousStringValue, TfrmNewForm(comp).Wx_Name);
+                                ReplaceClassNameInEditor(hppStrLst, main.GetEditorText(ChangeFileExt(editorName, H_EXT)), PreviousStringValue, TfrmNewForm(comp).Wx_Name);
+                                ReplaceClassNameInEditor(cppStrLst, main.GetEditorText(ChangeFileExt(editorName, CPP_EXT)), PreviousStringValue, TfrmNewForm(comp).Wx_Name);
+                                if ((hppStrLst.count = 0) and (cppStrLst.count = 0)) then
                                     MessageDlg('Unable to get Class Information. Please rename the class name in H/CPP files manually. If you dont rename it them, then the Designer wont work. ', mtWarning, [mbOK], 0)
-                                Else
-                                Begin
+                                else
+                                begin
                                     MessageDlg('Contructor Function(in Header) or Sometimes all the Functions(in Source)  might not be renamed. ' + #13 + #10 + '' + #13 + #10 + 'Please rename them manually.' + #13 + #10 + '' + #13 + #10 + 'We hope to fix this bug asap.' + #13 + #10 + 'Sorry for the trouble.', mtInformation, [mbOK], 0);
                                     strDirName := IncludeTrailingPathDelimiter(ExtractFileDir(editorName));
-                                    RenameFile(strDirName + '\' + PreviousStringValue + '_XPM.xpm', strDirName + '\' + TfrmNewForm(Comp).Wx_Name + '_XPM.xpm');
-                                    Designerfrm.GenerateXPM((editors[editorName] As TWXEditor).GetDesigner, editorName, True);
-                                End;
-                            Finally
+                                    RenameFile(strDirName + '\' + PreviousStringValue + '_XPM.xpm', strDirName + '\' + TfrmNewForm(comp).Wx_Name + '_XPM.xpm');
+                                    Designerfrm.GenerateXPM((editors[editorName] as TWXEditor).GetDesigner, editorName, TRUE);
+                                end;
+                            finally
                                 hppStrLst.Destroy;
                                 cppStrLst.Destroy;
-                            End;
-                        End;
-                    End
-                    Else
-                    Begin
+                            end;
+                        end;
+                    end
+                    else
+                    begin
                         MessageDlg('Some problem !!!', mtWarning, [mbOK], 0);
-                    End;
-                End
-                Else
-                Begin
-                    If Comp.GetInterface(IID_IWxComponentInterface, wxcompInterface) Then
-                    Begin
-                        If AnsiSameText('ID_' + PreviousComponentName, wxcompInterface.GetIDName()) Then
-                        Begin
-                            wxcompInterface.SetIDName(UpperCase('ID_' + Comp.Name));
-                        End;
-                        cbxControlsx.Items[idxName] := Comp.Name + ':' + wxcompInterface.GetWxClassName;
+                    end;
+                end
+                else
+                begin
+                    if comp.GetInterface(IID_IWxComponentInterface, wxcompInterface) then
+                    begin
+                        if AnsiSameText('ID_' + PreviousComponentName, wxcompInterface.GetIDName()) then
+                        begin
+                            wxcompInterface.SetIDName(UpperCase('ID_' + comp.Name));
+                        end;
+                        cbxControlsx.Items[idxName] := comp.Name + ':' + wxcompInterface.GetWxClassName;
                         cbxControlsx.ItemIndex := idxName;
-                    End;
-                End;
-            End;
-        End;
+                    end;
+                end;
+            end;
+        end;
         UpdateDefaultFormContent;
-    End;
-End;
+    end;
+end;
 
-Procedure TWXDsgn.JvInspEventsAfterItemCreate(Sender: TObject;
+procedure TWXDsgn.JvInspEventsAfterItemCreate(Sender: TObject;
     Item: TJvCustomInspectorItem);
-Var
-    I: Integer;
-    StrCompName, StrCompCaption: String;
-    boolOk: Boolean;
+var
+    I: integer;
+    StrCompName, StrCompCaption: string;
+    boolOk: boolean;
     strLst: TStringList;
-    strTemp: String;
+    strTemp: string;
     wxcompInterface: IWxComponentInterface;
-Begin
-    boolOk := False;
-    Item.Hidden := True;
+begin
+    boolOk := FALSE;
+    Item.Hidden := TRUE;
 
-    If SelectedComponent <> Nil Then
-    Begin
-        If IsValidClass(SelectedComponent) Then
-        Begin
+    if SelectedComponent <> NIL then
+    begin
+        if IsValidClass(SelectedComponent) then
+        begin
             strTemp := SelectedComponent.ClassName;
-            If SelectedComponent.GetInterface(IID_IWxComponentInterface,
-                wxcompInterface) Then
+            if SelectedComponent.GetInterface(IID_IWxComponentInterface,
+                wxcompInterface) then
                 strLst := wxcompInterface.GetEventList
-            Else
-                strLst := Nil;
+            else
+                strLst := NIL;
 
-            If strLst = Nil Then
+            if strLst = NIL then
                 exit;
-            Try
-                If strLst.Count > 0 Then
+            try
+                if strLst.Count > 0 then
                     strLst[0] := strLst[0];
-            Except
+            except
                 Exit;
-            End;
+            end;
 
-            For I := 0 To strLst.Count - 1 Do // Iterate
-            Begin
+            for I := 0 to strLst.Count - 1 do // Iterate
+            begin
                 StrCompName := trim(ExtractComponentPropertyName(strLst[i]));
                 StrCompCaption := trim(ExtractComponentPropertyCaption(strLst[i]));
-                If AnsiSameText(StrCompName, trim(Item.DisplayName)) Then
-                Begin
+                if AnsiSameText(StrCompName, trim(Item.DisplayName)) then
+                begin
                     Item.DisplayName := StrCompCaption;
                     Item.Flags := Item.Flags + [iifValueList, iifAllowNonListValues];
                     Item.OnGetValueList := OnEventPopup;
-                    boolOk := True;
+                    boolOk := TRUE;
                     break;
-                End;
-            End; // for
-        End;
+                end;
+            end; // for
+        end;
 
-    End;
+    end;
 
   //  if Item is TJvInspectorBooleanItem then
   //    TJvInspectorBooleanItem(Item).ShowAsCheckbox := True;
 
-    Item.Hidden := Not boolOk;
+    Item.Hidden := not boolOk;
   //Item.Hidden:= false;
-End;
+end;
 
-Function TWXDsgn.IsCurrentPageDesigner: Boolean;
-Var
+function TWXDsgn.IsCurrentPageDesigner: boolean;
+var
     wx: TfrmNewForm;
-    editorName: String;
-Begin
-    Result := False;
+    editorName: string;
+begin
+    Result := FALSE;
 
     editorName := main.GetActiveEditorName;
 
-    If Not main.IsEditorAssigned(editorName) Then
+    if not main.IsEditorAssigned(editorName) then
         Exit;
 
-    If isForm(editorName) Then
-        wx := (editors[editorName] As TWXEditor).GetDesigner()
-    Else
+    if isForm(editorName) then
+        wx := (editors[editorName] as TWXEditor).GetDesigner()
+    else
         Exit;
 
-    If Not Assigned(wx) Then
-        Result := False
-    Else
-        Result := True;
-End;
+    if not Assigned(wx) then
+        Result := FALSE
+    else
+        Result := TRUE;
+end;
 
-Function TWXDsgn.IsDelphiPlugin: Boolean;
-Begin
-    Result := True;
-End;
+function TWXDsgn.IsDelphiPlugin: boolean;
+begin
+    Result := TRUE;
+end;
 
-Function TWXDsgn.LocateFunction(strFunctionName: String): Boolean;
-Begin
-    Result := False;
-End;
+function TWXDsgn.LocateFunction(strFunctionName: string): boolean;
+begin
+    Result := FALSE;
+end;
 
-Function TWXDsgn.GetCurrentDesignerForm: TfrmNewForm;
-Var
-    editorName: String;
-Begin
-    Result := Nil;
+function TWXDsgn.GetCurrentDesignerForm: TfrmNewForm;
+var
+    editorName: string;
+begin
+    Result := NIL;
 
-    If Not main.IsEditorAssigned Then
+    if not main.IsEditorAssigned then
         Exit;
 
     editorName := main.GetActiveEditorName;
-    If isForm(editorName) Then
-        Result := (editors[editorName] As TWXEditor).GetDesigner();
-End;
+    if isForm(editorName) then
+        Result := (editors[editorName] as TWXEditor).GetDesigner();
+end;
 
-Procedure TWXDsgn.JvInspEventsDataValueChanged(Sender: TObject;
+procedure TWXDsgn.JvInspEventsDataValueChanged(Sender: TObject;
     Data: TJvCustomInspectorData);       // EAB *** Look here for after doubleclick designer components event and event inspector
-Var
-    propertyName, wxClassName, propDisplayName, strNewValue, str, ErrorString: String;
+var
+    propertyName, wxClassName, propDisplayName, strNewValue, str, ErrorString: string;
     componentInstance: TComponent;
-    boolIsFilesDirty: Boolean;
-    editorName: String;
-    strDisplayName: String;
+    boolIsFilesDirty: boolean;
+    editorName: string;
+    strDisplayName: string;
     compSelectedOne: TComponent;
-    switchEditor: Boolean;
+    switchEditor: boolean;
 
-    Procedure SetPropertyValue(Comp: TComponent; strPropName, strPropValue: String);
-    Var
+    procedure SetPropertyValue(comp: TComponent; strPropName, strPropValue: string);
+    var
         PropInfo: PPropInfo;
-    Begin
+    begin
     { Get info record for Enabled property }
-        PropInfo := GetPropInfo(Comp.ClassInfo, strPropName);
+        PropInfo := GetPropInfo(comp.ClassInfo, strPropName);
     { If property exists, set value to False }
-        If Assigned(PropInfo) Then
-            SetStrProp(Comp, PropInfo, strPropValue);
-    End;
-Begin
-    switchEditor := False;
-    Try
+        if Assigned(PropInfo) then
+            SetStrProp(comp, PropInfo, strPropValue);
+    end;
+begin
+    switchEditor := FALSE;
+    try
     //Do some sanity checks
-        If (JvInspEvents.Selected = Nil) Or (Not JvInspEvents.Selected.Visible) Then
+        if (JvInspEvents.Selected = NIL) or (not JvInspEvents.Selected.Visible) then
             Exit;
 
         editorName := main.GetActiveEditorName;
-        If Not main.IsEditorAssigned(editorName) Or Not IsForm(editorName) Then
+        if not main.IsEditorAssigned(editorName) or not IsForm(editorName) then
             Exit;
 
     //Then get the value as a string
         strNewValue := Data.AsString;
 
     //See we have to do with our new value
-        If strNewValue = '<Add New Function>' Then
-        Begin
-            If Not main.IsClassBrowserEnabled Then
-            Begin
+        if strNewValue = '<Add New Function>' then
+        begin
+            if not main.IsClassBrowserEnabled then
+            begin
                 MessageDlg('The Class Browser is not enabled; wxDev-C++ will be unable to' +
                     'create an event handler for you.'#10#10'Please see Help for instructions ' +
                     'on enabling the Class Browser', mtWarning, [mbOK], ownerForm.Handle);
-                JvInspEvents.OnDataValueChanged := Nil;
+                JvInspEvents.OnDataValueChanged := NIL;
                 Data.AsString := '';
                 JvInspEvents.OnDataValueChanged := JvInspEventsDataValueChanged;
                 Exit;
-            End;
+            end;
 
-            boolIsFilesDirty := False;
-            If main.IsFileOpenedInEditor(ChangeFileExt(editorName, H_EXT)) Then
+            boolIsFilesDirty := FALSE;
+            if main.IsFileOpenedInEditor(ChangeFileExt(editorName, H_EXT)) then
                 boolIsFilesDirty := main.IsEditorModified(ChangeFileExt(editorName, H_EXT));
 
-            If Not boolIsFilesDirty Then
-                If main.IsFileOpenedInEditor(ChangeFileExt(editorName, CPP_EXT)) Then
+            if not boolIsFilesDirty then
+                if main.IsFileOpenedInEditor(ChangeFileExt(editorName, CPP_EXT)) then
                     boolIsFilesDirty := main.IsEditorModified(ChangeFileExt(editorName, CPP_EXT));
 
-            If boolIsFilesDirty Then
-            Begin
-                If main.IsFileOpenedInEditor(ChangeFileExt(editorName, H_EXT)) Then
+            if boolIsFilesDirty then
+            begin
+                if main.IsFileOpenedInEditor(ChangeFileExt(editorName, H_EXT)) then
           //This wont open a new editor window
-                    main.SaveFileFromPlugin(ChangeFileExt(editorName, H_EXT), True);
+                    main.SaveFileFromPlugin(ChangeFileExt(editorName, H_EXT), TRUE);
 
-                If main.IsFileOpenedInEditor(ChangeFileExt(editorName, CPP_EXT)) Then
+                if main.IsFileOpenedInEditor(ChangeFileExt(editorName, CPP_EXT)) then
           //This wont open a new editor window
-                    main.SaveFileFromPlugin(ChangeFileExt(editorName, CPP_EXT), True);
-            End;
+                    main.SaveFileFromPlugin(ChangeFileExt(editorName, CPP_EXT), TRUE);
+            end;
 
       //TODO: Guru: add code to make sure the files are saved properly
-            If SelectedComponent <> Nil Then
-            Begin
+            if SelectedComponent <> NIL then
+            begin
                 str := JvInspEvents.Selected.DisplayName;
 
-                If SelectedComponent Is TfrmNewForm Then
+                if SelectedComponent is TfrmNewForm then
                     str := TfrmNewForm(SelectedComponent).Wx_Name + Copy(str, 3, Length(str))
-                Else
+                else
                     str := SelectedComponent.Name + Copy(str, 3, Length(str));
-                JvInspEvents.OnDataValueChanged := Nil;
+                JvInspEvents.OnDataValueChanged := NIL;
                 Data.AsString := str;
                 JvInspEvents.OnDataValueChanged := JvInspEventsDataValueChanged;
                 str := Trim(str);
 
                 componentInstance := SelectedComponent;
                 propertyName := Data.Name;
-                wxClassName := Trim((editors[editorName] As TWXEditor).getDesigner().Wx_Name);
+                wxClassName := Trim((editors[editorName] as TWXEditor).getDesigner().Wx_Name);
                 propDisplayName := JvInspEvents.Selected.DisplayName;
-                If CreateFunctionInEditor(wxClassName, SelectedComponent, str, propDisplayName, ErrorString) Then
-                Begin
+                if CreateFunctionInEditor(wxClassName, SelectedComponent, str, propDisplayName, ErrorString) then
+                begin
                     SetPropertyValue(componentInstance, propertyName, str);
 
           // EAB: commented ugly ass problematic hack and replaced with corresponding code. Still ugly, but not as problematic :)
 
-                    JvInspEvents.OnDataValueChanged := Nil;
+                    JvInspEvents.OnDataValueChanged := NIL;
                     Data.AsString := str;
                     JvInspEvents.OnDataValueChanged := JvInspEventsDataValueChanged;
 
           // Now trigger a Goto function to display the new C++ code
           // BEGIN Goto Function trigger
                     strGlobalCurrentFunction := str; // Pass the name of the new function
-                    JvInspEvents.OnDataValueChanged := Nil;
+                    JvInspEvents.OnDataValueChanged := NIL;
                     Data.AsString := '<Goto Function>';
-                    JvInspEvents.Root.DoneEdit(True);
+                    JvInspEvents.Root.DoneEdit(TRUE);
                     JvInspEvents.OnDataValueChanged := JvInspEventsDataValueChanged;
-                    JvInspEventsDataValueChanged(Nil, Data);
+                    JvInspEventsDataValueChanged(NIL, Data);
 
           // END Goto Function trigger
-                End
-                Else
-                Begin
+                end
+                else
+                begin
                     Data.AsString := '';
-                    If ErrorString = '' Then
+                    if ErrorString = '' then
                         MessageDlg('Unable to add function', mtError, [mbOK], 0)
-                    Else
+                    else
                         MessageDlg(ErrorString, mtError, [mbOK], 0);
-                End;
-            End;
-        End
-        Else
-        If strNewValue = '<Goto Function>' Then
-        Begin
+                end;
+            end;
+        end
+        else
+        if strNewValue = '<Goto Function>' then
+        begin
       //Reset the value, we won't need the <Goto> value anymore
             Data.AsString := strGlobalCurrentFunction;
             strGlobalCurrentFunction := '';
 
-            If Not main.IsClassBrowserEnabled Then
-            Begin
+            if not main.IsClassBrowserEnabled then
+            begin
                 MessageDlg('The Class Browser has been disabled; All event handling ' +
                     'automation code will not work.'#10#10'See Help for instructions on ' +
                     'enabling the Class Browser.', mtError, [mbOK], 0);
                 Exit;
-            End;
+            end;
 
-            If main.IsFileOpenedInEditor(ChangeFileExt(editorName, H_EXT)) Then
-                main.SaveFileFromPlugin(ChangeFileExt(editorName, H_EXT), True);
+            if main.IsFileOpenedInEditor(ChangeFileExt(editorName, H_EXT)) then
+                main.SaveFileFromPlugin(ChangeFileExt(editorName, H_EXT), TRUE);
 
-            If main.IsFileOpenedInEditor(ChangeFileExt(editorName, CPP_EXT)) Then
-                main.SaveFileFromPlugin(ChangeFileExt(editorName, CPP_EXT), True);
+            if main.IsFileOpenedInEditor(ChangeFileExt(editorName, CPP_EXT)) then
+                main.SaveFileFromPlugin(ChangeFileExt(editorName, CPP_EXT), TRUE);
 
-            If SelectedComponent <> Nil Then
-            Begin
+            if SelectedComponent <> NIL then
+            begin
                 str := trim(Data.AsString);
                 strDisplayName := JvInspEvents.Selected.DisplayName;
                 compSelectedOne := SelectedComponent;
-                LocateFunctionInEditor(Data, Trim((editors[editorName] As TWXEditor).getDesigner().Wx_Name), compSelectedOne,
+                LocateFunctionInEditor(Data, Trim((editors[editorName] as TWXEditor).getDesigner().Wx_Name), compSelectedOne,
                     str, strDisplayName);
 
-                switchEditor := True;
+                switchEditor := TRUE;
 
-                If (strNewValue = '<Goto Function>') And ((editors[editorName] As TWXEditor).getDesigner().Floating) Then
+                if (strNewValue = '<Goto Function>') and ((editors[editorName] as TWXEditor).getDesigner().Floating) then
                     main.SendToFront;
-            End;
-        End
-        Else
-        If strNewValue = '<Remove Function>' Then
+            end;
+        end
+        else
+        if strNewValue = '<Remove Function>' then
             Data.AsString := '';
 
-        JvInspEvents.Root.DoneEdit(True);
+        JvInspEvents.Root.DoneEdit(TRUE);
         UpdateDefaultFormContent;
 
-        If switchEditor Then
-        Begin
-            cleanUpJvInspEvents := True;
+        if switchEditor then
+        begin
+            cleanUpJvInspEvents := TRUE;
             main.SetPageControlActivePageEditor(ChangeFileExt(editorName, CPP_EXT));
-            JvInspProperties.Root.Visible := False;
-            JvInspEvents.Root.Visible := False;
+            JvInspProperties.Root.Visible := FALSE;
+            JvInspEvents.Root.Visible := FALSE;
 
-            pendingEditorSwitch := True;
+            pendingEditorSwitch := TRUE;
             JvInspEvents.OnMouseMove := JvInspEventsMouseMove;
             JvInspEvents.OnMouseUp := JvInspEventsMouseUp;
             JvInspEvents.OnEditorKeyDown := JvInspEventsKeyDown;
 
-        End;
+        end;
 
-    Except
-        on E: Exception Do
-            MessageBox(ownerForm.Handle, Pchar(E.Message), Pchar(Application.Title), MB_ICONERROR Or MB_OK Or MB_TASKMODAL);
-    End;
-End;
+    except
+        on E: Exception do
+            MessageBox(ownerForm.Handle, pchar(E.Message), pchar(Application.Title), MB_ICONERROR or MB_OK or MB_TASKMODAL);
+    end;
+end;
 
-Procedure TWXDsgn.JvInspEventsMouseMove(Sender: TObject; Shift: TShiftState; X: Integer; Y: Integer);
-Begin
-    If pendingEditorSwitch Then
-    Begin
-        JvInspEvents.OnMouseMove := Nil;
-        JvInspEvents.OnMouseUp := Nil;
-        JvInspEvents.OnEditorKeyDown := Nil;
-        pendingEditorSwitch := False;
+procedure TWXDsgn.JvInspEventsMouseMove(Sender: TObject; Shift: TShiftState; X: integer; Y: integer);
+begin
+    if pendingEditorSwitch then
+    begin
+        JvInspEvents.OnMouseMove := NIL;
+        JvInspEvents.OnMouseUp := NIL;
+        JvInspEvents.OnEditorKeyDown := NIL;
+        pendingEditorSwitch := FALSE;
         main.forceEditorFocus;
-    End;
-End;
+    end;
+end;
 
-Procedure TWXDsgn.JvInspEventsMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer);
-Begin
-    If pendingEditorSwitch Then
-    Begin
-        JvInspEvents.OnMouseMove := Nil;
-        JvInspEvents.OnMouseUp := Nil;
-        JvInspEvents.OnEditorKeyDown := Nil;
-        pendingEditorSwitch := False;
+procedure TWXDsgn.JvInspEventsMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X: integer; Y: integer);
+begin
+    if pendingEditorSwitch then
+    begin
+        JvInspEvents.OnMouseMove := NIL;
+        JvInspEvents.OnMouseUp := NIL;
+        JvInspEvents.OnEditorKeyDown := NIL;
+        pendingEditorSwitch := FALSE;
         main.forceEditorFocus;
-    End;
-End;
+    end;
+end;
 
-Procedure TWXDsgn.JvInspEventsKeyDown(Sender: TObject; Var Key: Word; Shift: TShiftState);
-Begin
-    If pendingEditorSwitch Then
-    Begin
-        JvInspEvents.OnMouseMove := Nil;
-        JvInspEvents.OnMouseUp := Nil;
-        JvInspEvents.OnEditorKeyDown := Nil;
-        pendingEditorSwitch := False;
+procedure TWXDsgn.JvInspEventsKeyDown(Sender: TObject; var Key: word; Shift: TShiftState);
+begin
+    if pendingEditorSwitch then
+    begin
+        JvInspEvents.OnMouseMove := NIL;
+        JvInspEvents.OnMouseUp := NIL;
+        JvInspEvents.OnEditorKeyDown := NIL;
+        pendingEditorSwitch := FALSE;
         main.forceEditorFocus;
         Key := 0;
-    End;
-End;
+    end;
+end;
 
-Procedure TWXDsgn.JvInspEventsItemValueChanged(Sender: TObject;
+procedure TWXDsgn.JvInspEventsItemValueChanged(Sender: TObject;
     Item: TJvCustomInspectorItem);
-Begin
-    If JvInspEvents.Selected = Nil Then
+begin
+    if JvInspEvents.Selected = NIL then
         Exit;
 
-    If JvInspEvents.Selected.Visible = False Then
+    if JvInspEvents.Selected.Visible = FALSE then
         Exit;
-End;
+end;
 
-Procedure TWXDsgn.OnStdWxIDListPopup(Item: TJvCustomInspectorItem; Value: TStrings);
-Begin
+procedure TWXDsgn.OnStdWxIDListPopup(Item: TJvCustomInspectorItem; Value: TStrings);
+begin
     Value.Clear;
     Value.Assign(strStdwxIDList);
-End;
+end;
 
-Procedure TWXDsgn.OnEventPopup(Item: TJvCustomInspectorItem; Value: TStrings);
-Var
-    boolNoFunction: Boolean;
-    strPrevvalue: String;
+procedure TWXDsgn.OnEventPopup(Item: TJvCustomInspectorItem; Value: TStrings);
+var
+    boolNoFunction: boolean;
+    strPrevvalue: string;
     strClassesLst: TStringList;
-    idx: Integer;
-Begin
+    idx: integer;
+begin
     strGlobalCurrentFunction := '';
-    If Not isCurrentPageDesigner Then
+    if not isCurrentPageDesigner then
         Exit;
 
     strPrevvalue := Item.Data.AsString;
-    If Trim(strPrevvalue) = '' Then
-        boolNoFunction := True
-    Else
-        boolNoFunction := False;
+    if Trim(strPrevvalue) = '' then
+        boolNoFunction := TRUE
+    else
+        boolNoFunction := FALSE;
 
     Value.Clear;
-    If boolNoFunction Then
-    Begin
+    if boolNoFunction then
+    begin
         Value.Add('<Add New Function>');
         strClassesLst := TStringList.Create;
-        Try
-            strClassesLst.Sorted := True;
-            If IsCurrentPageDesigner Then
+        try
+            strClassesLst.Sorted := TRUE;
+            if IsCurrentPageDesigner then
                 main.GetFunctionsFromSource(GetCurrentDesignerForm().Wx_Name, strClassesLst);
             Value.AddStrings(strClassesLst);
-        Finally
+        finally
             strClassesLst.Destroy;
-        End;
-    End;
+        end;
+    end;
 
-    If Trim(strPrevvalue) <> '' Then
-    Begin
+    if Trim(strPrevvalue) <> '' then
+    begin
     //Add other functions here...
         strClassesLst := TStringList.Create;
-        Try
-            strClassesLst.Sorted := True;
-            If IsCurrentPageDesigner Then
+        try
+            strClassesLst.Sorted := TRUE;
+            if IsCurrentPageDesigner then
                 main.GetFunctionsFromSource(GetCurrentDesignerForm().Wx_Name, strClassesLst);
             Value.AddStrings(strClassesLst);
-        Finally
+        finally
             strClassesLst.Destroy;
-        End;
+        end;
     //if Function list is not available in CPPParser
         idx := Value.IndexOf(strPrevvalue);
-        If idx = -1 Then
-        Begin
+        if idx = -1 then
+        begin
             Value.Add(strPrevvalue);
             idx := Value.IndexOf(strPrevvalue);
-        End;
+        end;
 
-        If idx <> -1 Then
-        Begin
+        if idx <> -1 then
+        begin
             Value.Insert(idx + 1, '<Goto Function>');
             strGlobalCurrentFunction := strPrevvalue;
-        End;
+        end;
 
         Value.Add('<Remove Function>');
 
         strPrevvalue := Item.Parent.ClassName;
         strPrevvalue := Item.Parent.ClassName;
-    End;
+    end;
 
-End;
+end;
 
-Procedure TWXDsgn.UpdateDesignerData(FileName: String);
-Var
-    STartTimeX: Longword;
-    temp: String;
+procedure TWXDsgn.UpdateDesignerData(FileName: string);
+var
+    STartTimeX: longword;
+    temp: string;
 
-    Function GetElapsedTimeStr(StartTime: Longword): String;
-    Begin
+    function GetElapsedTimeStr(StartTime: longword): string;
+    begin
         Result := Format('%.3f seconds', [(GetTickCount - StartTime) / 1000]);
-    End;
-Begin
-    If isForm(FileName) Then
-    Begin
+    end;
+begin
+    if isForm(FileName) then
+    begin
         StartTimeX := GetTickCount;
         main.EditorInsertDefaultText(FileName);
         temp := 'C++ Source Generation: ' + GetElapsedTimeStr(StartTimeX);
         main.UpdateEditor(ChangeFileExt(FileName, CPP_EXT), temp);
         StartTimeX := GetTickCount;
         main.UpdateEditor(ChangeFileExt(FileName, H_EXT), temp + ' / Header Declaration Generation = ' + GetElapsedTimeStr(StartTimeX));
-    End;
-    If ELDesigner1.GenerateXRC Then
+    end;
+    if ELDesigner1.GenerateXRC then
         UpdateXRC(FileName);
 
-End;
+end;
 
-Function TWXDsgn.LocateFunctionInEditor(eventProperty: TJvCustomInspectorData; strClassName: String; SelComponent: TComponent; Var strFunctionName: String; strEventFullName: String): Boolean;
-Var
-    strOldFunctionName: String;
-    strFname: String;
-    intLineNum: Integer;
-    stID: Integer;
-    boolFound: Boolean;
-    editorName: String;
+function TWXDsgn.LocateFunctionInEditor(eventProperty: TJvCustomInspectorData; strClassName: string; SelComponent: TComponent; var strFunctionName: string; strEventFullName: string): boolean;
+var
+    strOldFunctionName: string;
+    strFname: string;
+    intLineNum: integer;
+    stID: integer;
+    boolFound: boolean;
+    editorName: string;
     e_text: TSynEdit;
-Begin
-    Result := False;
-    boolFound := False;
+begin
+    Result := FALSE;
+    boolFound := FALSE;
     intLineNum := 0;
 
-    If Not main.IsEditorAssigned Then
+    if not main.IsEditorAssigned then
         Exit;
 
     editorName := main.GetActiveEditorName;
 
-    If Not isForm(editorName) Then
+    if not isForm(editorName) then
         Exit;
 
     StID := main.FindStatementID(strClassName, boolFound);
 
-    If Not boolFound Then
+    if not boolFound then
         Exit;
 
-    If main.isFunctionAvailableInEditor(StID, strOldFunctionName, intLineNum, strFname) Then
-    Begin
-        boolInspectorDataClear := False;
+    if main.isFunctionAvailableInEditor(StID, strOldFunctionName, intLineNum, strFname) then
+    begin
+        boolInspectorDataClear := FALSE;
         editorName := strFname;
         main.OpenFile(editorName);
-        If main.IsEditorAssigned(editorName) Then
-        Begin
+        if main.IsEditorAssigned(editorName) then
+        begin
       //TODO: check for a valid line number
             e_text := main.GetEditorText(editorName);
             e_text.CaretX := 0;
             e_text.CaretY := intLineNum;
-        End;
-        boolInspectorDataClear := False;
-    End;
-End;
+        end;
+        boolInspectorDataClear := FALSE;
+    end;
+end;
 
-Function TWXDsgn.isCurrentFormFilesNeedToBeSaved: Boolean;
-Var
-    editorName: String;
-Begin
-    Result := False;
+function TWXDsgn.isCurrentFormFilesNeedToBeSaved: boolean;
+var
+    editorName: string;
+begin
+    Result := FALSE;
 
     editorName := main.GetActiveEditorName;
-    If Not main.IsEditorAssigned(editorName) Then
+    if not main.IsEditorAssigned(editorName) then
         Exit;
 
-    If Not isForm(editorName) Then
+    if not isForm(editorName) then
         Exit;
 
-    If Not main.IsEditorAssigned(editorName) Then // <-- EAB: This shouldn't be executing...¿?
-    Begin
+    if not main.IsEditorAssigned(editorName) then // <-- EAB: This shouldn't be executing...¿?
+    begin
         MessageDlg('Unable to Get the Designer Info.', mtError, [mbOK], 0);
         Exit;
-    End;
+    end;
 
-    If Not main.IsEditorAssigned(ChangeFileExt(editorName, H_EXT)) Then
-    Begin
+    if not main.IsEditorAssigned(ChangeFileExt(editorName, H_EXT)) then
+    begin
         MessageDlg('Unable to Get Header File Editor Info.', mtError, [mbOK], 0);
         Exit;
-    End;
+    end;
 
-    If Not main.IsEditorAssigned(ChangeFileExt(editorName, CPP_EXT)) Then
-    Begin
+    if not main.IsEditorAssigned(ChangeFileExt(editorName, CPP_EXT)) then
+    begin
         MessageDlg('Unable to Get Source File Editor Info.', mtError, [mbOK], 0);
         Exit;
-    End;
-    If ((main.IsEditorModified(editorName) = True) Or (main.IsEditorModified(ChangeFileExt(editorName, H_EXT)) = True) Or (main.IsEditorModified(ChangeFileExt(editorName, CPP_EXT)))) Then
-        Result := True
-    Else
-        Result := False;
+    end;
+    if ((main.IsEditorModified(editorName) = TRUE) or (main.IsEditorModified(ChangeFileExt(editorName, H_EXT)) = TRUE) or (main.IsEditorModified(ChangeFileExt(editorName, CPP_EXT)))) then
+        Result := TRUE
+    else
+        Result := FALSE;
 
-End;
+end;
 
-Function TWXDsgn.saveCurrentFormFiles: Boolean;
-Var
-    editorName: String;
-Begin
-    Result := False;
+function TWXDsgn.saveCurrentFormFiles: boolean;
+var
+    editorName: string;
+begin
+    Result := FALSE;
 
     editorName := main.GetActiveEditorName;
-    If Not main.IsEditorAssigned(editorName) Then
+    if not main.IsEditorAssigned(editorName) then
         Exit;
 
-    If Not isForm(editorName) Then
+    if not isForm(editorName) then
         Exit;
 
-    Result := True;
-    main.SaveFileFromPlugin(editorName, True);
+    Result := TRUE;
+    main.SaveFileFromPlugin(editorName, TRUE);
 
-    If main.IsFileOpenedInEditor(ChangeFileExt(editorName, H_EXT)) Then
-    Begin
-        main.SaveFileFromPlugin(ChangeFileExt(editorName, H_EXT), True);
-    End;
+    if main.IsFileOpenedInEditor(ChangeFileExt(editorName, H_EXT)) then
+    begin
+        main.SaveFileFromPlugin(ChangeFileExt(editorName, H_EXT), TRUE);
+    end;
 
-    If main.IsFileOpenedInEditor(ChangeFileExt(editorName, CPP_EXT)) Then
-    Begin
-        main.SaveFileFromPlugin(ChangeFileExt(editorName, CPP_EXT), True);
-    End;
-End;
+    if main.IsFileOpenedInEditor(ChangeFileExt(editorName, CPP_EXT)) then
+    begin
+        main.SaveFileFromPlugin(ChangeFileExt(editorName, CPP_EXT), TRUE);
+    end;
+end;
 
-Function TWXDsgn.CreateFunctionInEditor(Var strFunctionName: String; strReturnType, strParameter: String;
-    Var ErrorString: String; strClassName: String): Boolean;
-Var
-    intFunctionCounter: Integer;
-    strOldFunctionName: String;
-    Line: Integer;
-    AddScopeStr: Boolean;
-    VarType: String;
-    VarArguments: String;
-    StID: Integer;
-    boolFound: Boolean;
-    editorName: String;
+function TWXDsgn.CreateFunctionInEditor(var strFunctionName: string; strReturnType, strParameter: string;
+    var ErrorString: string; strClassName: string): boolean;
+var
+    intFunctionCounter: integer;
+    strOldFunctionName: string;
+    Line: integer;
+    AddScopeStr: boolean;
+    VarType: string;
+    VarArguments: string;
+    StID: integer;
+    boolFound: boolean;
+    editorName: string;
     CppEditor, Hppeditor: TSynEdit;
-Begin
-    Result := False;
-    boolFound := False;
-    AddScopeStr := False;
+begin
+    Result := FALSE;
+    boolFound := FALSE;
+    AddScopeStr := FALSE;
     editorName := main.GetActiveEditorName;
-    If Not main.IsEditorAssigned(editorName) Or Not isForm(editorName) Then
+    if not main.IsEditorAssigned(editorName) or not isForm(editorName) then
         Exit;
 
   //Give us a class name if none is specified
-    If strClassName = '' Then
-        strClassName := trim((editors[editorName] As TWXEditor).GetDesigner.Wx_Name);
+    if strClassName = '' then
+        strClassName := trim((editors[editorName] as TWXEditor).GetDesigner.Wx_Name);
 
     StID := main.FindStatementID(strClassName, boolFound);
 
-    If Not boolFound Then
+    if not boolFound then
         Exit;
 
   //Come up with an unused function name
     intFunctionCounter := 0;
     strOldFunctionName := strFunctionName;
-    While main.isFunctionAvailable(StID, strFunctionName) Do
-    Begin
+    while main.isFunctionAvailable(StID, strFunctionName) do
+    begin
         strFunctionName := strOldFunctionName + IntToStr(intFunctionCounter);
         Inc(intFunctionCounter);
-    End;
+    end;
 
   //Temp Settings Start
     VarType := strReturnType;
     VarArguments := strParameter;
 
-    If trim(VarType) = '' Then
+    if trim(VarType) = '' then
         VarType := 'void';
 
-    If trim(VarArguments) = '' Then
+    if trim(VarArguments) = '' then
         VarArguments := 'void';
   //Temp Settings End
 
     Line := main.GetSuggestedInsertionLine(StID, AddScopeStr);
-    If Line = -1 Then
+    if Line = -1 then
         Exit;
 
     Hppeditor := main.GetEditorText(ChangeFileExt(editorName, H_EXT));
     CppEditor := main.GetEditorText(ChangeFileExt(editorName, CPP_EXT));
 
-    If Assigned(HppEditor) Then
-    Begin
-        If AnsiStartsText('////GUI Control Declaration End', Trim(Hppeditor.Lines[Line])) Then
+    if Assigned(HppEditor) then
+    begin
+        if AnsiStartsText('////GUI Control Declaration End', Trim(Hppeditor.Lines[Line])) then
             Line := Line + 1;
 
         Hppeditor.Lines.Insert(Line, Format(#9#9'%s %s(%s);', [VarType, strFunctionName, VarArguments]));
-        If AddScopeStr Then
+        if AddScopeStr then
             Hppeditor.Lines.Insert(Line, #9'public:');
         main.TouchEditor(ChangeFileExt(editorName, H_EXT));
-    End;
+    end;
 
-    If Assigned(CppEditor) Then
-    Begin
+    if Assigned(CppEditor) then
+    begin
     // insert the implementation
-        If Trim(CppEditor.Lines[CppEditor.Lines.Count - 1]) <> '' Then
+        if Trim(CppEditor.Lines[CppEditor.Lines.Count - 1]) <> '' then
             CppEditor.Lines.Append('');
 
     // insert the comment
@@ -4017,571 +4017,571 @@ Begin
         Cppeditor.Lines.Append('}');
         Cppeditor.Lines.Append('');
 
-        Result := True;
+        Result := TRUE;
         CppEditor.CaretY := CppEditor.Lines.Count;
         main.TouchEditor(ChangeFileExt(editorName, CPP_EXT));
         UpdateDesignerData(editorName);
-    End;
-End;
+    end;
+end;
 
-Function TWXDsgn.CreateFunctionInEditor(strClassName: String; SelComponent: TComponent;
-    Var strFunctionName: String; strEventFullName: String;
-    Var ErrorString: String): Boolean;
-Var
-    VarType, VarArguments, strEName: String;
+function TWXDsgn.CreateFunctionInEditor(strClassName: string; SelComponent: TComponent;
+    var strFunctionName: string; strEventFullName: string;
+    var ErrorString: string): boolean;
+var
+    VarType, VarArguments, strEName: string;
     intfObj: IWxComponentInterface;
-Begin
+begin
   //Assemble the function prototype
     VarType := 'void';
     VarArguments := '';
 
   //Parse the event string to get the parts of the declaration
-    If SelComponent.GetInterface(IID_IWxComponentInterface, intfObj) Then
-    Begin
+    if SelComponent.GetInterface(IID_IWxComponentInterface, intfObj) then
+    begin
         strEName := Trim(GetEventNameFromDisplayName(strEventFullName, intfObj.GetEventList));
         VarType := intfObj.GetTypeFromEventName(strEName);
         VarArguments := intfObj.GetParameterFromEventName(strEName);
-    End;
+    end;
 
   //If we have no return type assume it to be void
-    If trim(VarType) = '' Then
+    if trim(VarType) = '' then
         VarType := 'void';
 
   //Then call the actual function
     Result := CreateFunctionInEditor(strFunctionName, VarType, VarArguments, ErrorString, strClassName);
-End;
+end;
 
-Procedure TWXDsgn.UpdateDefaultFormContent;
-Var
-    editorName: String;
-Begin
+procedure TWXDsgn.UpdateDefaultFormContent;
+var
+    editorName: string;
+begin
     editorName := main.GetActiveEditorName;
 
-    If Not main.IsEditorAssigned(editorName) Then
+    if not main.IsEditorAssigned(editorName) then
         Exit;
 
-    If Not isForm(editorName) Then
+    if not isForm(editorName) then
         Exit;
 
     UpdateDesignerData(editorName);
-End;
+end;
 
-Procedure TWXDsgn.cbxControlsxChange(Sender: TObject);
-Var
-    strCompName: String;
+procedure TWXDsgn.cbxControlsxChange(Sender: TObject);
+var
+    strCompName: string;
     compControl: TComponent;
-    intColPos: Integer;
+    intColPos: integer;
 
-    Function GetComponentFromName(strCompName: String): TComponent;
-    Var
-        I: Integer;
+    function GetComponentFromName(strCompName: string): TComponent;
+    var
+        I: integer;
         frmNewFormX: TfrmNewForm;
-        editorName: String;
-    Begin
-        Result := Nil;
+        editorName: string;
+    begin
+        Result := NIL;
 
         editorName := main.GetActiveEditorName;
-        frmNewFormX := (editors[editorName] As TWXEditor).GetDesigner();
+        frmNewFormX := (editors[editorName] as TWXEditor).GetDesigner();
 
-        If Assigned(frmNewFormX) = False Then
+        if Assigned(frmNewFormX) = FALSE then
             Exit;
 
-        For I := 0 To frmNewFormX.ComponentCount - 1 Do // Iterate
-        Begin
-            If AnsiSameText(trim(frmNewFormX.Components[i].Name), trim(strCompName)) Then
-            Begin
+        for I := 0 to frmNewFormX.ComponentCount - 1 do // Iterate
+        begin
+            if AnsiSameText(trim(frmNewFormX.Components[i].Name), trim(strCompName)) then
+            begin
                 Result := frmNewFormX.Components[i];
                 exit;
-            End;
-        End;
-    End;
+            end;
+        end;
+    end;
 
-Begin
-    If cbxControlsx.ItemIndex = -1 Then
+begin
+    if cbxControlsx.ItemIndex = -1 then
         exit;
 
-    If Not isCurrentPageDesigner Then
+    if not isCurrentPageDesigner then
         Exit;
 
     strCompName := trim(cbxControlsx.Items[cbxControlsx.ItemIndex]);
     intColPos := Pos(':', strCompName);
-    If intColPos <> 0 Then
-    Begin
+    if intColPos <> 0 then
+    begin
         strCompName := Trim(Copy(strCompName, 0, intColPos - 1));
-    End;
+    end;
 
     compControl := GetComponentFromName(strCompName);
-    If compControl <> Nil Then
-    Begin
+    if compControl <> NIL then
+    begin
         ELDesigner1.SelectedControls.Clear;
         ELDesigner1.SelectedControls.Add(TWinControl(compControl));
         BuildProperties(TControl(compControl));
-    End
-    Else
-    Begin
+    end
+    else
+    begin
         ELDesigner1.SelectedControls.Clear;
         BuildProperties(TControl(GetCurrentDesignerForm()));
-    End;
+    end;
 
-End;
+end;
 
-Procedure TWXDsgn.actDesignerCopyExecute(Sender: TObject);
-Begin
-    If ELDesigner1.CanCopy Then
+procedure TWXDsgn.actDesignerCopyExecute(Sender: TObject);
+begin
+    if ELDesigner1.CanCopy then
         ELDesigner1.Copy;
-End;
+end;
 
-Procedure TWXDsgn.actDesignerCutExecute(Sender: TObject);
-Begin
-    If IsFromScrollBarShowing Then
-    Begin
+procedure TWXDsgn.actDesignerCutExecute(Sender: TObject);
+begin
+    if IsFromScrollBarShowing then
+    begin
         MessageDlg('The Designer Form is scrolled. ' + #13 + #10 + '' + #13 + #10 + 'Please resize the form to hide the scrollbar before deleting controls.', mtError, [mbOK], 0);
         exit;
-    End;
+    end;
 
-    BuildProperties(ELDesigner1.DesignControl, True);
-    DisablePropertyBuilding := True;
+    BuildProperties(ELDesigner1.DesignControl, TRUE);
+    DisablePropertyBuilding := TRUE;
 {$IFNDEF PRIVATE_BUILD}
-    Try
+    try
 {$ENDIF}
-        If ELDesigner1.CanCut Then
+        if ELDesigner1.CanCut then
             ELDesigner1.Cut;
 {$IFNDEF PRIVATE_BUILD}
-    Except
-    End;
+    except
+    end;
 {$ENDIF}
-    DisablePropertyBuilding := False;
+    DisablePropertyBuilding := FALSE;
 
     ELDesigner1.SelectedControls.Clear;
     ELDesigner1.SelectedControls.Add(ELDesigner1.DesignControl);
     BuildProperties(ELDesigner1.DesignControl);
-End;
+end;
 
-Procedure TWXDsgn.actDesignerPasteExecute(Sender: TObject);
-Begin
-    If IsFromScrollBarShowing Then
-    Begin
+procedure TWXDsgn.actDesignerPasteExecute(Sender: TObject);
+begin
+    if IsFromScrollBarShowing then
+    begin
         MessageDlg('The Designer Form is scrolled. ' + #13 + #10 + '' + #13 + #10 + 'Please resize the form to hide the scrollbar before deleting controls.', mtError, [mbOK], 0);
         exit;
-    End;
+    end;
 
-    BuildProperties(ELDesigner1.DesignControl, True);
-    DisablePropertyBuilding := True;
+    BuildProperties(ELDesigner1.DesignControl, TRUE);
+    DisablePropertyBuilding := TRUE;
 {$IFNDEF PRIVATE_BUILD}
-    Try
+    try
 {$ENDIF}
-        If ELDesigner1.CanPaste Then
+        if ELDesigner1.CanPaste then
             ELDesigner1.Paste;
 {$IFNDEF PRIVATE_BUILD}
-    Except
-    End;
+    except
+    end;
 {$ENDIF}
-    DisablePropertyBuilding := False;
+    DisablePropertyBuilding := FALSE;
 
     ELDesigner1.SelectedControls.Clear;
     ELDesigner1.SelectedControls.Add(ELDesigner1.DesignControl);
     BuildProperties(ELDesigner1.DesignControl);
-End;
+end;
 
-Function TWXDsgn.IsFromScrollBarShowing: Boolean;
-Begin
-    If ((TFrmNewForm(ELDesigner1.DesignControl).HorzScrollBar.IsScrollBarVisible = True) Or
-        (TFrmNewForm(ELDesigner1.DesignControl).VertScrollBar.IsScrollBarVisible = True)) Then
-        result := True
-    Else
-        result := False;
-End;
+function TWXDsgn.IsFromScrollBarShowing: boolean;
+begin
+    if ((TFrmNewForm(ELDesigner1.DesignControl).HorzScrollBar.IsScrollBarVisible = TRUE) or
+        (TFrmNewForm(ELDesigner1.DesignControl).VertScrollBar.IsScrollBarVisible = TRUE)) then
+        result := TRUE
+    else
+        result := FALSE;
+end;
 
-Procedure TWXDsgn.actDesignerDeleteExecute(Sender: TObject);
-Begin
-    BuildProperties(ELDesigner1.DesignControl, True);
-    DisablePropertyBuilding := True;
+procedure TWXDsgn.actDesignerDeleteExecute(Sender: TObject);
+begin
+    BuildProperties(ELDesigner1.DesignControl, TRUE);
+    DisablePropertyBuilding := TRUE;
     ELDesigner1.DeleteSelectedControls;
-    DisablePropertyBuilding := False;
+    DisablePropertyBuilding := FALSE;
 
     GetCurrentDesignerForm();
     ELDesigner1.SelectedControls.Clear;
     ELDesigner1.SelectedControls.Add(ELDesigner1.DesignControl);
     BuildProperties(ELDesigner1.SelectedControls[0]);
 
-End;
+end;
 
-Procedure TWXDsgn.JvInspPropertiesBeforeSelection(Sender: TObject;
-    NewItem: TJvCustomInspectorItem; Var Allow: Boolean);
-Begin
-    Allow := True;
-    If Not Assigned(NewItem) Then
+procedure TWXDsgn.JvInspPropertiesBeforeSelection(Sender: TObject;
+    NewItem: TJvCustomInspectorItem; var Allow: boolean);
+begin
+    Allow := TRUE;
+    if not Assigned(NewItem) then
         Exit;
 
-    If Not Assigned(NewItem.Data) Then
+    if not Assigned(NewItem.Data) then
         Exit;
-    Try
-        If AnsiSameText(NewItem.DisplayName, 'name') And
-            AnsiSameText(NewItem.Data.Name, 'wx_Name') Then
+    try
+        if AnsiSameText(NewItem.DisplayName, 'name') and
+            AnsiSameText(NewItem.Data.Name, 'wx_Name') then
             PreviousStringValue := NewItem.Data.AsString;
-        If AnsiSameText(NewItem.DisplayName, 'name') Then
+        if AnsiSameText(NewItem.DisplayName, 'name') then
             PreviousComponentName := NewItem.Data.AsString
-    Except
-    End;
+    except
+    end;
 
-End;
+end;
 
-Function TWXDsgn.ReplaceClassNameInEditor(strLst: TStringList; text: TSynEdit; FromClassName, ToClassName: String): Boolean;
-Var
-    I: Integer;
-    lineNum: Integer;
-    lineStr: String;
+function TWXDsgn.ReplaceClassNameInEditor(strLst: TStringList; text: TSynEdit; FromClassName, ToClassName: string): boolean;
+var
+    I: integer;
+    lineNum: integer;
+    lineStr: string;
 
-    Function IsNumeric(s: String): Boolean;
-    Var
-        i: Integer;
-    Begin
-        result := True;
-        For i := 1 To length(s) Do
-            If Not (s[i] In ['0'..'9']) Then
-            Begin
-                result := False;
+    function IsNumeric(s: string): boolean;
+    var
+        i: integer;
+    begin
+        result := TRUE;
+        for i := 1 to length(s) do
+            if not (s[i] in ['0'..'9']) then
+            begin
+                result := FALSE;
                 exit;
-            End;
-    End;
-Begin
-    Result := False;
-    If strLst.Count < 1 Then
+            end;
+    end;
+begin
+    Result := FALSE;
+    if strLst.Count < 1 then
         exit;
 
-    For I := 0 To strLst.Count - 1 Do // Iterate
-    Begin
-        If Not IsNumeric(strLst[i]) Then
+    for I := 0 to strLst.Count - 1 do // Iterate
+    begin
+        if not IsNumeric(strLst[i]) then
             continue;
         lineNum := StrToInt(strLst[i]);
-        If lineNum > text.Lines.Count Then
+        if lineNum > text.Lines.Count then
             continue;
-        Try
+        try
             lineStr := text.Lines[lineNum];
 
             strSearchReplace(lineStr, FromClassName, ToClassName, [srWord, srCase, srAll]);
             text.Lines[lineNum] := lineStr;
-        Except
+        except
 
-        End;
-    End; // for
+        end;
+    end; // for
 
   //TODO: Guru: Is there a better way of implementing the class search and replace?
-    For I := 0 To text.Lines.Count - 1 Do // Iterate
-    Begin
-        Try
+    for I := 0 to text.Lines.Count - 1 do // Iterate
+    begin
+        try
             lineStr := text.Lines[i];
             strSearchReplace(lineStr, FromClassName + '::' + FromClassName, ToClassName + '::' + ToClassName, [srWord, srCase, srAll]);
             strSearchReplace(lineStr, '~' + FromClassName, '~' + ToClassName, [srWord, srCase, srAll]);
             strSearchReplace(lineStr, ' ' + FromClassName + '(', ' ' + ToClassName + '(', [srWord, srCase, srAll]);
             text.Lines[i] := lineStr;
 
-        Except
-        End;
-    End; // for
+        except
+        end;
+    end; // for
 
-    Result := True;
+    Result := TRUE;
 
-End;
+end;
 
-Procedure TWXDsgn.JvInspPropertiesItemValueChanged(Sender: TObject;
+procedure TWXDsgn.JvInspPropertiesItemValueChanged(Sender: TObject;
     Item: TJvCustomInspectorItem);
-Begin
+begin
   //sendDebug('Yes it is changed!!!');
-End;
+end;
 
-Procedure TWXDsgn.DesignerOptionsClick(Sender: TObject);
-Begin
-    With TDesignerForm.Create(self) Do
-        Try
+procedure TWXDsgn.DesignerOptionsClick(Sender: TObject);
+begin
+    with TDesignerForm.Create(self) do
+        try
             ShowModal;
-        Finally
+        finally
             Free;
-        End;
-End;
+        end;
+end;
 
-Procedure TWXDsgn.AlignToGridClick(Sender: TObject);
-Begin
+procedure TWXDsgn.AlignToGridClick(Sender: TObject);
+begin
     ELDesigner1.SelectedControls.AlignToGrid;
-End;
+end;
 
-Procedure TWXDsgn.AlignToLeftClick(Sender: TObject);
-Begin
+procedure TWXDsgn.AlignToLeftClick(Sender: TObject);
+begin
     ELDesigner1.SelectedControls.Align(atLeftTop, atNoChanges);
-End;
+end;
 
-Procedure TWXDsgn.AlignToRightClick(Sender: TObject);
-Begin
+procedure TWXDsgn.AlignToRightClick(Sender: TObject);
+begin
     ELDesigner1.SelectedControls.Align(atRightBottom, atNoChanges);
-End;
+end;
 
-Procedure TWXDsgn.AlignToMiddleHorizontalClick(Sender: TObject);
-Begin
+procedure TWXDsgn.AlignToMiddleHorizontalClick(Sender: TObject);
+begin
     ELDesigner1.SelectedControls.Align(atCenter, atNoChanges);
-End;
+end;
 
-Procedure TWXDsgn.AlignToMiddleVerticalClick(Sender: TObject);
-Begin
+procedure TWXDsgn.AlignToMiddleVerticalClick(Sender: TObject);
+begin
     ELDesigner1.SelectedControls.Align(atNoChanges, atCenter);
-End;
+end;
 
-Procedure TWXDsgn.AlignToTopClick(Sender: TObject);
-Begin
+procedure TWXDsgn.AlignToTopClick(Sender: TObject);
+begin
     ELDesigner1.SelectedControls.Align(atNoChanges, atLeftTop);
-End;
+end;
 
-Procedure TWXDsgn.AlignToBottomClick(Sender: TObject);
-Begin
+procedure TWXDsgn.AlignToBottomClick(Sender: TObject);
+begin
     ELDesigner1.SelectedControls.Align(atNoChanges, atRightBottom);
-End;
+end;
 
-Procedure TWXDsgn.ViewControlIDsClick(Sender: TObject);
-Var
+procedure TWXDsgn.ViewControlIDsClick(Sender: TObject);
+var
     vwCtrlIDsFormObj: TViewControlIDsForm;
-Begin
+begin
     vwCtrlIDsFormObj := TViewControlIDsForm.Create(self);
 
     vwCtrlIDsFormObj.SetMainControl(TWinControl(ELDesigner1.DesignControl));
     vwCtrlIDsFormObj.PopulateControlList;
     vwCtrlIDsFormObj.ShowModal;
-End;
+end;
 
-Procedure TWXDsgn.ChangeCreationOrder1Click(Sender: TObject);
-Var
+procedure TWXDsgn.ChangeCreationOrder1Click(Sender: TObject);
+var
     Control: TWinControl;
-    editorName, hppEditor, cppEditor: String;
-Begin
-    If main.GetPageControlActivePageIndex = -1 Then
+    editorName, hppEditor, cppEditor: string;
+begin
+    if main.GetPageControlActivePageIndex = -1 then
         exit;
 
-    If ELDesigner1.SelectedControls.Count = 0 Then
+    if ELDesigner1.SelectedControls.Count = 0 then
         exit;
   //Attempt to get a control that has sub-controls
     Control := TWinControl(ELDesigner1.SelectedControls.Items[0]);
-    While Control.Parent <> Nil Do
-    Begin
-        If Control.ControlCount > 1 Then
+    while Control.Parent <> NIL do
+    begin
+        if Control.ControlCount > 1 then
             Break;
         Control := Control.Parent;
-    End;
+    end;
 
   //We give up - there isn't one to use
-    If Control.ControlCount = 0 Then
-    Begin
+    if Control.ControlCount = 0 then
+    begin
     //MessageDlg('You cannot do anything with this control. '+#13+'Select its parent Dialog or Sizer.', mtError, [mbOK], 0);
         Exit;
-    End;
+    end;
 
-    If MessageDlg('All Designer related Files will be saved before proceeding.' + #13 + #10 + '' + #13 + #10 + 'Do you want to continue ?', mtConfirmation, [mbYes, mbNo], 0) <> mrYes Then
+    if MessageDlg('All Designer related Files will be saved before proceeding.' + #13 + #10 + '' + #13 + #10 + 'Do you want to continue ?', mtConfirmation, [mbYes, mbNo], 0) <> mrYes then
         exit;
 
     editorName := main.GetActiveEditorName;
-    If Not main.IsEditorAssigned(editorName) Then
+    if not main.IsEditorAssigned(editorName) then
         Exit;
 
     hppEditor := ChangeFileExt(editorName, H_EXT);
-    If main.IsFileOpenedInEditor(hppEditor) Then
-    Begin
-        If main.IsEditorAssigned(hppEditor) Then
-        Begin
-            main.SaveFileFromPlugin(hppEditor, True);
-        End;
-    End;
+    if main.IsFileOpenedInEditor(hppEditor) then
+    begin
+        if main.IsEditorAssigned(hppEditor) then
+        begin
+            main.SaveFileFromPlugin(hppEditor, TRUE);
+        end;
+    end;
 
     cppEditor := ChangeFileExt(editorName, CPP_EXT);
-    If main.IsFileOpenedInEditor(cppEditor) Then
-    Begin
-        If main.IsEditorAssigned(cppEditor) Then
-        Begin
-            main.SaveFileFromPlugin(cppEditor, True);
-        End;
-    End;
+    if main.IsFileOpenedInEditor(cppEditor) then
+    begin
+        if main.IsEditorAssigned(cppEditor) then
+        begin
+            main.SaveFileFromPlugin(cppEditor, TRUE);
+        end;
+    end;
 
-    main.SaveFileFromPlugin(editorName, True);
+    main.SaveFileFromPlugin(editorName, TRUE);
 
-    With TCreationOrderForm.Create(Self) Do
-        Try
+    with TCreationOrderForm.Create(Self) do
+        try
             SetMainControl(Control);
             PopulateControlList;
             ShowModal;
-        Finally
+        finally
             Free
-        End;
+        end;
 
-    ELDesigner1.Active := False;
-    ELDesigner1.DesignControl := Nil;
+    ELDesigner1.Active := FALSE;
+    ELDesigner1.DesignControl := NIL;
 
   //This should copy the Form's content to the Text Editor
     main.EditorInsertDefaultText(editorName);
 
   //Save form file
-    main.SetEditorModified(editorName, True);
+    main.SetEditorModified(editorName, TRUE);
 
-    main.SaveFileFromPlugin(editorName, True);
-    (editors[editorName] As TWXEditor).ReloadForm;
+    main.SaveFileFromPlugin(editorName, TRUE);
+    (editors[editorName] as TWXEditor).ReloadForm;
     UpdateDesignerData(editorName);
 
-    If main.IsFileOpenedInEditor(hppEditor) Then
-    Begin
-        If main.IsEditorAssigned(hppEditor) Then
-        Begin
-            main.SaveFileFromPlugin(hppEditor, True);
-        End;
-    End;
+    if main.IsFileOpenedInEditor(hppEditor) then
+    begin
+        if main.IsEditorAssigned(hppEditor) then
+        begin
+            main.SaveFileFromPlugin(hppEditor, TRUE);
+        end;
+    end;
 
-    If main.IsFileOpenedInEditor(cppEditor) Then
-    Begin
-        If main.IsEditorAssigned(cppEditor) Then
-        Begin
-            main.SaveFileFromPlugin(cppEditor, True);
-        End;
-    End;
+    if main.IsFileOpenedInEditor(cppEditor) then
+    begin
+        if main.IsEditorAssigned(cppEditor) then
+        begin
+            main.SaveFileFromPlugin(cppEditor, TRUE);
+        end;
+    end;
 
-    main.SaveFileFromPlugin(editorName, True);
+    main.SaveFileFromPlugin(editorName, TRUE);
 
-    ELDesigner1.DesignControl := (editors[editorName] As TWXEditor).GetDesigner;
-    BuildComponentList((editors[editorName] As TWXEditor).GetDesigner);
-    ELDesigner1.Active := True;
+    ELDesigner1.DesignControl := (editors[editorName] as TWXEditor).GetDesigner;
+    BuildComponentList((editors[editorName] as TWXEditor).GetDesigner);
+    ELDesigner1.Active := TRUE;
 
-End;
+end;
 
-Procedure TWXDsgn.SelectParentClick(Sender: TObject);
-Var
+procedure TWXDsgn.SelectParentClick(Sender: TObject);
+var
     ActiveControl: TControl;
     SelectedItem: TMenuItem;
-    SelectedLevel: Integer;
-Begin
+    SelectedLevel: integer;
+begin
   //Get all the information we need
     SelectedItem := TMenuItem(Sender);
     SelectedLevel := SelectedItem.Parent.IndexOf(SelectedItem) + 1;
     ActiveControl := ELDesigner1.SelectedControls.Items[0];
 
   //Select the control we want
-    While SelectedLevel > 0 Do
-    Begin
+    while SelectedLevel > 0 do
+    begin
         ActiveControl := ActiveControl.Parent;
         SelectedLevel := SelectedLevel - 1;
-    End;
+    end;
 
   //Set set the active control
     ELDesigner1.SelectedControls.Clear;
     ELDesigner1.SelectedControls.Add(ActiveControl);
-End;
+end;
 
-Procedure TWXDsgn.LockControlClick(Sender: TObject);
-Var
-    I: Integer;
-Begin
+procedure TWXDsgn.LockControlClick(Sender: TObject);
+var
+    I: integer;
+begin
   //Do we lock or unlock them?
-    If Not DesignerMenuLocked.Checked Then
-        For I := 0 To ELDesigner1.SelectedControls.Count - 1 Do
+    if not DesignerMenuLocked.Checked then
+        for I := 0 to ELDesigner1.SelectedControls.Count - 1 do
             ELDesigner1.LockControl(ELDesigner1.SelectedControls[I], [lmNoMove, lmNoResize, lmNoDelete, lmNoInsertIn])
-    Else
-        For I := 0 To ELDesigner1.SelectedControls.Count - 1 Do
+    else
+        for I := 0 to ELDesigner1.SelectedControls.Count - 1 do
             ELDesigner1.LockControl(ELDesigner1.SelectedControls[I], []);
-End;
+end;
 
-Procedure TWXDsgn.OnPropertyItemSelected(Sender: TObject);
-Begin
-    If assigned(SelectedComponent) Then
-    Begin
-        If SelectedComponent Is TFrmNewForm Then
+procedure TWXDsgn.OnPropertyItemSelected(Sender: TObject);
+begin
+    if assigned(SelectedComponent) then
+    begin
+        if SelectedComponent is TFrmNewForm then
             PreviousComponentName := TFrmNewForm(SelectedComponent).Wx_Name
-        Else
+        else
             PreviousComponentName := SelectedComponent.Name;
-    End;
-End;
+    end;
+end;
 
-Procedure TWXDsgn.actNewWxFrameExecute(Sender: TObject);
-Begin
-    CreateNewDialogOrFrameCode(dtWxFrame, Nil, 2);
-End;
+procedure TWXDsgn.actNewWxFrameExecute(Sender: TObject);
+begin
+    CreateNewDialogOrFrameCode(dtWxFrame, NIL, 2);
+end;
 
-Procedure TWXDsgn.actNewwxDialogExecute(Sender: TObject);
-Begin
-    CreateNewDialogOrFrameCode(dtWxDialog, Nil, 2);
-End;
+procedure TWXDsgn.actNewwxDialogExecute(Sender: TObject);
+begin
+    CreateNewDialogOrFrameCode(dtWxDialog, NIL, 2);
+end;
 
-Procedure TWXDsgn.actWxPropertyInspectorCutExecute(Sender: TObject);
-Begin
+procedure TWXDsgn.actWxPropertyInspectorCutExecute(Sender: TObject);
+begin
     SendMessage(GetFocus, WM_CUT, 0, 0);
-End;
+end;
 
-Procedure TWXDsgn.actWxPropertyInspectorCopyExecute(Sender: TObject);
-Begin
+procedure TWXDsgn.actWxPropertyInspectorCopyExecute(Sender: TObject);
+begin
     SendMessage(GetFocus, WM_COPY, 0, 0);
-End;
+end;
 
-Procedure TWXDsgn.actWxPropertyInspectorPasteExecute(Sender: TObject);
-Begin
+procedure TWXDsgn.actWxPropertyInspectorPasteExecute(Sender: TObject);
+begin
     SendMessage(GetFocus, WM_PASTE, 0, 0);
-End;
+end;
 
-Procedure TWXDsgn.actWxPropertyInspectorDeleteExecute(Sender: TObject);
-Begin
-    If (GetFocus <> 0) Then
+procedure TWXDsgn.actWxPropertyInspectorDeleteExecute(Sender: TObject);
+begin
+    if (GetFocus <> 0) then
         SendMessage(GetFocus, WM_CLEAR, 0, 0)
-    Else
+    else
         MessageDlg('nothing selected', mtError, [mbOK], 0);
 
-End;
+end;
 
-Procedure TWXDsgn.GenerateSource(sourceFileName: String; text: TSynEdit);
-Var
-    editorName, ext: String;
-Begin
+procedure TWXDsgn.GenerateSource(sourceFileName: string; text: TSynEdit);
+var
+    editorName, ext: string;
+begin
     ext := ExtractFileExt(sourceFileName);
     editorName := ChangeFileExt(sourceFileName, WXFORM_EXT);
-    If ext = CPP_EXT Then
-        GenerateCpp((editors[editorName] As TWXEditor).GetDesigner, (editors[editorName] As TWXEditor).GetDesigner().Wx_Name, text)
-    Else
-    If ext = H_EXT Then
-        GenerateHpp((editors[editorName] As TWXEditor).GetDesigner, (editors[editorName] As TWXEditor).GetDesigner().Wx_Name, text);
-End;
+    if ext = CPP_EXT then
+        GenerateCpp((editors[editorName] as TWXEditor).GetDesigner, (editors[editorName] as TWXEditor).GetDesigner().Wx_Name, text)
+    else
+    if ext = H_EXT then
+        GenerateHpp((editors[editorName] as TWXEditor).GetDesigner, (editors[editorName] as TWXEditor).GetDesigner().Wx_Name, text);
+end;
 
-Procedure TWXDsgn.ActivateDesigner(s: String);
-Begin
-    If isForm(s) Then
-    Begin
-        If Assigned((editors[s] As TWXEditor).GetDesigner()) Then
-        Begin
-            ELDesigner1.Active := False;
-            Try
-                ELDesigner1.DesignControl := (editors[s] As TWXEditor).GetDesigner();
-                ELDesigner1.Active := True;
-            Except
-            End;
-            BuildComponentList((editors[s] As TWXEditor).GetDesigner());
-        End;
-    End;
-End;
+procedure TWXDsgn.ActivateDesigner(s: string);
+begin
+    if isForm(s) then
+    begin
+        if Assigned((editors[s] as TWXEditor).GetDesigner()) then
+        begin
+            ELDesigner1.Active := FALSE;
+            try
+                ELDesigner1.DesignControl := (editors[s] as TWXEditor).GetDesigner();
+                ELDesigner1.Active := TRUE;
+            except
+            end;
+            BuildComponentList((editors[s] as TWXEditor).GetDesigner());
+        end;
+    end;
+end;
 
-Procedure TWXDsgn.UpdateXRC(editorName: String);
-Var
-    resourceName: String;
+procedure TWXDsgn.UpdateXRC(editorName: string);
+var
+    resourceName: string;
     text: TSynEdit;
-Begin
-    If IsForm(editorName) Then
-    Begin
+begin
+    if IsForm(editorName) then
+    begin
 
-        If (ELDesigner1.GenerateXRC) Then
+        if (ELDesigner1.GenerateXRC) then
             resourceName := ChangeFileExt(editorName, XRC_EXT);
-        If FileExists(resourceName) Then
-        Begin
-            main.OpenFile(resourceName, True);
+        if FileExists(resourceName) then
+        begin
+            main.OpenFile(resourceName, TRUE);
 
-            If main.IsEditorAssigned(resourceName) Then
-            Begin
+            if main.IsEditorAssigned(resourceName) then
+            begin
                 text := main.GetEditorText(resourceName);
                 text.BeginUpdate;
-                Try
-                    GenerateXRC((editors[editorName] As TWXEditor).GetDesigner(), (editors[editorName] As TWXEditor).GetDesigner().Wx_Name, text, editorName);
-                    main.SetEditorModified(resourceName, True);
-                Except
-                End;
+                try
+                    GenerateXRC((editors[editorName] as TWXEditor).GetDesigner(), (editors[editorName] as TWXEditor).GetDesigner().Wx_Name, text, editorName);
+                    main.SetEditorModified(resourceName, TRUE);
+                except
+                end;
                 main.TouchEditor(resourceName);
                 text.EndUpdate;
-            End;
+            end;
 
       {  if Assigned(e) then
         begin
@@ -4603,77 +4603,77 @@ Begin
           end;
         end;
         }
-        End;
+        end;
 
-    End;
-End;
+    end;
+end;
 
-Procedure TWXDsgn.GenerateXPM(s: String; b: Boolean);
-Begin
-    If editors.Exists(s) Then
-        Designerfrm.GenerateXPM((editors[s] As TWXEditor).GetDesigner, s, b);
-End;
+procedure TWXDsgn.GenerateXPM(s: string; b: boolean);
+begin
+    if editors.Exists(s) then
+        Designerfrm.GenerateXPM((editors[s] as TWXEditor).GetDesigner, s, b);
+end;
 
-Procedure TWXDsgn.SetBoolInspectorDataClear(b: Boolean);
-Begin
+procedure TWXDsgn.SetBoolInspectorDataClear(b: boolean);
+begin
     boolInspectorDataClear := b;
-End;
+end;
 
-Function TWXDsgn.GetFilters: TStringList;
-Var
+function TWXDsgn.GetFilters: TStringList;
+var
     filters: TStringList;
-Begin
+begin
     filters := TStringList.Create;
     filters.Add(FLT_WXFORMS);
     filters.Add(FLT_XRC);
     Result := filters;
-End;
+end;
 
-Function TWXDsgn.GetSrcFilters: TStringList;
-Var
+function TWXDsgn.GetSrcFilters: TStringList;
+var
     filters: TStringList;
-Begin
+begin
     filters := TStringList.Create;
     filters.Add(FLT_XRC);
     Result := filters;
-End;
+end;
 
-Procedure TWXDsgn.SetDisablePropertyBuilding(b: Boolean);
-Begin
+procedure TWXDsgn.SetDisablePropertyBuilding(b: boolean);
+begin
     DisablePropertyBuilding := b;
-End;
+end;
 
-Procedure TWXDsgn.Reload(FileName: String);
-Begin
-    (editors[FileName] As TWXEditor).ReloadForm;
-End;
+procedure TWXDsgn.Reload(FileName: string);
+begin
+    (editors[FileName] as TWXEditor).ReloadForm;
+end;
 
-Function TWXDsgn.ReloadForm(FileName: String): Boolean;
-Begin
-    Result := False;
-    If isForm(FileName) Then
-    Begin
-        (editors[FileName] As TWXEditor).ReloadFormFromFile(FileName);
-        Result := True;
-    End;
-End;
+function TWXDsgn.ReloadForm(FileName: string): boolean;
+begin
+    Result := FALSE;
+    if isForm(FileName) then
+    begin
+        (editors[FileName] as TWXEditor).ReloadFormFromFile(FileName);
+        Result := TRUE;
+    end;
+end;
 
-Procedure TWXDsgn.ReloadFromFile(FileName: String; fileToReloadFrom: String);
-Begin
-    (editors[FileName] As TWXEditor).ReloadFormFromFile(fileToReloadFrom);
-End;
+procedure TWXDsgn.ReloadFromFile(FileName: string; fileToReloadFrom: string);
+begin
+    (editors[FileName] as TWXEditor).ReloadFormFromFile(fileToReloadFrom);
+end;
 
-Procedure TWXDsgn.TerminateEditor(FileName: String);
-Begin
-    If (editors.Exists(FileName)) Then
-    Begin
-        (editors[FileName] As TWXEditor).Terminate;
+procedure TWXDsgn.TerminateEditor(FileName: string);
+begin
+    if (editors.Exists(FileName)) then
+    begin
+        (editors[FileName] as TWXEditor).Terminate;
         editors.Delete(FileName);
-    End;
-End;
+    end;
+end;
 
-Procedure TWXDsgn.DestroyDLL;
-Begin
+procedure TWXDsgn.DestroyDLL;
+begin
     editors.Free;
     ComponentPalette.Free;
     JvInspProperties.Free;
@@ -4681,334 +4681,334 @@ Begin
     JvInspectorDotNETPainter1.Free;
     JvInspectorDotNETPainter2.Free;
     ComputerInfo1.Free;
-    main := Nil;
-End;
+    main := NIL;
+end;
 
-Procedure TWXDsgn.OnDockableFormClosed(Sender: TObject; Var Action: TCloseAction);
-Begin
-    If TForm(Sender) = frmInspectorDock Then
-    Begin
-        ShowPropertyInspItem.Checked := False;
-    End
-    Else
-    If TForm(Sender) = frmPaletteDock Then
-    Begin
-        ShowComponentPaletteItem.Checked := False;
-    End;
+procedure TWXDsgn.OnDockableFormClosed(Sender: TObject; var Action: TCloseAction);
+begin
+    if TForm(Sender) = frmInspectorDock then
+    begin
+        ShowPropertyInspItem.Checked := FALSE;
+    end
+    else
+    if TForm(Sender) = frmPaletteDock then
+    begin
+        ShowComponentPaletteItem.Checked := FALSE;
+    end;
 
-End;
+end;
 
-Function TWXDsgn.IsSource(FileName: String): Boolean;
-Begin
-    Result := Not isForm(FileName);
-End;
+function TWXDsgn.IsSource(FileName: string): boolean;
+begin
+    Result := not isForm(FileName);
+end;
 
-Function TWXDsgn.GetDefaultText(FileName: String): String;
-Begin
-    Result := (editors[FileName] As TWXEditor).GetDefaultText;
-End;
+function TWXDsgn.GetDefaultText(FileName: string): string;
+begin
+    Result := (editors[FileName] as TWXEditor).GetDefaultText;
+end;
 
-Function TWXDsgn.MainPageChanged(FileName: String): Boolean;
-Begin
-    Result := False;
-    If IsForm(FileName) Then
-    Begin
-        pendingEditorSwitch := False;
+function TWXDsgn.MainPageChanged(FileName: string): boolean;
+begin
+    Result := FALSE;
+    if IsForm(FileName) then
+    begin
+        pendingEditorSwitch := FALSE;
     //Show a busy cursor
         Screen.Cursor := crHourglass;
 
         Application.ProcessMessages;
 
-        If Not ELDesigner1.Active Or cleanUpJvInspEvents Then
+        if not ELDesigner1.Active or cleanUpJvInspEvents then
             EnableDesignerControls;
         ActivateDesigner(FileName);
         Screen.Cursor := crDefault;
-        Result := True;
-        If (ELDesigner1.Floating) Then
-            (editors[FileName] As TWxEditor).GetDesigner.Show;  // EAB proper focus when designer floating
+        Result := TRUE;
+        if (ELDesigner1.Floating) then
+            (editors[FileName] as TWxEditor).GetDesigner.Show;  // EAB proper focus when designer floating
 
-        If (Trim(ComponentPalette.SelectedComponent) <> '') And (TControlClass(GetClass(ComponentPalette.SelectedComponent)) <> Nil) Then
+        if (Trim(ComponentPalette.SelectedComponent) <> '') and (TControlClass(GetClass(ComponentPalette.SelectedComponent)) <> NIL) then
             Screen.Cursor := crDrag;
 
-    End
-    Else
-    Begin
-        If ELDesigner1.Active Then
+    end
+    else
+    begin
+        if ELDesigner1.Active then
             DisableDesignerControls;
-    End;
-End;
+    end;
+end;
 
-Procedure TWXDsgn.OnToolbarEvent(WM_COMMAND: Word);
-Begin
+procedure TWXDsgn.OnToolbarEvent(WM_COMMAND: word);
+begin
 
-End;
+end;
 
-Function TWXDsgn.Retrieve_LeftDock_Panels: TList;
-Var
+function TWXDsgn.Retrieve_LeftDock_Panels: TList;
+var
     items: TList;
-Begin
+begin
     items := TList.Create;
     items.Add(frmInspectorDock);
     items.Add(frmPaletteDock);
     Result := items;
-End;
+end;
 
-Function TWXDsgn.Retrieve_RightDock_Panels: TList;
-Begin
-    Result := Nil;
-End;
+function TWXDsgn.Retrieve_RightDock_Panels: TList;
+begin
+    Result := NIL;
+end;
 
-Function TWXDsgn.Retrieve_BottomDock_Panels: TList;
-Begin
-    Result := Nil;
-End;
+function TWXDsgn.Retrieve_BottomDock_Panels: TList;
+begin
+    Result := NIL;
+end;
 
-Function TWXDsgn.Retrieve_File_New_Menus: TList;
-Var
+function TWXDsgn.Retrieve_File_New_Menus: TList;
+var
     items: TList;
-Begin
+begin
     items := TList.Create;
     items.Add(NewWxDialogItem);
     items.Add(NewWxFrameItem);
     Result := items;
-End;
+end;
 
-Function TWXDsgn.Retrieve_File_Import_Menus: TList;
-Begin
-    Result := Nil;
-End;
+function TWXDsgn.Retrieve_File_Import_Menus: TList;
+begin
+    Result := NIL;
+end;
 
-Function TWXDsgn.Retrieve_File_Export_Menus: TList;
-Begin
-    Result := Nil;
-End;
+function TWXDsgn.Retrieve_File_Export_Menus: TList;
+begin
+    Result := NIL;
+end;
 
-Function TWXDsgn.Retrieve_Edit_Menus: TList;
-Begin
-    Result := Nil;
-End;
+function TWXDsgn.Retrieve_Edit_Menus: TList;
+begin
+    Result := NIL;
+end;
 
-Function TWXDsgn.Retrieve_Search_Menus: TList;
-Begin
-    Result := Nil;
-End;
+function TWXDsgn.Retrieve_Search_Menus: TList;
+begin
+    Result := NIL;
+end;
 
-Function TWXDsgn.Retrieve_View_Menus: TList;
-Var
+function TWXDsgn.Retrieve_View_Menus: TList;
+var
     items: TList;
-Begin
+begin
     items := TList.Create;
     items.Add(ShowPropertyInspItem);
     items.Add(ShowComponentPaletteItem);
     Result := items;
-End;
+end;
 
-Function TWXDsgn.Retrieve_View_Toolbars_Menus: TList;
-Begin
-    Result := Nil;
-End;
+function TWXDsgn.Retrieve_View_Toolbars_Menus: TList;
+begin
+    Result := NIL;
+end;
 
-Function TWXDsgn.Retrieve_Project_Menus: TList;
-Begin
-    Result := Nil;
-End;
+function TWXDsgn.Retrieve_Project_Menus: TList;
+begin
+    Result := NIL;
+end;
 
-Function TWXDsgn.Retrieve_Execute_Menus: TList;
-Begin
-    Result := Nil;
-End;
+function TWXDsgn.Retrieve_Execute_Menus: TList;
+begin
+    Result := NIL;
+end;
 
-Function TWXDsgn.Retrieve_Debug_Menus: TList;
-Begin
-    Result := Nil;
-End;
+function TWXDsgn.Retrieve_Debug_Menus: TList;
+begin
+    Result := NIL;
+end;
 
-Function TWXDsgn.Retrieve_Tools_Menus: TList;
-Var
+function TWXDsgn.Retrieve_Tools_Menus: TList;
+var
     items: TList;
-Begin
+begin
     items := TList.Create;
     items.Add(ToolsMenuDesignerOptions);
     Result := items;
-End;
+end;
 
-Function TWXDsgn.Retrieve_Help_Menus: TList;
-Begin
-    Result := Nil;
-End;
+function TWXDsgn.Retrieve_Help_Menus: TList;
+begin
+    Result := NIL;
+end;
 
-Function TWXDsgn.Retrieve_Toolbars: TToolBar;
-Begin
-    Result := Nil;
-End;
+function TWXDsgn.Retrieve_Toolbars: TToolBar;
+begin
+    Result := NIL;
+end;
 
-Function TWXDsgn.Retrieve_Message_Tabs: TList;
-Begin
-    Result := Nil;
-End;
+function TWXDsgn.Retrieve_Message_Tabs: TList;
+begin
+    Result := NIL;
+end;
 
-Procedure TWXDsgn.SetEditorName(currentName: String; newName: String);
-Var
+procedure TWXDsgn.SetEditorName(currentName: string; newName: string);
+var
     tempEditor: TWXEditor;
-Begin
-    If editors.Exists(currentName) Then
-    Begin
-        tempEditor := editors[currentName] As TWXEditor;
+begin
+    if editors.Exists(currentName) then
+    begin
+        tempEditor := editors[currentName] as TWXEditor;
         editorNames[tempEditor.editorNumber] := newName;
         tempEditor.FileName := newName;
         editors.Rename(currentName, newName);
-    End;
-End;
+    end;
+end;
 
-Function TWXDsgn.GetPluginName: String;
-Begin
+function TWXDsgn.GetPluginName: string;
+begin
     Result := plugin_name;
-End;
+end;
 
-Function TWXDsgn.GetChild: HWND;
-Begin
+function TWXDsgn.GetChild: HWND;
+begin
     Result := 0;
-End;
+end;
 
-Function TWXDsgn.ShouldNotCloseEditor(FileName: String; curFilename: String): Boolean;
-Begin
-    Result := False;
-    If (AnsiLowerCase(ChangeFileExt(FileName, WXFORM_EXT)) = curFilename) Or
-        (AnsiLowerCase(ChangeFileExt(FileName, H_EXT)) = curFilename) Or
-        (AnsiLowerCase(ChangeFileExt(FileName, CPP_EXT)) = curFilename) Or
-        (AnsiLowerCase(ChangeFileExt(FileName, XRC_EXT)) = curFilename) Then
-        Result := True;
-End;
+function TWXDsgn.ShouldNotCloseEditor(FileName: string; curFilename: string): boolean;
+begin
+    Result := FALSE;
+    if (AnsiLowerCase(ChangeFileExt(FileName, WXFORM_EXT)) = curFilename) or
+        (AnsiLowerCase(ChangeFileExt(FileName, H_EXT)) = curFilename) or
+        (AnsiLowerCase(ChangeFileExt(FileName, CPP_EXT)) = curFilename) or
+        (AnsiLowerCase(ChangeFileExt(FileName, XRC_EXT)) = curFilename) then
+        Result := TRUE;
+end;
 
-Procedure TWXDsgn.actShowPropertyInspItemExecute(Sender: TObject);
-Begin
-    TMenuItem(Sender).Checked := Not TMenuItem(Sender).Checked;
+procedure TWXDsgn.actShowPropertyInspItemExecute(Sender: TObject);
+begin
+    TMenuItem(Sender).Checked := not TMenuItem(Sender).Checked;
     main.ToggleDockForm(frmInspectorDock, TMenuItem(Sender).Checked);
-End;
+end;
 
-Procedure TWXDsgn.actShowComponentPaletteItemExecute(Sender: TObject);
-Begin
-    TMenuItem(Sender).Checked := Not TMenuItem(Sender).Checked;
+procedure TWXDsgn.actShowComponentPaletteItemExecute(Sender: TObject);
+begin
+    TMenuItem(Sender).Checked := not TMenuItem(Sender).Checked;
     main.ToggleDockForm(frmPaletteDock, TMenuItem(Sender).Checked);
-End;
+end;
 
 
-Function TWXDsgn.GetXMLExtension: String;
-Begin
+function TWXDsgn.GetXMLExtension: string;
+begin
     Result := XRC_EXT;
-End;
+end;
 
-Function TWXDsgn.ConvertLibsToCurrentVersion(strValue: String): String;
-Begin
+function TWXDsgn.ConvertLibsToCurrentVersion(strValue: string): string;
+begin
     Result := LocalConvertLibsToCurrentVersion(strValue);
-End;
+end;
 
-Procedure TWXDsgn.CreateNewXPMs(strFileName: String);
-Begin
-    (editors[strFileName] As TWXEditor).GetDesigner.CreateNewXPMs(strFileName);
-End;
+procedure TWXDsgn.CreateNewXPMs(strFileName: string);
+begin
+    (editors[strFileName] as TWXEditor).GetDesigner.CreateNewXPMs(strFileName);
+end;
 
-Function TWXDsgn.HasDesigner(editorName: String): Boolean;
-Begin
-    Result := Not (editors[editorName] As TWXEditor).IsDesignerNil;
-End;
+function TWXDsgn.HasDesigner(editorName: string): boolean;
+begin
+    Result := not (editors[editorName] as TWXEditor).IsDesignerNil;
+end;
 
-Function TWXDsgn.ManagesUnit: Boolean;
-Begin
-    Result := True;
-End;
+function TWXDsgn.ManagesUnit: boolean;
+begin
+    Result := TRUE;
+end;
 
-Function TWXDsgn.EditorDisplaysText(FileName: String): Boolean;
-Begin
-    Result := False;
-End;
+function TWXDsgn.EditorDisplaysText(FileName: string): boolean;
+begin
+    Result := FALSE;
+end;
 
-Function TWXDsgn.GetTextHighlighterType(FileName: String): String;
-Begin
+function TWXDsgn.GetTextHighlighterType(FileName: string): string;
+begin
     Result := 'RES';
-End;
+end;
 
-Function TWXDsgn.GET_COMMON_CPP_INCLUDE_DIR: String;
-Begin
+function TWXDsgn.GET_COMMON_CPP_INCLUDE_DIR: string;
+begin
     Result := COMMON_CPP_INCLUDE_DIR + ';include\common;';
-End;
+end;
 
-Function TWXDsgn.GetCompilerMacros: String;
-Var
-    WxLibName: String;
-Begin
+function TWXDsgn.GetCompilerMacros: string;
+var
+    WxLibName: string;
+begin
     WxLibName := Format('wxmsw%d%d', [WxOptions.majorVersion, WxOptions.minorVersion]);
 
   //And then do the library features
-    If WxOptions.unicodeSupport Then
+    if WxOptions.unicodeSupport then
         WxLibName := WxLibName + 'u';
-    If WxOptions.debugLibrary Then
+    if WxOptions.debugLibrary then
         WxLibName := WxLibName + 'd';
 
     Result := 'WXLIBNAME = ' + WxLibName;
-End;
+end;
 
-Function TWXDsgn.GetCompilerPreprocDefines: String;
-Begin
+function TWXDsgn.GetCompilerPreprocDefines: string;
+begin
   //Add the WXUSINGDLL if we are using a DLL build
 
-    If Not WxOptions.staticLibrary Then
+    if not WxOptions.staticLibrary then
         Result := 'WXUSINGDLL'
 
-    Else
+    else
 
         Result := '';
 
-End;
+end;
 
-Function TWXDsgn.Retrieve_CompilerOptionsPane: TTabSheet;
-Begin
+function TWXDsgn.Retrieve_CompilerOptionsPane: TTabSheet;
+begin
     Result := tabwxWidgets;
-End;
+end;
 
-Procedure TWXDsgn.LoadCompilerSettings(name: String; value: String);
-Begin
+procedure TWXDsgn.LoadCompilerSettings(name: string; value: string);
+begin
   // Loading Compiler settings:
-    If name = 'wxOpts.Major' Then
-    Begin
+    if name = 'wxOpts.Major' then
+    begin
         fwxOptions.majorVersion := StrToInt(value);
-    End
-    Else
-    If name = 'wxOpts.Minor' Then
-    Begin
+    end
+    else
+    if name = 'wxOpts.Minor' then
+    begin
         fwxOptions.minorVersion := StrToInt(value);
-    End
-    Else
-    If name = 'wxOpts.Release' Then
-    Begin
+    end
+    else
+    if name = 'wxOpts.Release' then
+    begin
         fwxOptions.releaseVersion := StrToInt(value);
-    End
-    Else
-    If name = 'wxOpts.Unicode' Then
-    Begin
+    end
+    else
+    if name = 'wxOpts.Unicode' then
+    begin
         fwxOptions.unicodeSupport := StrToBool(value);
-    End
-    Else
-    If name = 'wxOpts.Monolithic' Then
-    Begin
+    end
+    else
+    if name = 'wxOpts.Monolithic' then
+    begin
         fwxOptions.monolithicLibrary := StrToBool(value);
-    End
-    Else
-    If name = 'wxOpts.Debug' Then
-    Begin
+    end
+    else
+    if name = 'wxOpts.Debug' then
+    begin
         fwxOptions.debugLibrary := StrToBool(value);
-    End
-    Else
-    If name = 'wxOpts.Static' Then
-    Begin
+    end
+    else
+    if name = 'wxOpts.Static' then
+    begin
         fwxOptions.staticLibrary := StrToBool(value);
-    End;
-End;
+    end;
+end;
 
-Procedure TWXDsgn.LoadCompilerOptions;
-Begin
-    With wxOptions Do
-    Begin
+procedure TWXDsgn.LoadCompilerOptions;
+begin
+    with wxOptions do
+    begin
         spwxMajor.Value := majorVersion;
         spwxMinor.Value := minorVersion;
         spwxRelease.Value := releaseVersion;
@@ -5016,17 +5016,17 @@ Begin
         chkwxUnicode.Checked := unicodeSupport;
         chkwxMonolithic.Checked := monolithicLibrary;
         chkwxDebug.Checked := debugLibrary;
-        If staticLibrary Then
-            staticLib.Checked := True
-        Else
-            dynamicLib.Checked := True;
-    End;
-End;
+        if staticLibrary then
+            staticLib.Checked := TRUE
+        else
+            dynamicLib.Checked := TRUE;
+    end;
+end;
 
-Procedure TWXDsgn.SaveCompilerOptions;
-Begin
-    With wxOptions Do
-    Begin
+procedure TWXDsgn.SaveCompilerOptions;
+begin
+    with wxOptions do
+    begin
         majorVersion := spwxMajor.Value;
         minorVersion := spwxMinor.Value;
         releaseVersion := spwxRelease.Value;
@@ -5035,14 +5035,14 @@ Begin
         monolithicLibrary := chkwxMonolithic.Checked;
         debugLibrary := chkwxDebug.Checked;
         staticLibrary := staticLib.Checked;
-    End;
-End;
+    end;
+end;
 
-Function TWXDsgn.GetCompilerOptions: TSettings;
-Var
+function TWXDsgn.GetCompilerOptions: TSettings;
+var
     settings: TSettings;
     setting: TSetting;
-Begin
+begin
     SetLength(settings, 7);
 
     setting.name := 'wxOpts.Major';
@@ -5074,49 +5074,49 @@ Begin
     settings[6] := setting;
 
     Result := settings;
-End;
+end;
 
-Procedure TWXDsgn.SetCompilerOptionstoDefaults;
-Begin
+procedure TWXDsgn.SetCompilerOptionstoDefaults;
+begin
   // wxWidgets options
-    With wxOptions Do
-    Begin
+    with wxOptions do
+    begin
         majorVersion := 2;
         minorVersion := 9;
         releaseVersion := 3;
 
-        unicodeSupport := True;
-        monolithicLibrary := True;
-        debugLibrary := False;
-        staticLibrary := True;
-    End;
-End;
+        unicodeSupport := TRUE;
+        monolithicLibrary := TRUE;
+        debugLibrary := FALSE;
+        staticLibrary := TRUE;
+    end;
+end;
 
-Procedure TWXDsgn.TestReport;
-Begin
+procedure TWXDsgn.TestReport;
+begin
     ShowMessage('wxdsgn plugin has been loaded.');
-End;
+end;
 
-Procedure TWXDsgn.AfterStartupCheck;
-Begin
+procedure TWXDsgn.AfterStartupCheck;
+begin
     ShowPropertyInspItem.Checked := frmInspectorDock.Visible;
     ShowComponentPaletteItem.Checked := frmPaletteDock.Visible;
-End;
+end;
 
-Procedure TWXDsgn.FullScreenSwitch;
-Var
-    i: Integer;
-Begin
-    For i := 0 To editors.ItemCount - 1 Do
-        (editors[editorNames[i]] As TWXEditor).RestorePosition;
-End;
+procedure TWXDsgn.FullScreenSwitch;
+var
+    i: integer;
+begin
+    for i := 0 to editors.ItemCount - 1 do
+        (editors[editorNames[i]] as TWXEditor).RestorePosition;
+end;
 
-Function TWXDsgn.GetContextForHelp: String;
-Begin
+function TWXDsgn.GetContextForHelp: string;
+begin
     Result := '';
-End;
+end;
 
-Initialization
+initialization
     TWxJvInspectorTStringsItem.RegisterAsDefaultItem;
     TJvInspectorMyFontItem.RegisterAsDefaultItem;
     TJvInspectorMenuItem.RegisterAsDefaultItem;
@@ -5130,7 +5130,7 @@ Initialization
     TJvInspectorTreeNodesItem.RegisterAsDefaultItem;
     TJvInspectorListItemsItem.RegisterAsDefaultItem;
     Classes.RegisterClass(TWXDsgn);
-Finalization
+finalization
     Classes.UnRegisterClass(TWXDsgn);
 
-End.
+end.

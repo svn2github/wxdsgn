@@ -20,11 +20,11 @@
 }
 
 {$WARN UNIT_PLATFORM OFF}
-Unit Envirofrm;
+unit Envirofrm;
 
-Interface
+interface
 
-Uses
+uses
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
     Dialogs, StdCtrls, Spin, ExtCtrls, devTabs, ExtDlgs, Buttons, DevThemes,
@@ -36,8 +36,8 @@ Uses
   QCheckLst, QGrids;
 {$ENDIF}
 
-Type
-    TEnviroForm = Class(TForm)
+type
+    TEnviroForm = class(TForm)
         PagesMain: TPageControl;
         tabGeneral: TTabSheet;
         tabPaths: TTabSheet;
@@ -111,28 +111,28 @@ Type
         cbHiliteActiveTab: TCheckBox;
         lblOpenSaveOptions: TLabel;
         cbNoToolTip: TCheckBox;
-        Procedure BrowseClick(Sender: TObject);
-        Procedure btnOkClick(Sender: TObject);
-        Procedure FormShow(Sender: TObject);
-        Procedure btnHelpClick(Sender: TObject);
-        Procedure FormKeyDown(Sender: TObject; Var Key: Word;
+        procedure BrowseClick(Sender: TObject);
+        procedure btnOkClick(Sender: TObject);
+        procedure FormShow(Sender: TObject);
+        procedure btnHelpClick(Sender: TObject);
+        procedure FormKeyDown(Sender: TObject; var Key: word;
             Shift: TShiftState);
-        Procedure FormCreate(Sender: TObject);
-        Procedure vleExternalEditButtonClick(Sender: TObject);
-        Procedure vleExternalValidate(Sender: TObject; ACol, ARow: Integer;
-            Const KeyName, KeyValue: String);
-        Procedure btnExtAddClick(Sender: TObject);
-        Procedure btnExtDelClick(Sender: TObject);
-        Procedure chkAltConfigClick(Sender: TObject);
-    Private
-        Procedure LoadText;
-    Public
+        procedure FormCreate(Sender: TObject);
+        procedure vleExternalEditButtonClick(Sender: TObject);
+        procedure vleExternalValidate(Sender: TObject; ACol, ARow: integer;
+            const KeyName, KeyValue: string);
+        procedure btnExtAddClick(Sender: TObject);
+        procedure btnExtDelClick(Sender: TObject);
+        procedure chkAltConfigClick(Sender: TObject);
+    private
+        procedure LoadText;
+    public
         { Public declarations }
-    End;
+    end;
 
-Implementation
+implementation
 
-Uses
+uses
 {$IFDEF WIN32}
     Filectrl, devcfg, MultiLangSupport, version, datamod, utils,
     FileAssocs, ImageTheme, hh, uvista,
@@ -144,8 +144,8 @@ Uses
 
 {$R *.dfm}
 
-Const
-    Help_Topics: Array[0..5] Of String =
+const
+    Help_Topics: array[0..5] of string =
         ('html\environ_general.html',
         'html\environ_interface.html',
         'html\environ_filesdirs.html',
@@ -153,72 +153,72 @@ Const
         'html\environ_fileassoc.html',
         'html\environ_cvs.html');
 
-Procedure TEnviroForm.BrowseClick(Sender: TObject);
-Var
-    s: String;
-Begin
-    Case (Sender As TComponent).Tag Of
+procedure TEnviroForm.BrowseClick(Sender: TObject);
+var
+    s: string;
+begin
+    case (Sender as TComponent).Tag of
         1: // default dir browse
-        Begin
+        begin
             s := edUserDir.Text;
-            If SelectDirectory(Lang[ID_ENV_SELUSERDIR], '', s) Then
+            if SelectDirectory(Lang[ID_ENV_SELUSERDIR], '', s) then
                 edUserDir.Text := IncludeTrailingPathDelimiter(s);
-        End;
+        end;
 
         2: // output dir browse
-        Begin
+        begin
             s := ExpandFileto(edTemplatesDir.Text, devDirs.Exec);
-            If SelectDirectory(Lang[ID_ENV_SELTEMPLATESDIR], '', s) Then
+            if SelectDirectory(Lang[ID_ENV_SELTEMPLATESDIR], '', s) then
                 edTemplatesDir.Text := IncludeTrailingPathDelimiter(s);
-        End;
+        end;
 
         // why was it commented-out???
         3: // icon library browse
-        Begin
+        begin
             s := ExpandFileto(edIcoLib.Text, devDirs.Exec);
-            If SelectDirectory(Lang[ID_ENV_SELICOLIB], '', s) Then
+            if SelectDirectory(Lang[ID_ENV_SELICOLIB], '', s) then
                 edIcoLib.Text := IncludeTrailingPathDelimiter(s);
-        End;
+        end;
 
         4: // splash screen browse
-        Begin
+        begin
             dlgPic.InitialDir := ExtractFilePath(edSplash.Text);
-            If dlgPic.Execute Then
+            if dlgPic.Execute then
                 edSplash.Text := dlgPic.FileName;
-        End;
+        end;
 
         5: // Language Dir
-        Begin
+        begin
             s := ExpandFileto(edLang.Text, devDirs.Exec);
-            If SelectDirectory(Lang[ID_ENV_SELLANGDIR], '', s) Then
+            if SelectDirectory(Lang[ID_ENV_SELLANGDIR], '', s) then
                 edLang.Text := IncludeTrailingPathDelimiter(
                     ExtractRelativePath(devDirs.Exec, s));
-        End;
+        end;
 
         6: // CVS Executable Filename
-        Begin
+        begin
             dmMain.OpenDialog.Filter := FLT_ALLFILES;
             dmMain.OpenDialog.FileName := edCVSExec.Text;
-            If dmMain.OpenDialog.Execute Then
+            if dmMain.OpenDialog.Execute then
                 edCVSExec.Text := dmMain.OpenDialog.FileName;
-        End;
+        end;
 
         7: // Alternate Configuration File
-        Begin
+        begin
             dmMain.OpenDialog.Filter := FLT_ALLFILES;
             dmMain.OpenDialog.FileName := edAltConfig.Text;
-            If dmMain.OpenDialog.Execute Then
+            if dmMain.OpenDialog.Execute then
                 edAltConfig.Text := dmMain.OpenDialog.FileName;
-        End;
-    End;
-End;
+        end;
+    end;
+end;
 
-Procedure TEnviroForm.FormShow(Sender: TObject);
-Var
-    idx: Integer;
-Begin
-    With devData Do
-    Begin
+procedure TEnviroForm.FormShow(Sender: TObject);
+var
+    idx: integer;
+begin
+    with devData do
+    begin
         rgbAutoOpen.ItemIndex := AutoOpen;
         cbSingleInstance.Checked := SingleInstance;
         cbDefCpp.Checked := defCpp;
@@ -231,7 +231,7 @@ Begin
         cbHiliteActiveTab.Checked := HiliteActiveTab;
         seMRUMax.Value := MRUMax;
         cboLang.Clear;
-        For idx := 0 To pred(Lang.Langs.Count) Do
+        for idx := 0 to pred(Lang.Langs.Count) do
             cboLang.Items.append(Lang.Langs.Values[idx]);
         cboLang.ItemIndex := cboLang.Items.Indexof(Lang.CurrentLanguage);
         rgbOpenStyle.ItemIndex := OpenStyle;
@@ -258,7 +258,7 @@ Begin
 
         chkAltConfig.Checked := UseAltConfigFile;
         edAltConfig.Text := AltConfigFile;
-        chkAltConfigClick(Nil);
+        chkAltConfigClick(NIL);
 
         edSplash.Text := Splash;
         edIcoLib.Text := ExtractRelativePath(devDirs.Exec, devDirs.Icons);
@@ -268,17 +268,17 @@ Begin
         edLang.Text := ExtractRelativePath(devDirs.Exec, devDirs.Lang);
 
         vleExternal.Strings.Assign(devExternalPrograms.Programs);
-        For idx := 0 To vleExternal.Strings.Count - 1 Do
+        for idx := 0 to vleExternal.Strings.Count - 1 do
             vleExternal.ItemProps[idx].EditStyle := esEllipsis;
 
         lstAssocFileTypes.Clear;
-        For idx := 0 To AssociationsCount - 1 Do
-        Begin
+        for idx := 0 to AssociationsCount - 1 do
+        begin
             lstAssocFileTypes.Items.Add(Format('%s  (*.%s)',
                 [Associations[idx, 1], Associations[idx, 0]]));
             lstAssocFileTypes.Checked[lstAssocFileTypes.Items.Count - 1] :=
                 IsAssociated(idx);
-        End;
+        end;
 
         edCVSExec.Text := devCVSHandler.Executable;
         spnCVSCompression.Value := devCVSHandler.Compression;
@@ -288,35 +288,35 @@ Begin
         //  settings if UAC has not been elevated to admin
         //  So let's check and see if that's been done to
         //   decide whether or not to show the Assocs tab.
-        If (isElevatedUAC) Then
-            tabAssocs.TabVisible := True
-        Else
-            tabAssocs.TabVisible := False;
+        if (isElevatedUAC) then
+            tabAssocs.TabVisible := TRUE
+        else
+            tabAssocs.TabVisible := FALSE;
 
 
-    End;
-End;
+    end;
+end;
 
-Procedure TEnviroForm.btnOkClick(Sender: TObject);
-Var
-    idx: Integer;
-    s: String;
-Begin
+procedure TEnviroForm.btnOkClick(Sender: TObject);
+var
+    idx: integer;
+    s: string;
+begin
 
     Screen.Cursor := crHourGlass;
-    btnOk.Enabled := False;
+    btnOk.Enabled := FALSE;
 
-    If chkAltConfig.Enabled Then
-    Begin
-        If UseAltConfigFile <> chkAltConfig.Checked Then
+    if chkAltConfig.Enabled then
+    begin
+        if UseAltConfigFile <> chkAltConfig.Checked then
             MessageDlg(Lang[ID_ENV_CONFIGCHANGED], mtInformation, [mbOk], 0);
-        UseAltConfigFile := chkAltConfig.Checked And (edAltConfig.Text <> '');
+        UseAltConfigFile := chkAltConfig.Checked and (edAltConfig.Text <> '');
         AltConfigFile := edAltConfig.Text;
         UpdateAltConfigFile;
-    End;
+    end;
 
-    With devData Do
-    Begin
+    with devData do
+    begin
         SingleInstance := cbSingleInstance.Checked;
         DefCpp := cbDefCpp.Checked;
         ShowBars := cbShowBars.Checked;
@@ -325,7 +325,7 @@ Begin
         MinOnRun := cbMinOnRun.Checked;
         DblFiles := cbdblFiles.Checked;
         MRUMax := seMRUMax.Value;
-        MsgTabs := Boolean(cboTabsTop.ItemIndex);
+        MsgTabs := boolean(cboTabsTop.ItemIndex);
         OpenStyle := rgbOpenStyle.ItemIndex;
         AutoOpen := rgbAutoOpen.ItemIndex;
         Splash := edSplash.Text;
@@ -338,17 +338,17 @@ Begin
         NoSplashScreen := cbNoSplashScreen.Checked;
         NoToolTip := cbNoToolTip.Checked;
         HiliteActiveTab := cbHiliteActiveTab.Checked;
-        If Not ThemeChange Then
+        if not ThemeChange then
             ThemeChange := XPTheme <> cbXPTheme.Checked;
         XPTheme := cbXPTheme.Checked;
-        If Not ThemeChange Then
+        if not ThemeChange then
             ThemeChange := NativeDocks <> cbNativeDocks.Checked;
         NativeDocks := cbNativeDocks.Checked;
         ShowProgress := cbShowProgress.Checked;
         AutoCloseProgress := cbAutoCloseProgress.Checked;
         WatchHint := cbWatchHint.Checked;
         WatchError := cbWatchError.Checked;
-    End;
+    end;
 
     devDirs.Icons := IncludeTrailingPathDelimiter(
         ExpandFileto(edIcoLib.Text, devDirs.Exec));
@@ -356,58 +356,58 @@ Begin
         ExpandFileto(edTemplatesDir.Text, devDirs.Exec));
     devDirs.Default := edUserDir.Text;
 
-    If edLang.Text <> ExtractRelativePath(devDirs.Exec, devDirs.Lang) Then
-    Begin
+    if edLang.Text <> ExtractRelativePath(devDirs.Exec, devDirs.Lang) then
+    begin
         devDirs.Lang := IncludeTrailingPathDelimiter(
             ExpandFileto(edLang.Text, devDirs.Exec));
         Lang.CheckLanguageFiles;
-    End;
+    end;
 
-    If Not IsWindowsVista Then
-    Begin
-        With dmMain.OpenDialog Do
-            Case devData.OpenStyle Of
+    if not IsWindowsVista then
+    begin
+        with dmMain.OpenDialog do
+            case devData.OpenStyle of
                 0: // win2k
-                Begin
+                begin
                     OptionsEx := [];
                     Options := Options - [ofOldStyleDialog, ofNoLongNames];
-                End;
+                end;
                 1: // win9x
-                Begin
+                begin
                     OptionsEx := [ofExNoPlacesBar];
                     Options := Options - [ofOldStyleDialog, ofNoLongNames];
-                End;
+                end;
                 2: // win31
-                Begin
+                begin
                     OptionsEx := [ofExNoPlacesBar]; // basically ignored anyway
                     Options := Options + [ofOldStyleDialog, ofNoLongNames];
-                End;
-            End;
+                end;
+            end;
 
         dmMain.SaveDialog.OptionsEx := dmMain.OpenDialog.OptionsEx;
         dmMain.SaveDialog.Options := dmMain.OpenDialog.Options;
-    End;
+    end;
 
     devExternalPrograms.Programs.Assign(vleExternal.Strings);
 
-    For idx := 0 To AssociationsCount - 1 Do
-        If lstAssocFileTypes.Checked[idx] Then
+    for idx := 0 to AssociationsCount - 1 do
+        if lstAssocFileTypes.Checked[idx] then
             Associate(idx)
-        Else
+        else
             Unassociate(idx);
 
     devCVSHandler.Executable := edCVSExec.Text;
     devCVSHandler.Compression := spnCVSCompression.Value;
     devCVSHandler.UseSSH := chkCVSUseSSH.Checked;
 
-    btnOk.Enabled := True;
+    btnOk.Enabled := TRUE;
     Cursor := crDefault;
 
-End;
+end;
 
-Procedure TEnviroForm.LoadText;
-Begin
-    DesktopFont := True;
+procedure TEnviroForm.LoadText;
+begin
+    DesktopFont := TRUE;
     XPMenu.Active := devData.XPTheme;
     Caption := Lang[ID_ENV];
 
@@ -484,96 +484,96 @@ Begin
     lblCVSExec.Caption := Lang[ID_ENV_CVSEXE];
     lblCVSCompression.Caption := Lang[ID_ENV_CVSCOMPR];
     chkCVSUseSSH.Caption := Lang[ID_ENV_CVSUSESSH];
-End;
+end;
 
-Procedure TEnviroForm.btnHelpClick(Sender: TObject);
-Begin
+procedure TEnviroForm.btnHelpClick(Sender: TObject);
+begin
     HelpFile := devDirs.Help + DEV_MAINHELP_FILE;
-    HtmlHelp(self.handle, Pchar(HelpFile), HH_DISPLAY_TOPIC,
-        DWORD(Pchar('html\environ_general.html')));
-End;
+    HtmlHelp(self.handle, pchar(HelpFile), HH_DISPLAY_TOPIC,
+        DWORD(pchar('html\environ_general.html')));
+end;
 
-Procedure TEnviroForm.FormKeyDown(Sender: TObject; Var Key: Word;
+procedure TEnviroForm.FormKeyDown(Sender: TObject; var Key: word;
     Shift: TShiftState);
-Begin
+begin
 {$IFDEF WIN32}
-    If key = vk_F1 Then
+    if key = vk_F1 then
 {$ENDIF}
 {$IFDEF LINUX}
   if key = XK_F1 then
 {$ENDIF}
-    Begin
+    begin
         HelpFile := devDirs.Help + DEV_MAINHELP_FILE;
-        HtmlHelp(MainForm.handle, Pchar(HelpFile), HH_DISPLAY_TOPIC,
-            DWORD(Pchar(Help_Topics[PagesMain.ActivePageIndex])));
-    End;
-End;
+        HtmlHelp(MainForm.handle, pchar(HelpFile), HH_DISPLAY_TOPIC,
+            DWORD(pchar(Help_Topics[PagesMain.ActivePageIndex])));
+    end;
+end;
 
-Procedure TEnviroForm.FormCreate(Sender: TObject);
-Begin
+procedure TEnviroForm.FormCreate(Sender: TObject);
+begin
     LoadText;
     PagesMain.ActivePageIndex := 0;
-    If IsWindowsVista Then
-    Begin
-        rgbOpenStyle.Enabled := False;
-        lblOpenSaveOptions.Visible := True;
+    if IsWindowsVista then
+    begin
+        rgbOpenStyle.Enabled := FALSE;
+        lblOpenSaveOptions.Visible := TRUE;
         // EAB TODO: Add multi language support  
-    End;
-End;
+    end;
+end;
 
-Procedure TEnviroForm.vleExternalEditButtonClick(Sender: TObject);
-Begin
-    If Trim(vleExternal.Cells[0, vleExternal.Row]) = '' Then
-    Begin
+procedure TEnviroForm.vleExternalEditButtonClick(Sender: TObject);
+begin
+    if Trim(vleExternal.Cells[0, vleExternal.Row]) = '' then
+    begin
         MessageDlg('Add an extension first!', mtError, [mbOk], 0);
         Exit;
-    End;
+    end;
 
-    With dmMain.OpenDialog Do
-    Begin
+    with dmMain.OpenDialog do
+    begin
         Filter := FLT_ALLFILES;
-        If Execute Then
+        if Execute then
             vleExternal.Cells[1, vleExternal.Row] := Filename;
-    End;
-End;
+    end;
+end;
 
-Procedure TEnviroForm.vleExternalValidate(Sender: TObject; ACol,
-    ARow: Integer; Const KeyName, KeyValue: String);
-Var
-    idx: Integer;
-Begin
-    If vleExternal.FindRow(KeyName, idx) And (idx <> ARow) Then
-    Begin
+procedure TEnviroForm.vleExternalValidate(Sender: TObject; ACol,
+    ARow: integer; const KeyName, KeyValue: string);
+var
+    idx: integer;
+begin
+    if vleExternal.FindRow(KeyName, idx) and (idx <> ARow) then
+    begin
         MessageDlg('Extension exists...', mtError, [mbOk], 0);
         vleExternal.Col := 0;
         vleExternal.Row := ARow;
         Abort;
-    End;
+    end;
     vleExternal.ItemProps[ARow - 1].EditStyle := esEllipsis;
-End;
+end;
 
-Procedure TEnviroForm.btnExtAddClick(Sender: TObject);
-Begin
-    vleExternal.InsertRow('', '', True);
+procedure TEnviroForm.btnExtAddClick(Sender: TObject);
+begin
+    vleExternal.InsertRow('', '', TRUE);
     vleExternal.Row := vleExternal.RowCount - 1;
     vleExternal.Col := 0;
     vleExternal.SetFocus;
-End;
+end;
 
-Procedure TEnviroForm.btnExtDelClick(Sender: TObject);
-Begin
-    If (vleExternal.Row = 1) And (vleExternal.RowCount = 2) And
-        (vleExternal.Cells[0, 1] = '') Then
+procedure TEnviroForm.btnExtDelClick(Sender: TObject);
+begin
+    if (vleExternal.Row = 1) and (vleExternal.RowCount = 2) and
+        (vleExternal.Cells[0, 1] = '') then
         exit;
-    If (vleExternal.RowCount > 1) And (vleExternal.Row > 0) Then
+    if (vleExternal.RowCount > 1) and (vleExternal.Row > 0) then
         vleExternal.DeleteRow(vleExternal.Row);
-End;
+end;
 
-Procedure TEnviroForm.chkAltConfigClick(Sender: TObject);
-Begin
+procedure TEnviroForm.chkAltConfigClick(Sender: TObject);
+begin
     chkAltConfig.Enabled := ConfigMode <> CFG_PARAM;
-    edAltConfig.Enabled := chkAltConfig.Enabled And chkAltConfig.Checked;
-    btnAltConfig.Enabled := chkAltConfig.Enabled And chkAltConfig.Checked;
-End;
+    edAltConfig.Enabled := chkAltConfig.Enabled and chkAltConfig.Checked;
+    btnAltConfig.Enabled := chkAltConfig.Enabled and chkAltConfig.Checked;
+end;
 
-End.
+end.

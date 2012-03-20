@@ -17,11 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-Unit CVSThread;
+unit CVSThread;
 
-Interface
+interface
 
-Uses
+uses
 {$IFDEF WIN32}
     Classes, Windows, SysUtils, StrUtils, utils;
 {$ENDIF}
@@ -29,85 +29,85 @@ Uses
   Classes, SysUtils, StrUtils, utils;
 {$ENDIF}
 
-Type
-    TLineOutputEvent = Procedure(Sender: TObject; Const Line: String) Of Object;
-    TNeedPasswordEvent = Procedure(Var Passwd: String) Of Object;
+type
+    TLineOutputEvent = procedure(Sender: TObject; const Line: string) of object;
+    TNeedPasswordEvent = procedure(var Passwd: string) of object;
 
-    TCVSThread = Class(TThread)
-    Private
-        CurrentLine: String;
-        fPasswd: String;
+    TCVSThread = class(TThread)
+    private
+        CurrentLine: string;
+        fPasswd: string;
         FLineOutput: TLineOutputEvent;
         fCheckAbort: TCheckAbortFunc;
         fNeedPassword: TNeedPasswordEvent;
         // procedure TypePassword(Pass: string);
-    Protected
-        Procedure Execute; Override;
-        Procedure CallLineOutputEvent;
-        Procedure LineOutput(Line: String);
-        Procedure CallNeedPassword;
-        Function RunCVSCommand(WindowTitle, Cmd, WorkingDir: String): String;
-    Public
-        Command: String;
-        Directory: String;
-        Output: String;
-        Property OnLineOutput: TLineOutputEvent Read FLineOutput Write FLineOutput;
-        Property OnCheckAbort: TCheckAbortFunc Read FCheckAbort Write FCheckAbort;
-        Property OnNeedPassword: TNeedPasswordEvent
-            Read fNeedPassword Write fNeedPassword;
-    End;
+    protected
+        procedure Execute; override;
+        procedure CallLineOutputEvent;
+        procedure LineOutput(Line: string);
+        procedure CallNeedPassword;
+        function RunCVSCommand(WindowTitle, Cmd, WorkingDir: string): string;
+    public
+        Command: string;
+        Directory: string;
+        Output: string;
+        property OnLineOutput: TLineOutputEvent read FLineOutput write FLineOutput;
+        property OnCheckAbort: TCheckAbortFunc read FCheckAbort write FCheckAbort;
+        property OnNeedPassword: TNeedPasswordEvent
+            read fNeedPassword write fNeedPassword;
+    end;
 
-Implementation
+implementation
 
-Procedure TCVSThread.CallLineOutputEvent;
-Begin
+procedure TCVSThread.CallLineOutputEvent;
+begin
     FLineOutput(Self, CurrentLine);
-End;
+end;
 
-Procedure TCVSThread.CallNeedPassword;
-Begin
+procedure TCVSThread.CallNeedPassword;
+begin
     fPasswd := '';
-    If Assigned(fNeedPassword) Then
+    if Assigned(fNeedPassword) then
         fNeedPassword(fPasswd);
-End;
+end;
 
-Procedure TCVSThread.LineOutput(Line: String);
-Begin
+procedure TCVSThread.LineOutput(Line: string);
+begin
     CurrentLine := Line;
-    If Assigned(FLineOutput) Then
+    if Assigned(FLineOutput) then
         Synchronize(CallLineOutputEvent);
-End;
+end;
 
-Procedure TCVSThread.Execute;
-Begin
+procedure TCVSThread.Execute;
+begin
     Output := RunCVSCommand('Dev-C++ CVS process', Command, Directory);
-End;
+end;
 
-Function TCVSThread.RunCVSCommand(WindowTitle, Cmd, WorkingDir:
-    String): String;
-Var
+function TCVSThread.RunCVSCommand(WindowTitle, Cmd, WorkingDir:
+    string): string;
+var
     tsi: TStartupInfo;
     tpi: TProcessInformation;
     nRead: DWORD;
     //  hWin: HWND;
-    aBuf: Array[0..4095] Of Char;
+    aBuf: array[0..4095] of char;
     sa: TSecurityAttributes;
     hOutputReadTmp, hOutputRead, hOutputWrite, hErrorWrite: THandle;
     //  hInputWriteTmp, hInputRead, hInputWrite: THandle;
-    FOutput: String;
-    CurrentLine: String;
-    bAbort: Boolean;
-    idx: Integer;
-Begin
+    FOutput: string;
+    CurrentLine: string;
+    bAbort: boolean;
+    idx: integer;
+begin
     FOutput := '';
     CurrentLine := '';
     sa.nLength := SizeOf(TSecurityAttributes);
-    sa.lpSecurityDescriptor := Nil;
-    sa.bInheritHandle := True;
+    sa.lpSecurityDescriptor := NIL;
+    sa.bInheritHandle := TRUE;
 
     CreatePipe(hOutputReadTmp, hOutputWrite, @sa, 0);
     DuplicateHandle(GetCurrentProcess(), hOutputWrite, GetCurrentProcess(),
-        @hErrorWrite, 0, False, DUPLICATE_SAME_ACCESS);
+        @hErrorWrite, 0, FALSE, DUPLICATE_SAME_ACCESS);
 
     // CL: removed all input redirection, causes too much troubles
     // CreatePipe(hInputRead, hInputWriteTmp, @sa, 0);
@@ -117,7 +117,7 @@ Begin
     // the these handles; resulting in non-closeable handles to the pipes
     // being created.
     DuplicateHandle(GetCurrentProcess(), hOutputReadTmp, GetCurrentProcess(),
-        @hOutputRead, 0, False, DUPLICATE_SAME_ACCESS);
+        @hOutputRead, 0, FALSE, DUPLICATE_SAME_ACCESS);
     //DuplicateHandle(GetCurrentProcess(), hInputWriteTmp, GetCurrentProcess(),
     //  @hInputWrite, 0, false, DUPLICATE_SAME_ACCESS);
     CloseHandle(hOutputReadTmp);
@@ -125,51 +125,51 @@ Begin
 
     FillChar(tsi, SizeOf(TStartupInfo), 0);
     tsi.cb := SizeOf(TStartupInfo);
-    tsi.lpTitle := Pchar(WindowTitle);
-    tsi.dwFlags := STARTF_USESTDHANDLES Or STARTF_USESHOWWINDOW;
+    tsi.lpTitle := pchar(WindowTitle);
+    tsi.dwFlags := STARTF_USESTDHANDLES or STARTF_USESHOWWINDOW;
     //tsi.hStdInput := hInputRead;
     tsi.hStdOutput := hOutputWrite;
     tsi.hStdError := hOutputWrite;
     tsi.wShowWindow := SW_SHOW; //SW_HIDE;
 
-    If Not CreateProcess(Nil, Pchar(Cmd), @sa, @sa, True,
-        CREATE_NEW_CONSOLE, Nil, Pchar(WorkingDir),
-        tsi, tpi) Then
-    Begin
+    if not CreateProcess(NIL, pchar(Cmd), @sa, @sa, TRUE,
+        CREATE_NEW_CONSOLE, NIL, pchar(WorkingDir),
+        tsi, tpi) then
+    begin
         LineOutput('unable to run program file: ' + SysErrorMessage(GetLastError));
         exit;
-    End;
+    end;
     CloseHandle(hOutputWrite);
     // CloseHandle(hInputRead);
     CloseHandle(hErrorWrite);
 
-    Repeat
-        If Assigned(fCheckAbort) Then
+    repeat
+        if Assigned(fCheckAbort) then
             fCheckAbort(bAbort);
-        If bAbort Then
+        if bAbort then
             Break;
 
         FillChar(aBuf, sizeof(aBuf), 0);
-        If (Not ReadFile(hOutputRead, aBuf, sizeof(aBuf), nRead, Nil)) Or
-            (nRead = 0) Then
-        Begin
-            If GetLastError = ERROR_BROKEN_PIPE Then
+        if (not ReadFile(hOutputRead, aBuf, sizeof(aBuf), nRead, NIL)) or
+            (nRead = 0) then
+        begin
+            if GetLastError = ERROR_BROKEN_PIPE then
                 Break
-            Else
+            else
                 LineOutput('Pipe read error, could not execute command');
-        End;
+        end;
         aBuf[nRead] := #0;
-        FOutput := FOutput + Pchar(@aBuf[0]);
+        FOutput := FOutput + pchar(@aBuf[0]);
 
-        CurrentLine := CurrentLine + Pchar(@aBuf[0]);
-        Repeat
+        CurrentLine := CurrentLine + pchar(@aBuf[0]);
+        repeat
             idx := Pos(#10, CurrentLine);
-            If idx > 0 Then
-            Begin
+            if idx > 0 then
+            begin
                 LineOutput(Copy(CurrentLine, 1, idx - 1));
                 Delete(CurrentLine, 1, idx);
-            End;
-        Until idx = 0;
+            end;
+        until idx = 0;
 
     {  if AnsiEndsText('password:', Trim(FOutput)) then begin
         LineOutput(CurrentLine);
@@ -197,12 +197,12 @@ Begin
         //        CurrentLine := '';
         //      end;
         //    end;
-    Until False;
-    If bAbort Then
+    until FALSE;
+    if bAbort then
         TerminateProcess(tpi.hProcess, 65535);
     GetExitCodeProcess(tpi.hProcess, nRead);
     Result := FOutput + ' ' + IntToStr(nRead);
-End;
+end;
 
 //procedure TCVSThread.TypePassword(Pass: string);
 //var
@@ -224,4 +224,4 @@ End;
 //{$ENDIF}
 //end;
 
-End.
+end.

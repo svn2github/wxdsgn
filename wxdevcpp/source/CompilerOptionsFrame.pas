@@ -17,11 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-Unit CompilerOptionsFrame;
+unit CompilerOptionsFrame;
 
-Interface
+interface
 
-Uses
+uses
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
     Grids, ValEdit, ComCtrls, ExtCtrls, project, prjtypes;
@@ -31,213 +31,213 @@ Uses
   QGrids, QComCtrls, QExtCtrls, project, prjtypes;
 {$ENDIF}
 
-Type
-    TCompOptionsFrame = Class(TFrame)
+type
+    TCompOptionsFrame = class(TFrame)
         tv: TTreeView;
         vle: TValueListEditor;
         Splitter1: TSplitter;
-        Procedure tvChange(Sender: TObject; Node: TTreeNode);
-        Procedure vleSetEditText(Sender: TObject; ACol, ARow: Integer;
-            Const Value: String);
-        Procedure FrameResize(Sender: TObject);
-    Private
+        procedure tvChange(Sender: TObject; Node: TTreeNode);
+        procedure vleSetEditText(Sender: TObject; ACol, ARow: integer;
+            const Value: string);
+        procedure FrameResize(Sender: TObject);
+    private
         { Private declarations }
         fProject: TProject;
-    Public
+    public
         { Public declarations }
-        Procedure FillOptions(Proj: TProject);
-    End;
+        procedure FillOptions(Proj: TProject);
+    end;
 
-Implementation
+implementation
 
-Uses
+uses
     devcfg;
 
 {$R *.dfm}
 
 { TCompOptionsFrame }
 
-Procedure TCompOptionsFrame.FillOptions(Proj: TProject);
-    Function FindNode(ParentNode: TTreeNode; Text: String): TTreeNode;
-    Var
-        I: Integer;
-    Begin
-        Result := Nil;
-        If Not Assigned(ParentNode) Then
-        Begin
-            For I := 0 To tv.Items.Count - 1 Do
-                If AnsiCompareText(tv.Items.Item[I].Text, Text) = 0 Then
-                Begin
+procedure TCompOptionsFrame.FillOptions(Proj: TProject);
+    function FindNode(ParentNode: TTreeNode; Text: string): TTreeNode;
+    var
+        I: integer;
+    begin
+        Result := NIL;
+        if not Assigned(ParentNode) then
+        begin
+            for I := 0 to tv.Items.Count - 1 do
+                if AnsiCompareText(tv.Items.Item[I].Text, Text) = 0 then
+                begin
                     Result := tv.Items.Item[I];
                     Break;
-                End;
-        End
-        Else
-            For I := 0 To ParentNode.Count - 1 Do
-                If AnsiCompareText(ParentNode.Item[I].Text, Text) = 0 Then
-                Begin
+                end;
+        end
+        else
+            for I := 0 to ParentNode.Count - 1 do
+                if AnsiCompareText(ParentNode.Item[I].Text, Text) = 0 then
+                begin
                     Result := ParentNode.Item[I];
                     Break;
-                End;
-    End;
-    Procedure CreateSectionNode(CompilersNode: TTreeNode; NodePath: String);
-    Var
-        s, s1: String;
-        idx: Integer;
+                end;
+    end;
+    procedure CreateSectionNode(CompilersNode: TTreeNode; NodePath: string);
+    var
+        s, s1: string;
+        idx: integer;
         tmpNode, Node: TTreeNode;
-    Begin
-        If NodePath = '' Then
+    begin
+        if NodePath = '' then
             Exit;
         Node := CompilersNode;
         s := NodePath;
-        Repeat
+        repeat
             s1 := s;
             idx := Pos('/', s);
-            If idx > 0 Then
-            Begin
+            if idx > 0 then
+            begin
                 s1 := Copy(s, 1, idx - 1);
                 Delete(s, 1, idx);
-            End;
+            end;
             tmpNode := FindNode(Node, s1);
-            If Assigned(tmpNode) Then
+            if Assigned(tmpNode) then
                 Node := tmpNode
-            Else
+            else
                 Node := tv.Items.AddChild(Node, s1);
-        Until idx = 0;
-    End;
-Var
-    I: Integer;
-Begin
+        until idx = 0;
+    end;
+var
+    I: integer;
+begin
     fProject := Proj;
     tv.Items.Clear;
     tv.Items.BeginUpdate;
-    For I := 0 To devCompiler.OptionsCount - 1 Do
-        CreateSectionNode(Nil, devCompiler.Options[I].optSection);
+    for I := 0 to devCompiler.OptionsCount - 1 do
+        CreateSectionNode(NIL, devCompiler.Options[I].optSection);
 {$IFDEF WIN32}
-    tv.AlphaSort(True);
+    tv.AlphaSort(TRUE);
 {$ENDIF}
 {$IFDEF LINUX}
   tv.AlphaSort();
   {$MESSAGE 'check if AlphaSort(True) is already available'}
 {$ENDIF}
-    If tv.Items.Count > 0 Then
+    if tv.Items.Count > 0 then
         tv.Selected := tv.Items.Item[0];
     tv.Items.EndUpdate;
-End;
+end;
 
-Procedure TCompOptionsFrame.tvChange(Sender: TObject; Node: TTreeNode);
-    Function SectionPath(childNode: TTreeNode): String;
-    Begin
+procedure TCompOptionsFrame.tvChange(Sender: TObject; Node: TTreeNode);
+    function SectionPath(childNode: TTreeNode): string;
+    begin
         Result := '';
-        While Assigned(childNode) Do
-        Begin
+        while Assigned(childNode) do
+        begin
             Result := childNode.Text + '/' + Result;
             childNode := childNode.Parent;
-        End;
-        If Length(Result) > 0 Then
+        end;
+        if Length(Result) > 0 then
             Delete(Result, Length(Result), 1);
-    End;
-Var
-    I, J, idx: Integer;
-    NodePath: String;
-    ShowOption: Boolean;
-Begin
-    If Not Assigned(Node) Then
+    end;
+var
+    I, J, idx: integer;
+    NodePath: string;
+    ShowOption: boolean;
+begin
+    if not Assigned(Node) then
         Exit;
 
-    vle.OnSetEditText := Nil;
+    vle.OnSetEditText := NIL;
     vle.Strings.Clear;
     vle.Strings.BeginUpdate;
     NodePath := SectionPath(Node);
-    For I := 0 To devCompiler.OptionsCount - 1 Do
-    Begin
-        ShowOption := (Not Assigned(fProject)) Or
-            (Assigned(fProject) And Not (fProject.CurrentProfile.typ In
+    for I := 0 to devCompiler.OptionsCount - 1 do
+    begin
+        ShowOption := (not Assigned(fProject)) or
+            (Assigned(fProject) and not (fProject.CurrentProfile.typ in
             devCompiler.Options[I].optExcludeFromTypes));
-        If ShowOption And (AnsiCompareText(devCompiler.Options[I].optSection,
-            NodePath) = 0) Then
-        Begin
-            If Assigned(devCompiler.Options[I].optChoices) And
+        if ShowOption and (AnsiCompareText(devCompiler.Options[I].optSection,
+            NodePath) = 0) then
+        begin
+            if Assigned(devCompiler.Options[I].optChoices) and
                 (devCompiler.Options[I].optValue <
-                devCompiler.Options[I].optChoices.Count) Then
+                devCompiler.Options[I].optChoices.Count) then
                 idx := vle.InsertRow(devCompiler.Options[I].optName,
                     devCompiler.Options[I].optChoices.Names[devCompiler.Options[
-                    I].optValue], True)
-            Else
+                    I].optValue], TRUE)
+            else
                 idx := vle.InsertRow(devCompiler.Options[I].optName,
-                    BoolValYesNo[devCompiler.Options[I].optValue > 0], True);
+                    BoolValYesNo[devCompiler.Options[I].optValue > 0], TRUE);
             vle.Strings.Objects[idx] := Pointer(I);
             vle.ItemProps[idx].EditStyle := esPickList;
-            vle.ItemProps[idx].ReadOnly := True;
-            If Assigned(devCompiler.Options[I].optChoices) Then
-            Begin
-                For j := 0 To devCompiler.Options[I].optChoices.Count - 1 Do
+            vle.ItemProps[idx].ReadOnly := TRUE;
+            if Assigned(devCompiler.Options[I].optChoices) then
+            begin
+                for j := 0 to devCompiler.Options[I].optChoices.Count - 1 do
                     vle.ItemProps[idx].PickList.Add(
                         devCompiler.Options[I].optChoices.Names[J]);
-            End
-            Else
-            Begin
-                vle.ItemProps[idx].PickList.Add(BoolValYesNo[False]);
-                vle.ItemProps[idx].PickList.Add(BoolValYesNo[True]);
-            End;
-        End;
-    End;
+            end
+            else
+            begin
+                vle.ItemProps[idx].PickList.Add(BoolValYesNo[FALSE]);
+                vle.ItemProps[idx].PickList.Add(BoolValYesNo[TRUE]);
+            end;
+        end;
+    end;
     vle.ColWidths[0] := vle.ClientWidth - 64;
     vle.OnSetEditText := vleSetEditText;
     vle.Strings.EndUpdate;
-End;
+end;
 
-Procedure TCompOptionsFrame.vleSetEditText(Sender: TObject; ACol,
-    ARow: Integer; Const Value: String);
-Var
+procedure TCompOptionsFrame.vleSetEditText(Sender: TObject; ACol,
+    ARow: integer; const Value: string);
+var
     opt, opt1: TCompilerOption;
-    I: Integer;
-Begin
-    If ((vle.Strings.Count <= ARow) Or (vle.Strings.Count = 0)) Then
+    I: integer;
+begin
+    if ((vle.Strings.Count <= ARow) or (vle.Strings.Count = 0)) then
         Exit;
-    opt := devCompiler.Options[Integer(vle.Strings.Objects[ARow])];
+    opt := devCompiler.Options[integer(vle.Strings.Objects[ARow])];
 
-    If Value = 'Yes' Then
+    if Value = 'Yes' then
         opt.optValue := 1 // True
-    Else
-    If Value = 'No' Then
+    else
+    if Value = 'No' then
         opt.optValue := 0 //False
-    Else
-    If opt.optChoices = Nil Then
+    else
+    if opt.optChoices = NIL then
         Exit
-    Else
-    Begin
-        For i := 0 To opt.optChoices.Count - 1 Do
-            If Value = opt.optChoices.Names[i] Then
-            Begin
+    else
+    begin
+        for i := 0 to opt.optChoices.Count - 1 do
+            if Value = opt.optChoices.Names[i] then
+            begin
                 opt.optValue := i;
                 break;
-            End;
-        If i = opt.optChoices.Count Then
+            end;
+        if i = opt.optChoices.Count then
             exit;
-    End;
+    end;
 
-    devCompiler.Options[Integer(vle.Strings.Objects[ARow])] := opt;
+    devCompiler.Options[integer(vle.Strings.Objects[ARow])] := opt;
 
-    If opt.optValue > 0 Then
-        If opt.optIsGroup Then
-        Begin
-            For I := 0 To devCompiler.OptionsCount - 1 Do
-                If (I <> Integer(vle.Strings.Objects[ARow])) And
-                    (devCompiler.Options[I].optSection = opt.optSection) Then
-                Begin
+    if opt.optValue > 0 then
+        if opt.optIsGroup then
+        begin
+            for I := 0 to devCompiler.OptionsCount - 1 do
+                if (I <> integer(vle.Strings.Objects[ARow])) and
+                    (devCompiler.Options[I].optSection = opt.optSection) then
+                begin
                     opt1 := devCompiler.Options[I];
                     opt1.optValue := 0;
                     devCompiler.Options[I] := opt1;
-                End;
+                end;
             tvChange(tv, tv.Selected);
             vle.Row := ARow;
-        End;
-End;
+        end;
+end;
 
-Procedure TCompOptionsFrame.FrameResize(Sender: TObject);
-Begin
+procedure TCompOptionsFrame.FrameResize(Sender: TObject);
+begin
     vle.ColWidths[0] := vle.ClientWidth - 64;
-End;
+end;
 
-End.
+end.

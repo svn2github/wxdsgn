@@ -27,52 +27,52 @@ $Id: Designerfrm.pas 938 2007-05-15 03:57:34Z gururamnath $
 { ****************************************************************** }
 
 
-Unit Designerfrm;
+unit Designerfrm;
 
-Interface
+interface
 
-Uses
+uses
     Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-    ExtCtrls, Buttons, StdCtrls, wxversion, 
+    ExtCtrls, Buttons, StdCtrls, wxversion,
     WxEdit, WxStaticText, WxButton, wxUtils, WXRadioButton, WXCheckBox,
     Wxcombobox, WxToolButton, WxSeparator, wxChoice,
     WxListbox, WxGauge, wxListCtrl, wxTreeCtrl, WxMemo, wxScrollbar, wxSpinButton,
     WxSizerPanel, WxSplitterWindow, wxAuiManager,
     ComCtrls, SynEdit, Menus, xprocs, StrUtils;
 
-Type
+type
 
-    TfrmNewForm = Class(TForm, IWxComponentInterface, IWxDesignerFormInterface, IWxImageContainerInterface)
-        Procedure CreateInitVars;
-        Procedure FormCreate(Sender: TObject);
-        Procedure FormResize(Sender: TObject);
-        Procedure FormDestroy(Sender: TObject);
-        Procedure SetFrameProperties();
-        Procedure SetDialogProperties();
+    TfrmNewForm = class(TForm, IWxComponentInterface, IWxDesignerFormInterface, IWxImageContainerInterface)
+        procedure CreateInitVars;
+        procedure FormCreate(Sender: TObject);
+        procedure FormResize(Sender: TObject);
+        procedure FormDestroy(Sender: TObject);
+        procedure SetFrameProperties();
+        procedure SetDialogProperties();
 
-        Function GetBitmapCount: Integer;
-        Function GetBitmap(Idx: Integer; Var bmp: TBitmap; Var PropertyName: String): Boolean;
-        Function GetPropertyName(Idx: Integer): String;
-        Function PreserveFormat: Boolean;
-        Function GetGraphicFileName: String;
-        Function SetGraphicFileName(strFileName: String): Boolean;
+        function GetBitmapCount: integer;
+        function GetBitmap(Idx: integer; var bmp: TBitmap; var PropertyName: string): boolean;
+        function GetPropertyName(Idx: integer): string;
+        function PreserveFormat: boolean;
+        function GetGraphicFileName: string;
+        function SetGraphicFileName(strFileName: string): boolean;
 
-        Procedure FormClick(Sender: TObject);
-        Procedure WMNCLButtonDown(Var Msg: TWMNCLButtonDown); Message WM_NCLBUTTONDOWN;
-        Procedure WMNCRButtonDown(Var Msg: TWMNCRButtonDown); Message WM_NCRBUTTONDOWN;
+        procedure FormClick(Sender: TObject);
+        procedure WMNCLButtonDown(var Msg: TWMNCLButtonDown); message WM_NCLBUTTONDOWN;
+        procedure WMNCRButtonDown(var Msg: TWMNCRButtonDown); message WM_NCRBUTTONDOWN;
 
-    Private
+    private
     { Private declarations }
-        FWxFrm_IDName: String;
-        FWxFrm_IDValue: Integer;
-        FWxFrm_Class: String;
-        FWxFrm_Center: Boolean;
-        FWxFrm_ToolTips: String;
-        FWxFrm_Hidden: Boolean;
+        FWxFrm_IDName: string;
+        FWxFrm_IDValue: integer;
+        FWxFrm_Class: string;
+        FWxFrm_Center: boolean;
+        FWxFrm_ToolTips: string;
+        FWxFrm_Hidden: boolean;
         FWxFrm_GeneralStyle: TWxStdStyleSet;
         FWxFrm_DialogStyle: TWxDlgStyleSet;
-        FWxFrm_SizeToContents: Boolean;
-        FisAuimanagerAvailable: Boolean;
+        FWxFrm_SizeToContents: boolean;
+        FisAuimanagerAvailable: boolean;
         fsynEdit: TSynEdit;
 
         FEVT_CHAR, FEVT_KEY_UP, FEVT_KEY_DOWN, FEVT_ERASE_BACKGROUND,
@@ -83,14 +83,14 @@ Type
         FEVT_INIT_DIALOG, FEVT_SCROLLWIN, FEVT_SCROLLWIN_TOP, FEVT_SCROLLWIN_BOTTOM,
         FEVT_SCROLLWIN_LINEUP, FEVT_SCROLLWIN_LINEDOWN, FEVT_SCROLLWIN_PAGEUP,
         FEVT_SCROLLWIN_PAGEDOWN, FEVT_SCROLLWIN_THUMBTRACK, FEVT_SCROLLWIN_THUMBRELEASE,
-        FEVT_SYS_COLOUR_CHANGED, FEVT_UPDATE_UI, FEVT_CLOSE: String;
+        FEVT_SYS_COLOUR_CHANGED, FEVT_UPDATE_UI, FEVT_CLOSE: string;
         FEVT_IDLE, FEVT_ACTIVATE, FEVT_ACTIVATE_APP, FEVT_QUERY_END_SESSION,
         FEVT_END_SESSION, FEVT_DROP_FILES, FEVT_SPLITTER_SASH_POS_CHANGED,
         FEVT_SPLITTER_UNSPLIT, FEVT_SPLITTER_DCLICK, FEVT_JOY_BUTTON_DOWN,
         FEVT_JOY_BUTTON_UP, FEVT_JOY_MOVE, FEVT_JOY_ZMOVE, FEVT_MENU_OPEN,
-        FEVT_MENU_CLOSE, FEVT_MENU_HIGHLIGHT_ALL, FEVT_MOUSEWHEEL, FEVT_MOUSE_EVENTS: String;
+        FEVT_MENU_CLOSE, FEVT_MENU_HIGHLIGHT_ALL, FEVT_MOUSEWHEEL, FEVT_MOUSE_EVENTS: string;
 
-        FWx_Name: String;
+        FWx_Name: string;
         FWx_ICON: TPicture;
         FWx_ProxyBGColorString: TWxColorString;
         FWx_ProxyFGColorString: TWxColorString;
@@ -98,403 +98,403 @@ Type
         wx_PropertyList: TStringList;
         FWx_EventList: TStringList;
 
-        FKeepFormat: Boolean;
-        FWx_Filename: String;
+        FKeepFormat: boolean;
+        FWx_Filename: string;
 
     { Read method for property Wx_EditStyle }
-        Function GetWx_DialogStyle: TWxDlgStyleSet;
+        function GetWx_DialogStyle: TWxDlgStyleSet;
     { Write method for property Wx_EditStyle }
-        Procedure SetWx_DialogStyle(Value: TWxDlgStyleSet);
+        procedure SetWx_DialogStyle(Value: TWxDlgStyleSet);
 
-    Public
-        fileName: String;
-        Function GenerateControlIDs: String;
-        Function GenerateEnumControlIDs: String;
-        Function GenerateEventTableEntries(CurrClassName: String): String;
-        Function GenerateGUIControlCreation: String;
-        Function GenerateXRCControlCreation(IndentString: String): TStringList;
-        Function GenerateGUIControlDeclaration: String;
-        Function GenerateHeaderInclude: String;
-        Function GenerateImageInclude: String;
-        Function GetIDName: String;
-        Function GetIDValue: Integer;
-        Function GetPropertyList: TStringList;
-        Function GetWxClassName: String;
-        Procedure SetIDName(IDName: String);
-        Procedure SetIDValue(IDValue: Integer);
-        Procedure SetWxClassName(wxClassName: String);
-        Procedure FormMove(Var Msg: TWMMove); Message WM_MOVE;
-        Function GetDialogStyleString: String;
-        Function GetEventList: TStringList;
-        Function GetParameterFromEventName(EventName: String): String;
-        Function GetTypeFromEventName(EventName: String): String;
-        Procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
-        Function GetFGColor: String;
-        Procedure SetFGColor(strValue: String);
-        Function GetBGColor: String;
-        Procedure SetBGColor(strValue: String);
-        Function GetGenericColor(strVariableName: String): String;
-        Procedure SetGenericColor(strVariableName, strValue: String);
+    public
+        fileName: string;
+        function GenerateControlIDs: string;
+        function GenerateEnumControlIDs: string;
+        function GenerateEventTableEntries(CurrClassName: string): string;
+        function GenerateGUIControlCreation: string;
+        function GenerateXRCControlCreation(IndentString: string): TStringList;
+        function GenerateGUIControlDeclaration: string;
+        function GenerateHeaderInclude: string;
+        function GenerateImageInclude: string;
+        function GetIDName: string;
+        function GetIDValue: integer;
+        function GetPropertyList: TStringList;
+        function GetWxClassName: string;
+        procedure SetIDName(IDName: string);
+        procedure SetIDValue(IDValue: integer);
+        procedure SetWxClassName(wxClassName: string);
+        procedure FormMove(var Msg: TWMMove); message WM_MOVE;
+        function GetDialogStyleString: string;
+        function GetEventList: TStringList;
+        function GetParameterFromEventName(EventName: string): string;
+        function GetTypeFromEventName(EventName: string): string;
+        procedure SaveControlOrientation(ControlOrientation: TWxControlOrientation);
+        function GetFGColor: string;
+        procedure SetFGColor(strValue: string);
+        function GetBGColor: string;
+        procedure SetBGColor(strValue: string);
+        function GetGenericColor(strVariableName: string): string;
+        procedure SetGenericColor(strVariableName, strValue: string);
 
-        Function GetBorderAlignment: TWxBorderAlignment;
-        Procedure SetBorderAlignment(border: TWxBorderAlignment);
-        Function GetBorderWidth: Integer;
-        Procedure SetBorderWidth(width: Integer);
-        Function GetStretchFactor: Integer;
-        Procedure SetStretchFactor(intValue: Integer);
-        Procedure SetDesignerType(Value: TWxDesignerType);
+        function GetBorderAlignment: TWxBorderAlignment;
+        procedure SetBorderAlignment(border: TWxBorderAlignment);
+        function GetBorderWidth: integer;
+        procedure SetBorderWidth(width: integer);
+        function GetStretchFactor: integer;
+        procedure SetStretchFactor(intValue: integer);
+        procedure SetDesignerType(Value: TWxDesignerType);
     //Form Interface functions
-        Function GetFormName: String;
-        Procedure SetFormName(StrValue: String);
+        function GetFormName: string;
+        procedure SetFormName(StrValue: string);
 
-        Procedure CreateNewXPMs(strFileName: String);
-        Function HasAuiManager: Boolean;
+        procedure CreateNewXPMs(strFileName: string);
+        function HasAuiManager: boolean;
 
-    Published
-        Property EVT_INIT_DIALOG: String Read FEVT_INIT_DIALOG Write FEVT_INIT_DIALOG;
-        Property EVT_CHAR: String Read FEVT_CHAR Write FEVT_CHAR;
-        Property EVT_KEY_UP: String Read FEVT_KEY_UP Write FEVT_KEY_UP;
-        Property EVT_KEY_DOWN: String Read FEVT_KEY_DOWN Write FEVT_KEY_DOWN;
-        Property EVT_ERASE_BACKGROUND: String Read FEVT_ERASE_BACKGROUND Write FEVT_ERASE_BACKGROUND;
-        Property EVT_SIZE: String Read FEVT_SIZE Write FEVT_SIZE;
-        Property EVT_SET_FOCUS: String Read FEVT_SET_FOCUS Write FEVT_SET_FOCUS;
-        Property EVT_KILL_FOCUS: String Read FEVT_KILL_FOCUS Write FEVT_KILL_FOCUS;
-        Property EVT_ENTER_WINDOW: String Read FEVT_ENTER_WINDOW Write FEVT_ENTER_WINDOW;
-        Property EVT_LEAVE_WINDOW: String Read FEVT_LEAVE_WINDOW Write FEVT_LEAVE_WINDOW;
-        Property EVT_MOTION: String Read FEVT_MOTION Write FEVT_MOTION;
-        Property EVT_LEFT_DOWN: String Read FEVT_LEFT_DOWN Write FEVT_LEFT_DOWN;
-        Property EVT_LEFT_UP: String Read FEVT_LEFT_UP Write FEVT_LEFT_UP;
-        Property EVT_RIGHT_DOWN: String Read FEVT_RIGHT_DOWN Write FEVT_RIGHT_DOWN;
-        Property EVT_RIGHT_UP: String Read FEVT_RIGHT_UP Write FEVT_RIGHT_UP;
-        Property EVT_MIDDLE_DOWN: String Read FEVT_MIDDLE_DOWN Write FEVT_MIDDLE_DOWN;
-        Property EVT_MIDDLE_UP: String Read FEVT_MIDDLE_UP Write FEVT_MIDDLE_UP;
-        Property EVT_LEFT_DCLICK: String Read FEVT_LEFT_DCLICK Write FEVT_LEFT_DCLICK;
-        Property EVT_RIGHT_DCLICK: String Read FEVT_RIGHT_DCLICK Write FEVT_RIGHT_DCLICK;
-        Property EVT_MIDDLE_DCLICK: String Read FEVT_MIDDLE_DCLICK Write FEVT_MIDDLE_DCLICK;
-        Property EVT_PAINT: String Read FEVT_PAINT Write FEVT_PAINT;
-        Property EVT_SCROLLWIN: String Read FEVT_SCROLLWIN Write FEVT_SCROLLWIN;
-        Property EVT_SCROLLWIN_TOP: String Read FEVT_SCROLLWIN_TOP Write FEVT_SCROLLWIN_TOP;
-        Property EVT_SCROLLWIN_BOTTOM: String Read FEVT_SCROLLWIN_BOTTOM Write FEVT_SCROLLWIN_BOTTOM;
-        Property EVT_SCROLLWIN_LINEUP: String Read FEVT_SCROLLWIN_LINEUP Write FEVT_SCROLLWIN_LINEUP;
-        Property EVT_SCROLLWIN_LINEDOWN: String Read FEVT_SCROLLWIN_LINEDOWN Write FEVT_SCROLLWIN_LINEDOWN;
-        Property EVT_SCROLLWIN_PAGEUP: String Read FEVT_SCROLLWIN_PAGEUP Write FEVT_SCROLLWIN_PAGEUP;
-        Property EVT_SCROLLWIN_PAGEDOWN: String Read FEVT_SCROLLWIN_PAGEDOWN Write FEVT_SCROLLWIN_PAGEDOWN;
-        Property EVT_SCROLLWIN_THUMBTRACK: String Read FEVT_SCROLLWIN_THUMBTRACK Write FEVT_SCROLLWIN_THUMBTRACK;
-        Property EVT_SCROLLWIN_THUMBRELEASE: String Read FEVT_SCROLLWIN_THUMBRELEASE Write FEVT_SCROLLWIN_THUMBRELEASE;
-        Property EVT_SYS_COLOUR_CHANGED: String Read FEVT_SYS_COLOUR_CHANGED Write FEVT_SYS_COLOUR_CHANGED;
-        Property EVT_UPDATE_UI: String Read FEVT_UPDATE_UI Write FEVT_UPDATE_UI;
-        Property EVT_CLOSE: String Read FEVT_CLOSE Write FEVT_CLOSE;
-        Property EVT_IDLE: String Read FEVT_IDLE Write FEVT_IDLE;
-        Property EVT_ACTIVATE: String Read FEVT_ACTIVATE Write FEVT_ACTIVATE;
-        Property EVT_ACTIVATE_APP: String Read FEVT_ACTIVATE_APP Write FEVT_ACTIVATE_APP;
-        Property EVT_QUERY_END_SESSION: String Read FEVT_QUERY_END_SESSION Write FEVT_QUERY_END_SESSION;
-        Property EVT_END_SESSION: String Read FEVT_END_SESSION Write FEVT_END_SESSION;
-        Property EVT_DROP_FILES: String Read FEVT_DROP_FILES Write FEVT_DROP_FILES;
-        Property EVT_SPLITTER_SASH_POS_CHANGED: String Read FEVT_SPLITTER_SASH_POS_CHANGED Write FEVT_SPLITTER_SASH_POS_CHANGED;
-        Property EVT_SPLITTER_UNSPLIT: String Read FEVT_SPLITTER_UNSPLIT Write FEVT_SPLITTER_UNSPLIT;
-        Property EVT_SPLITTER_DCLICK: String Read FEVT_SPLITTER_DCLICK Write FEVT_SPLITTER_DCLICK;
-        Property EVT_JOY_BUTTON_DOWN: String Read FEVT_JOY_BUTTON_DOWN Write FEVT_JOY_BUTTON_DOWN;
-        Property EVT_JOY_BUTTON_UP: String Read FEVT_JOY_BUTTON_UP Write FEVT_JOY_BUTTON_UP;
-        Property EVT_JOY_MOVE: String Read FEVT_JOY_MOVE Write FEVT_JOY_MOVE;
-        Property EVT_JOY_ZMOVE: String Read FEVT_JOY_ZMOVE Write FEVT_JOY_ZMOVE;
-        Property EVT_MENU_OPEN: String Read FEVT_MENU_OPEN Write FEVT_MENU_OPEN;
-        Property EVT_MENU_CLOSE: String Read FEVT_MENU_CLOSE Write FEVT_MENU_CLOSE;
-        Property EVT_MENU_HIGHLIGHT_ALL: String Read FEVT_MENU_HIGHLIGHT_ALL Write FEVT_MENU_HIGHLIGHT_ALL;
-        Property EVT_MOUSEWHEEL: String Read FEVT_MOUSEWHEEL Write FEVT_MOUSEWHEEL;
-        Property EVT_MOUSE_EVENTS: String Read FEVT_MOUSE_EVENTS Write FEVT_MOUSE_EVENTS;
+    published
+        property EVT_INIT_DIALOG: string read FEVT_INIT_DIALOG write FEVT_INIT_DIALOG;
+        property EVT_CHAR: string read FEVT_CHAR write FEVT_CHAR;
+        property EVT_KEY_UP: string read FEVT_KEY_UP write FEVT_KEY_UP;
+        property EVT_KEY_DOWN: string read FEVT_KEY_DOWN write FEVT_KEY_DOWN;
+        property EVT_ERASE_BACKGROUND: string read FEVT_ERASE_BACKGROUND write FEVT_ERASE_BACKGROUND;
+        property EVT_SIZE: string read FEVT_SIZE write FEVT_SIZE;
+        property EVT_SET_FOCUS: string read FEVT_SET_FOCUS write FEVT_SET_FOCUS;
+        property EVT_KILL_FOCUS: string read FEVT_KILL_FOCUS write FEVT_KILL_FOCUS;
+        property EVT_ENTER_WINDOW: string read FEVT_ENTER_WINDOW write FEVT_ENTER_WINDOW;
+        property EVT_LEAVE_WINDOW: string read FEVT_LEAVE_WINDOW write FEVT_LEAVE_WINDOW;
+        property EVT_MOTION: string read FEVT_MOTION write FEVT_MOTION;
+        property EVT_LEFT_DOWN: string read FEVT_LEFT_DOWN write FEVT_LEFT_DOWN;
+        property EVT_LEFT_UP: string read FEVT_LEFT_UP write FEVT_LEFT_UP;
+        property EVT_RIGHT_DOWN: string read FEVT_RIGHT_DOWN write FEVT_RIGHT_DOWN;
+        property EVT_RIGHT_UP: string read FEVT_RIGHT_UP write FEVT_RIGHT_UP;
+        property EVT_MIDDLE_DOWN: string read FEVT_MIDDLE_DOWN write FEVT_MIDDLE_DOWN;
+        property EVT_MIDDLE_UP: string read FEVT_MIDDLE_UP write FEVT_MIDDLE_UP;
+        property EVT_LEFT_DCLICK: string read FEVT_LEFT_DCLICK write FEVT_LEFT_DCLICK;
+        property EVT_RIGHT_DCLICK: string read FEVT_RIGHT_DCLICK write FEVT_RIGHT_DCLICK;
+        property EVT_MIDDLE_DCLICK: string read FEVT_MIDDLE_DCLICK write FEVT_MIDDLE_DCLICK;
+        property EVT_PAINT: string read FEVT_PAINT write FEVT_PAINT;
+        property EVT_SCROLLWIN: string read FEVT_SCROLLWIN write FEVT_SCROLLWIN;
+        property EVT_SCROLLWIN_TOP: string read FEVT_SCROLLWIN_TOP write FEVT_SCROLLWIN_TOP;
+        property EVT_SCROLLWIN_BOTTOM: string read FEVT_SCROLLWIN_BOTTOM write FEVT_SCROLLWIN_BOTTOM;
+        property EVT_SCROLLWIN_LINEUP: string read FEVT_SCROLLWIN_LINEUP write FEVT_SCROLLWIN_LINEUP;
+        property EVT_SCROLLWIN_LINEDOWN: string read FEVT_SCROLLWIN_LINEDOWN write FEVT_SCROLLWIN_LINEDOWN;
+        property EVT_SCROLLWIN_PAGEUP: string read FEVT_SCROLLWIN_PAGEUP write FEVT_SCROLLWIN_PAGEUP;
+        property EVT_SCROLLWIN_PAGEDOWN: string read FEVT_SCROLLWIN_PAGEDOWN write FEVT_SCROLLWIN_PAGEDOWN;
+        property EVT_SCROLLWIN_THUMBTRACK: string read FEVT_SCROLLWIN_THUMBTRACK write FEVT_SCROLLWIN_THUMBTRACK;
+        property EVT_SCROLLWIN_THUMBRELEASE: string read FEVT_SCROLLWIN_THUMBRELEASE write FEVT_SCROLLWIN_THUMBRELEASE;
+        property EVT_SYS_COLOUR_CHANGED: string read FEVT_SYS_COLOUR_CHANGED write FEVT_SYS_COLOUR_CHANGED;
+        property EVT_UPDATE_UI: string read FEVT_UPDATE_UI write FEVT_UPDATE_UI;
+        property EVT_CLOSE: string read FEVT_CLOSE write FEVT_CLOSE;
+        property EVT_IDLE: string read FEVT_IDLE write FEVT_IDLE;
+        property EVT_ACTIVATE: string read FEVT_ACTIVATE write FEVT_ACTIVATE;
+        property EVT_ACTIVATE_APP: string read FEVT_ACTIVATE_APP write FEVT_ACTIVATE_APP;
+        property EVT_QUERY_END_SESSION: string read FEVT_QUERY_END_SESSION write FEVT_QUERY_END_SESSION;
+        property EVT_END_SESSION: string read FEVT_END_SESSION write FEVT_END_SESSION;
+        property EVT_DROP_FILES: string read FEVT_DROP_FILES write FEVT_DROP_FILES;
+        property EVT_SPLITTER_SASH_POS_CHANGED: string read FEVT_SPLITTER_SASH_POS_CHANGED write FEVT_SPLITTER_SASH_POS_CHANGED;
+        property EVT_SPLITTER_UNSPLIT: string read FEVT_SPLITTER_UNSPLIT write FEVT_SPLITTER_UNSPLIT;
+        property EVT_SPLITTER_DCLICK: string read FEVT_SPLITTER_DCLICK write FEVT_SPLITTER_DCLICK;
+        property EVT_JOY_BUTTON_DOWN: string read FEVT_JOY_BUTTON_DOWN write FEVT_JOY_BUTTON_DOWN;
+        property EVT_JOY_BUTTON_UP: string read FEVT_JOY_BUTTON_UP write FEVT_JOY_BUTTON_UP;
+        property EVT_JOY_MOVE: string read FEVT_JOY_MOVE write FEVT_JOY_MOVE;
+        property EVT_JOY_ZMOVE: string read FEVT_JOY_ZMOVE write FEVT_JOY_ZMOVE;
+        property EVT_MENU_OPEN: string read FEVT_MENU_OPEN write FEVT_MENU_OPEN;
+        property EVT_MENU_CLOSE: string read FEVT_MENU_CLOSE write FEVT_MENU_CLOSE;
+        property EVT_MENU_HIGHLIGHT_ALL: string read FEVT_MENU_HIGHLIGHT_ALL write FEVT_MENU_HIGHLIGHT_ALL;
+        property EVT_MOUSEWHEEL: string read FEVT_MOUSEWHEEL write FEVT_MOUSEWHEEL;
+        property EVT_MOUSE_EVENTS: string read FEVT_MOUSE_EVENTS write FEVT_MOUSE_EVENTS;
 
-        Property synEdit: TSynEdit Read fsynEdit Write fsynEdit;
-        Property Wx_ICON: TPicture Read FWx_ICON Write FWx_ICON;
-        Property Wx_Name: String Read FWx_Name Write FWx_Name;
-        Property Wx_IDName: String Read FWxFrm_IDName Write FWxFrm_IDName;
-        Property Wx_IDValue: Integer Read FWxFrm_IDValue Write FWxFrm_IDValue;
-        Property Wx_Class: String Read FWxFrm_Class Write FWxFrm_Class;
-        Property Wx_Center: Boolean Read FWxFrm_Center Write FWxFrm_Center;
-        Property Wx_Hidden: Boolean Read FWxFrm_Hidden Write FWxFrm_Hidden;
-        Property Wx_ToolTips: String Read FWxFrm_ToolTips Write FWxFrm_ToolTips;
-        Property Wx_SizeToContents: Boolean Read FWxFrm_SizeToContents Write FWxFrm_SizeToContents;
+        property synEdit: TSynEdit read fsynEdit write fsynEdit;
+        property Wx_ICON: TPicture read FWx_ICON write FWx_ICON;
+        property Wx_Name: string read FWx_Name write FWx_Name;
+        property Wx_IDName: string read FWxFrm_IDName write FWxFrm_IDName;
+        property Wx_IDValue: integer read FWxFrm_IDValue write FWxFrm_IDValue;
+        property Wx_Class: string read FWxFrm_Class write FWxFrm_Class;
+        property Wx_Center: boolean read FWxFrm_Center write FWxFrm_Center;
+        property Wx_Hidden: boolean read FWxFrm_Hidden write FWxFrm_Hidden;
+        property Wx_ToolTips: string read FWxFrm_ToolTips write FWxFrm_ToolTips;
+        property Wx_SizeToContents: boolean read FWxFrm_SizeToContents write FWxFrm_SizeToContents;
 
-        Property KeepFormat: Boolean Read FKeepFormat Write FKeepFormat Default False;
-        Property Wx_Filename: String Read FWx_Filename Write FWx_Filename;
+        property KeepFormat: boolean read FKeepFormat write FKeepFormat default FALSE;
+        property Wx_Filename: string read FWx_Filename write FWx_Filename;
 
-        Property Wx_GeneralStyle: TWxStdStyleSet Read FWxFrm_GeneralStyle Write FWxFrm_GeneralStyle;
-        Property Wx_DialogStyle: TWxDlgStyleSet
-            Read GetWx_DialogStyle Write SetWx_DialogStyle;
+        property Wx_GeneralStyle: TWxStdStyleSet read FWxFrm_GeneralStyle write FWxFrm_GeneralStyle;
+        property Wx_DialogStyle: TWxDlgStyleSet
+            read GetWx_DialogStyle write SetWx_DialogStyle;
     //Read FWxFrm_DialogStyle Write FWxFrm_DialogStyle;
-        Property Wx_DesignerType: TWxDesignerType Read FWxDesignerType Write SetDesignerType Default dtWxDialog;
+        property Wx_DesignerType: TWxDesignerType read FWxDesignerType write SetDesignerType default dtWxDialog;
 
-        Property Wx_Border: Integer Read GetBorderWidth Write SetBorderWidth Default 5;
-        Property Wx_BorderAlignment: TWxBorderAlignment Read GetBorderAlignment Write SetBorderAlignment Default [wxALL];
-        Property Wx_StretchFactor: Integer Read GetStretchFactor Write SetStretchFactor Default 0;
+        property Wx_Border: integer read GetBorderWidth write SetBorderWidth default 5;
+        property Wx_BorderAlignment: TWxBorderAlignment read GetBorderAlignment write SetBorderAlignment default [wxALL];
+        property Wx_StretchFactor: integer read GetStretchFactor write SetStretchFactor default 0;
 
-        Property Wx_ProxyBGColorString: TWxColorString Read FWx_ProxyBGColorString Write FWx_ProxyBGColorString;
-        Property Wx_ProxyFGColorString: TWxColorString Read FWx_ProxyFGColorString Write FWx_ProxyFGColorString;
+        property Wx_ProxyBGColorString: TWxColorString read FWx_ProxyBGColorString write FWx_ProxyBGColorString;
+        property Wx_ProxyFGColorString: TWxColorString read FWx_ProxyFGColorString write FWx_ProxyFGColorString;
 
-        Property isAuimanagerAvailable: Boolean Read FisAuimanagerAvailable Write FisAuimanagerAvailable;
+        property isAuimanagerAvailable: boolean read FisAuimanagerAvailable write FisAuimanagerAvailable;
 
-    End;
+    end;
 
-Var
+var
     frmNewFormX: TfrmNewForm;
 
-Procedure GenerateCpp(frmNewForm: TfrmNewForm; strClassName: String; synEdit: TSynEdit);
-Procedure GenerateHpp(frmNewForm: TfrmNewForm; strClassName: String; synEdit: TSynEdit);
-Procedure GenerateXPM(frmNewForm: TfrmNewForm; strFileName: String;
-    onlyForForm: Boolean = False);
-Procedure GenerateXRC(frmNewForm: TfrmNewForm; strClassName: String;
-    synEdit: TSynEdit; strFileName: String);
+procedure GenerateCpp(frmNewForm: TfrmNewForm; strClassName: string; synEdit: TSynEdit);
+procedure GenerateHpp(frmNewForm: TfrmNewForm; strClassName: string; synEdit: TSynEdit);
+procedure GenerateXPM(frmNewForm: TfrmNewForm; strFileName: string;
+    onlyForForm: boolean = FALSE);
+procedure GenerateXRC(frmNewForm: TfrmNewForm; strClassName: string;
+    synEdit: TSynEdit; strFileName: string);
 
-Implementation
+implementation
 
-Uses dmCodeGen, WxStaticBitmap, wxdesigner;
+uses dmCodeGen, WxStaticBitmap, wxdesigner;
 
 {$R *.DFM}
 
-Procedure GenerateCpp(frmNewForm: TfrmNewForm; strClassName: String;
+procedure GenerateCpp(frmNewForm: TfrmNewForm; strClassName: string;
     synEdit: TSynEdit);
-Var
-    i: Integer;
-    intBlockStart, intBlockEnd: Integer;
-    intManualBlockStart, intManualBlockEnd: Integer;
+var
+    i: integer;
+    intBlockStart, intBlockEnd: integer;
+    intManualBlockStart, intManualBlockEnd: integer;
     wxcompInterface: IWxComponentInterface;
     varIntf: IWxVariableAssignmentInterface;
     wxAuimanagerInterface: IWxAuiManagerInterface;
   //  wxAuiPaneInfoInterface: IWxAuiPaneInfoInterface;
 //  wxAuiPaneInterface: IWxAuiPaneInterface;
-    strEntry, strEventTableStart, strEventTableEnd: String;
-    isSizerAvailable: Boolean;
-    hasImage: Boolean;
+    strEntry, strEventTableStart, strEventTableEnd: string;
+    isSizerAvailable: boolean;
+    hasImage: boolean;
   //  isAuimanagerAvailable: boolean;
-    strHdrValue: String;
-    strStartStr, strEndStr: String;
+    strHdrValue: string;
+    strStartStr, strEndStr: string;
     strLst, strlstManualCode: TStringList;
     CntIntf: IWxContainerAndSizerInterface;
-    strTemp: String;
-Begin
+    strTemp: string;
+begin
 
-    hasImage := false;
+    hasImage := FALSE;
 
-    If GetBlockStartAndEndPos(synEdit, strClassName, btClassNameGUIItemsCreation, intBlockStart, intBlockEnd) Then
-    Begin
+    if GetBlockStartAndEndPos(synEdit, strClassName, btClassNameGUIItemsCreation, intBlockStart, intBlockEnd) then
+    begin
     //Clear Declaration and Creation Field
         DeleteAllClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd);
 
-        isSizerAvailable := False;
-        For I := 0 To frmNewForm.ComponentCount - 1 Do // Iterate
-        Begin
-            If frmNewForm.Components[i].GetInterface(IID_IWxContainerAndSizerInterface, CntIntf) Then
-            Begin
-                isSizerAvailable := True;
+        isSizerAvailable := FALSE;
+        for I := 0 to frmNewForm.ComponentCount - 1 do // Iterate
+        begin
+            if frmNewForm.Components[i].GetInterface(IID_IWxContainerAndSizerInterface, CntIntf) then
+            begin
+                isSizerAvailable := TRUE;
                 break;
-            End;
-        End;
+            end;
+        end;
 
-        hasImage := False;
-        For I := 0 To frmNewForm.ComponentCount - 1 Do // Iterate
-        Begin
-            If frmNewForm.Components[i].GetInterface(IWxImageContainerInterface, CntIntf) Then
-            Begin
-                hasImage := True;
+        hasImage := FALSE;
+        for I := 0 to frmNewForm.ComponentCount - 1 do // Iterate
+        begin
+            if frmNewForm.Components[i].GetInterface(IWxImageContainerInterface, CntIntf) then
+            begin
+                hasImage := TRUE;
                 break;
-            End;
-        End;
+            end;
+        end;
 
-        frmNewForm.isAuimanagerAvailable := False;
+        frmNewForm.isAuimanagerAvailable := FALSE;
     //MN detect whether there is a wxAuiManager component
-        For I := frmNewForm.ComponentCount - 1 Downto 0 Do // Iterate
-        Begin
+        for I := frmNewForm.ComponentCount - 1 downto 0 do // Iterate
+        begin
       //  if frmNewForm.Components[i].Name = UpperCase('TWxAuiManager') then
-            If frmNewForm.Components[i].GetInterface(IID_IWxAuiManagerInterface, wxAuimanagerInterface) Then
-            Begin
-                frmNewForm.isAuimanagerAvailable := True;
+            if frmNewForm.Components[i].GetInterface(IID_IWxAuiManagerInterface, wxAuimanagerInterface) then
+            begin
+                frmNewForm.isAuimanagerAvailable := TRUE;
                 break;
-            End;
-        End; // for
+            end;
+        end; // for
 
       //  ALWAYS do this first, it should then be last in the list
         strTemp := frmNewForm.GenerateGUIControlCreation;
         AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, strTemp);
 
 
-        If isSizerAvailable Then
-        Begin
+        if isSizerAvailable then
+        begin
 {
       strTemp := frmNewForm.GenerateGUIControlCreation;
           AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, strTemp);
 }
       //Add the Code Generation Items that need to be added after the creation with new
-            For I := frmNewForm.ComponentCount - 1 Downto 0 Do // Iterate
-            Begin
-                If Not frmNewForm.Components[i].GetInterface(IID_IWxContainerAndSizerInterface, CntIntf) Then
+            for I := frmNewForm.ComponentCount - 1 downto 0 do // Iterate
+            begin
+                if not frmNewForm.Components[i].GetInterface(IID_IWxContainerAndSizerInterface, CntIntf) then
                     continue;
                 strTemp := CntIntf.GenerateLastCreationCode;
-                If trim(strTemp) = '' Then
+                if trim(strTemp) = '' then
                     continue;
                 AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, strTemp);
                 AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, '');
-            End; // for
-        End;
+            end; // for
+        end;
 
-        If Not isSizerAvailable Then
-        Begin
-            For I := 0 To frmNewForm.ComponentCount - 1 Do // Iterate
-            Begin
-                If frmNewForm.Components[i].GetInterface(IID_IWxContainerAndSizerInterface, CntIntf) Then
+        if not isSizerAvailable then
+        begin
+            for I := 0 to frmNewForm.ComponentCount - 1 do // Iterate
+            begin
+                if frmNewForm.Components[i].GetInterface(IID_IWxContainerAndSizerInterface, CntIntf) then
                     continue;
-                If Not frmNewForm.Components[i].GetInterface(IID_IWxAuiManagerInterface, wxAuimanagerInterface)
-          {and not frmNewForm.Components[i].GetInterface(IID_IWxAuiPaneInfoInterface, wxAuiPaneInfoInterface)} Then
-                Begin
+                if not frmNewForm.Components[i].GetInterface(IID_IWxAuiManagerInterface, wxAuimanagerInterface)
+          {and not frmNewForm.Components[i].GetInterface(IID_IWxAuiPaneInfoInterface, wxAuiPaneInfoInterface)} then
+                begin
 
-                    If frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) Then
-                    Begin
+                    if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) then
+                    begin
                         strTemp := wxcompInterface.GenerateGUIControlCreation;
                         AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, strTemp);
-                    End;
+                    end;
                     AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, '');
-                End;
-            End; // for
+                end;
+            end; // for
 
       //MN detect whether there is a wxAuiManager component and do the code for that last
       //it is then first in the generated code
-            For I := frmNewForm.ComponentCount - 1 Downto 0 Do // Iterate
-            Begin
-                If frmNewForm.Components[i].GetInterface(IID_IWxContainerAndSizerInterface, CntIntf) Then
+            for I := frmNewForm.ComponentCount - 1 downto 0 do // Iterate
+            begin
+                if frmNewForm.Components[i].GetInterface(IID_IWxContainerAndSizerInterface, CntIntf) then
                     continue;
         //  if frmNewForm.Components[i].Name = UpperCase('TWxAuiManager') then
-                If frmNewForm.Components[i].GetInterface(IID_IWxAuiManagerInterface, wxAuimanagerInterface) Then
-                Begin
-                    If frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) Then
-                    Begin
+                if frmNewForm.Components[i].GetInterface(IID_IWxAuiManagerInterface, wxAuimanagerInterface) then
+                begin
+                    if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) then
+                    begin
                         strTemp := wxcompInterface.GenerateGUIControlCreation;
                         AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, strTemp);
-                    End;
+                    end;
                     AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, '');
-                End;
-            End; // for
-        End
-        Else
-        Begin
+                end;
+            end; // for
+        end
+        else
+        begin
 
-            For I := frmNewForm.ComponentCount - 1 Downto 0 Do // Iterate
-            Begin
+            for I := frmNewForm.ComponentCount - 1 downto 0 do // Iterate
+            begin
 
-                If Not frmNewForm.Components[i].GetInterface(IID_IWxAuiManagerInterface, wxAuimanagerInterface)
-          {and not frmNewForm.Components[i].GetInterface(IID_IWxAuiPaneInfoInterface, wxAuiPaneInfoInterface)} Then
-                Begin
+                if not frmNewForm.Components[i].GetInterface(IID_IWxAuiManagerInterface, wxAuimanagerInterface)
+          {and not frmNewForm.Components[i].GetInterface(IID_IWxAuiPaneInfoInterface, wxAuiPaneInfoInterface)} then
+                begin
 
-                    If frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) Then
-                    Begin
+                    if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) then
+                    begin
                         strTemp := wxcompInterface.GenerateGUIControlCreation;
                         AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, strTemp);
-                    End;
+                    end;
                     AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, '');
-                End;
-            End; // for
+                end;
+            end; // for
 
       //MN detect whether there is a wxAuiManager component and do the code for that last
       //it is then first in the generated code
 
-            For I := frmNewForm.ComponentCount - 1 Downto 0 Do // Iterate
-            Begin
+            for I := frmNewForm.ComponentCount - 1 downto 0 do // Iterate
+            begin
         //  if frmNewForm.Components[i].Name = UpperCase('TWxAuiManager') then
-                If frmNewForm.Components[i].GetInterface(IID_IWxAuiManagerInterface, wxAuimanagerInterface) Then
-                Begin
-                    If frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) Then
-                    Begin
+                if frmNewForm.Components[i].GetInterface(IID_IWxAuiManagerInterface, wxAuimanagerInterface) then
+                begin
+                    if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) then
+                    begin
                         strTemp := wxcompInterface.GenerateGUIControlCreation;
                         AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, strTemp);
-                    End;
+                    end;
                     AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, '');
-                End;
-            End; // for
+                end;
+            end; // for
 
-        End;
+        end;
 
     //Form data should come first, if not the child will be resized to
-        If Not isSizerAvailable Then
+        if not isSizerAvailable then
 //Already done above
 //      AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd, frmNewForm.GenerateGUIControlCreation);
-            If (XRCGEN) Then //NUKLEAR ZELPH
-            Begin
+            if (XRCGEN) then //NUKLEAR ZELPH
+            begin
                 AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd,
                     'wxInitAllImageHandlers();' + #13 + 'wxXmlResource::Get()->InitAllHandlers();' + #13 + 'wxXmlResource::Get()->Load(' + StringFormat + '("' + strClassName + '.xml"));' + #13 + 'wxXmlResource::Get()->AddHandler(new wxRichTextCtrlXmlHandler);');
-            End;
-    End;
+            end;
+    end;
 
-    If (hasImage) Then
+    if (hasImage) then
         AddClassNameGUIItemsCreation(synEdit, strClassName, intBlockStart, intBlockEnd,
             'wxInitAllImageHandlers();   //Initialize graphic format handlers' + #13);
 
   // RHS Variable
-    If GetBlockStartAndEndPos(synEdit, strClassName, btRHSVariables, intBlockStart, intBlockEnd) Then
-    Begin
+    if GetBlockStartAndEndPos(synEdit, strClassName, btRHSVariables, intBlockStart, intBlockEnd) then
+    begin
         DeleteAllRHSVariableList(synEdit, strClassName, intBlockStart, intBlockEnd);
 
-        For I := frmNewForm.ComponentCount - 1 Downto 0 Do // Iterate
-        Begin
+        for I := frmNewForm.ComponentCount - 1 downto 0 do // Iterate
+        begin
         //            if frmNewForm.Components[i] is TPanel then
         //                continue;
-            If frmNewForm.Components[i].GetInterface(IID_IWxVariableAssignmentInterface, varIntf) Then
-            Begin
+            if frmNewForm.Components[i].GetInterface(IID_IWxVariableAssignmentInterface, varIntf) then
+            begin
                 strTemp := varIntf.GetRHSVariableAssignment;
-                If (strTemp) = '' Then
+                if (strTemp) = '' then
                     continue;
                 AddRHSVariableList(synEdit, strClassName, intBlockStart, intBlockEnd, varIntf.GetRHSVariableAssignment);
-            End;
+            end;
             AddRHSVariableList(synEdit, strClassName, intBlockStart, intBlockEnd, '');
-        End;// for;
+        end;// for;
 
-    End;
+    end;
 
   // LHS Variable
-    If GetBlockStartAndEndPos(synEdit, strClassName, btLHSVariables, intBlockStart, intBlockEnd) Then
-    Begin
+    if GetBlockStartAndEndPos(synEdit, strClassName, btLHSVariables, intBlockStart, intBlockEnd) then
+    begin
         DeleteAllLHSVariableList(synEdit, strClassName, intBlockStart, intBlockEnd);
-        For I := frmNewForm.ComponentCount - 1 Downto 0 Do // Iterate
-        Begin
+        for I := frmNewForm.ComponentCount - 1 downto 0 do // Iterate
+        begin
         //            if frmNewForm.Components[i] is TPanel then
         //                continue;
-            If frmNewForm.Components[i].GetInterface(IID_IWxVariableAssignmentInterface, varIntf) Then
-            Begin
+            if frmNewForm.Components[i].GetInterface(IID_IWxVariableAssignmentInterface, varIntf) then
+            begin
                 strTemp := varIntf.GetLHSVariableAssignment;
-                If (strTemp) = '' Then
+                if (strTemp) = '' then
                     continue;
                 AddLHSVariableList(synEdit, strClassName, intBlockStart, intBlockEnd, varIntf.GetLHSVariableAssignment);
-            End;
+            end;
             AddLHSVariableList(synEdit, strClassName, intBlockStart, intBlockEnd, '');
-        End;// for;
-    End;
+        end;// for;
+    end;
 
   // Event table
-    If GetBlockStartAndEndPos(synEdit, strClassName, btClassNameEventTableEntries, intBlockStart, intBlockEnd) Then
-    Begin
+    if GetBlockStartAndEndPos(synEdit, strClassName, btClassNameEventTableEntries, intBlockStart, intBlockEnd) then
+    begin
         GetStartAndEndBlockStrings('', btManualCode, strStartStr, strEndStr);
 
-        If GetBlockStartAndEndPos(synEdit, strClassName, btManualCode, intManualBlockStart, intManualBlockEnd) Then
+        if GetBlockStartAndEndPos(synEdit, strClassName, btManualCode, intManualBlockStart, intManualBlockEnd) then
             strlstManualCode := GetBlockCode(synEdit, strClassName, btManualCode, intManualBlockStart, intManualBlockEnd)
-        Else
+        else
             strlstManualCode := TStringList.Create;
 
-        Try
+        try
 
             DeleteAllClassNameEventTableEntries(synEdit, strClassName, intBlockStart, intBlockEnd);
 
             strEventTableEnd := 'END_EVENT_TABLE()';
-            AddClassNameEventTableEntries(synEdit, strClassName, intBlockStart, intBlockEnd, strEventTableEnd, False);
+            AddClassNameEventTableEntries(synEdit, strClassName, intBlockStart, intBlockEnd, strEventTableEnd, FALSE);
 
 
     //EVT_CLOSE(%CLASS_NAME%:: OnQuit )
-            For I := 0 To frmNewForm.ComponentCount - 1 Do // Iterate
-            Begin
-                wxcompInterface := Nil;
-                If frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) Then
-                Begin
+            for I := 0 to frmNewForm.ComponentCount - 1 do // Iterate
+            begin
+                wxcompInterface := NIL;
+                if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) then
+                begin
                     strEntry := wxcompInterface.GenerateEventTableEntries(strClassName);
         //SendDebug(strEntry);
                     AddClassNameEventTableEntries(synEdit, strClassName, intBlockStart, intBlockEnd, strEntry);
-                End;
+                end;
       //AddClassNameEventTableEntries(strCppSrc, strClassName, intBlockStart, intBlockEnd, '');
-            End; // for
+            end; // for
          //Form data should come first, if not the child will be resized to
             strEntry := frmNewForm.GenerateEventTableEntries(strClassName);
     //SendDebug(strEntry);
@@ -503,59 +503,59 @@ Begin
      //Manual Code Clear Declaration and Creation Field
 
             AddClassNameEventTableEntries(synEdit, strClassName, intBlockStart, intBlockEnd, strEndStr);
-            For I := strlstManualCode.Count - 1 Downto 0 Do    // Iterate
+            for I := strlstManualCode.Count - 1 downto 0 do    // Iterate
                 AddClassNameEventTableEntries(synEdit, strClassName, intBlockStart, intBlockEnd,
                     strlstManualCode[i]);    // for
 
-        Finally
+        finally
             strlstManualCode.Destroy;
-        End;
+        end;
 
         AddClassNameEventTableEntries(synEdit, strClassName, intBlockStart, intBlockEnd, strStartStr);
 
         strEventTableStart := Format('BEGIN_EVENT_TABLE(%s,%s)', [frmNewForm.Wx_Name, frmNewForm.Wx_Class]);
-        AddClassNameEventTableEntries(synEdit, strClassName, intBlockStart, intBlockEnd, strEventTableStart, False);
-    End;
+        AddClassNameEventTableEntries(synEdit, strClassName, intBlockStart, intBlockEnd, strEventTableStart, FALSE);
+    end;
 
   //Adding XPM Header files
   //A stupid way to find
-    If GetBlockStartAndEndPos(synEdit, strClassName, btHeaderIncludes, intBlockStart, intBlockEnd) Then
-    Begin
+    if GetBlockStartAndEndPos(synEdit, strClassName, btHeaderIncludes, intBlockStart, intBlockEnd) then
+    begin
     //Clear Declaration and Creation Field
         DeleteAllClassNameIncludeHeader(synEdit, strClassName, intBlockStart, intBlockEnd);
         strHdrValue := '';
         strLst := TStringList.Create;
-        For I := 0 To frmNewForm.ComponentCount - 1 Do // Iterate
-            If frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) Then
-            Begin
+        for I := 0 to frmNewForm.ComponentCount - 1 do // Iterate
+            if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface, wxcompInterface) then
+            begin
                 strHdrValue := wxcompInterface.GenerateImageInclude;
-                If strLst.indexOf(strHdrValue) = -1 Then
-                Begin
+                if strLst.indexOf(strHdrValue) = -1 then
+                begin
                     strLst.add(strHdrValue);
                     AddClassNameIncludeHeader(synEdit, strClassName,
                         intBlockStart, intBlockEnd, strHdrValue);
-                End;
-            End;
+                end;
+            end;
 
         strHdrValue := trim(frmNewForm.GenerateImageInclude);
-        If strHdrValue <> '' Then
-            If strLst.indexOf(strHdrValue) = -1 Then
-            Begin
+        if strHdrValue <> '' then
+            if strLst.indexOf(strHdrValue) = -1 then
+            begin
                 strLst.add(strHdrValue);
                 AddClassNameIncludeHeader(synEdit, strClassName, intBlockStart, intBlockEnd, strHdrValue);
-            End;
+            end;
 
         strLst.Destroy;
-    End;
-End;
+    end;
+end;
 
-Procedure GenerateXRC(frmNewForm: TfrmNewForm; strClassName: String;
-    synEdit: TSynEdit; strFileName: String);
-Var
-    i: Integer;
+procedure GenerateXRC(frmNewForm: TfrmNewForm; strClassName: string;
+    synEdit: TSynEdit; strFileName: string);
+var
+    i: integer;
     wxcompInterface: IWxComponentInterface;
     tempstring: TStringList;
-Begin
+begin
 
     synEdit.Clear;
     synEdit.Lines.Add('<?xml version="1.0" encoding="ISO-8859-1"?>');
@@ -571,122 +571,122 @@ Begin
     synEdit.Lines.Add(Format('<!--size>%d,%d</size-->',
         [frmNewForm.Width, frmNewForm.Height]));
 
-    If GetStdStyleString(frmNewForm.Wx_GeneralStyle) = '' Then
-        If strEqual(frmNewForm.Wx_class, 'WxFrame') Then
+    if GetStdStyleString(frmNewForm.Wx_GeneralStyle) = '' then
+        if strEqual(frmNewForm.Wx_class, 'WxFrame') then
             synEdit.Lines.Add('<!--style>wxDEFAULT_FRAME_STYLE</style-->')
-        Else
+        else
             synEdit.Lines.Add('<!--style>wxDEFAULT_DIALOG_STYLE</style-->')
-    Else
+    else
         synEdit.Lines.Add(Format('<!--style>%s</style-->',
             [GetStdStyleString(frmNewForm.Wx_GeneralStyle)]));
 
-    For i := 0 To frmNewForm.ComponentCount - 1 Do // Iterate
-        If frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface,
-            wxcompInterface) Then
+    for i := 0 to frmNewForm.ComponentCount - 1 do // Iterate
+        if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface,
+            wxcompInterface) then
       // Only add the XRC control if it is a child of the top-most parent (the form)
       //  If it is a child of a sizer, panel, or other object, then it's XRC code
       //  is created in GenerateXRCControlCreation of that control.
-            If (frmNewForm.Components[i].GetParentComponent.Name = 'frmNewForm') Then
-            Begin
+            if (frmNewForm.Components[i].GetParentComponent.Name = 'frmNewForm') then
+            begin
                 tempstring := wxcompInterface.GenerateXRCControlCreation('  ');
-                Try
+                try
                     synEdit.Lines.AddStrings(tempstring);
-                Finally
+                finally
                     tempstring.Free;
-                End;
-            End; // for
+                end;
+            end; // for
 
     synEdit.Lines.Add('<!--/object-->');
 
     synEdit.Lines.Add('</resource>');
 
-End;
+end;
 
-Procedure GenerateHpp(frmNewForm: TfrmNewForm; strClassName: String; synEdit: TSynEdit);
-Var
-    i: Integer;
-    intBlockStart, intBlockEnd: Integer;
+procedure GenerateHpp(frmNewForm: TfrmNewForm; strClassName: string; synEdit: TSynEdit);
+var
+    i: integer;
+    intBlockStart, intBlockEnd: integer;
     wxcompInterface: IWxComponentInterface;
     strLst: TStringList;
-    strHdrValue, strIDValue, strLine: String;
-Begin
-    If GetBlockStartAndEndPos(synEdit, strClassName, btClassNameGUIItemsDeclaration,
-        intBlockStart, intBlockEnd) Then
-    Begin
+    strHdrValue, strIDValue, strLine: string;
+begin
+    if GetBlockStartAndEndPos(synEdit, strClassName, btClassNameGUIItemsDeclaration,
+        intBlockStart, intBlockEnd) then
+    begin
     //Clear Declaration and Creation Field
         DeleteAllClassNameGUIItemsDeclaration(synEdit, strClassName, intBlockStart,
             intBlockEnd);
-        For I := 0 To frmNewForm.ComponentCount - 1 Do // Iterate
-            If frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface,
-                wxcompInterface) Then
+        for I := 0 to frmNewForm.ComponentCount - 1 do // Iterate
+            if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface,
+                wxcompInterface) then
                 AddClassNameGUIItemsDeclaration(synEdit, strClassName, intBlockStart,
                     intBlockEnd, wxcompInterface.GenerateGUIControlDeclaration());
-    End;
+    end;
 
   //For Old #define styled Control Ids
-    If GetBlockStartAndEndPos(synEdit, strClassName, btClassNameControlIdentifiers,
-        intBlockStart, intBlockEnd) Then
-    Begin
+    if GetBlockStartAndEndPos(synEdit, strClassName, btClassNameControlIdentifiers,
+        intBlockStart, intBlockEnd) then
+    begin
     //Clear Declaration and Creation Field
         DeleteAllClassNameControlIndentifiers(synEdit, strClassName, intBlockStart,
             intBlockEnd);
         strLst := TStringList.Create;
-        For I := 0 To frmNewForm.ComponentCount - 1 Do // Iterate
-            If frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface,
-                wxcompInterface) Then
-            Begin
+        for I := 0 to frmNewForm.ComponentCount - 1 do // Iterate
+            if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface,
+                wxcompInterface) then
+            begin
         //If the user is using a predefined ID then we dont generate ids for them
-                If IsIDPredefined(trim(wxcompInterface.GetIDName), wx_designer.strStdwxIDList) Then
+                if IsIDPredefined(trim(wxcompInterface.GetIDName), wx_designer.strStdwxIDList) then
                     continue;
                 strIDValue := wxcompInterface.GenerateControlIDs;
-                If trim(strIDValue) <> '' Then
-                    If strLst.indexOf(strIDValue) = -1 Then
-                    Begin
+                if trim(strIDValue) <> '' then
+                    if strLst.indexOf(strIDValue) = -1 then
+                    begin
                         strLst.Add(strIDValue);
                         AddClassNameControlIndentifiers(synEdit, strClassName, intBlockStart,
                             intBlockEnd, strIDValue);
-                    End;
-            End;
+                    end;
+            end;
         strLst.Destroy;
-    End;
+    end;
   //New Enum Based Control Ids
-    If GetBlockStartAndEndPos(synEdit, strClassName, btClassNameEnumControlIdentifiers,
-        intBlockStart, intBlockEnd) Then
-    Begin
+    if GetBlockStartAndEndPos(synEdit, strClassName, btClassNameEnumControlIdentifiers,
+        intBlockStart, intBlockEnd) then
+    begin
     //Clear Declaration and Creation Field
         DeleteAllClassNameEnumControlIndentifiers(synEdit, strClassName,
             intBlockStart, intBlockEnd);
         strLst := TStringList.Create;
-        For I := 0 To frmNewForm.ComponentCount - 1 Do // Iterate
-            If frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface,
-                wxcompInterface) Then
-            Begin
+        for I := 0 to frmNewForm.ComponentCount - 1 do // Iterate
+            if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface,
+                wxcompInterface) then
+            begin
         //If the user is using a predefined ID then we dont generate ids for them
-                If IsIDPredefined(trim(wxcompInterface.GetIDName), wx_designer.strStdwxIDList) Then
+                if IsIDPredefined(trim(wxcompInterface.GetIDName), wx_designer.strStdwxIDList) then
                     continue;
                 strIDValue := wxcompInterface.GenerateEnumControlIDs;
-                If trim(strIDValue) <> '' Then
-                    If strLst.indexOf(strIDValue) = -1 Then
-                    Begin
+                if trim(strIDValue) <> '' then
+                    if strLst.indexOf(strIDValue) = -1 then
+                    begin
                         strLst.Add(strIDValue);
                         AddClassNameEnumControlIndentifiers(synEdit,
                             strClassName, intBlockStart, intBlockEnd, strIDValue);
-                    End;
-            End;
-        If Not (UseIndividEnums) Then
-        Begin
+                    end;
+            end;
+        if not (UseIndividEnums) then
+        begin
             strIDValue := 'ID_DUMMY_START = 1000,';
             strLst.Add(strIDValue);
             AddClassNameEnumControlIndentifiers(synEdit,
                 strClassName, intBlockStart, intBlockEnd, strIDValue);
 
-        End;
+        end;
         strLst.Destroy;
-    End;
+    end;
 
-    If GetBlockStartAndEndPos(synEdit, strClassName, btDialogStyle, intBlockStart,
-        intBlockEnd) Then
-    Begin
+    if GetBlockStartAndEndPos(synEdit, strClassName, btDialogStyle, intBlockStart,
+        intBlockEnd) then
+    begin
     //Clear Declaration and Creation Field
 
     // We want to parse the #define line and just extract the name of
@@ -695,8 +695,8 @@ Begin
     //    compatibility we need to just change the options, not the name
     //    itself.
     // Get the #define line  (it should be just after the start of the block)
-        For I := intBlockStart To intBlockEnd Do // Iterate
-            If (strContainsU('#define', synEdit.Lines[I])) Then
+        for I := intBlockStart to intBlockEnd do // Iterate
+            if (strContainsU('#define', synEdit.Lines[I])) then
                 strLine := Trim(synEdit.Lines[I]);
 
     // Tokenize the line by spaces
@@ -714,131 +714,131 @@ Begin
         AddDialogStyleDeclaration(synEdit, strClassName, intBlockStart, intBlockEnd,
             strLine);
 
-    End;
+    end;
 
-    If GetBlockStartAndEndPos(synEdit, strClassName, btHeaderIncludes,
-        intBlockStart, intBlockEnd) Then
-    Begin
+    if GetBlockStartAndEndPos(synEdit, strClassName, btHeaderIncludes,
+        intBlockStart, intBlockEnd) then
+    begin
     //Clear Declaration and Creation Field
         DeleteAllClassNameIncludeHeader(synEdit, strClassName, intBlockStart,
             intBlockEnd);
         strLst := TStringList.Create;
-        For I := 0 To frmNewForm.ComponentCount - 1 Do // Iterate
-            If frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface,
-                wxcompInterface) Then
-            Begin
+        for I := 0 to frmNewForm.ComponentCount - 1 do // Iterate
+            if frmNewForm.Components[i].GetInterface(IID_IWxComponentInterface,
+                wxcompInterface) then
+            begin
                 strHdrValue := wxcompInterface.GenerateHeaderInclude;
-                If strLst.indexOf(strHdrValue) = -1 Then
-                Begin
+                if strLst.indexOf(strHdrValue) = -1 then
+                begin
                     strLst.add(strHdrValue);
                     AddClassNameIncludeHeader(synEdit, strClassName,
                         intBlockStart, intBlockEnd, strHdrValue);
-                End;
-            End;
-        If (XRCGEN) Then //NUKLEAR ZELPH
-        Begin
+                end;
+            end;
+        if (XRCGEN) then //NUKLEAR ZELPH
+        begin
             AddClassNameIncludeHeader(synEdit, strClassName, intBlockStart, intBlockEnd,
                 '#include <wx/xrc/xmlres.h>' + #13 + '#include <wx/xrc/xh_all.h>');
-        End;
+        end;
         strLst.Destroy;
-    End;
+    end;
 
-End;
+end;
 
 
-Procedure GenerateXPM(frmNewForm: TfrmNewForm; strFileName: String; onlyForForm: Boolean);
-Var
-    I: Integer;
-    xpmFileDir: String;
+procedure GenerateXPM(frmNewForm: TfrmNewForm; strFileName: string; onlyForForm: boolean);
+var
+    I: integer;
+    xpmFileDir: string;
     fileStrlst: TStringList;
-    strXPMContent, frmName: String;
+    strXPMContent, frmName: string;
 
-Begin
+begin
 
-    If (frmNewForm.KeepFormat) Then
+    if (frmNewForm.KeepFormat) then
         Exit;
 
     xpmFileDir := CreateGraphicFileDir(strFileName) + 'Images' + pd;
 
-    If frmNewForm.Wx_ICON.Bitmap.handle <> 0 Then
-    Begin
-        If onlyForForm Then
+    if frmNewForm.Wx_ICON.Bitmap.handle <> 0 then
+    begin
+        if onlyForForm then
             DeleteFile(xpmFileDir + 'Self_' + frmNewForm.Wx_Name + '_XPM.xpm');
 
-        If Not fileexists(xpmFileDir + 'Self_' + frmNewForm.Wx_Name + '_XPM.xpm') Then
-        Begin
+        if not fileexists(xpmFileDir + 'Self_' + frmNewForm.Wx_Name + '_XPM.xpm') then
+        begin
             fileStrlst := TStringList.Create;
-            Try
+            try
                 strXPMContent := GetXPMFromTPicture('Self_' + frmNewForm.Wx_Name, frmNewForm.Wx_ICON.Bitmap);
-                If trim(strXPMContent) <> '' Then
-                Begin
+                if trim(strXPMContent) <> '' then
+                begin
                     fileStrlst.Add(strXPMContent);
                     fileStrlst.SaveToFile(xpmFileDir + 'Self_' + frmNewForm.Wx_Name + '_XPM.xpm');
-                End;
-            Except
-            End;
+                end;
+            except
+            end;
             fileStrlst.Destroy;
-        End;
-    End;
+        end;
+    end;
 
-    If onlyForForm = True Then
+    if onlyForForm = TRUE then
         exit;
 
     frmName := frmNewForm.Wx_Name + '_';
-    For I := 0 To frmNewForm.ComponentCount - 1 Do    // Iterate
-    Begin
-        If frmNewForm.Components[I] Is TWxStaticBitmap Then
-        Begin
-            If TWxStaticBitmap(frmNewForm.Components[I]).Picture.Bitmap.handle = 0 Then
+    for I := 0 to frmNewForm.ComponentCount - 1 do    // Iterate
+    begin
+        if frmNewForm.Components[I] is TWxStaticBitmap then
+        begin
+            if TWxStaticBitmap(frmNewForm.Components[I]).Picture.Bitmap.handle = 0 then
                 continue;
-            If Not fileexists(xpmFileDir + frmName + frmNewForm.Components[I].Name + '_XPM.xpm') Then
-            Begin
+            if not fileexists(xpmFileDir + frmName + frmNewForm.Components[I].Name + '_XPM.xpm') then
+            begin
                 fileStrlst := TStringList.Create;
-                Try
+                try
                     strXPMContent := GetXPMFromTPicture(frmName + frmNewForm.Components[I].Name, TWxStaticBitmap(frmNewForm.Components[I]).Picture.Bitmap);
-                    If trim(strXPMContent) = '' Then
+                    if trim(strXPMContent) = '' then
                         continue;
                     fileStrlst.Add(strXPMContent);
                     fileStrlst.SaveToFile(xpmFileDir + frmName + frmNewForm.Components[I].Name + '_XPM.xpm');
-                Except
-                End;
+                except
+                end;
                 fileStrlst.Destroy;
-            End;
-        End;    // for
+            end;
+        end;    // for
 
-        If frmNewForm.Components[I] Is TWxToolButton Then
-        Begin
-            If TWxToolButton(frmNewForm.Components[I]).Wx_Bitmap.Bitmap.handle = 0 Then
+        if frmNewForm.Components[I] is TWxToolButton then
+        begin
+            if TWxToolButton(frmNewForm.Components[I]).Wx_Bitmap.Bitmap.handle = 0 then
                 continue;
-            If Not fileexists(xpmFileDir + frmName + frmNewForm.Components[I].Name + '_XPM.xpm') Then
-            Begin
+            if not fileexists(xpmFileDir + frmName + frmNewForm.Components[I].Name + '_XPM.xpm') then
+            begin
                 fileStrlst := TStringList.Create;
-                Try
+                try
                     strXPMContent :=
                         GetXPMFromTPicture(frmName + frmNewForm.Components[I].Name, TWxToolButton(frmNewForm.Components[I]).Wx_Bitmap.Bitmap);
-                    If trim(strXPMContent) = '' Then
+                    if trim(strXPMContent) = '' then
                         continue;
                     fileStrlst.Add(strXPMContent);
                     fileStrlst.SaveToFile(xpmFileDir + frmName + frmNewForm.Components[I].Name + '_XPM.xpm');
-                Except
-                End;
+                except
+                end;
                 fileStrlst.Destroy;
-            End;
-        End;    // for
+            end;
+        end;    // for
 
-    End;
-End;
+    end;
+end;
 
-Procedure TfrmNewForm.SetDialogProperties;
-Begin
+procedure TfrmNewForm.SetDialogProperties;
+begin
   //Free the old property list
-    If Assigned(wx_PropertyList) Then
+    if Assigned(wx_PropertyList) then
         wx_PropertyList.Free;
 
   //Create the new one
     wx_PropertyList := TStringList.Create;
 
-    Try
+    try
         wx_PropertyList.Add('Wx_IDName:ID Name');
         wx_PropertyList.Add('Wx_IDValue:ID Value');
         wx_PropertyList.Add('Wx_Class:Class');
@@ -885,17 +885,17 @@ Begin
         wx_PropertyList.Add('wxCLOSE_BOX:wxCLOSE_BOX');
         wx_PropertyList.Add('Wx_Name:Name');
         wx_PropertyList.Add('Wx_ICON:Icon');
-    Except
+    except
         wx_PropertyList.Free;
-        Raise;
-    End;
+        raise;
+    end;
 
-End;
+end;
 
-Procedure TfrmNewForm.SetFrameProperties();
-Begin
+procedure TfrmNewForm.SetFrameProperties();
+begin
   //Free the old property list
-    If Assigned(wx_PropertyList) Then
+    if Assigned(wx_PropertyList) then
         wx_PropertyList.Free;
 
   //Create the new one
@@ -955,631 +955,631 @@ Begin
     wx_PropertyList.Add('Wx_Name:Name');
     wx_PropertyList.Add('Wx_ICON:Icon');
 
-End;
+end;
 
-Function TfrmNewForm.GetParameterFromEventName(EventName: String): String;
-Begin
+function TfrmNewForm.GetParameterFromEventName(EventName: string): string;
+begin
     EventName := UpperCase(trim(EventName));
 
-    If EventName = 'EVT_CHAR' Then
-    Begin
+    if EventName = 'EVT_CHAR' then
+    begin
         Result := 'wxKeyEvent& event';
         exit;
-    End;
+    end;
 
-    If EventName = 'EVT_KEY_UP' Then
-    Begin
+    if EventName = 'EVT_KEY_UP' then
+    begin
         Result := 'wxKeyEvent& event';
         exit;
-    End;
+    end;
 
-    If EventName = 'EVT_KEY_DOWN' Then
-    Begin
+    if EventName = 'EVT_KEY_DOWN' then
+    begin
         Result := 'wxKeyEvent& event';
         exit;
-    End;
+    end;
 
-    If EventName = 'EVT_ERASE_BACKGROUND' Then
-    Begin
+    if EventName = 'EVT_ERASE_BACKGROUND' then
+    begin
         Result := 'wxEraseEvent& event';
         exit;
-    End;
+    end;
 
-    If EventName = 'EVT_SIZE' Then
-    Begin
+    if EventName = 'EVT_SIZE' then
+    begin
         Result := 'wxSizeEvent& event';
         exit;
-    End;
+    end;
 
-    If EventName = 'EVT_SET_FOCUS' Then
-    Begin
+    if EventName = 'EVT_SET_FOCUS' then
+    begin
         Result := 'wxFocusEvent& event';
         exit;
-    End;
+    end;
 
-    If EventName = 'EVT_KILL_FOCUS' Then
-    Begin
+    if EventName = 'EVT_KILL_FOCUS' then
+    begin
         Result := 'wxFocusEvent& event';
         exit;
-    End;
+    end;
 
-    If EventName = 'EVT_ENTER_WINDOW' Then
-    Begin
+    if EventName = 'EVT_ENTER_WINDOW' then
+    begin
         Result := 'wxMouseEvent& event';
         exit;
-    End;
+    end;
 
-    If EventName = 'EVT_LEAVE_WINDOW' Then
-    Begin
+    if EventName = 'EVT_LEAVE_WINDOW' then
+    begin
         Result := 'wxMouseEvent& event';
         exit;
-    End;
+    end;
 
-    If EventName = 'EVT_MOTION' Then
-    Begin
+    if EventName = 'EVT_MOTION' then
+    begin
         Result := 'wxMouseEvent& event';
         exit;
-    End;
+    end;
 
-    If EventName = 'EVT_LEFT_DOWN' Then
-    Begin
+    if EventName = 'EVT_LEFT_DOWN' then
+    begin
         Result := 'wxMouseEvent& event';
         exit;
-    End;
+    end;
 
-    If EventName = 'EVT_LEFT_UP' Then
-    Begin
+    if EventName = 'EVT_LEFT_UP' then
+    begin
         Result := 'wxMouseEvent& event';
         exit;
-    End;
+    end;
 
-    If EventName = 'EVT_RIGHT_DOWN' Then
-    Begin
+    if EventName = 'EVT_RIGHT_DOWN' then
+    begin
         Result := 'wxMouseEvent& event';
         exit;
-    End;
+    end;
 
-    If EventName = 'EVT_RIGHT_UP' Then
-    Begin
+    if EventName = 'EVT_RIGHT_UP' then
+    begin
         Result := 'wxMouseEvent& event';
         exit;
-    End;
+    end;
 
-    If EventName = 'EVT_MIDDLE_DOWN' Then
-    Begin
+    if EventName = 'EVT_MIDDLE_DOWN' then
+    begin
         Result := 'wxMouseEvent& event';
         exit;
-    End;
+    end;
 
-    If EventName = 'EVT_MIDDLE_UP' Then
-    Begin
+    if EventName = 'EVT_MIDDLE_UP' then
+    begin
         Result := 'wxMouseEvent& event';
         exit;
-    End;
+    end;
 
-    If EventName = 'EVT_LEFT_DCLICK' Then
-    Begin
+    if EventName = 'EVT_LEFT_DCLICK' then
+    begin
         Result := 'wxMouseEvent& event';
         exit;
-    End;
+    end;
 
-    If EventName = 'EVT_RIGHT_DCLICK' Then
-    Begin
+    if EventName = 'EVT_RIGHT_DCLICK' then
+    begin
         Result := 'wxMouseEvent& event';
         exit;
-    End;
+    end;
 
-    If EventName = 'EVT_MIDDLE_DCLICK' Then
-    Begin
+    if EventName = 'EVT_MIDDLE_DCLICK' then
+    begin
         Result := 'wxMouseEvent& event';
         exit;
-    End;
+    end;
 
-    If EventName = 'EVT_PAINT' Then
-    Begin
+    if EventName = 'EVT_PAINT' then
+    begin
         Result := 'wxPaintEvent& event';
         exit;
-    End;
+    end;
 
-    If EventName = 'EVT_INIT_DIALOG' Then
-    Begin
+    if EventName = 'EVT_INIT_DIALOG' then
+    begin
         Result := 'wxInitDialogEvent& event';
         exit;
-    End;
+    end;
 
-    If EventName = 'EVT_SCROLLWIN' Then
-    Begin
+    if EventName = 'EVT_SCROLLWIN' then
+    begin
         Result := 'wxScrollWinEvent& event';
         exit;
-    End;
+    end;
 
-    If EventName = 'EVT_SCROLLWIN_TOP' Then
-    Begin
+    if EventName = 'EVT_SCROLLWIN_TOP' then
+    begin
         Result := 'wxScrollWinEvent& event';
         exit;
-    End;
+    end;
 
-    If EventName = 'EVT_SCROLLWIN_BOTTOM' Then
-    Begin
+    if EventName = 'EVT_SCROLLWIN_BOTTOM' then
+    begin
         Result := 'wxScrollWinEvent& event';
         exit;
-    End;
+    end;
 
-    If EventName = 'EVT_SCROLLWIN_LINEUP' Then
-    Begin
+    if EventName = 'EVT_SCROLLWIN_LINEUP' then
+    begin
         Result := 'wxScrollWinEvent& event';
         exit;
-    End;
+    end;
 
-    If EventName = 'EVT_SCROLLWIN_LINEDOWN' Then
-    Begin
+    if EventName = 'EVT_SCROLLWIN_LINEDOWN' then
+    begin
         Result := 'wxScrollWinEvent& event';
         exit;
-    End;
+    end;
 
-    If EventName = 'EVT_SCROLLWIN_PAGEUP' Then
-    Begin
+    if EventName = 'EVT_SCROLLWIN_PAGEUP' then
+    begin
         Result := 'wxScrollWinEvent& event';
         exit;
-    End;
+    end;
 
-    If EventName = 'EVT_SCROLLWIN_PAGEDOWN' Then
-    Begin
+    if EventName = 'EVT_SCROLLWIN_PAGEDOWN' then
+    begin
         Result := 'wxScrollWinEvent& event';
         exit;
-    End;
+    end;
 
-    If EventName = 'EVT_SCROLLWIN_THUMBTRACK' Then
-    Begin
+    if EventName = 'EVT_SCROLLWIN_THUMBTRACK' then
+    begin
         Result := 'wxScrollWinEvent& event';
         exit;
-    End;
+    end;
 
-    If EventName = 'EVT_SCROLLWIN_THUMBRELEASE' Then
-    Begin
+    if EventName = 'EVT_SCROLLWIN_THUMBRELEASE' then
+    begin
         Result := 'wxScrollWinEvent& event';
         exit;
-    End;
+    end;
 
-    If EventName = 'EVT_SYS_COLOUR_CHANGED' Then
-    Begin
+    if EventName = 'EVT_SYS_COLOUR_CHANGED' then
+    begin
         Result := 'wxSysColourChangedEvent& event';
         exit;
-    End;
+    end;
 
-    If EventName = 'EVT_UPDATE_UI' Then
-    Begin
+    if EventName = 'EVT_UPDATE_UI' then
+    begin
         Result := 'wxUpdateUIEvent& event';
         exit;
-    End;
+    end;
 
-    If EventName = 'EVT_CLOSE' Then
-    Begin
+    if EventName = 'EVT_CLOSE' then
+    begin
         Result := 'wxCloseEvent& event';
         exit;
-    End;
+    end;
 
-    If EventName = 'EVT_IDLE' Then
-    Begin
+    if EventName = 'EVT_IDLE' then
+    begin
         Result := 'wxIdleEvent& event';
         exit;
-    End;
-    If EventName = 'EVT_ACTIVATE' Then
-    Begin
+    end;
+    if EventName = 'EVT_ACTIVATE' then
+    begin
         Result := 'wxActivateEvent& event';
         exit;
-    End;
-    If EventName = 'EVT_ACTIVATE_APP' Then
-    Begin
+    end;
+    if EventName = 'EVT_ACTIVATE_APP' then
+    begin
         Result := 'wxActivateEvent& event';
         exit;
-    End;
-    If EventName = 'EVT_QUERY_END_SESSION' Then
-    Begin
+    end;
+    if EventName = 'EVT_QUERY_END_SESSION' then
+    begin
         Result := 'wxCloseEvent& event';
         exit;
-    End;
-    If EventName = 'EVT_END_SESSION' Then
-    Begin
+    end;
+    if EventName = 'EVT_END_SESSION' then
+    begin
         Result := 'wxCloseEvent& event';
         exit;
-    End;
-    If EventName = 'EVT_DROP_FILES' Then
-    Begin
+    end;
+    if EventName = 'EVT_DROP_FILES' then
+    begin
         Result := 'wxDropFilesEvent& event';
         exit;
-    End;
-    If EventName = 'EVT_SPLITTER_SASH_POS_CHANGED' Then
-    Begin
+    end;
+    if EventName = 'EVT_SPLITTER_SASH_POS_CHANGED' then
+    begin
         Result := 'wxSplitterEvent& event';
         exit;
-    End;
-    If EventName = 'EVT_SPLITTER_UNSPLIT' Then
-    Begin
+    end;
+    if EventName = 'EVT_SPLITTER_UNSPLIT' then
+    begin
         Result := 'wxSplitterEvent& event';
         exit;
-    End;
-    If EventName = 'EVT_SPLITTER_DCLICK' Then
-    Begin
+    end;
+    if EventName = 'EVT_SPLITTER_DCLICK' then
+    begin
         Result := 'wxSplitterEvent& event';
         exit;
-    End;
-    If EventName = 'EVT_JOY_BUTTON_DOWN' Then
-    Begin
+    end;
+    if EventName = 'EVT_JOY_BUTTON_DOWN' then
+    begin
         Result := 'wxJoystickEvent& event';
         exit;
-    End;
-    If EventName = 'EVT_JOY_BUTTON_UP' Then
-    Begin
+    end;
+    if EventName = 'EVT_JOY_BUTTON_UP' then
+    begin
         Result := 'wxJoystickEvent& event';
         exit;
-    End;
-    If EventName = 'EVT_JOY_MOVE' Then
-    Begin
+    end;
+    if EventName = 'EVT_JOY_MOVE' then
+    begin
         Result := 'wxJoystickEvent& event';
         exit;
-    End;
-    If EventName = 'EVT_JOY_ZMOVE' Then
-    Begin
+    end;
+    if EventName = 'EVT_JOY_ZMOVE' then
+    begin
         Result := 'wxJoystickEvent& event';
         exit;
-    End;
-    If EventName = 'EVT_MENU_OPEN' Then
-    Begin
+    end;
+    if EventName = 'EVT_MENU_OPEN' then
+    begin
         Result := 'wxMenuEvent& event';
         exit;
-    End;
-    If EventName = 'EVT_MENU_CLOSE' Then
-    Begin
+    end;
+    if EventName = 'EVT_MENU_CLOSE' then
+    begin
         Result := 'wxMenuEvent& event';
         exit;
-    End;
-    If EventName = 'EVT_MENU_HIGHLIGHT_ALL' Then
-    Begin
+    end;
+    if EventName = 'EVT_MENU_HIGHLIGHT_ALL' then
+    begin
         Result := 'wxMenuEvent& event';
         exit;
-    End;
-    If EventName = 'EVT_MOUSEWHEEL' Then
-    Begin
+    end;
+    if EventName = 'EVT_MOUSEWHEEL' then
+    begin
         Result := 'wxMouseEvent& event';
         exit;
-    End;
-    If EventName = 'EVT_MOUSE_EVENTS' Then
-    Begin
+    end;
+    if EventName = 'EVT_MOUSE_EVENTS' then
+    begin
         Result := 'wxMouseEvent& event';
         exit;
-    End;
+    end;
 
     Result := 'void';
-End;
+end;
 
-Function TfrmNewForm.GetTypeFromEventName(EventName: String): String;
-Begin
+function TfrmNewForm.GetTypeFromEventName(EventName: string): string;
+begin
     Result := 'void';
-End;
+end;
 
-Procedure TfrmNewForm.SaveControlOrientation(ControlOrientation: TWxControlOrientation);
-Begin
+procedure TfrmNewForm.SaveControlOrientation(ControlOrientation: TWxControlOrientation);
+begin
   //Result:=WxControlNone;
-End;
+end;
 
-Function TfrmNewForm.GetStretchFactor: Integer;
-Begin
+function TfrmNewForm.GetStretchFactor: integer;
+begin
     Result := 0;
-End;
+end;
 
-Procedure TfrmNewForm.SetStretchFactor(intValue: Integer);
-Begin
-End;
+procedure TfrmNewForm.SetStretchFactor(intValue: integer);
+begin
+end;
 
-Function TfrmNewForm.GetEventList: TStringList;
-Begin
+function TfrmNewForm.GetEventList: TStringList;
+begin
     Result := FWx_EventList;
-End;
+end;
 
-Function TfrmNewForm.GetBorderAlignment: TWxBorderAlignment;
-Begin
+function TfrmNewForm.GetBorderAlignment: TWxBorderAlignment;
+begin
     Result := [];
-End;
+end;
 
-Procedure TfrmNewForm.SetBorderAlignment(border: TWxBorderAlignment);
-Begin
-End;
+procedure TfrmNewForm.SetBorderAlignment(border: TWxBorderAlignment);
+begin
+end;
 
-Function TfrmNewForm.GetBorderWidth: Integer;
-Begin
+function TfrmNewForm.GetBorderWidth: integer;
+begin
     Result := 0;
-End;
+end;
 
-Procedure TfrmNewForm.SetBorderWidth(width: Integer);
-Begin
-End;
+procedure TfrmNewForm.SetBorderWidth(width: integer);
+begin
+end;
 
-Procedure TfrmNewForm.FormMove(Var Msg: TWMMove);
-Begin
+procedure TfrmNewForm.FormMove(var Msg: TWMMove);
+begin
     wx_designer.ELDesigner1Modified(wx_designer.ELDesigner1);
-    Inherited;
-End;
+    inherited;
+end;
 
-Function TfrmNewForm.GenerateControlIDs: String;
-Begin
-    If (Wx_IDValue > 0) And (trim(Wx_IDName) <> '') Then
+function TfrmNewForm.GenerateControlIDs: string;
+begin
+    if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
         Result := Format('#define %s %d', [Wx_IDName, Wx_IDValue]);
-End;
+end;
 
-Function TfrmNewForm.GenerateEnumControlIDs: String;
-Begin
-    If (Wx_IDValue > 0) And (trim(Wx_IDName) <> '') Then
+function TfrmNewForm.GenerateEnumControlIDs: string;
+begin
+    if (Wx_IDValue > 0) and (trim(Wx_IDName) <> '') then
         Result := Format('%s = %d,', [Wx_IDName, Wx_IDValue]);
-End;
+end;
 
 
-Function TfrmNewForm.GenerateEventTableEntries(CurrClassName: String): String;
-Begin
+function TfrmNewForm.GenerateEventTableEntries(CurrClassName: string): string;
+begin
     Result := '';
-    If trim(EVT_UPDATE_UI) <> '' Then
+    if trim(EVT_UPDATE_UI) <> '' then
         Result := Result + #13 + Format('EVT_UPDATE_UI(%s, %s::%s)',
             [trim(Self.wx_IDName), CurrClassName, EVT_UPDATE_UI]) + '';
 
 
-    If trim(EVT_CLOSE) <> '' Then
+    if trim(EVT_CLOSE) <> '' then
         Result := Result + #13 + Format('EVT_CLOSE(%s::%s)',
             [CurrClassName, EVT_CLOSE]) + '';
 
 
-    If trim(EVT_CHAR) <> '' Then
+    if trim(EVT_CHAR) <> '' then
         Result := Result + #13 + Format('EVT_CHAR(%s::%s)', [CurrClassName,
             EVT_CHAR]) + '';
 
-    If trim(EVT_KEY_UP) <> '' Then
+    if trim(EVT_KEY_UP) <> '' then
         Result := Result + #13 + Format('EVT_KEY_UP(%s::%s)', [CurrClassName,
             EVT_KEY_UP]) + '';
 
-    If trim(EVT_KEY_DOWN) <> '' Then
+    if trim(EVT_KEY_DOWN) <> '' then
         Result := Result + #13 + Format('EVT_KEY_DOWN(%s::%s)', [CurrClassName,
             EVT_KEY_DOWN]) + '';
 
-    If trim(EVT_ERASE_BACKGROUND) <> '' Then
+    if trim(EVT_ERASE_BACKGROUND) <> '' then
         Result := Result + #13 + Format('EVT_ERASE_BACKGROUND(%s::%s)',
             [CurrClassName, EVT_ERASE_BACKGROUND]) + '';
 
-    If trim(EVT_SIZE) <> '' Then
+    if trim(EVT_SIZE) <> '' then
         Result := Result + #13 + Format('EVT_SIZE(%s::%s)', [CurrClassName,
             EVT_SIZE]) + '';
 
-    If trim(EVT_SET_FOCUS) <> '' Then
+    if trim(EVT_SET_FOCUS) <> '' then
         Result := Result + #13 + Format('EVT_SET_FOCUS(%s::%s)', [CurrClassName,
             EVT_SET_FOCUS]) + '';
 
-    If trim(EVT_KILL_FOCUS) <> '' Then
+    if trim(EVT_KILL_FOCUS) <> '' then
         Result := Result + #13 + Format('EVT_KILL_FOCUS(%s::%s)', [CurrClassName,
             EVT_KILL_FOCUS]) + '';
 
-    If trim(EVT_ENTER_WINDOW) <> '' Then
+    if trim(EVT_ENTER_WINDOW) <> '' then
         Result := Result + #13 + Format('EVT_ENTER_WINDOW(%s::%s)', [CurrClassName,
             EVT_ENTER_WINDOW]) + '';
 
-    If trim(EVT_LEAVE_WINDOW) <> '' Then
+    if trim(EVT_LEAVE_WINDOW) <> '' then
         Result := Result + #13 + Format('EVT_LEAVE_WINDOW(%s::%s)', [CurrClassName,
             EVT_LEAVE_WINDOW]) + '';
 
-    If trim(EVT_MOTION) <> '' Then
+    if trim(EVT_MOTION) <> '' then
         Result := Result + #13 + Format('EVT_MOTION(%s::%s)', [CurrClassName,
             EVT_MOTION]) + '';
 
-    If trim(EVT_LEFT_DOWN) <> '' Then
+    if trim(EVT_LEFT_DOWN) <> '' then
         Result := Result + #13 + Format('EVT_LEFT_DOWN(%s::%s)', [CurrClassName,
             EVT_LEFT_DOWN]) + '';
 
-    If trim(EVT_LEFT_UP) <> '' Then
+    if trim(EVT_LEFT_UP) <> '' then
         Result := Result + #13 + Format('EVT_LEFT_UP(%s::%s)', [CurrClassName,
             EVT_LEFT_UP]) + '';
 
-    If trim(EVT_RIGHT_DOWN) <> '' Then
+    if trim(EVT_RIGHT_DOWN) <> '' then
         Result := Result + #13 + Format('EVT_RIGHT_DOWN(%s::%s)', [CurrClassName,
             EVT_RIGHT_DOWN]) + '';
 
-    If trim(EVT_RIGHT_UP) <> '' Then
+    if trim(EVT_RIGHT_UP) <> '' then
         Result := Result + #13 + Format('EVT_RIGHT_UP(%s::%s)', [CurrClassName,
             EVT_RIGHT_UP]) + '';
 
-    If trim(EVT_MIDDLE_UP) <> '' Then
+    if trim(EVT_MIDDLE_UP) <> '' then
         Result := Result + #13 + Format('EVT_MIDDLE_UP(%s::%s)', [CurrClassName,
             EVT_MIDDLE_UP]) + '';
 
-    If trim(EVT_LEFT_DCLICK) <> '' Then
+    if trim(EVT_LEFT_DCLICK) <> '' then
         Result := Result + #13 + Format('EVT_LEFT_DCLICK(%s::%s)', [CurrClassName,
             EVT_LEFT_DCLICK]) + '';
 
-    If trim(EVT_RIGHT_DCLICK) <> '' Then
+    if trim(EVT_RIGHT_DCLICK) <> '' then
         Result := Result + #13 + Format('EVT_RIGHT_DCLICK(%s::%s)', [CurrClassName,
             EVT_RIGHT_DCLICK]) + '';
 
-    If trim(EVT_MIDDLE_DCLICK) <> '' Then
+    if trim(EVT_MIDDLE_DCLICK) <> '' then
         Result := Result + #13 + Format('EVT_MIDDLE_DCLICK(%s::%s)', [CurrClassName,
             EVT_MIDDLE_DCLICK]) + '';
 
-    If trim(EVT_PAINT) <> '' Then
+    if trim(EVT_PAINT) <> '' then
         Result := Result + #13 + Format('EVT_PAINT(%s::%s)', [CurrClassName,
             EVT_PAINT]) + '';
 
-    If trim(EVT_INIT_DIALOG) <> '' Then
+    if trim(EVT_INIT_DIALOG) <> '' then
         Result := Result + #13 + Format('EVT_INIT_DIALOG(%s::%s)', [CurrClassName,
             EVT_INIT_DIALOG]) + '';
 
-    If trim(EVT_SCROLLWIN) <> '' Then
+    if trim(EVT_SCROLLWIN) <> '' then
         Result := Result + #13 + Format('EVT_SCROLLWIN(%s::%s)', [CurrClassName,
             EVT_SCROLLWIN]) + '';
 
-    If trim(EVT_SCROLLWIN_TOP) <> '' Then
+    if trim(EVT_SCROLLWIN_TOP) <> '' then
         Result := Result + #13 + Format('EVT_SCROLLWIN_TOP(%s::%s)', [CurrClassName,
             EVT_SCROLLWIN_TOP]) + '';
 
-    If trim(EVT_SCROLLWIN_BOTTOM) <> '' Then
+    if trim(EVT_SCROLLWIN_BOTTOM) <> '' then
         Result := Result + #13 + Format('EVT_SCROLLWIN_BOTTOM(%s::%s)',
             [CurrClassName, EVT_SCROLLWIN_BOTTOM]) + '';
 
-    If trim(EVT_SCROLLWIN_LINEUP) <> '' Then
+    if trim(EVT_SCROLLWIN_LINEUP) <> '' then
         Result := Result + #13 + Format('EVT_SCROLLWIN_LINEUP(%s::%s)',
             [CurrClassName, EVT_SCROLLWIN_LINEUP]) + '';
 
-    If trim(EVT_SCROLLWIN_LINEDOWN) <> '' Then
+    if trim(EVT_SCROLLWIN_LINEDOWN) <> '' then
         Result := Result + #13 + Format('EVT_SCROLLWIN_LINEDOWN(%s::%s)',
             [CurrClassName, EVT_SCROLLWIN_LINEDOWN]) + '';
 
-    If trim(EVT_SCROLLWIN_PAGEUP) <> '' Then
+    if trim(EVT_SCROLLWIN_PAGEUP) <> '' then
         Result := Result + #13 + Format('EVT_SCROLLWIN_PAGEUP(%s::%s)',
             [CurrClassName, EVT_SCROLLWIN_PAGEUP]) + '';
 
-    If trim(EVT_SCROLLWIN_PAGEDOWN) <> '' Then
+    if trim(EVT_SCROLLWIN_PAGEDOWN) <> '' then
         Result := Result + #13 + Format('EVT_SCROLLWIN_PAGEDOWN(%s::%s)',
             [CurrClassName, EVT_SCROLLWIN_PAGEDOWN]) + '';
 
-    If trim(EVT_SCROLLWIN_THUMBTRACK) <> '' Then
+    if trim(EVT_SCROLLWIN_THUMBTRACK) <> '' then
         Result := Result + #13 + Format('EVT_SCROLLWIN_THUMBTRACK(%s::%s)',
             [CurrClassName, EVT_SCROLLWIN_THUMBTRACK]) + '';
 
-    If trim(EVT_SCROLLWIN_THUMBRELEASE) <> '' Then
+    if trim(EVT_SCROLLWIN_THUMBRELEASE) <> '' then
         Result := Result + #13 + Format('EVT_SCROLLWIN_THUMBRELEASE(%s::%s)',
             [CurrClassName, EVT_SCROLLWIN_THUMBRELEASE]) + '';
 
-    If trim(EVT_SYS_COLOUR_CHANGED) <> '' Then
+    if trim(EVT_SYS_COLOUR_CHANGED) <> '' then
         Result := Result + #13 + Format('EVT_SYS_COLOUR_CHANGED(%s::%s)',
             [CurrClassName, EVT_SYS_COLOUR_CHANGED]) + '';
-    If trim(EVT_IDLE) <> '' Then
+    if trim(EVT_IDLE) <> '' then
         Result := Result + #13 + Format('EVT_IDLE(%s::%s)',
             [CurrClassName, EVT_IDLE]) + '';
-    If trim(EVT_ACTIVATE) <> '' Then
+    if trim(EVT_ACTIVATE) <> '' then
         Result := Result + #13 + Format('EVT_ACTIVATE(%s::%s)',
             [CurrClassName, EVT_ACTIVATE]) + '';
-    If trim(EVT_ACTIVATE_APP) <> '' Then
+    if trim(EVT_ACTIVATE_APP) <> '' then
         Result := Result + #13 + Format('EVT_ACTIVATE_APP(%s::%s)',
             [CurrClassName, EVT_ACTIVATE_APP]) + '';
-    If trim(EVT_QUERY_END_SESSION) <> '' Then
+    if trim(EVT_QUERY_END_SESSION) <> '' then
         Result := Result + #13 + Format('EVT_QUERY_END_SESSION(%s::%s)',
             [CurrClassName, EVT_QUERY_END_SESSION]) + '';
-    If trim(EVT_END_SESSION) <> '' Then
+    if trim(EVT_END_SESSION) <> '' then
         Result := Result + #13 + Format('EVT_END_SESSION(%s::%s)',
             [CurrClassName, EVT_END_SESSION]) + '';
-    If trim(EVT_DROP_FILES) <> '' Then
+    if trim(EVT_DROP_FILES) <> '' then
         Result := Result + #13 + Format('EVT_DROP_FILES(%s::%s)',
             [CurrClassName, EVT_DROP_FILES]) + '';
-    If trim(EVT_SPLITTER_SASH_POS_CHANGED) <> '' Then
+    if trim(EVT_SPLITTER_SASH_POS_CHANGED) <> '' then
         Result := Result + #13 + Format('EVT_SPLITTER_SASH_POS_CHANGED(%s::%s)',
             [CurrClassName, EVT_SPLITTER_SASH_POS_CHANGED]) + '';
-    If trim(EVT_SPLITTER_UNSPLIT) <> '' Then
+    if trim(EVT_SPLITTER_UNSPLIT) <> '' then
         Result := Result + #13 + Format('EVT_SPLITTER_UNSPLIT(%s::%s)',
             [CurrClassName, EVT_SPLITTER_UNSPLIT]) + '';
-    If trim(EVT_SPLITTER_DCLICK) <> '' Then
+    if trim(EVT_SPLITTER_DCLICK) <> '' then
         Result := Result + #13 + Format('EVT_SPLITTER_DCLICK(%s::%s)',
             [CurrClassName, EVT_SPLITTER_DCLICK]) + '';
-    If trim(EVT_JOY_BUTTON_DOWN) <> '' Then
+    if trim(EVT_JOY_BUTTON_DOWN) <> '' then
         Result := Result + #13 + Format('EVT_JOY_BUTTON_DOWN(%s::%s)',
             [CurrClassName, EVT_JOY_BUTTON_DOWN]) + '';
-    If trim(EVT_JOY_BUTTON_UP) <> '' Then
+    if trim(EVT_JOY_BUTTON_UP) <> '' then
         Result := Result + #13 + Format('EVT_JOY_BUTTON_UP(%s::%s)',
             [CurrClassName, EVT_JOY_BUTTON_UP]) + '';
-    If trim(EVT_JOY_MOVE) <> '' Then
+    if trim(EVT_JOY_MOVE) <> '' then
         Result := Result + #13 + Format('EVT_JOY_MOVE(%s::%s)',
             [CurrClassName, EVT_JOY_MOVE]) + '';
-    If trim(EVT_JOY_ZMOVE) <> '' Then
+    if trim(EVT_JOY_ZMOVE) <> '' then
         Result := Result + #13 + Format('EVT_JOY_ZMOVE(%s::%s)',
             [CurrClassName, EVT_JOY_ZMOVE]) + '';
-    If trim(EVT_MENU_OPEN) <> '' Then
+    if trim(EVT_MENU_OPEN) <> '' then
         Result := Result + #13 + Format('EVT_MENU_OPEN(%s::%s)',
             [CurrClassName, EVT_MENU_OPEN]) + '';
-    If trim(EVT_MENU_CLOSE) <> '' Then
+    if trim(EVT_MENU_CLOSE) <> '' then
         Result := Result + #13 + Format('EVT_MENU_CLOSE(%s::%s)',
             [CurrClassName, EVT_MENU_CLOSE]) + '';
-    If trim(EVT_MENU_HIGHLIGHT_ALL) <> '' Then
+    if trim(EVT_MENU_HIGHLIGHT_ALL) <> '' then
         Result := Result + #13 + Format('EVT_MENU_HIGHLIGHT_ALL(%s::%s)',
             [CurrClassName, EVT_MENU_HIGHLIGHT_ALL]) + '';
-    If trim(EVT_MOUSEWHEEL) <> '' Then
+    if trim(EVT_MOUSEWHEEL) <> '' then
         Result := Result + #13 + Format('EVT_MOUSEWHEEL(%s::%s)',
             [CurrClassName, EVT_MOUSEWHEEL]) + '';
-    If trim(EVT_MOUSE_EVENTS) <> '' Then
+    if trim(EVT_MOUSE_EVENTS) <> '' then
         Result := Result + #13 + Format('EVT_MOUSE_EVENTS(%s::%s)',
             [CurrClassName, EVT_MOUSE_EVENTS]) + '';
 
-End;
+end;
 
-Function TfrmNewForm.GetDialogStyleString: String;
-Begin
+function TfrmNewForm.GetDialogStyleString: string;
+begin
   // This used to be hardcoded as THIS_DIALOG_STYLE
-    If (self.Wx_DialogStyle <> []) Or (self.Wx_GeneralStyle <> []) Then
+    if (self.Wx_DialogStyle <> []) or (self.Wx_GeneralStyle <> []) then
         Result := GetDialogSpecificStyle(self.Wx_GeneralStyle, self.Wx_DialogStyle,
             self.Wx_Class)
-    Else
-    If (strEqual(self.Wx_Class, 'wxDialog')) Then
+    else
+    if (strEqual(self.Wx_Class, 'wxDialog')) then
         Result := 'wxDEFAULT_DIALOG_STYLE'
-    Else
-    If (strEqual(self.Wx_Class, 'wxFrame')) Then
+    else
+    if (strEqual(self.Wx_Class, 'wxFrame')) then
         Result := 'wxDEFAULT_FRAME_STYLE';
 
-End;
+end;
 
-Function TfrmNewForm.GenerateXRCControlCreation(IndentString: String): TStringList;
-Begin
+function TfrmNewForm.GenerateXRCControlCreation(IndentString: string): TStringList;
+begin
     Result := TStringList.Create;
-End;
+end;
 
-Function TfrmNewForm.GenerateGUIControlCreation: String;
-Var
-    I, J, MaxToolWidth, MaxToolHt, MaxSepValue: Integer;
+function TfrmNewForm.GenerateGUIControlCreation: string;
+var
+    I, J, MaxToolWidth, MaxToolHt, MaxSepValue: integer;
     strLst: TStringList;
-    isSizerAvailable: Boolean;
+    isSizerAvailable: boolean;
   //  isAuimanagerAvailable: boolean;
     //WinRect: TRect;
     wxtoolbarintf: IWxToolBarInterface;
-    strTemp: String;
-    sizerParentName: String;
-Begin
+    strTemp: string;
+    sizerParentName: string;
+begin
     strLst := TStringList.Create;
 
-    If self.Wx_DesignerType = dtWxFrame Then
+    if self.Wx_DesignerType = dtWxFrame then
    // for I := self.ComponentCount - 1 downto 0 do    // Iterate
-        For I := 0 To self.ComponentCount - 1 Do    // Iterate
-        Begin
-            If IsControlWxToolBar(TControl(Components[i])) Then
-            Begin
+        for I := 0 to self.ComponentCount - 1 do    // Iterate
+        begin
+            if IsControlWxToolBar(TControl(Components[i])) then
+            begin
                 MaxToolWidth := 16;
                 MaxToolHt := 15;
                 MaxSepValue := 5;
-                For J := 0 To TWinControl(Components[i]).ControlCount - 1 Do
+                for J := 0 to TWinControl(Components[i]).ControlCount - 1 do
           // Iterate
-                Begin
-                    If (TWinControl(Components[i]).Controls[J] Is TWxSeparator) Then
-                        If TWinControl(Components[i]).Controls[J].Width > MaxSepValue Then
+                begin
+                    if (TWinControl(Components[i]).Controls[J] is TWxSeparator) then
+                        if TWinControl(Components[i]).Controls[J].Width > MaxSepValue then
                             MaxSepValue := TWinControl(Components[i]).Controls[J].Width;
 
-                    If (TWinControl(Components[i]).Controls[J] Is TWxToolButton) Then
-                        If TWxToolButton(TWinControl(Components[i]).Controls[J]).Wx_BITMAP.Bitmap <> Nil Then
-                        Begin
-                            If TWxToolButton(TWinControl(Components[i]).Controls[J]).Wx_BITMAP.Bitmap.Height > MaxToolHt Then
+                    if (TWinControl(Components[i]).Controls[J] is TWxToolButton) then
+                        if TWxToolButton(TWinControl(Components[i]).Controls[J]).Wx_BITMAP.Bitmap <> NIL then
+                        begin
+                            if TWxToolButton(TWinControl(Components[i]).Controls[J]).Wx_BITMAP.Bitmap.Height > MaxToolHt then
                                 MaxToolHt :=
                                     TWxToolButton(TWinControl(Components[i]).Controls[J]).Wx_BITMAP.Bitmap.Height;
 
-                            If TWxToolButton(TWinControl(Components[i]).Controls[J]).Wx_BITMAP.Bitmap.Width > MaxToolWidth Then
+                            if TWxToolButton(TWinControl(Components[i]).Controls[J]).Wx_BITMAP.Bitmap.Width > MaxToolWidth then
                                 MaxToolWidth :=
                                     TWxToolButton(TWinControl(Components[i]).Controls[J]).Wx_BITMAP.Bitmap.Width;
-                        End;
-                End;    // for
+                        end;
+                end;    // for
 
-                If Not (XRCGEN) Then //NUKLEAR ZELPH
-	               Begin
-                    If Not ((MaxToolWidth = 16) And (MaxToolHt = 15)) Then
+                if not (XRCGEN) then //NUKLEAR ZELPH
+	               begin
+                    if not ((MaxToolWidth = 16) and (MaxToolHt = 15)) then
                         strLst.add(Format('%s->SetToolBitmapSize(wxSize(%d,%d));',
                             [self.Components[i].Name, MaxToolWidth, MaxToolHt]));
 
-                    If (MaxSepValue <> 5) Then
+                    if (MaxSepValue <> 5) then
                         strLst.add(Format('%s->SetToolSeparation(%d);',
                             [self.Components[i].Name, MaxSepValue]));
 
-                    If Self.Components[i].GetInterface(IID_IWxToolBarInterface, wxtoolbarintf) Then
-                    Begin
+                    if Self.Components[i].GetInterface(IID_IWxToolBarInterface, wxtoolbarintf) then
+                    begin
                         strTemp := wxtoolbarintf.GetRealizeString;
                         strLst.add(strTemp);
-                    End;
+                    end;
 
           {          if not IsControlWxAuiToolBar(TControl(Components[i])) then
           begin
@@ -1591,186 +1591,186 @@ Begin
             strLst.add(Format('%s->Realize();', [self.Components[i].Name]));
           end;
  }
-                End; //not xrcgen
-            End;
+                end; //not xrcgen
+            end;
 
-            If IsControlWxStatusBar(TControl(Components[i])) Then
+            if IsControlWxStatusBar(TControl(Components[i])) then
                 strLst.add(Format('SetStatusBar(%s);', [self.Components[i].Name]));
-        End;
+        end;
 
-    isSizerAvailable := False;
+    isSizerAvailable := FALSE;
     sizerParentName := '';
-    isAuimanagerAvailable := False;
-    For I := 0 To self.ComponentCount - 1 Do
-    Begin // Iterate
-        If self.Components[i] Is TWxSizerPanel Then
-        Begin
-            If Not (isSizerAvailable) Then
-            Begin
-                isSizerAvailable := True;
+    isAuimanagerAvailable := FALSE;
+    for I := 0 to self.ComponentCount - 1 do
+    begin // Iterate
+        if self.Components[i] is TWxSizerPanel then
+        begin
+            if not (isSizerAvailable) then
+            begin
+                isSizerAvailable := TRUE;
 
         // Bug fix for #2695519
         // Need to refer to parent name rather than always referring to 'this->'
-                If (TControl(Components[i]).Parent Is TForm) Then
+                if (TControl(Components[i]).Parent is TForm) then
                     sizerParentName := '' //'this' + '->'
-                Else
+                else
                     sizerParentName := TControl(Components[i]).Parent.Name + '->';
-            End;
+            end;
       //      break;
-        End;
-        If self.Components[i] Is TWxAuiManager Then
-        Begin
-            isAuimanagerAvailable := True;
+        end;
+        if self.Components[i] is TWxAuiManager then
+        begin
+            isAuimanagerAvailable := TRUE;
       //      break;
-        End;
-    End;
+        end;
+    end;
     strLst.add(Format('SetTitle(%s);', [GetCppString(self.Caption)]));
 
-    If assigned(Wx_ICON) Then
-    Begin
-        If Wx_ICON.Bitmap.Handle = 0 Then
+    if assigned(Wx_ICON) then
+    begin
+        if Wx_ICON.Bitmap.Handle = 0 then
             strLst.add('SetIcon(wxNullIcon);')
-        Else
-        If (KeepFormat) Then
-        Begin
+        else
+        if (KeepFormat) then
+        begin
             Wx_FileName := AnsiReplaceText(Wx_FileName, '\', '/');
             strLst.add('SetIcon(' + 'wxIcon("' + Wx_FileName + '", wxBITMAP_TYPE_' +
                 GetExtension(Wx_FileName) + '));');
-        End
-        Else
-        Begin
+        end
+        else
+        begin
       //strLst.add('wxIcon ' + self.Wx_Name + '_ICON' + ' (' +Self_'+self.Wx_Name + '_XPM' + ');');
             strLst.add('SetIcon(' + 'Self_' + self.Wx_Name + '_XPM' + ');');
-        End;
-    End;
+        end;
+    end;
 
-    If trim(self.Wx_ToolTips) <> '' Then
+    if trim(self.Wx_ToolTips) <> '' then
         strLst.add(Format('SetToolTip(%s);', [GetCppString(self.Wx_ToolTips)]));
 
-    If isSizerAvailable And Not isAuiManagerAvailable Then
-    Begin
-        If strLst.Count <> 0 Then
+    if isSizerAvailable and not isAuiManagerAvailable then
+    begin
+        if strLst.Count <> 0 then
             strLst.add('');
 
-        If (sizerParentName = '') Then
-        Begin
+        if (sizerParentName = '') then
+        begin
             strLst.Add('Layout();');
             strLst.add('GetSizer()->Fit(this);');
-            If Wx_SizeToContents Then
+            if Wx_SizeToContents then
                 strLst.add('GetSizer()->SetSizeHints(this);');
-        End;
-    End
-    Else
-    Begin
+        end;
+    end
+    else
+    begin
         strLst.add(Format('SetSize(%d,%d,%d,%d);', [self.left, self.top, self.Width, self.Height]));
-    End;
+    end;
 
-    If self.Wx_Center Then
+    if self.Wx_Center then
         strLst.add('Center();');
 
-    If isAuiManagerAvailable Then
-    Begin
-        If self.Wx_DesignerType = dtWxFrame Then
-            For I := self.ComponentCount - 1 Downto 0 Do // Iterate
-                If IsControlWxToolBar(TControl(Components[i])) And Not IsControlWxAuiToolBar(TControl(Components[i])) Then
-                Begin
+    if isAuiManagerAvailable then
+    begin
+        if self.Wx_DesignerType = dtWxFrame then
+            for I := self.ComponentCount - 1 downto 0 do // Iterate
+                if IsControlWxToolBar(TControl(Components[i])) and not IsControlWxAuiToolBar(TControl(Components[i])) then
+                begin
                     strLst.add('SetToolBar(NULL);');
                     break;
-                End;
+                end;
 
-        For I := self.ComponentCount - 1 Downto 0 Do // Iterate
-        Begin
-            If self.Components[i] Is TWxAuiManager Then
-            Begin
+        for I := self.ComponentCount - 1 downto 0 do // Iterate
+        begin
+            if self.Components[i] is TWxAuiManager then
+            begin
                 strLst.add(Format('%s->Update();', [self.Components[i].Name]));
-            End;
-        End;
-    End;
+            end;
+        end;
+    end;
 
     Result := strLst.Text;
     strLst.Destroy;
 
-End;
+end;
 
-Function TfrmNewForm.GenerateGUIControlDeclaration: String;
-Begin
+function TfrmNewForm.GenerateGUIControlDeclaration: string;
+begin
   //Result:=Format('%s *%s;',[trim(Self.Wx_Class),trim(Self.Name)]);
-End;
+end;
 
-Function TfrmNewForm.GenerateHeaderInclude: String;
-Begin
+function TfrmNewForm.GenerateHeaderInclude: string;
+begin
     Result := '';
-End;
+end;
 
-Function TfrmNewForm.GenerateImageInclude: String;
-Begin
-    If assigned(Wx_ICON) Then
-        If Wx_ICON.Bitmap.Handle <> 0 Then
-            If (Not KeepFormat) Then
+function TfrmNewForm.GenerateImageInclude: string;
+begin
+    if assigned(Wx_ICON) then
+        if Wx_ICON.Bitmap.Handle <> 0 then
+            if (not KeepFormat) then
                 Result := '#include "' + GetGraphicFileName + '"';
 
-End;
+end;
 
 
-Function TfrmNewForm.GetIDName: String;
-Begin
+function TfrmNewForm.GetIDName: string;
+begin
     Result := wx_IDName;
-End;
+end;
 
-Function TfrmNewForm.GetIDValue: Integer;
-Begin
+function TfrmNewForm.GetIDValue: integer;
+begin
     Result := wx_IDValue;
-End;
+end;
 
-Function TfrmNewForm.GetPropertyList: TStringList;
-Begin
+function TfrmNewForm.GetPropertyList: TStringList;
+begin
     Result := Wx_PropertyList;
-End;
+end;
 
-Function TfrmNewForm.GetWxClassName: String;
-Begin
-    If trim(Wx_Class) = '' Then
-    Begin
-        If Wx_DesignerType = dtWxDialog Then
+function TfrmNewForm.GetWxClassName: string;
+begin
+    if trim(Wx_Class) = '' then
+    begin
+        if Wx_DesignerType = dtWxDialog then
             Wx_Class := 'wxDialog';
 
-        If Wx_DesignerType = dtWxFrame Then
+        if Wx_DesignerType = dtWxFrame then
             Wx_Class := 'wxFrame';
 
-        If Wx_DesignerType = dtWxWizard Then
+        if Wx_DesignerType = dtWxWizard then
             Wx_Class := 'wxWizard';
 
-    End;
+    end;
     Result := wx_Class;
-End;
+end;
 
-Procedure TfrmNewForm.SetIDName(IDName: String);
-Begin
+procedure TfrmNewForm.SetIDName(IDName: string);
+begin
     wx_IDName := IDName;
-End;
+end;
 
-Procedure TfrmNewForm.SetIDValue(IDValue: Integer);
-Begin
+procedure TfrmNewForm.SetIDValue(IDValue: integer);
+begin
     Wx_IDValue := IDValue;
-End;
+end;
 
-Procedure TfrmNewForm.SetWxClassName(wxClassName: String);
-Begin
+procedure TfrmNewForm.SetWxClassName(wxClassName: string);
+begin
     wx_Class := wxClassName;
-End;
+end;
 
-Procedure TfrmNewForm.CreateInitVars;
-Begin
-    OldCreateOrder := True;
-    AutoScroll := False;
+procedure TfrmNewForm.CreateInitVars;
+begin
+    OldCreateOrder := TRUE;
+    AutoScroll := FALSE;
     Caption := 'New Dialog';
     Wx_IDName := 'ID_DIALOG1';
     Wx_IDValue := 1000;
     Wx_Class := 'wxDialog';
-    Wx_Center := False;
+    Wx_Center := FALSE;
     Wx_ToolTips := '';
-    Wx_Hidden := False;
-    Wx_SizeToContents := True;
+    Wx_Hidden := FALSE;
+    Wx_SizeToContents := TRUE;
     Wx_Icon := TPicture.Create;
 
     SetDialogProperties;
@@ -1825,298 +1825,298 @@ Begin
     FWx_EventList.add('  EVT_MENU_HIGHLIGHT_ALL :OnMenuHightLightAll');
     FWx_EventList.add('  EVT_MOUSEWHEEL :OnMouseWheel');
     FWx_EventList.add('  EVT_MOUSE_EVENTS :OnMouseEvents');
-End;
+end;
 
-Procedure TfrmNewForm.FormCreate(Sender: TObject);
-Var
+procedure TfrmNewForm.FormCreate(Sender: TObject);
+var
     hMenuHandle: HMENU;
 
-Begin
-    DesktopFont := True;
+begin
+    DesktopFont := TRUE;
     CreateInitVars;
-    If (Self.Handle <> 0) Then
-    Begin
-        hMenuHandle := GetSystemMenu(Self.Handle, False);
-        If (hMenuHandle <> 0) Then
-        Begin
+    if (Self.Handle <> 0) then
+    begin
+        hMenuHandle := GetSystemMenu(Self.Handle, FALSE);
+        if (hMenuHandle <> 0) then
+        begin
             DeleteMenu(hMenuHandle, SC_CLOSE, MF_BYCOMMAND);
             DeleteMenu(hMenuHandle, SC_MAXIMIZE, MF_BYCOMMAND);
-        End;
-    End;
+        end;
+    end;
 
-End;
+end;
 
-Procedure TfrmNewForm.FormResize(Sender: TObject);
-Begin
+procedure TfrmNewForm.FormResize(Sender: TObject);
+begin
     wx_designer.ELDesigner1Modified(wx_designer.ELDesigner1);
-End;
+end;
 
-Procedure TfrmNewForm.FormDestroy(Sender: TObject);
-Begin
+procedure TfrmNewForm.FormDestroy(Sender: TObject);
+begin
     Wx_PropertyList.Destroy;
     FWx_EventList.Destroy;
     FWx_Icon.Destroy;
-End;
+end;
 
-Function TfrmNewForm.GetGenericColor(strVariableName: String): String;
-Begin
+function TfrmNewForm.GetGenericColor(strVariableName: string): string;
+begin
 
-End;
-Procedure TfrmNewForm.SetGenericColor(strVariableName, strValue: String);
-Begin
+end;
+procedure TfrmNewForm.SetGenericColor(strVariableName, strValue: string);
+begin
 
-End;
+end;
 
-Function TfrmNewForm.GetFGColor: String;
-Begin
+function TfrmNewForm.GetFGColor: string;
+begin
     Result := Wx_ProxyFGColorString.strColorValue;
-End;
+end;
 
-Procedure TfrmNewForm.SetFGColor(strValue: String);
-Begin
+procedure TfrmNewForm.SetFGColor(strValue: string);
+begin
     Wx_ProxyFGColorString.strColorValue := strValue;
     self.Color := GetColorFromString(strValue);
-End;
+end;
 
-Function TfrmNewForm.GetBGColor: String;
-Begin
+function TfrmNewForm.GetBGColor: string;
+begin
     Result := Wx_ProxyBGColorString.strColorValue;
-End;
+end;
 
-Procedure TfrmNewForm.SetBGColor(strValue: String);
-Begin
+procedure TfrmNewForm.SetBGColor(strValue: string);
+begin
     Wx_ProxyBGColorString.strColorValue := strValue;
     self.Font.Color := GetColorFromString(strValue);
-End;
+end;
 
-Procedure TfrmNewForm.SetDesignerType(Value: TWxDesignerType);
-Begin
+procedure TfrmNewForm.SetDesignerType(Value: TWxDesignerType);
+begin
 
     Wx_Class := 'wxDialog';
 
-    If Value = dtWxFrame Then
-    Begin
+    if Value = dtWxFrame then
+    begin
         Wx_Class := 'wxFrame';
         self.Color := clAppWorkSpace;
     //self.BorderStyle:=bsSingle;
         SetFrameProperties();
-    End;
+    end;
 
-    If Value = dtWxWizard Then
+    if Value = dtWxWizard then
         Wx_Class := 'wxWizard';
     FWxDesignerType := Value;
 
-End;
+end;
 
-Function TfrmNewForm.GetFormName: String;
-Begin
+function TfrmNewForm.GetFormName: string;
+begin
     Result := FWx_Name;
-End;
+end;
 
-Procedure TfrmNewForm.SetFormName(StrValue: String);
-Begin
+procedure TfrmNewForm.SetFormName(StrValue: string);
+begin
     FWx_Name := strValue;
-End;
+end;
 
-Procedure TfrmNewForm.CreateNewXPMs(strFileName: String);
-Var
-    i, j: Integer;
+procedure TfrmNewForm.CreateNewXPMs(strFileName: string);
+var
+    i, j: integer;
     imgCtrl: IWxImageContainerInterface;
     mnuCtrl: IWxMenuBarInterface;
     bmp: TBitmap;
-    strPropertyName, strXPMFileName: String;
-Begin
-    For i := 0 To self.ComponentCount - 1 Do
-    Begin
-        If self.Components[i].GetInterface(IID_IWxImageContainerInterface, imgCtrl) = False Then
-        Begin
-            If self.Components[i].GetInterface(IDD_IWxMenuBarInterface, mnuCtrl) = True Then
+    strPropertyName, strXPMFileName: string;
+begin
+    for i := 0 to self.ComponentCount - 1 do
+    begin
+        if self.Components[i].GetInterface(IID_IWxImageContainerInterface, imgCtrl) = FALSE then
+        begin
+            if self.Components[i].GetInterface(IDD_IWxMenuBarInterface, mnuCtrl) = TRUE then
                 mnuCtrl.GenerateXPM(strFileName);
             continue;
-        End;
+        end;
 
-        For j := 0 To imgCtrl.GetBitmapCount - 1 Do
-        Begin
-            If Not imgCtrl.PreserveFormat Then
-            Begin
+        for j := 0 to imgCtrl.GetBitmapCount - 1 do
+        begin
+            if not imgCtrl.PreserveFormat then
+            begin
                 strXPMFileName := IncludeTrailingPathDelimiter(ExtractFilePath(strFileName)) + 'Images\' + Wx_Name + '_' + imgCtrl.GetPropertyName(j) + '.xpm';
-                If FileExists(strXPMFileName) Then
+                if FileExists(strXPMFileName) then
                     continue;
-                bmp := Nil;
+                bmp := NIL;
                 imgCtrl.GetBitmap(j, bmp, strPropertyName);
-                If bmp <> Nil Then
+                if bmp <> NIL then
                     GenerateXPMDirectly(bmp, strPropertyName, wx_Name, strFileName);
-            End;
-        End;
-    End;
+            end;
+        end;
+    end;
     strXPMFileName := 'Images\Self_' + wx_Name + '.xpm';
-    If FileExists(strXPMFileName) And (Wx_ICON.Bitmap <> Nil) Then
-    Begin
+    if FileExists(strXPMFileName) and (Wx_ICON.Bitmap <> NIL) then
+    begin
         GenerateXPMDirectly(Wx_ICON.Bitmap, 'Self', wx_Name, strFileName);
-    End;
-End;
+    end;
+end;
 
-Function TfrmNewForm.GetBitmapCount: Integer;
-Begin
+function TfrmNewForm.GetBitmapCount: integer;
+begin
     Result := 1;
-End;
+end;
 
-Function TfrmNewForm.GetBitmap(Idx: Integer; Var bmp: TBitmap; Var PropertyName: String): Boolean;
-Begin
+function TfrmNewForm.GetBitmap(Idx: integer; var bmp: TBitmap; var PropertyName: string): boolean;
+begin
     bmp.Assign(Wx_ICON.Bitmap);
-    Result := True;
-End;
+    Result := TRUE;
+end;
 
 
-Function TfrmNewForm.GetPropertyName(Idx: Integer): String;
-Begin
+function TfrmNewForm.GetPropertyName(Idx: integer): string;
+begin
     Result := wx_Name;
-End;
+end;
 
-Function TfrmNewForm.GetGraphicFileName: String;
-Begin
+function TfrmNewForm.GetGraphicFileName: string;
+begin
     Result := Wx_FileName;
-End;
+end;
 
-Function TfrmNewForm.SetGraphicFileName(strFileName: String): Boolean;
-Begin
+function TfrmNewForm.SetGraphicFileName(strFileName: string): boolean;
+begin
 
   // If no filename passed, then auto-generate XPM filename
-    If (strFileName = '') Then
+    if (strFileName = '') then
         strFileName := GetDesignerFormName(self) + '_' + self.Name + '_XPM.xpm';
 
-    If Not KeepFormat Then
+    if not KeepFormat then
         strFileName := 'Images\' + strFileName;
 
     Wx_Filename := CreateGraphicFileName(strFileName);
-    Result := True;
+    Result := TRUE;
 
-End;
+end;
 
-Procedure TfrmNewForm.FormClick(Sender: TObject);
-Begin
-    If (wx_designer.ELDesigner1.Floating) Then
-    Begin
+procedure TfrmNewForm.FormClick(Sender: TObject);
+begin
+    if (wx_designer.ELDesigner1.Floating) then
+    begin
         wx_designer.main.SetPageControlActivePageEditor(ChangeFileExt(self.fileName, WXFORM_EXT));
         wx_designer.MainPageChanged(ChangeFileExt(self.fileName, WXFORM_EXT));
         self.Show;
-    End;
-End;
+    end;
+end;
 
-Procedure TfrmNewForm.WMNCLButtonDown(Var Msg: TWMNCLButtonDown);
-Begin
-    If (Msg.HitTest = htCaption) And (wx_designer.ELDesigner1.Floating) Then
-    Begin
+procedure TfrmNewForm.WMNCLButtonDown(var Msg: TWMNCLButtonDown);
+begin
+    if (Msg.HitTest = htCaption) and (wx_designer.ELDesigner1.Floating) then
+    begin
         wx_designer.main.SetPageControlActivePageEditor(ChangeFileExt(self.fileName, WXFORM_EXT));
         wx_designer.MainPageChanged(ChangeFileExt(self.fileName, WXFORM_EXT));
         self.Show;
-    End;
-    Inherited;
-End;
+    end;
+    inherited;
+end;
 
-Procedure TfrmNewForm.WMNCRButtonDown(Var Msg: TWMNCRButtonDown);
-Begin
-    If (Msg.HitTest = htCaption) And (wx_designer.ELDesigner1.Floating) Then
-    Begin
+procedure TfrmNewForm.WMNCRButtonDown(var Msg: TWMNCRButtonDown);
+begin
+    if (Msg.HitTest = htCaption) and (wx_designer.ELDesigner1.Floating) then
+    begin
         wx_designer.main.SetPageControlActivePageEditor(ChangeFileExt(self.fileName, WXFORM_EXT));
         wx_designer.MainPageChanged(ChangeFileExt(self.fileName, WXFORM_EXT));
         self.Show;
-    End;
-    Inherited;
-End;
+    end;
+    inherited;
+end;
 
-Function TfrmNewForm.HasAuiManager: Boolean;
-Begin
+function TfrmNewForm.HasAuiManager: boolean;
+begin
     Result := Self.isAuimanagerAvailable;
-End;
+end;
 
 { Read method for property Wx_DialogStyle }
-Function TfrmNewForm.GetWx_DialogStyle: TWxDlgStyleSet;
-Begin
+function TfrmNewForm.GetWx_DialogStyle: TWxDlgStyleSet;
+begin
     Result := FWxFrm_DialogStyle;
-End;
+end;
 
-Function GetRefinedWxDialogStyleValue(sValue: TWxDlgStyleSet): TWxDlgStyleSet;
-Begin
+function GetRefinedWxDialogStyleValue(sValue: TWxDlgStyleSet): TWxDlgStyleSet;
+begin
     Result := [];
 
-    Try
+    try
 
-        If wxCAPTION In sValue Then
+        if wxCAPTION in sValue then
             Result := Result + [wxCAPTION];
 
-        If wxRESIZE_BORDER In sValue Then
+        if wxRESIZE_BORDER in sValue then
             Result := Result + [wxRESIZE_BORDER];
 
-        If wxSYSTEM_MENU In sValue Then
+        if wxSYSTEM_MENU in sValue then
             Result := Result + [wxSYSTEM_MENU];
 
-        If wxTHICK_FRAME In sValue Then
+        if wxTHICK_FRAME in sValue then
             Result := Result + [wxTHICK_FRAME];
 
-        If wxSTAY_ON_TOP In sValue Then
+        if wxSTAY_ON_TOP in sValue then
             Result := Result + [wxSTAY_ON_TOP];
 
-        If wxDIALOG_NO_PARENT In sValue Then
+        if wxDIALOG_NO_PARENT in sValue then
             Result := Result + [wxDIALOG_NO_PARENT];
 
-        If wxDIALOG_EX_CONTEXTHELP In sValue Then
+        if wxDIALOG_EX_CONTEXTHELP in sValue then
             Result := Result + [wxDIALOG_EX_CONTEXTHELP];
 
-        If wxMINIMIZE_BOX In sValue Then
+        if wxMINIMIZE_BOX in sValue then
             Result := Result + [wxMINIMIZE_BOX];
 
-        If wxMAXIMIZE_BOX In sValue Then
+        if wxMAXIMIZE_BOX in sValue then
             Result := Result + [wxMAXIMIZE_BOX];
 
-        If wxCLOSE_BOX In sValue Then
+        if wxCLOSE_BOX in sValue then
             Result := Result + [wxCLOSE_BOX];
 
-        If wxNO_3D In sValue Then
+        if wxNO_3D in sValue then
             Result := Result + [wxNO_3D];
 
-        If wxDEFAULT_DIALOG_STYLE In sValue Then
+        if wxDEFAULT_DIALOG_STYLE in sValue then
             Result := Result + [wxDEFAULT_DIALOG_STYLE];
 
-        If wxDEFAULT_FRAME_STYLE In sValue Then
+        if wxDEFAULT_FRAME_STYLE in sValue then
             Result := Result + [wxDEFAULT_FRAME_STYLE];
 
-        If wxMINIMIZE In sValue Then
+        if wxMINIMIZE in sValue then
             Result := Result + [wxMINIMIZE];
 
-        If wxMAXIMIZE In sValue Then
+        if wxMAXIMIZE in sValue then
             Result := Result + [wxMAXIMIZE];
 
-        If wxFRAME_TOOL_WINDOW In sValue Then
+        if wxFRAME_TOOL_WINDOW in sValue then
             Result := Result + [wxFRAME_TOOL_WINDOW];
 
-        If wxFRAME_NO_TASKBAR In sValue Then
+        if wxFRAME_NO_TASKBAR in sValue then
             Result := Result + [wxFRAME_NO_TASKBAR];
 
-        If wxFRAME_FLOAT_ON_PARENT In sValue Then
+        if wxFRAME_FLOAT_ON_PARENT in sValue then
             Result := Result + [wxFRAME_FLOAT_ON_PARENT];
 
-        If wxFRAME_EX_CONTEXTHELP In sValue Then
+        if wxFRAME_EX_CONTEXTHELP in sValue then
             Result := Result + [wxFRAME_EX_CONTEXTHELP];
 
-        If wxFRAME_SHAPED In sValue Then
+        if wxFRAME_SHAPED in sValue then
             Result := Result + [wxFRAME_SHAPED];
 
-    Finally
+    finally
         sValue := [];
-    End;
+    end;
 
-End;
+end;
 
 { Write method for property Wx_DialogStyle }
-Procedure TfrmNewForm.SetWx_DialogStyle(Value: TWxDlgStyleSet);
-Begin
+procedure TfrmNewForm.SetWx_DialogStyle(Value: TWxDlgStyleSet);
+begin
     FWxFrm_DialogStyle := GetRefinedWxDialogStyleValue(Value);
-End;
+end;
 
-Function TfrmNewForm.PreserveFormat: Boolean;
-Begin
+function TfrmNewForm.PreserveFormat: boolean;
+begin
     Result := KeepFormat;
-End;
+end;
 
-End.
+end.

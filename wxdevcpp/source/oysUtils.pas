@@ -17,163 +17,163 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-Unit oysUtils;
+unit oysUtils;
 
-Interface
+interface
 
-Uses
+uses
     Classes;
 
-Type
-    ToysStringList = Class(TStringList)
-    Private
-        Function GetValues(index: Integer): String;
-        Procedure SetValues(index: Integer; Value: String);
-        Function GetName(index: Integer): String;
-        Procedure SetName(index: Integer; Value: String);
-        Function GetValue(Name: String): String;
-        Procedure SetValue(Name: String; Value: String);
-    Public
-        Procedure Appendfmt(s: String; Const args: Array Of Const);
-        Function IndexofValue(Value: String): Integer;
-        Function Addfmt(s: String; Const args: Array Of Const): Integer;
-        Property Values[index: Integer]: String Read GetValues Write SetValues;
-        Property Value[Name: String]: String Read GetValue Write SetValue;
-        Property Names[index: Integer]: String Read GetName Write SetName;
-    End;
+type
+    ToysStringList = class(TStringList)
+    private
+        function GetValues(index: integer): string;
+        procedure SetValues(index: integer; Value: string);
+        function GetName(index: integer): string;
+        procedure SetName(index: integer; Value: string);
+        function GetValue(Name: string): string;
+        procedure SetValue(Name: string; Value: string);
+    public
+        procedure Appendfmt(s: string; const args: array of const);
+        function IndexofValue(Value: string): integer;
+        function Addfmt(s: string; const args: array of const): integer;
+        property Values[index: integer]: string read GetValues write SetValues;
+        property Value[Name: string]: string read GetValue write SetValue;
+        property Names[index: integer]: string read GetName write SetName;
+    end;
 
-Function ReadBoolStr(Value: String): Boolean;
+function ReadBoolStr(Value: string): boolean;
 
-Const
-    BoolStr: Array[Boolean] Of String = ('False', 'True');
-Implementation
+const
+    BoolStr: array[boolean] of string = ('False', 'True');
+implementation
 
-Uses
+uses
     SysUtils;
 
-Function ReadBoolStr(Value: String): Boolean;
-Begin
+function ReadBoolStr(Value: string): boolean;
+begin
     result := uppercase(Value) = 'TRUE';
-End;
+end;
 
 { ToysStringList }
 
 //Indexof function for Values in TStringList
-Function ToysStringList.IndexofValue(Value: String): Integer;
-Var
-    s: String;
-    p: Integer;
-Begin
-    For Result := 0 To pred(Count) Do
-    Begin
+function ToysStringList.IndexofValue(Value: string): integer;
+var
+    s: string;
+    p: integer;
+begin
+    for Result := 0 to pred(Count) do
+    begin
         s := Get(Result);
         p := ansipos('=', s);
-        If (p <> 0) And
-            (CompareStrings(Copy(s, p + 1, length(s)), Value) = 0) Then
+        if (p <> 0) and
+            (CompareStrings(Copy(s, p + 1, length(s)), Value) = 0) then
             exit;
-    End;
+    end;
     result := -1;
-End;
+end;
 
-Procedure ToysStringList.SetValues(index: Integer; Value: String);
-Var
-    s: String;
-    p: Integer;
-Begin
-    If (index >= 0) And (index < Count) Then
-    Begin
+procedure ToysStringList.SetValues(index: integer; Value: string);
+var
+    s: string;
+    p: integer;
+begin
+    if (index >= 0) and (index < Count) then
+    begin
         s := Get(index);
         p := ansipos('=', s);
-        If (p <> 0) Then
+        if (p <> 0) then
             s := copy(s, 1, p + 1) + Value
-        Else
+        else
             s := s + '=' + value;
         Put(index, s);
-    End
-    Else
-        Raise EListError.Createfmt('Module List SetValue index out of range: %d',
+    end
+    else
+        raise EListError.Createfmt('Module List SetValue index out of range: %d',
             [index]);
-End;
+end;
 
-Function ToysStringList.GetValues(index: Integer): String;
-Var
-    s: String;
-    p: Integer;
-Begin
-    If (index >= 0) And (index < Count) Then
-    Begin
+function ToysStringList.GetValues(index: integer): string;
+var
+    s: string;
+    p: integer;
+begin
+    if (index >= 0) and (index < Count) then
+    begin
         s := Get(index);
         p := ansipos('=', s);
-        If (p <> 0) Then
+        if (p <> 0) then
             result := Copy(s, p + 1, length(s))
-        Else
+        else
             result := '';
-    End
-    Else
-        Raise EListError.CreateFmt('Module List GetValue index out of range: %d',
+    end
+    else
+        raise EListError.CreateFmt('Module List GetValue index out of range: %d',
             [index]);
-End;
+end;
 
-Function ToysStringList.GetValue(Name: String): String;
-Var
-    I: Integer;
-Begin
+function ToysStringList.GetValue(Name: string): string;
+var
+    I: integer;
+begin
     I := IndexOfName(Name);
-    If I >= 0 Then
-        Result := Copy(Get(I), Length(Name) + 2, MaxInt) Else
+    if I >= 0 then
+        Result := Copy(Get(I), Length(Name) + 2, MaxInt) else
         Result := '';
-End;
+end;
 
-Procedure ToysStringList.SetValue(Name, Value: String);
-Var
-    I: Integer;
-Begin
+procedure ToysStringList.SetValue(Name, Value: string);
+var
+    I: integer;
+begin
     I := IndexOfName(Name);
-    If Value <> '' Then
-    Begin
-        If I < 0 Then
+    if Value <> '' then
+    begin
+        if I < 0 then
             I := Add('');
         Put(I, Name + '=' + Value);
-    End
-    Else
-    Begin
-        If I >= 0 Then
+    end
+    else
+    begin
+        if I >= 0 then
             Delete(I);
-    End;
-End;
+    end;
+end;
 
 
-Function ToysStringList.GetName(index: Integer): String;
-Begin
+function ToysStringList.GetName(index: integer): string;
+begin
     result := ExtractName(Get(index));
-End;
+end;
 
-Procedure ToysStringList.SetName(index: Integer; Value: String);
-Var
-    s: String;
-    p: Integer;
-Begin
+procedure ToysStringList.SetName(index: integer; Value: string);
+var
+    s: string;
+    p: integer;
+begin
     s := get(index);
     p := ansipos('=', s);
-    If p > 0 Then
+    if p > 0 then
         s := copy(s, p + 1, length(s));
     s := Value + '=' + s;
     put(index, s);
 
-End;
+end;
 
-Function ToysStringList.Addfmt(s: String;
-    Const args: Array Of Const): Integer;
-Var
-    astr: String;
-Begin
+function ToysStringList.Addfmt(s: string;
+    const args: array of const): integer;
+var
+    astr: string;
+begin
     fmtstr(astr, s, args);
     result := Add(astr);
-End;
+end;
 
-Procedure ToysStringList.Appendfmt(s: String; Const args: Array Of Const);
-Begin
+procedure ToysStringList.Appendfmt(s: string; const args: array of const);
+begin
     addfmt(s, args);
-End;
+end;
 
-End.
+end.

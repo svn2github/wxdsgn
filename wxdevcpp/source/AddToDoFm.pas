@@ -17,11 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-Unit AddToDoFm;
+unit AddToDoFm;
 
-Interface
+interface
 
-Uses
+uses
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
     Dialogs, StdCtrls, Spin, SynEditTextBuffer, SynEditTypes, XPMenu;
@@ -31,8 +31,8 @@ Uses
   QDialogs, QStdCtrls, QComCtrls, QSynEditTextBuffer, QSynEditTypes;
 {$ENDIF}
 
-Type
-    TAddToDoForm = Class(TForm)
+type
+    TAddToDoForm = class(TForm)
         Label1: TLabel;
         memDescr: TMemo;
         Label2: TLabel;
@@ -42,111 +42,111 @@ Type
         btnCancel: TButton;
         txtUser: TEdit;
         XPMenu: TXPMenu;
-        Procedure FormClose(Sender: TObject; Var Action: TCloseAction);
-        Procedure btnOKClick(Sender: TObject);
-        Procedure FormShow(Sender: TObject);
-        Procedure txtUserKeyPress(Sender: TObject; Var Key: Char);
-    Private
+        procedure FormClose(Sender: TObject; var Action: TCloseAction);
+        procedure btnOKClick(Sender: TObject);
+        procedure FormShow(Sender: TObject);
+        procedure txtUserKeyPress(Sender: TObject; var Key: char);
+    private
         { Private declarations }
-        Procedure LoadText;
-    Public
+        procedure LoadText;
+    public
         { Public declarations }
-    End;
+    end;
 
-Var
+var
     AddToDoForm: TAddToDoForm;
 
-Implementation
+implementation
 
-Uses
+uses
     main, editor, MultiLangSupport, devcfg;
 
 {$R *.dfm}
 
-Procedure TAddToDoForm.FormClose(Sender: TObject;
-    Var Action: TCloseAction);
-Begin
+procedure TAddToDoForm.FormClose(Sender: TObject;
+    var Action: TCloseAction);
+begin
     Action := caFree;
-End;
+end;
 
-Procedure TAddToDoForm.btnOKClick(Sender: TObject);
-Var
+procedure TAddToDoForm.btnOKClick(Sender: TObject);
+var
     e: TEditor;
-    I: Integer;
+    I: integer;
     st: TBufferCoord;
-    Line: Integer;
-    LineText: String;
-    Hdr: String;
-    Prepend: String;
-Begin
+    Line: integer;
+    LineText: string;
+    Hdr: string;
+    Prepend: string;
+begin
     e := MainForm.GetEditor;
-    If Not Assigned(e) Then
-    Begin
+    if not Assigned(e) then
+    begin
         Close;
         Exit;
-    End;
+    end;
 
     Line := e.Text.CaretY - 1;
     LineText := e.Text.Lines[Line];
     st.Line := Line + 1;
-    st.Char := 1;
+    st.char := 1;
 
     I := 1;
-    While (I <= Length(LineText)) And (LineText[I] In [#9, ' ']) Do
+    while (I <= Length(LineText)) and (LineText[I] in [#9, ' ']) do
         Inc(I);
     Prepend := Copy(LineText, 1, I - 1);
 
     Hdr := '/* TODO (';
-    If txtUser.Text <> '' Then
+    if txtUser.Text <> '' then
         Hdr := Hdr + txtUser.Text;
     Hdr := Hdr + '#' + IntToStr(spnPri.Value) + '#): ';
 
-    If memDescr.Lines.Count = 1 Then
+    if memDescr.Lines.Count = 1 then
         e.Text.Lines.Insert(Line, Prepend + Hdr + memDescr.Text + ' */')
-    Else
-    Begin
+    else
+    begin
         e.Text.Lines.Insert(Line, Prepend + Hdr + memDescr.Lines[0]);
         Prepend := Prepend + StringOfChar(#32, Length(Hdr));
-        For I := 1 To memDescr.Lines.Count - 1 Do
-        Begin
-            If I = memDescr.Lines.Count - 1 Then
+        for I := 1 to memDescr.Lines.Count - 1 do
+        begin
+            if I = memDescr.Lines.Count - 1 then
                 e.Text.Lines.Insert(Line + I, Prepend + memDescr.Lines[I] + ' */')
-            Else
+            else
                 e.Text.Lines.Insert(Line + I, Prepend + memDescr.Lines[I]);
-        End;
-    End;
-    e.Text.UndoList.AddChange(crInsert, st, BufferCoord(st.Char,
+        end;
+    end;
+    e.Text.UndoList.AddChange(crInsert, st, BufferCoord(st.char,
         st.Line + memDescr.Lines.Count), '', smNormal);
-    e.Modified := True;
+    e.Modified := TRUE;
     Close;
-End;
+end;
 
-Procedure TAddToDoForm.FormShow(Sender: TObject);
-Begin
+procedure TAddToDoForm.FormShow(Sender: TObject);
+begin
     LoadText;
     memDescr.Clear;
     spnPri.Value := 0;
     txtUser.Clear;
-End;
+end;
 
-Procedure TAddToDoForm.txtUserKeyPress(Sender: TObject; Var Key: Char);
-Begin
-    If Not (Key In ['a'..'z', 'A'..'Z', '0'..'9', '_', ' ', #8, #13, #27]) Then
-    Begin
+procedure TAddToDoForm.txtUserKeyPress(Sender: TObject; var Key: char);
+begin
+    if not (Key in ['a'..'z', 'A'..'Z', '0'..'9', '_', ' ', #8, #13, #27]) then
+    begin
         Key := #0;
         Exit;
-    End;
-End;
+    end;
+end;
 
-Procedure TAddToDoForm.LoadText;
-Begin
-    DesktopFont := True;
+procedure TAddToDoForm.LoadText;
+begin
+    DesktopFont := TRUE;
     XPMenu.Active := devData.XPTheme;
     Label1.Caption := Lang[ID_ADDTODO_DESCRIPTION] + ':';
     Label2.Caption := Lang[ID_ADDTODO_PRIORITY] + ':';
     Label3.Caption := Lang[ID_ADDTODO_USER] + ':';
     btnOk.Caption := Lang[ID_BTN_OK];
     btnCancel.Caption := Lang[ID_BTN_CANCEL];
-End;
+end;
 
-End.
+end.

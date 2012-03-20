@@ -17,11 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-Unit NewMemberFm;
+unit NewMemberFm;
 
-Interface
+interface
 
-Uses
+uses
 {$IFDEF WIN32}
     Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
     Dialogs, StdCtrls, ExtCtrls, CppParser, XPMenu;
@@ -31,8 +31,8 @@ Uses
   QDialogs, QStdCtrls, QExtCtrls, CppParser;
 {$ENDIF}
 
-Type
-    TNewMemberForm = Class(TForm)
+type
+    TNewMemberForm = class(TForm)
         Label1: TLabel;
         Label2: TLabel;
         rgScope: TRadioGroup;
@@ -55,214 +55,214 @@ Type
         chkVirtual: TCheckBox;
         chkPure: TCheckBox;
         chkInline: TCheckBox;
-        Procedure cmbTypeChange(Sender: TObject);
-        Procedure FormClose(Sender: TObject; Var Action: TCloseAction);
-        Procedure FormShow(Sender: TObject);
-        Procedure btnCreateClick(Sender: TObject);
-        Procedure memDescrChange(Sender: TObject);
-        Procedure chkStaticClick(Sender: TObject);
-    Private
+        procedure cmbTypeChange(Sender: TObject);
+        procedure FormClose(Sender: TObject; var Action: TCloseAction);
+        procedure FormShow(Sender: TObject);
+        procedure btnCreateClick(Sender: TObject);
+        procedure memDescrChange(Sender: TObject);
+        procedure chkStaticClick(Sender: TObject);
+    private
         { Private declarations }
-        Procedure LoadText;
-    Public
+        procedure LoadText;
+    public
         { Public declarations }
-    End;
+    end;
 
-Var
+var
     NewMemberForm: TNewMemberForm;
 
-Implementation
+implementation
 
-Uses
+uses
     editor, main, MultiLangSupport, devcfg;
 
 {$R *.dfm}
 
-Procedure TNewMemberForm.cmbTypeChange(Sender: TObject);
-Begin
+procedure TNewMemberForm.cmbTypeChange(Sender: TObject);
+begin
     btnCreate.Enabled := cmbType.Text <> '';
-    btnCreate.Enabled := btnCreate.Enabled And (txtName.Text <> '');
-End;
+    btnCreate.Enabled := btnCreate.Enabled and (txtName.Text <> '');
+end;
 
-Procedure TNewMemberForm.FormClose(Sender: TObject;
-    Var Action: TCloseAction);
-Begin
+procedure TNewMemberForm.FormClose(Sender: TObject;
+    var Action: TCloseAction);
+begin
     Action := caFree;
-End;
+end;
 
-Procedure TNewMemberForm.FormShow(Sender: TObject);
-Var
+procedure TNewMemberForm.FormShow(Sender: TObject);
+var
     sl: TStrings;
-Begin
+begin
     LoadText;
     cmbClass.Text := '';
     cmbType.Text := '';
     txtName.Text := '';
     txtArguments.Text := '';
-    chkToDo.Checked := True;
+    chkToDo.Checked := TRUE;
     memDescr.Lines.Clear;
     rgScope.ItemIndex := 2;
 
     sl := TStringList.Create;
-    Try
+    try
         MainForm.CppParser1.GetClassesList(sl);
         cmbClass.Items.Assign(sl);
-    Finally
+    finally
         sl.Free;
-    End;
+    end;
     cmbClass.ItemIndex := cmbClass.Items.IndexOf(
         PStatement(MainForm.ClassBrowser1.Selected.Data)^._Command);
 
     cmbType.SetFocus;
-End;
+end;
 
-Procedure TNewMemberForm.btnCreateClick(Sender: TObject);
-Var
-    pID: Integer;
-    fName: String;
-    CppFname: String;
-    I: Integer;
-    Line: Integer;
+procedure TNewMemberForm.btnCreateClick(Sender: TObject);
+var
+    pID: integer;
+    fName: string;
+    CppFname: string;
+    I: integer;
+    Line: integer;
     e: TEditor;
-    AddScopeStr: Boolean;
-    S: String;
-    VarName: String;
-    VarType: String;
-    VarArguments: String;
+    AddScopeStr: boolean;
+    S: string;
+    VarName: string;
+    VarType: string;
+    VarArguments: string;
     VarScope: TStatementClassScope;
     St: PStatement;
-    ClsName: String;
-Begin
-    If cmbClass.ItemIndex = -1 Then
-    Begin
+    ClsName: string;
+begin
+    if cmbClass.ItemIndex = -1 then
+    begin
         MessageDlg(Lang[ID_NEWVAR_MSG_NOCLASS], mtError, [mbOk], 0);
         ModalResult := mrNone;
         Exit;
-    End;
+    end;
 
-    If cmbClass.Items.IndexOf(cmbClass.Text) > -1 Then
+    if cmbClass.Items.IndexOf(cmbClass.Text) > -1 then
         St := PStatement(cmbClass.Items.Objects[cmbClass.Items.IndexOf(
             cmbClass.Text)])
-    Else
-        St := Nil;
+    else
+        St := NIL;
 
-    If Not Assigned(St) Then
-    Begin
+    if not Assigned(St) then
+    begin
         MessageDlg(Lang[ID_NEWVAR_MSG_NOCLASS], mtError, [mbOk], 0);
         ModalResult := mrNone;
         Exit;
-    End;
+    end;
 
-    With MainForm Do
-    Begin
+    with MainForm do
+    begin
         pID := St^._ID;
 
         VarName := txtName.Text;
         VarType := cmbType.Text;
-        Case rgScope.ItemIndex Of
+        case rgScope.ItemIndex of
             0:
                 VarScope := scsPrivate;
             1:
                 VarScope := scsProtected;
             2:
                 VarScope := scsPublic;
-        Else
+        else
             VarScope := scsPublic;
-        End;
+        end;
         VarArguments := txtArguments.Text;
-        If Trim(memDescr.Text) = '' Then
+        if Trim(memDescr.Text) = '' then
             memDescr.Text := 'No description';
 
         CppParser1.GetSourcePair(CppParser1.GetDeclarationFileName(St),
             CppFname, fName);
 
-        If Not chkInline.Checked And Not FileExists(CppFname) Then
-        Begin
+        if not chkInline.Checked and not FileExists(CppFname) then
+        begin
             MessageDlg(Lang[ID_NEWVAR_MSG_NOIMPL], mtError, [mbOk], 0);
             Exit;
-        End;
+        end;
 
         // if the file is modified, ask to save
         e := GetEditorFromFileName(fName);
 
-        If Not Assigned(e) Then
+        if not Assigned(e) then
             Exit;
 
-        If e.Modified Then
-            Case MessageDlg(format(Lang[ID_MSG_ASKSAVECLOSE], [fName]),
-                    mtConfirmation, [mbYes, mbCancel], 0) Of
+        if e.Modified then
+            case MessageDlg(format(Lang[ID_MSG_ASKSAVECLOSE], [fName]),
+                    mtConfirmation, [mbYes, mbCancel], 0) of
                 mrYes:
-                    If FileExists(fName) Then
-                    Begin
-                        If devEditor.AppendNewline Then
-                            With e.Text Do
-                                If Lines.Count > 0 Then
-                                    If Lines[Lines.Count - 1] <> '' Then
+                    if FileExists(fName) then
+                    begin
+                        if devEditor.AppendNewline then
+                            with e.Text do
+                                if Lines.Count > 0 then
+                                    if Lines[Lines.Count - 1] <> '' then
                                         Lines.Add('');
                         MainForm.SaveFile(e);
-                    End
-                    Else
+                    end
+                    else
                         Exit;
                 mrCancel:
                     Exit;
-            End;
+            end;
 
         // Ask CppParser for insertion line suggestion ;)
         Line := CppParser1.SuggestMemberInsertionLine(pID, VarScope, AddScopeStr);
 
-        If Line = -1 Then
-        Begin
+        if Line = -1 then
+        begin
             // CppParser could not suggest a line for insertion :(
             MessageDlg(Lang[ID_NEWVAR_MSG_NOLINE], mtError, [mbOk], 0);
             Exit;
-        End;
+        end;
 
-        If Not Assigned(e) Then
+        if not Assigned(e) then
             Exit;
 
         // insert the actual function
         S := #9#9;
-        If chkVirtual.Checked Then
+        if chkVirtual.Checked then
             S := S + 'virtual '
-        Else
-        If chkStatic.Checked Then
+        else
+        if chkStatic.Checked then
             S := S + 'static ';
         S := S + VarType + ' ' + VarName + '(' + VarArguments + ')';
-        If chkPure.Checked Then
+        if chkPure.Checked then
             S := S + ' = 0L';
-        If chkInline.Checked Then
-        Begin
+        if chkInline.Checked then
+        begin
             e.Text.Lines.Insert(Line, #9#9'}');
-            If chkToDo.Checked Then
+            if chkToDo.Checked then
                 e.Text.Lines.Insert(Line,
                     #9#9#9'/* TODO (#1#): Implement inline function ' + cmbClass.Text +
                     '::' + VarName + '(' + VarArguments + ') */')
-            Else
+            else
                 e.Text.Lines.Insert(Line, #9#9#9'// insert your code here');
             e.Text.Lines.Insert(Line, #9#9'{');
-        End
-        Else
+        end
+        else
             S := S + ';';
 
         e.Text.Lines.Insert(Line, S);
 
         // insert the comment
-        If cmbComment.ItemIndex In [0, 1] Then // /** ... */ or /* ... */
+        if cmbComment.ItemIndex in [0, 1] then // /** ... */ or /* ... */
             e.Text.Lines.Insert(Line, #9#9' */');
-        For I := memDescr.Lines.Count - 1 Downto 0 Do
-            If cmbComment.ItemIndex In [0, 1] Then // /** ... */ or /* ... */
+        for I := memDescr.Lines.Count - 1 downto 0 do
+            if cmbComment.ItemIndex in [0, 1] then // /** ... */ or /* ... */
                 e.Text.Lines.Insert(Line, #9#9' * ' + memDescr.Lines[I])
-            Else
+            else
                 e.Text.Lines.Insert(Line, #9#9'// ' + memDescr.Lines[I]);
-        If cmbComment.ItemIndex = 0 Then // /** ... */
+        if cmbComment.ItemIndex = 0 then // /** ... */
             e.Text.Lines.Insert(Line, #9#9'/**')
-        Else
-        If cmbComment.ItemIndex = 1 Then // /* ... */
+        else
+        if cmbComment.ItemIndex = 1 then // /* ... */
             e.Text.Lines.Insert(Line, #9#9'/*');
 
         // insert, if needed, the scope string
-        If AddScopeStr Then
-            Case VarScope Of
+        if AddScopeStr then
+            case VarScope of
                 scsPrivate:
                     e.Text.Lines.Insert(Line, #9'private:');
                 scsProtected:
@@ -271,63 +271,63 @@ Begin
                     e.Text.Lines.Insert(Line, #9'public:');
                 scsPublished:
                     e.Text.Lines.Insert(Line, #9'published:');
-            End;
+            end;
 
         e.GotoLineNr(Line + 1);
-        e.Modified := True;
+        e.Modified := TRUE;
 
-        If chkInline.Checked Or chkPure.Checked Then
+        if chkInline.Checked or chkPure.Checked then
             Exit;
 
         // set the parent class's name
         ClsName := cmbClass.Text;
 
         e := GetEditorFromFileName(CppFname);
-        If Not Assigned(e) Then
+        if not Assigned(e) then
             Exit;
 
         // insert the implementation
-        If Trim(e.Text.Lines[e.Text.Lines.Count - 1]) <> '' Then
+        if Trim(e.Text.Lines[e.Text.Lines.Count - 1]) <> '' then
             e.Text.Lines.Append('');
 
         // insert the comment
-        If cmbComment.ItemIndex = 0 Then // /* ... */
+        if cmbComment.ItemIndex = 0 then // /* ... */
             e.Text.Lines.Append('/*');
-        For I := 0 To memDescr.Lines.Count - 1 Do
-            If cmbComment.ItemIndex = 0 Then // /* ... */
+        for I := 0 to memDescr.Lines.Count - 1 do
+            if cmbComment.ItemIndex = 0 then // /* ... */
                 e.Text.Lines.Append(' * ' + memDescr.Lines[I])
-            Else
+            else
                 e.Text.Lines.Append('// ' + memDescr.Lines[I]);
-        If cmbComment.ItemIndex = 0 Then // /* ... */
+        if cmbComment.ItemIndex = 0 then // /* ... */
             e.Text.Lines.Append(' */');
 
         e.Text.Lines.Append(VarType + ' ' + ClsName + '::' + VarName +
             '(' + VarArguments + ')');
         e.Text.Lines.Append('{');
-        If chkToDo.Checked Then
+        if chkToDo.Checked then
             e.Text.Lines.Append(#9'/* TODO (#1#): Implement ' +
                 ClsName + '::' + VarName + '() */')
-        Else
+        else
             e.Text.Lines.Append(#9'// insert your code here');
         e.Text.Lines.Append('}');
         e.Text.Lines.Append('');
         e.GotoLineNr(e.Text.Lines.Count - 1);
-        e.Modified := True;
-    End;
+        e.Modified := TRUE;
+    end;
     Exit;
-End;
+end;
 
-Procedure TNewMemberForm.memDescrChange(Sender: TObject);
-Begin
-    If memDescr.Lines.Count > 1 Then
+procedure TNewMemberForm.memDescrChange(Sender: TObject);
+begin
+    if memDescr.Lines.Count > 1 then
         cmbComment.ItemIndex := 0
-    Else
+    else
         cmbComment.ItemIndex := 2;
-End;
+end;
 
-Procedure TNewMemberForm.LoadText;
-Begin
-    DesktopFont := True;
+procedure TNewMemberForm.LoadText;
+begin
+    DesktopFont := TRUE;
     XPMenu.Active := devData.XPTheme;
     Caption := Lang[ID_POP_NEWMEMBER];
     Label1.Caption := Lang[ID_NEWVAR_VARTYPE];
@@ -341,48 +341,48 @@ Begin
     chkToDo.Caption := Lang[ID_ADDTODO_MENUITEM];
     btnCreate.Caption := Lang[ID_NEWVAR_BTN_CREATE];
     btnCancel.Caption := Lang[ID_NEWVAR_BTN_CANCEL];
-End;
+end;
 
-Procedure TNewMemberForm.chkStaticClick(Sender: TObject);
-Begin
+procedure TNewMemberForm.chkStaticClick(Sender: TObject);
+begin
     // disable event
-    chkStatic.OnClick := Nil;
-    chkVirtual.OnClick := Nil;
-    chkPure.OnClick := Nil;
-    chkInline.OnClick := Nil;
+    chkStatic.OnClick := NIL;
+    chkVirtual.OnClick := NIL;
+    chkPure.OnClick := NIL;
+    chkInline.OnClick := NIL;
 
-    If Sender = chkStatic Then
-    Begin
-        chkInline.Enabled := True;
-        If chkStatic.Checked Then
-        Begin
-            chkVirtual.Checked := False;
-            chkPure.Checked := False;
-        End;
-    End
-    Else
-    If Sender = chkVirtual Then
-    Begin
-        chkInline.Enabled := True;
-        If Not chkVirtual.Checked Then
-            chkPure.Checked := False
-        Else
-            chkStatic.Checked := False;
-    End
-    Else
-    If Sender = chkPure Then
-    Begin
-        chkInline.Enabled := Not chkPure.Checked;
-        chkInline.Checked := False;
-        chkStatic.Checked := False;
-        chkVirtual.Checked := True;
-    End;
+    if Sender = chkStatic then
+    begin
+        chkInline.Enabled := TRUE;
+        if chkStatic.Checked then
+        begin
+            chkVirtual.Checked := FALSE;
+            chkPure.Checked := FALSE;
+        end;
+    end
+    else
+    if Sender = chkVirtual then
+    begin
+        chkInline.Enabled := TRUE;
+        if not chkVirtual.Checked then
+            chkPure.Checked := FALSE
+        else
+            chkStatic.Checked := FALSE;
+    end
+    else
+    if Sender = chkPure then
+    begin
+        chkInline.Enabled := not chkPure.Checked;
+        chkInline.Checked := FALSE;
+        chkStatic.Checked := FALSE;
+        chkVirtual.Checked := TRUE;
+    end;
 
     // re-enable event
     chkStatic.OnClick := chkStaticClick;
     chkVirtual.OnClick := chkStaticClick;
     chkPure.OnClick := chkStaticClick;
     chkInline.OnClick := chkStaticClick;
-End;
+end;
 
-End.
+end.
