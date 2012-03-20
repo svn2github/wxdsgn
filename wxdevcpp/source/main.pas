@@ -1634,7 +1634,6 @@ begin
         if (devCodeCompletion.UseCacheFiles) then
         begin
                 SetSplashStatus('Loading code completion cache');
-
                 InitClassBrowser(devCodeCompletion.UseCacheFiles);
                 SetSplashStatus('Finished loading cache');
         end;
@@ -1656,8 +1655,6 @@ begin
     ToolClassesItem.Checked := devData.ToolbarClasses;
     ToolbarClick(NIL);
 
-    devData.First := FALSE;
-    
     fCompiler.RunParams := '';
     devCompiler.UseExecParams := TRUE;
     //if pluginsCount = 0 then

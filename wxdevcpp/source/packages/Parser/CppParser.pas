@@ -322,6 +322,7 @@ destructor TCppParser.Destroy;
 var
     i, iCount: integer;
 begin
+
     if Assigned(fInvalidatedIDs) then
         FreeAndNil(fInvalidatedIDs)
     else fInvalidatedIDs := NIL;

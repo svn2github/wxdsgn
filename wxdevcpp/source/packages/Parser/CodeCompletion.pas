@@ -153,12 +153,19 @@ begin
 end;
 
 destructor TCodeCompletion.Destroy;
+//var
+//        i, iCount : integer;
 begin
+
+    if Assigned(CodeComplForm) then
+        FreeAndNil(CodeComplForm)
+    else
+        CodeComplForm := NIL;
 
     if Assigned(fCompletionStatementList) then
         FreeAndNil(fCompletionStatementList)
     else
-       fCompletionStatementList := NIL;
+        fCompletionStatementList := NIL;
 
     if Assigned(fFullCompletionStatementList) then
         FreeAndNil(fFullCompletionStatementList)
@@ -330,6 +337,7 @@ var
                     iID := StrToIntDef(sl[I], -1);
                     if iID = -1 then
                         Continue;
+
                     InheritanceIDs.Add(iID);
                     iST := iID;
                     if iST = -1 then
@@ -407,7 +415,9 @@ begin
     try
         if _Class <> '' then
         begin //empty
-            fCompletionStatementList.Clear;
+
+                fCompletionStatementList.Clear;
+
             for I := 0 to fFullCompletionStatementList.Count - 1 do
                 if not HasDot then
                 begin //class only
@@ -432,6 +442,7 @@ begin
         begin
             for I := 0 to fFullCompletionStatementList.Count - 1 do
                 CodeComplForm.lbCompletion.Items.Add('');
+
             fCompletionStatementList.Clear;
             fCompletionStatementList.Assign(fFullCompletionStatementList);
         end;
@@ -556,6 +567,7 @@ var
     C: string;
     M: string;
     D: boolean;
+//    I, iCount: integer;
 begin
     if fEnabled then
     begin
@@ -596,8 +608,11 @@ begin
         // only perform new search if just invoked
                     if not CodeComplForm.Showing then
                     begin
-                        fCompletionStatementList.Clear;
-                        fFullCompletionStatementList.Clear;
+
+                            fCompletionStatementList.Clear;
+
+                            fFullCompletionStatementList.Clear;
+                       
                         fIncludedFiles.CommaText := fParser.GetFileIncludes(Filename);
                         GetCompletionFor(C, M, D);
                         fFullCompletionStatementList.Assign(fCompletionStatementList);
@@ -702,7 +717,9 @@ var
     S: string;
 begin
     HintText := '';
-    fCompletionStatementList.Clear;
+
+
+        fCompletionStatementList.Clear;
 
     for I := 0 to fParser.Statements.Count - 1 do
         if AnsiCompareStr(PStatement(fParser.Statements[I])^._ScopelessCmd, FuncName) = 0 then

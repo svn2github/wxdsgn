@@ -127,7 +127,7 @@ procedure TCppTokenizer.Reset;
 var
     i, iCount: integer;
 begin
-    if fTokenList <> NIL then
+  {  if fTokenList <> NIL then
     begin
         while fTokenList.Count > 0 do
             if Assigned(PToken(fTokenList[fTokenList.Count - 1])) then
@@ -137,6 +137,21 @@ begin
             end
             else
                 fTokenList.Delete(fTokenList.Count - 1);
+        fTokenList.Clear;
+    end;
+        }
+
+    if Assigned(fTokenList) then
+    begin
+        iCount := fTokenList.Count;
+        for i := (iCount - 1) downto 0 do
+        begin
+            if Assigned(PToken(fTokenList[i])) then
+            begin
+                Dispose(PToken(fTokenList[i]));
+                fTokenList.Delete(i);
+            end;
+        end;
         fTokenList.Clear;
     end;
 
@@ -413,7 +428,8 @@ var
     AssignPos: pchar;
     localOutput: pchar;
 begin
-    localOutput := StrAlloc(MAX_TOKEN_SIZE);
+     // Alloc the temp string to the size of the string we are tokenizing
+    localOutput := StrAlloc(StrLen(pStart) + 1); //StrAlloc(MAX_TOKEN_SIZE);
     localOutput^ := #0;
     SkipToNextToken;
     Offset := pCurrent;
@@ -421,7 +437,7 @@ begin
     repeat
         while pCurrent^ in LetterChars + DigitChars do
             Advance;
-    // check for operator functions (look below too)
+        // check for operator functions (look below too)
         if (pCurrent - Offset >= 8) and (StrLComp('operator', Offset, pCurrent - Offset) = 0) then
         begin
             if pCurrent^ in ['+', '-', '/', '*', '['] then
@@ -551,8 +567,10 @@ begin
     Result := '';
     Offset := pCurrent;
     SkipPair('(', ')');
-    if (pCurrent - Offset) > MAX_TOKEN_SIZE then
-        Exit;
+
+    //if (pCurrent - Offset) > MAX_TOKEN_SIZE then
+    //    Exit;
+
     StrLCopy(fTmpOutput, Offset, pCurrent - Offset);
     if (pCurrent^ = '.') or ((pCurrent^ = '-') and ((pCurrent + 1)^ = '>')) then // skip '.' and '->'
         while not (pCurrent^ in [#0, '(', ';', '{', '}', ')'] + LineChars + SpaceChars) do
@@ -722,7 +740,8 @@ begin
         Exit;
 
     Reset;
-    fTmpOutput := StrAlloc(StrLen(StartAt)); //StrAlloc(MAX_TOKEN_SIZE);
+    // Alloc the temp string to the size of the string we are tokenizing
+    fTmpOutput := StrAlloc(StrLen(StartAt) + 1); //StrAlloc(MAX_TOKEN_SIZE);
     pStart := StartAt;
     fEnd := Length(StrPas(pStart));
     pCurrent := pStart;

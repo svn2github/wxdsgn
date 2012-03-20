@@ -345,7 +345,7 @@ Begin
             Begin
                 If DirectoryExists(s[i]) Then
                 Begin
-                    CacheFilesFromWildcard(s[i], '*.h', True, False, False);
+                    CacheFilesFromWildcard(s[i], '*.*', True, False, False);
                     Screen.Cursor := crHourglass;
                     Application.ProcessMessages;
                 End

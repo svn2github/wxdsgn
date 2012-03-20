@@ -983,7 +983,7 @@ object EditorOptForm: TEditorOptForm
         Left = 5
         Top = 28
         Width = 397
-        Height = 365
+        Height = 381
         ActivePage = tabCBCompletion
         TabIndex = 1
         TabOrder = 1
