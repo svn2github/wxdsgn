@@ -155,14 +155,6 @@ end;
 destructor TCodeCompletion.Destroy;
 begin
 
-    // GAR 3/20/2012 I'm still not convinced that we need to
-    //   explicitly free CodeComplForm since it is a TForm.
-    //   Maybe, CodeComplForm.Release would be a better solution??
-    if Assigned(CodeComplForm) then
-        FreeAndNil(CodeComplForm)
-    else
-        CodeComplForm := NIL;
-
     // GAR 3/20/2012
     // Normally fCompletionStatementList would need to be specifically
     //   Disposed and Deleted item by item in the TList. However,
@@ -201,6 +193,14 @@ begin
         FreeAndNil(fIncludedFiles)
     else
         fIncludedFiles := NIL;
+
+    // GAR 3/20/2012 I'm still not convinced that we need to
+    //   explicitly free CodeComplForm since it is a TForm.
+    //   Maybe, CodeComplForm.Release would be a better solution??
+    if Assigned(CodeComplForm) then
+        FreeAndNil(CodeComplForm)
+    else
+        CodeComplForm := NIL;
 
     inherited Destroy;
 

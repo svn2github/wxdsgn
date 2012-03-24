@@ -2527,60 +2527,95 @@ begin
                     FileRead(hFile, _DeclImplLine, SizeOf(_DeclImplLine));
                     FileRead(hFile, _Line, SizeOf(_Line));
 
-                    FileRead(hFile, strLen, SizeOf(strLen)); // Read string length
-                    ReallocMem(Buf, strLen + 1); // +1 for the string terminator
-                    FileRead(hFile, Buf^, strLen);  // Read buffer
-                    FillChar((Buf + strLen)^, 1, 0);
-                    _FullText := Buf;
+                    if (FileRead(hFile, strLen, SizeOf(strLen)) = sizeof(strLen)) then // Read string length
+                    begin
+                        ReallocMem(Buf, strLen + 1); // +1 for the string terminator
+                        FileRead(hFile, Buf^, strLen);  // Read buffer
+                        FillChar((Buf + strLen)^, 1, 0);
+                        _FullText := Buf;
+                    end
+                    else
+                        ShowMessage(Format('strLen = %d', [strLen]));
 
-                    FileRead(hFile, strLen, SizeOf(strLen)); // Read string length
-                    ReallocMem(Buf, strLen + 1); // +1 for the string terminator
-                    FileRead(hFile, Buf^, strLen);  // Read buffer
-                    FillChar((Buf + strLen)^, 1, 0);
-                    _Type := Buf;
+                    if (FileRead(hFile, strLen, SizeOf(strLen)) = sizeof(strLen)) then // Read string length
+                    begin
+                        ReallocMem(Buf, strLen + 1); // +1 for the string terminator
+                        FileRead(hFile, Buf^, strLen);  // Read buffer
+                        FillChar((Buf + strLen)^, 1, 0);
+                        _Type := Buf;
+                    end
+                    else
+                        ShowMessage(Format('strLen = %d', [strLen]));
 
-                    FileRead(hFile, strLen, SizeOf(strLen)); // Read string length
-                    ReallocMem(Buf, strLen + 1); // +1 for the string terminator
-                    FileRead(hFile, Buf^, strLen);  // Read buffer
-                    FillChar((Buf + strLen)^, 1, 0);
-                    _Command := Buf;
+                    if (FileRead(hFile, strLen, SizeOf(strLen)) = sizeof(strLen)) then // Read string length
+                    begin
+                        ReallocMem(Buf, strLen + 1); // +1 for the string terminator
+                        FileRead(hFile, Buf^, strLen);  // Read buffer
+                        FillChar((Buf + strLen)^, 1, 0);
+                        _Command := Buf;
+                    end
+                    else
+                        ShowMessage(Format('strLen = %d', [strLen]));
 
-                    FileRead(hFile, strLen, SizeOf(strLen)); // Read string length
-                    ReallocMem(Buf, strLen + 1); // +1 for the string terminator
-                    FileRead(hFile, Buf^, strLen);  // Read buffer
-                    FillChar((Buf + strLen)^, 1, 0);
-                    _Args := Buf;
+                    if (FileRead(hFile, strLen, SizeOf(strLen)) = sizeof(strLen)) then // Read string length
+                    begin
+                        ReallocMem(Buf, strLen + 1); // +1 for the string terminator
+                        FileRead(hFile, Buf^, strLen);  // Read buffer
+                        FillChar((Buf + strLen)^, 1, 0);
+                        _Args := Buf;
+                    end
+                    else
+                        ShowMessage(Format('strLen = %d', [strLen]));
 
-                    FileRead(hFile, strLen, SizeOf(strLen)); // Read string length
-                    ReallocMem(Buf, strLen + 1); // +1 for the string terminator
-                    FileRead(hFile, Buf^, strLen);  // Read buffer
-                    FillChar((Buf + strLen)^, 1, 0);
-                    _ScopelessCmd := Buf;
+                    if (FileRead(hFile, strLen, SizeOf(strLen)) = sizeof(strLen)) then // Read string length
+                    begin
+                        ReallocMem(Buf, strLen + 1); // +1 for the string terminator
+                        FileRead(hFile, Buf^, strLen);  // Read buffer
+                        FillChar((Buf + strLen)^, 1, 0);
+                        _ScopelessCmd := Buf;
+                    end
+                    else
+                        ShowMessage(Format('strLen = %d', [strLen]));
 
-                    FileRead(hFile, strLen, SizeOf(strLen)); // Read string length
-                    ReallocMem(Buf, strLen + 1); // +1 for the string terminator
-                    FileRead(hFile, Buf^, strLen);  // Read buffer
-                    FillChar((Buf + strLen)^, 1, 0);
-                    _DeclImplFileName := Buf;
+                    if (FileRead(hFile, strLen, SizeOf(strLen)) = sizeof(strLen)) then // Read string length
+                    begin
+                        ReallocMem(Buf, strLen + 1); // +1 for the string terminator
+                        FileRead(hFile, Buf^, strLen);  // Read buffer
+                        FillChar((Buf + strLen)^, 1, 0);
+                        _DeclImplFileName := Buf;
+                    end
+                    else
+                        ShowMessage(Format('strLen = %d', [strLen]));
 
-                    FileRead(hFile, strLen, SizeOf(strLen)); // Read string length
-                    ReallocMem(Buf, strLen + 1); // +1 for the string terminator
-                    FileRead(hFile, Buf^, strLen);  // Read buffer
-                    FillChar((Buf + strLen)^, 1, 0);
-                    _FileName := Buf;
+                    if (FileRead(hFile, strLen, SizeOf(strLen)) = sizeof(strLen)) then // Read string length
+                    begin
+                        ReallocMem(Buf, strLen + 1); // +1 for the string terminator
+                        FileRead(hFile, Buf^, strLen);  // Read buffer
+                        FillChar((Buf + strLen)^, 1, 0);
+                        _FileName := Buf;
+                    end
+                    else
+                        ShowMessage(Format('strLen = %d', [strLen]));
 
-                    FileRead(hFile, strLen, SizeOf(strLen)); // Read string length
-                    ReallocMem(Buf, strLen + 1); // +1 for the string terminator
-                    FileRead(hFile, Buf^, strLen);  // Read buffer
-                    FillChar((Buf + strLen)^, 1, 0);
-                    _InheritsFromIDs := Buf;
+                    if (FileRead(hFile, strLen, SizeOf(strLen)) = sizeof(strLen)) then // Read string length
+                    begin
+                        ReallocMem(Buf, strLen + 1); // +1 for the string terminator
+                        FileRead(hFile, Buf^, strLen);  // Read buffer
+                        FillChar((Buf + strLen)^, 1, 0);
+                        _InheritsFromIDs := Buf;
+                    end
+                    else
+                        ShowMessage(Format('strLen = %d', [strLen]));
 
-                    FileRead(hFile, strLen, SizeOf(strLen)); // Read string length
-                    ReallocMem(Buf, strLen + 1); // +1 for the string terminator
-                    FileRead(hFile, Buf^, strLen);  // Read buffer
-                    FillChar((Buf + strLen)^, 1, 0);
-                    _InheritsFromClasses := Buf;
-
+                    if (FileRead(hFile, strLen, SizeOf(strLen)) = sizeof(strLen)) then // Read string length
+                    begin
+                        ReallocMem(Buf, strLen + 1); // +1 for the string terminator
+                        FileRead(hFile, Buf^, strLen);  // Read buffer
+                        FillChar((Buf + strLen)^, 1, 0);
+                        _InheritsFromClasses := Buf;
+                    end
+                    else
+                        ShowMessage(Format('strLen = %d', [strLen]));
 
                     _Loaded := TRUE;
                     _NoCompletion := FALSE;
