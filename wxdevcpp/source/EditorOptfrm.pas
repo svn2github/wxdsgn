@@ -111,7 +111,7 @@ type
         chkCBUseColors: TCheckBox;
         chkCCCache: TCheckBox;
         CppTokenizer1: TCppTokenizer;
-        CppParser1: TCppParser;
+        CppParser1: TCppParser;    // This is our local copy of the cache.
         lbCCC: TListBox;
         lblCCCache: TLabel;
         pbCCCache: TProgressBar;
@@ -249,14 +249,10 @@ type
         procedure LoadSyntax(Value: string);
         procedure FillSyntaxSets;
         procedure FillCCC;
-        function CompactFilename(filename: string): string;
     end;
 
 var
     EditorOptForm: TEditorOptForm;
-function PathCompactPath(hDC: HDC; lpszPath: pchar; dx: UINT): boolean;
-    stdcall;
-    external 'shlwapi.dll' name 'PathCompactPathA';
 
 implementation
 
@@ -479,8 +475,8 @@ procedure TEditorOptForm.actSelectFileClick(Sender: TObject);
 begin
 
     if (lbCCC.ItemIndex >= 0) and
-        (lbCCC.ItemIndex < MainForm.CppParser1.ScannedFiles.Count) then
-        lbCCC.Hint := MainForm.CppParser1.ScannedFiles.Strings[lbCCC.ItemIndex];
+        (lbCCC.ItemIndex < CppParser1.ScannedFiles.Count) then
+        lbCCC.Hint := CppParser1.ScannedFiles.Strings[lbCCC.ItemIndex];
 
 end;
 
@@ -1640,7 +1636,7 @@ end;
 
 procedure TEditorOptForm.btnCCCnewClick(Sender: TObject);
 var
-    I, I1: integer;
+    I, I1, maxItemWidth, nItemWidth: integer;
     Hits: integer;
     MaxHits, MaxIndex: integer;
     sl: TStrings;
@@ -1703,7 +1699,14 @@ begin
             CppParser1.OnTotalProgress := CppParser1TotalProgress;
 
             filesSelected := TStringList.Create;
+            filesSelected.Duplicates := dupIgnore;
             filesSelected.Clear;
+
+            // Add the files already in the cache
+            for I := 0 to MainForm.CppParser1.CacheContents.Count - 1 do
+            begin
+               CppParser1.AddFileToScan(MainForm.CppParser1.CacheContents[I]);
+            end;
 
             //Add the files to scan and then parse the list
             for I := 0 to OpenDialog.Files.Count - 1 do
@@ -1720,9 +1723,22 @@ begin
             CppParser1.ParseList;
             Screen.Cursor := crDefault;
 
+            maxItemWidth := 0;
+
             //Finally append the new items unto the listbox
             for I := 0 to filesSelected.Count - 1 do
-                lbCCC.Items.Add(CompactFilename(filesSelected[I]));
+            begin
+                lbCCC.Items.Add(filesSelected[I]);
+
+                // Determine the screen width to set the horizontal scrollbar
+                nItemWidth := lbCCC.Canvas.TextWidth(lbCCC.Items[I] + 'WWWWW'); // Adding extra 'W' to give more space
+                if (nItemWidth > maxItemWidth) then
+                   maxItemWidth := nItemWidth;
+            end;
+
+            // This activates the scrollbar.
+            if (maxItemWidth > lbCCC.ClientWidth) then
+               lbCCC.ScrollWidth := maxItemWidth;
 
             filesSelected.Clear;
             filesSelected.Free;
@@ -1752,6 +1768,7 @@ begin
         CppParser1.OnTotalProgress := CppParser1TotalProgress;
         CppParser1.OnCacheProgress := NIL;
         lbCCC.Items.Clear;
+        lbCCC.ScrollWidth := 0;
         chkCCCache.Tag := 1; // mark modified
     end;
 end;
@@ -1759,12 +1776,30 @@ end;
 procedure TEditorOptForm.FillCCC;
 var
     I: integer;
+    maxItemWidth, nItemWidth : integer;
 begin
 
     Screen.Cursor := crHourglass;
 
+    lbCCC.Items.BeginUpdate;
+
+    maxItemWidth := 0;
+
     for I := 0 to MainForm.CppParser1.CacheContents.Count - 1 do
-        lbCCC.Items.Add(CompactFilename(MainForm.CppParser1.CacheContents[I]));
+    begin
+        lbCCC.Items.Add(MainForm.CppParser1.CacheContents[I]);
+
+        // Determine the screen width of the text to set up the horizontal scrollbar
+        nItemWidth := lbCCC.Canvas.TextWidth(lbCCC.Items[I] + 'WWWWW'); // Adding extra 'W' to give more space
+        if (nItemWidth > maxItemWidth) then
+             maxItemWidth := nItemWidth;
+    end;
+
+    // Set the horizontal scrollbar for the listbox
+    if (maxItemWidth > lbCCC.ClientWidth) then
+       lbCCC.ScrollWidth := maxItemWidth;
+
+    lbCCC.Items.EndUpdate;
 
     Screen.Cursor := crDefault;
 end;
@@ -1775,16 +1810,6 @@ begin
     btnCCCnew.Enabled := chkCCCache.Checked;
     btnAddNewFolder.Enabled := chkCCCache.Checked;
     btnCCCdelete.Enabled := chkCCCache.Checked;
-end;
-
-function TEditorOptForm.CompactFilename(filename: string): string;
-var
-    DC: HDC;
-begin
-    //Get a handle to the DC
-    DC := lbCCC.Canvas.Handle;
-    PathCompactPath(DC, pchar(filename), lbCCC.ClientWidth);
-    Result := filename;
 end;
 
 procedure TEditorOptForm.CppParser1StartParsing(Sender: TObject);
@@ -1925,7 +1950,7 @@ var
     chosenDirectory: string;
     filesSelected, FileList: TStringList;
     I: integer;
-
+    maxItemWidth, nItemWidth : integer;
 begin
 
     if SelectDirectory('Select directory to add to cache', '', chosenDirectory) then //(SelectDirectory(chosenDirectory, [], 0)) then
@@ -1934,18 +1959,27 @@ begin
         Application.ProcessMessages;
         Screen.Cursor := crHourglass;
 
-             //Track the cache parse progress
+        //Track the cache parse progress
         HasProgressStarted := FALSE;
         CppParser1.OnStartParsing := CppParser1StartParsing;
         CppParser1.OnEndParsing := CppParser1EndParsing;
         CppParser1.OnTotalProgress := CppParser1TotalProgress;
 
         FileList := TStringList.Create;
-           // Get all header files
+        FileList.Duplicates := dupIgnore; // Ignore all duplicates
+
+        // Get all header files
         FilesFromWildCard(chosenDirectory, '*.*', FileList, TRUE, FALSE, TRUE);
 
         filesSelected := TStringList.Create;
         filesSelected.Clear;
+
+        // Add the files already in the cache
+        for I := 0 to MainForm.CppParser1.CacheContents.Count - 1 do
+        begin
+            filesSelected.Add(MainForm.CppParser1.CacheContents[I]);
+        end;
+
         for I := 0 to FileList.Count - 1 do
            if (GetFileTyp(FileList[I]) = utHead) then
                 filesSelected.Add(FileList[I]);
@@ -1953,10 +1987,10 @@ begin
         FileList.Clear;
         FileList.Free;
 
-            //Add the files to scan and then parse the list
+        //Add the files to scan and then parse the list
         for I := 0 to filesSelected.Count - 1 do
         begin
-                // See if file is already in the cache
+            // See if file is already in the cache
             if (CppParser1.CacheContents.IndexOf(filesSelected[I]) = -1) then
                 CppParser1.AddFileToScan(filesSelected[I])
             else
@@ -1971,12 +2005,24 @@ begin
 
         lbCCC.Items.BeginUpdate;     // Prevent refresh until all items written
 
+        maxItemWidth := 0;
+
         //Finally append the new items unto the listbox
         for I := 0 to filesSelected.Count - 1 do
         begin
-            lbCCC.Items.Add(CompactFilename(filesSelected[I]));
+            lbCCC.Items.Add(filesSelected[I]);
+
+            // Determine the onscreen width to set the horizontal scrollbar
+            nItemWidth := lbCCC.Canvas.TextWidth(lbCCC.Items[I] + 'WWWWW'); // Adding extra 'W' to give more space
+            if (nItemWidth > maxItemWidth) then
+               maxItemWidth := nItemWidth;
+
             pbCCCache.StepIt;
         end;
+
+       if (maxItemWidth > lbCCC.ClientWidth) then
+       lbCCC.ScrollWidth := maxItemWidth;
+
 
         lbCCC.Items.EndUpdate; // Ok now refresh listbox with new items
 

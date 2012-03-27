@@ -326,6 +326,8 @@ begin
             MainForm.ClassBrowser1.SetUpdateOff;
 
             s := TStringList.Create;
+            s.Duplicates := dupIgnore; // Ignore all duplicates
+
             if DirCheckBox.Checked then
                 StrToList(DirEdit.Text, s)
             else

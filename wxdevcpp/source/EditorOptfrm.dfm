@@ -1139,6 +1139,7 @@ object EditorOptForm: TEditorOptForm
             Top = 120
             Width = 369
             Height = 155
+            AutoComplete = False
             ItemHeight = 13
             ParentShowHint = False
             ShowHint = True
