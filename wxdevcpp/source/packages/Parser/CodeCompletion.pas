@@ -194,11 +194,10 @@ begin
     else
         fIncludedFiles := NIL;
 
-    // GAR 3/20/2012 I'm still not convinced that we need to
-    //   explicitly free CodeComplForm since it is a TForm.
-    //   Maybe, CodeComplForm.Release would be a better solution??
+    // GAR 3/26/2012
+    // Do we need to explicitly Release the TForm?
     if Assigned(CodeComplForm) then
-        FreeAndNil(CodeComplForm)
+        CodeComplForm.Release
     else
         CodeComplForm := NIL;
 

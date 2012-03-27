@@ -26,7 +26,7 @@ interface
 uses
  //dbugintf,  EAB removed Gexperts debug stuff.
 {$IFDEF WIN32}
-    Windows, Messages, SysUtils, Variants, Graphics, Controls, Forms,
+    Windows, Messages, SysUtils, Variants, Graphics, Controls, Forms, 
     Dialogs, ComCtrls, devTabs, StdCtrls, ExtCtrls, Spin, ColorPickerButton,
     SynEdit, SynEditHighlighter, SynHighlighterCpp, CheckLst, SynMemo, FileCtrl,
     Buttons, ClassBrowser, CppParser, CppTokenizer, StrUtils, XPMenu, Classes;
@@ -1940,58 +1940,45 @@ begin
         CppParser1.OnEndParsing := CppParser1EndParsing;
         CppParser1.OnTotalProgress := CppParser1TotalProgress;
 
+        FileList := TStringList.Create;
+           // Get all header files
+        FilesFromWildCard(chosenDirectory, '*.*', FileList, TRUE, FALSE, TRUE);
+
         filesSelected := TStringList.Create;
         filesSelected.Clear;
-
-        FileList := TStringList.Create;
-
-           // This is kludge to get all header files
-        FilesFromWildCard(chosenDirectory, '*.h', FileList, TRUE, FALSE, TRUE);
         for I := 0 to FileList.Count - 1 do
-            filesSelected.Add(FileList[I]);
-        FileList.Clear;
-        FilesFromWildCard(chosenDirectory, '*.hpp', FileList, TRUE, FALSE, TRUE);
-        for I := 0 to FileList.Count - 1 do
-            filesSelected.Add(FileList[I]);
-        FileList.Clear;
-        FilesFromWildCard(chosenDirectory, '*.hh', FileList, TRUE, FALSE, TRUE);
-        for I := 0 to FileList.Count - 1 do
-            filesSelected.Add(FileList[I]);
-        FileList.Clear;
-        FilesFromWildCard(chosenDirectory, '*.rh', FileList, TRUE, FALSE, TRUE);
-        for I := 0 to FileList.Count - 1 do
-            filesSelected.Add(FileList[I]);
-        FileList.Clear;
-        FileList.Assign(filesSelected);
-        filesSelected.Clear;
-           // End kludge
-
-            //Add the files to scan and then parse the list
-        for I := 0 to FileList.Count - 1 do
-        begin
-                // See if file is already in the cache
-            if (CppParser1.CacheContents.IndexOf(FileList[I]) = -1) then
-            begin
-                filesSelected.Add(FileList.Strings[I]);
-                CppParser1.AddFileToScan(FileList[I]);
-            end;
-
-        end;
+           if (GetFileTyp(FileList[I]) = utHead) then
+                filesSelected.Add(FileList[I]);
 
         FileList.Clear;
         FileList.Free;
+
+            //Add the files to scan and then parse the list
+        for I := 0 to filesSelected.Count - 1 do
+        begin
+                // See if file is already in the cache
+            if (CppParser1.CacheContents.IndexOf(filesSelected[I]) = -1) then
+                CppParser1.AddFileToScan(filesSelected[I])
+            else
+                filesSelected.Delete(I);
+
+        end;
 
         CppParser1.ParseList;
 
         pbCCCache.Max := filesSelected.Count;
         pbCCCache.StepBy(1);
 
-            //Finally append the new items unto the listbox
+        lbCCC.Items.BeginUpdate;     // Prevent refresh until all items written
+
+        //Finally append the new items unto the listbox
         for I := 0 to filesSelected.Count - 1 do
         begin
             lbCCC.Items.Add(CompactFilename(filesSelected[I]));
             pbCCCache.StepIt;
         end;
+
+        lbCCC.Items.EndUpdate; // Ok now refresh listbox with new items
 
         filesSelected.Clear;
         filesSelected.Free;

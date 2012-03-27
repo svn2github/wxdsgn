@@ -189,11 +189,13 @@ begin
         HasProgressStarted := TRUE;
     end;
     pbCCCache.Position := pbCCCache.Position + Current;
+
     if FileName <> '' then
-        ParseLabel.Caption := 'Parsing file: ' + FileName
+        // Use MinimizeName to truncate the filename to fit the ParseLabel width
+        ParseLabel.Caption := 'Parsing file: ' + MinimizeName(FileName, ParseLabel.Canvas, 200)
     else
         ParseLabel.Caption := 'Finalizing... Please wait';
-    ParseLabel.Width := 250;
+
     Application.ProcessMessages;
 end;
 
@@ -221,7 +223,10 @@ var s: TStringList;
             begin
             { Found one! }
                 fileName := Directory + SearchRec.Name;
-                if (MainForm.CppParser1.CacheContents.IndexOf(fileName) = -1) then
+                // Add only header files - .h, .hpp, .hh
+                // Don't include duplicates
+                if ((MainForm.CppParser1.CacheContents.IndexOf(fileName) = -1)
+                   and (GetFileTyp(fileName) = utHead) ) then
                     MainForm.CppParser1.AddFileToScan(fileName);
 
                 Error := FindNext(SearchRec);

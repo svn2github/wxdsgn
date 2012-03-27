@@ -227,9 +227,15 @@ var
 begin
     Token := New(PToken);
     FillChar(Token^.Text, sizeof(Token^.Text), 0);
-    Token^.Text := sText;
-    Token^.Line := iLine;
-    fTokenList.Add(Token);
+
+    // Make sure token isn't greater than buffer size
+    if Length(sText) < sizeof(Token^.Text) then
+    begin
+        Token^.Text := sText;
+        Token^.Line := iLine;
+        fTokenList.Add(Token);
+    end;
+
 end;
 
 procedure TCppTokenizer.CountLines;
