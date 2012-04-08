@@ -22,7 +22,7 @@ unit CFGINI;
 interface
 
 uses
-    Classes, IniFiles, cfgTypes, TypInfo;
+    Classes, IniFiles, cfgTypes, TypInfo, utils;
 
 type
     TCFGINI = class(TObject)
@@ -201,7 +201,7 @@ begin
 
             tkFloat:
                 SetFloatProp(Obj, PropName,
-                    StrtoFloat(fINI.ReadString(Section, PropName, '0.0')));
+                    StrToFloatInternational(fINI.ReadString(Section, PropName, '0.0')));
 
             tkSet:
                 SetOrdProp(Obj, PropName, ReadSet(Section + '.' + PropName,

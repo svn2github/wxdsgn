@@ -23,7 +23,7 @@ interface
 
 uses
 {$IFDEF WIN32}
-    Classes, Registry, Types, TypInfo, cfgTypes;
+    Classes, Registry, Types, TypInfo, cfgTypes, utils;
 {$ENDIF}
 {$IFDEF LINUX}
   Classes, Types, TypInfo, cfgTypes;
@@ -166,7 +166,7 @@ begin
                 SetInt64Prop(Obj, PropName, StrtoInt(fReg.ReadString(PropName)));
 
             tkFloat:
-                SetFloatProp(Obj, PropName, StrtoFloat(fReg.ReadString(PropName)));
+                SetFloatProp(Obj, PropName, StrToFloatInternational(fReg.ReadString(PropName)));
 
             tkSet:
                 SetOrdProp(Obj, PropName, ReadSet(PropName,

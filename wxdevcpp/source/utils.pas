@@ -161,6 +161,8 @@ function GetAssociatedProgram(const Extension: string;
 
 function IsNumeric(s: string): boolean;
 
+function StrToFloatInternational(str : String): real;
+
 implementation
 
 uses
@@ -1507,6 +1509,27 @@ begin
             FreeMem(Pt);
         end;
     end;
+end;
+
+function StrToFloatInternational(str : String): real;
+const
+        chHolder = '!';
+begin
+
+// On international locales, the decimal separator and thousand
+//  separators are reveresed from the US locale.
+// e.g. one million is 1.000.000,00
+// StringToFloat can't handle the difference so we need to try it
+// and if an exception occurs, convert the string to right locale.
+// Basically, just swap DecimalSeparator with ThousandSeparator.
+     try
+        Result := StrToFloat(str);
+     except
+        str := StringReplace(str, DecimalSeparator, chHolder, [rfReplaceAll]);
+        str := StringReplace(str, ThousandSeparator, DecimalSeparator, [rfReplaceAll]);
+        str := StringReplace(str, chHolder, ThousandSeparator, [rfReplaceAll]);
+        Result := StrToFloat(str);
+     end;
 end;
 
 end.

@@ -1269,7 +1269,7 @@ begin
                         strInclude + ';' + StringReplace(GetProgramFilesDir, ' (x86)', '', []) +
                         '\Microsoft SDKs\Windows\v6.0A\Include;'
                 else
-                if (strtofloat(versionString) >= 10.0) then
+                if (StrToFloatInternational(versionString) >= 10.0) then
                     strInclude := strInclude + ';' + IncludeTrailingPathDelimiter(strFSDKInstallDir) + 'include';
 
                 strInclude := strInclude + ';$(WinSDKDir)include;';
@@ -1287,7 +1287,7 @@ begin
                         StringReplace(GetProgramFilesDir, ' (x86)', '', []) +
                         '\Microsoft SDKs\Windows\v6.0A\Bin;'
                 else
-                if (strtofloat(versionString) >= 10.0) then
+                if (StrToFloatInternational(versionString) >= 10.0) then
                     strBin := strBin + ';' + IncludeTrailingPathDelimiter(strFSDKInstallDir) + 'bin';
 
                 strBin := strBin + ';$(WinSDKDir)bin;';
@@ -1304,7 +1304,7 @@ begin
                         StringReplace(GetProgramFilesDir, ' (x86)', '', []) +
                         '\Microsoft SDKs\Windows\v6.0A\Lib;'
                 else
-                if (strtofloat(versionString) >= 10.0) then
+                if (StrToFloatInternational(versionString) >= 10.0) then
                     strLib := strLib + ';' + IncludeTrailingPathDelimiter(strFSDKInstallDir) + 'lib';
 
                 strLib := strLib + ';$(WinSDKDir)lib;';
