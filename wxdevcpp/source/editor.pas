@@ -306,7 +306,8 @@ begin
     else
         fNew := TRUE;
 
-    fText.Visible := TRUE;
+    fText.Show;
+    //fText.Visible := TRUE;
 
     fDebugHintTimer := TTimer.Create(Application);
     fDebugHintTimer.Interval := 1000;
@@ -525,7 +526,7 @@ begin
         //Then do the actual changing
         fTabSheet.PageControl.Show;
         fTabSheet.PageControl.ActivePage := fTabSheet;
-        if fText.Visible then
+        if fText.Visible and fText.Enabled then
             fText.SetFocus;
 
         //Call the post-change event handler
