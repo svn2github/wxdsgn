@@ -1512,24 +1512,48 @@ begin
 end;
 
 function StrToFloatInternational(str : String): real;
-const
-        chHolder = '!';
+var
+        f1 : real;
+        i : Integer;
 begin
 
+// We are passing number strings in the US format which uses
+//  a period as the decimal point and a comma as the thousands separator.
+//
 // On international locales, the decimal separator and thousand
-//  separators are reveresed from the US locale.
-// e.g. one million is 1.000.000,00
-// StringToFloat can't handle the difference so we need to try it
-// and if an exception occurs, convert the string to right locale.
-// Basically, just swap DecimalSeparator with ThousandSeparator.
+//  different from the US locale.
+// e.g. one million is 1.000.000,00  in Italy
+//                   or 1 000 000,00 in the Ukraine
+// Unfortunately, we are usually passing US locale-formatted
+//  float strings, which will cause exception errors with StrToFloat.
+// So let's try StrToFloat and if we get an error we swap the decimal
+//  separator with the local decimal separator.
+// Note: This will still fail if the string we pass has non-numeric characters
+// or includes the thousands separator. However, the values should be ones that
+// are being passed by the coder. So just beware.      GAR 16 APR 2012
+
      try
-        Result := StrToFloat(str);
+        f1 := StrToFloat(str);
      except
-        str := StringReplace(str, DecimalSeparator, chHolder, [rfReplaceAll]);
-        str := StringReplace(str, ThousandSeparator, DecimalSeparator, [rfReplaceAll]);
-        str := StringReplace(str, chHolder, ThousandSeparator, [rfReplaceAll]);
-        Result := StrToFloat(str);
+     on EConvertError do
+     begin
+        // Start from end and replace last period with the local decimal separator
+        i := Length(str) - 1; // Start from end of string and go backward
+        while (i >= 0) do // Terminate loop when we reach beginning of string str
+        begin
+           if str[i] = '.' then // Found US locale decimal separator
+              begin
+                 str[i] := DecimalSeparator;
+                 i := -1; // Terminate loop
+              end
+           else
+                i := i - 1; // Go back one space in string
+        end;
+
+        f1 := StrToFloat(str);
+     end
      end;
+     Result := f1;
 end;
 
 end.

@@ -194,6 +194,7 @@ const GDBwptrigr: string = 'read-watchpoint-trigger';
 const GDBqStrEmpty: string = '\"';
 const GDBwxString: string = 'wxString';
 const wxStringBase: string = '<wxStringBase>';
+const wxUnicodeStr: string = 'static npos =';
 const wpUnknown: string = '(unknown)';
 const FileStr: string = 'File';
 const FuncStr: string = 'Function';
@@ -1739,7 +1740,7 @@ var
     Line: integer;
     Expr: string;
     Addr: string;
-    Vari: PWatchVar;
+    Vari : PWatchVar;
 
     Output: string;
     {Ret: Boolean;}
@@ -3045,14 +3046,13 @@ var
     Output: string;
     Vari: string;   // This is called Var in the GDB spec !
    // start: Integer;
+    Local : PWatchVar;
     Val: string;
-    Local: PWatchVar;
-
+    
 begin          // ParseResult
     Val := SplitResult(Str, @Vari);
     Output := Vari;
     Output := Output + ' = ';
-   // start := Pos(wxStringBase, Val);
     if (Vari = GDBname) then                        // a name of a Tuple
     begin
         New(Local);
@@ -3068,14 +3068,7 @@ begin          // ParseResult
     else
     if (Vari = GDBvalue) then                      // a value of named a Tuple
     begin
-
         ReplaceWxStr(@Val);
-//    else
-//    if (AnsiStartsStr('"{', Val)) then           // it's a named Tuple
-//    begin
-//      Output := Output + ExtractList(Str, PARSETUPLE, Level, List);
-//    end
-
         if (AnsiStartsStr('"', Val)) then            // it's a quoted string e.g. a value of a Tuple
         begin
             New(Local);
@@ -3260,12 +3253,7 @@ var
 	   s: integer;
 	   n: integer;
 	   Str2: string;
-	   Local: PWatchVar;
-
-
-
-
-
+           Local : PWatchVar;
 begin
 
     Str^ := TrimLeft(Str^);
@@ -3298,21 +3286,6 @@ end;
 
 function TGDBDebugger.ExtractWxStr(Str: PString): string;
 
-    //    Expects a Value specifically of the form:
-
-    //    {<wxStringBase> = {static npos = 1234567890,
-    //    m_pchData = 0x12abcd \"A String with or without \\\"quotes\\\" embedded\"},
-    //     <No data fields>}
-    //
-    //    or
-    //
-    //    {<wxStringBase> = {static npos = 4294967295,
-    //    m_pchData = 0x13 <Address 0x13 out of bounds>},
-    //     <No data fields>}
-    //
-    //    (and may start with a quote and end with a comma)
-    //    and returns the string only.
-
 var
     starts: integer;
     ends: integer;
@@ -3340,8 +3313,29 @@ end;
 
 procedure TGDBDebugger.ReplaceWxStr(Str: PString);
 
-//    Expects a string with embedded wxStrings specifically of the form expected
-//     by ExtractWxStr
+//    Expects a string with embedded wxStrings specifically of the form 
+
+//    {<wxStringBase> = {static npos = 1234567890,
+//    m_pchData = 0x12abcd \"A String with or without \\\"quotes\\\" embedded\"},
+//     <No data fields>}
+//
+//    or
+//
+//    {<wxStringBase> = {static npos = 4294967295,
+//    m_pchData = 0x13 <Address 0x13 out of bounds>},
+//     <No data fields>}
+//
+//    or
+//
+//    {static npos = 4294967295, m_impl = {static npos = 4294967295,
+//    _M_dataplus = {<std::allocator<wchar_t>> = {
+//    <__gnu_cxx::new_allocator<wchar_t>> = {<No data fields>},
+//    <No data fields>},_M_p = 0x1279d0c L\"a string\"}},
+//    m_convertedToChar = {m_str = 0x0, m_len = 4294967295}}"}
+//
+//    (and may start with a quote and end with a comma)
+//    and returns the string only.
+
 //    and returns with the string that has only the quoted string itself embedded.
 //      e.g. {MywxStr = {<wxStringBase> = {static npos = ..., m_pchData = 0x... \"AString\"}, <No data fields>}}
 //    becomes
@@ -3357,7 +3351,9 @@ var
 begin
     Remainder := Str^;
     Output := '';
-    wxstarts := AnsiPos('{' + wxStringBase, Remainder);
+    wxstarts := AnsiPos('{' + wxStringBase, Remainder);     // search for both variants
+    if (wxstarts = 0) then
+		wxstarts := AnsiPos( '{'+wxUnicodeStr, Remainder);
     while (not (wxstarts = 0)) do
     begin
         Output := Output + AnsiLeftStr(Remainder, wxstarts - 1);
@@ -3370,7 +3366,9 @@ begin
             break;
         end;
         Remainder := AnsiRightStr(Remainder, Length(Remainder) - ends + starts);
-        wxstarts := AnsiPos('{' + wxStringBase, Remainder);
+        wxstarts := AnsiPos( '{'+wxStringBase, Remainder);     // search for both variants
+		if (wxstarts = 0) then
+			wxstarts := AnsiPos( '{'+wxUnicodeStr, Remainder);
     end;
     Str^ := Output + Remainder;
 end;
