@@ -159,14 +159,14 @@ begin
                 and ((paramIndex + 1) <= ParamCount)) then
             begin
 
-                paramString := IncludeTrailingPathDelimiter(ParamStr(paramIndex + 1));
+                paramString := IncludeTrailingPathDelimiter(GetRealPath(ParamStr(paramIndex + 1), GetCurrentDir));
 
                 if not DirectoryExists(paramString) then
                     if not ForceDirectories(paramString) then
                     begin
-                        ShowMessage('The configuration directory #10#13#10#13' +
-                            paramString +
-                            '#10#13#10#13does not exist and we were unable to ' +
+                        ShowMessage('The configuration directory ' + #10#13 +
+                            paramString + #10#13 +
+                            ' does not exist and we were unable to ' +
                             'create it. Please check that the path is not read-only and that ' +
                             'you have sufficient privilieges to write to it.'#10#13#10#13 +
                             'wxDev-C++ will now exit.');
