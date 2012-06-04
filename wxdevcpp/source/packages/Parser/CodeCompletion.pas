@@ -196,10 +196,10 @@ begin
 
     // GAR 3/26/2012
     // Do we need to explicitly Release the TForm?
-  //  if Assigned(CodeComplForm) then
-   //     CodeComplForm.Release
-   // else
-   //     CodeComplForm := NIL;
+   if Assigned(CodeComplForm) then
+       CodeComplForm.Release
+    else
+        CodeComplForm := NIL;
 
     inherited Destroy;
 
