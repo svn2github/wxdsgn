@@ -1942,6 +1942,7 @@ begin
         fUnits.Remove(index);
 
         UpdateNodeIndexes();
+        
         SetModified(TRUE);
 
         //is this the PCH file?

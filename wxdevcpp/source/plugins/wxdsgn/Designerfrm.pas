@@ -762,18 +762,19 @@ begin
 
     if frmNewForm.Wx_ICON.Bitmap.handle <> 0 then
     begin
+        ShowMessage( xpmFileDir + frmNewForm.GetGraphicFileName );
         if onlyForForm then
-            DeleteFile(xpmFileDir + 'Self_' + frmNewForm.Wx_Name + '_XPM.xpm');
+            DeleteFile(xpmFileDir + frmNewForm.GetGraphicFileName); //xpmFileDir + 'Self_' + frmNewForm.Wx_Name + '_XPM.xpm');
 
-        if not fileexists(xpmFileDir + 'Self_' + frmNewForm.Wx_Name + '_XPM.xpm') then
+        if not fileexists(xpmFileDir + frmNewForm.GetGraphicFileName) then // + 'Self_' + frmNewForm.Wx_Name + '_XPM.xpm') then
         begin
             fileStrlst := TStringList.Create;
             try
-                strXPMContent := GetXPMFromTPicture('Self_' + frmNewForm.Wx_Name, frmNewForm.Wx_ICON.Bitmap);
+                strXPMContent := GetXPMFromTPicture(strFileName, frmNewForm.Wx_ICON.Bitmap); //'Self_' + frmNewForm.Wx_Name, frmNewForm.Wx_ICON.Bitmap);
                 if trim(strXPMContent) <> '' then
                 begin
                     fileStrlst.Add(strXPMContent);
-                    fileStrlst.SaveToFile(xpmFileDir + 'Self_' + frmNewForm.Wx_Name + '_XPM.xpm');
+                    fileStrlst.SaveToFile(xpmFileDir + frmNewForm.GetGraphicFileName); //+ 'Self_' + frmNewForm.Wx_Name + '_XPM.xpm');
                 end;
             except
             end;
@@ -1640,7 +1641,7 @@ begin
         else
         begin
       //strLst.add('wxIcon ' + self.Wx_Name + '_ICON' + ' (' +Self_'+self.Wx_Name + '_XPM' + ');');
-            strLst.add('SetIcon(' + 'Self_' + self.Wx_Name + '_XPM' + ');');
+            strLst.add('SetIcon(' + GetDesignerFormName(self) + '_' + self.Name + '_XPM' + ');');
         end;
     end;
 

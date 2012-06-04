@@ -595,9 +595,9 @@ Begin
             Result := Result + #13 + 'm_fileHistory->UseMenu( ' + parentName + ' );';
 	           Result := Result + #13 + 'm_fileConfig = new wxConfig("' + ChangeFileExt(ExtractFileName(wx_designer.main.GetProjectFileName), '') + '");';
             Result := Result + #13 + 'wxConfigBase::Set( m_fileConfig );';
-            Result := Result + #13 + 'm_fileConfig->SetPath(wxT("/RecentFiles"));';
-            Result := Result + #13 + 'm_fileHistory->Load(*m_fileConfig); ';
-            Result := Result + #13 + 'm_fileConfig->SetPath(wxT(".."));';
+            Result := Result + #13 + 'm_fileConfig->SetPath(' + GetCppString('/RecentFiles') + ');';
+            Result := Result + #13 + 'm_fileHistory->Load(*m_fileConfig);';
+            Result := Result + #13 + 'm_fileConfig->SetPath(' + GetCppString('..') + ');';
         End
         Else
         Begin

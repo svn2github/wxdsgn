@@ -8101,12 +8101,12 @@ Begin
     If trim(caption) = '' Then
         Result := ''
     Else
-        Result := Format('.Caption(wxT("%s"))', [caption]);
+        Result := Format('.Caption(%s)', [GetCppString(caption)]);
 End;
 
 Function GetAuiPaneName(name: String): String;
 Begin
-    Result := Format('.Name(wxT("%s"))', [name]);
+    Result := Format('.Name(%s)', [GetCppString(name)]);
 End;
 
 Function HasToolbarPaneStyle(Wx_Aui_Pane_Style: TwxAuiPaneStyleSet): Boolean;

@@ -682,7 +682,7 @@ Begin
     If trim(Wx_Caption) = '' Then
         Result := ''
     Else
-        Result := Format('.Caption(wxT("%s"))', [Self.FWx_Caption]);
+        Result := Format('.Caption(%s)', [GetCppString(Self.FWx_Caption)]);
 End;
 
 Procedure TWxAuiPaneInfo.SetAuiPaneCaption(Caption: String);
@@ -692,7 +692,7 @@ End;
 
 Function TWxAuiPaneInfo.GetAuiPaneName: String;
 Begin
-    Result := Format('.Name(wxT("%s"))', [self.Name]);
+    Result := Format('.Name(%s)', [GetCppString(self.Name)]);
 End;
 
 Function TWxAuiPaneInfo.HasToolbarPaneStyle(Wx_Aui_Pane_Style: TwxAuiPaneStyleSet): Boolean;

@@ -826,9 +826,9 @@ begin
     // String format tells us what function to wrap strings with in the generated C++ code
     // Possible values are wxT(), _T(), and _()
         StringFormat := ini.ReadString('wxWidgets', 'cbStringFormat', StringFormat);
-    // if there's no preference saved in the ini file, then default to wxT()
+    // if there's no preference saved in the ini file, then default to _() because it's Unicode safe.
         if trim(StringFormat) = '' then
-            StringFormat := 'wxT';
+            StringFormat := '_';
         UseDefaultPos := ini.ReadBool('wxWidgets', 'cbUseDefaultPos', FALSE); // ?? UseDefaultPos);
         UseDefaultSize := ini.ReadBool('wxWidgets', 'cbUseDefaultSize', FALSE); //?? UseDefaultSize);
         UseIndividEnums := ini.ReadBool('wxWidgets', 'cbIndividualEnums', TRUE); //?? UseIndividEnums);
@@ -3305,7 +3305,7 @@ begin
                     editorName := main.GetActiveEditorName;
                     if ((UpperCase(SelectedComponent.ClassName) = UpperCase('TFrmNewForm'))
                         and (not TFrmNewForm(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).KeepFormat)) then
-                        GenerateXPMDirectly(TFrmNewForm(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).Wx_ICON.Bitmap, (editors[editorName] as TWXEditor).GetDesigner.Wx_Name, 'Self', editorName);
+                        GenerateXPMDirectly(TFrmNewForm(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).Wx_ICON.Bitmap, SelectedComponent.Name, (editors[editorName] as TWXEditor).GetDesigner.Wx_Name, editorName);
 
                     if ((UpperCase(SelectedComponent.ClassName) = UpperCase('TWxStaticBitmap'))
                         and (not TWxStaticBitmap(TJvInspectorPropData(JvInspProperties.Selected.Data).Instance).KeepFormat)) then

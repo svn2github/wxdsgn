@@ -93,7 +93,7 @@ uses
 {$IFDEF PLUGIN_BUILD}
     SynEdit, iplugin, iplugin_bpl, iplugin_dll, iplugger,
     controlbar_win32_events, hashes, //SynEditCodeFolding,
-    xprocs, SynHighlighterRC, hh, hh_funcs, VistaAltFixUnit,
+    xprocs, SynHighlighterRC, hh, hh_funcs, VistaAltFixUnit2,
 
 {$IFNDEF COMPILER_7_UP}
     ThemeMgr,
@@ -10730,7 +10730,7 @@ begin
     ShowWindow(Application.Handle, SW_SHOW);
     if IsWindowsVista then
     begin
-        TVistaAltFix.Create(Self);
+        TVistaAltFix2.Create(Self);
     end;
     // accepting drag and drop files
     DragAcceptFiles(Handle, TRUE);
