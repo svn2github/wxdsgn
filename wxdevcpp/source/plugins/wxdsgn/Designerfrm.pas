@@ -762,7 +762,7 @@ begin
 
     if frmNewForm.Wx_ICON.Bitmap.handle <> 0 then
     begin
-        ShowMessage( xpmFileDir + frmNewForm.GetGraphicFileName );
+        
         if onlyForForm then
             DeleteFile(xpmFileDir + frmNewForm.GetGraphicFileName); //xpmFileDir + 'Self_' + frmNewForm.Wx_Name + '_XPM.xpm');
 
@@ -1950,10 +1950,12 @@ begin
             end;
         end;
     end;
-    strXPMFileName := 'Images\Self_' + wx_Name + '.xpm';
+    
+
+    strXPMFileName := GetGraphicFilename(); //'Images\Self_' + wx_Name + '.xpm';
     if FileExists(strXPMFileName) and (Wx_ICON.Bitmap <> NIL) then
     begin
-        GenerateXPMDirectly(Wx_ICON.Bitmap, 'Self', wx_Name, strFileName);
+        GenerateXPMDirectly(Wx_ICON.Bitmap, GetDesignerFormName(self), wx_Name, strFileName);
     end;
 end;
 
